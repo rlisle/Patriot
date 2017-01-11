@@ -1,4 +1,4 @@
-# Project IoT
+# Particle IoT
 Open source, Arduino hobby IoT project using Particle.io Photons,
 Alexa, and iOS apps.
 
