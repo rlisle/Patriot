@@ -3,6 +3,10 @@ Open source, Arduino hobby IoT project using Particle.io Photons,
 Alexa, and iOS apps.
 
 Refer to my blog at lisles.net for more information.
+All this code is running in my RV, but is a work-in-progress.
+It may take me awhile to get it all posted in this Github repo.
+I ask for your indulgence in allowing me time to get
+all the pieces uploaded here.
 
 This project is intended to help other hobbyist that want to create
 their own Arduino IoT devices, but may not want to create their own
