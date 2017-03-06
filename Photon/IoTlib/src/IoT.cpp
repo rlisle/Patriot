@@ -75,12 +75,12 @@ IoT::IoT()
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
     _hasBegun       = false;
     _publishName    = kDefaultPublishName;
-//    _controllerName = kDefaultControllerName;
-//    _presence = NULL;
-//    _proximity = NULL;
-//    _switches = NULL;       // Lazy loaded
-//    _temperature = NULL;
-//    _numSupportedActivities = 0;
+    _controllerName = kDefaultControllerName;
+    _presence = NULL;
+    _proximity = NULL;
+    _switches = NULL;       // Lazy loaded
+    _temperature = NULL;
+    _numSupportedActivities = 0;
 }
 
 /**
@@ -118,9 +118,9 @@ void IoT::begin()
     _alive = new Alive();
     _alive->setControllerName(_controllerName);
     _alive->setPublishName(_publishName);
-//    _controllerNames = new ControllerNames();
-//    _devices = new Devices();
-//    _deviceNames = new DeviceNames();
+    _controllerNames = new ControllerNames();
+    _devices = new Devices();
+    _deviceNames = new DeviceNames();
 
     Particle.subscribe(_publishName,globalSubscribeHandler);
     if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
@@ -137,7 +137,83 @@ void IoT::begin()
 void IoT::loop(long millis)
 {
     _alive->loop(millis);
+    _devices->loop();
+    if(_presence != NULL && _proximity != NULL) {
+        _presence->loop(_proximity);
+    }
+
+    if(_switches != NULL) {
+        _switches->loop();
+    }
+
+    if(_temperature != NULL) {
+        _temperature->loop();
+    }
 }
+
+
+// Activities
+//TODO: collect array of all supported behaviors
+void IoT::addBehavior(String deviceName, Behavior *behavior)
+{
+    Serial.println("addBehavior: "+deviceName);
+    // Note: devices must be created before behaviors
+    Device *device = _devices->getDeviceWithName(deviceName);
+    if(device != NULL) {
+        device->addBehavior(behavior);
+        addToListOfSupportedActivities(behavior->activityName);
+    } else {
+        Particle.publish("ERROR", "IoT::addBehavior undefined device");
+        Serial.println("Error: IoT addBehavior undefined device");
+    }
+}
+
+void IoT::addToListOfSupportedActivities(String activity)
+{
+    for(int i=0; i<_numSupportedActivities; i++) {
+        if(activity.equalsIgnoreCase(_supportedActivities[i])) return;
+    }
+    if(_numSupportedActivities < kMaxNumberActivities-1) {
+        _supportedActivities[_numSupportedActivities++] = activity;
+    }
+    buildSupportedActivitiesVariable();
+}
+
+void IoT::buildSupportedActivitiesVariable()
+{
+    String newVariable = "";
+    for(int i=0; i<_numSupportedActivities; i++)
+    {
+        newVariable += _supportedActivities[i];
+        if (i < _numSupportedActivities-1) {
+            newVariable += ",";
+        }
+    }
+    if(newVariable.length() < kMaxVariableStringLength) {
+        if(newVariable != supportedActivitiesVariable) {
+            Serial.println("Supported activities = "+newVariable);
+            supportedActivitiesVariable = newVariable;
+        }
+    } else {
+        Serial.println("Supported activities variable is too long. Need to extend to a 2nd variable");
+    }
+}
+
+/******************************************************/
+/*** Expose variables listing devices and activities **/
+/******************************************************/
+bool IoT::exposeActivities()
+{
+    return _activities->expose();
+}
+
+bool IoT::exposeControllers()
+{
+    log("Expose controllers");
+    _controllerNames->addController(_controllerName);
+    return _controllerNames->expose();
+}
+
 
 /*************************/
 /*** Subscribe Handler ***/
@@ -156,7 +232,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData) {
     if(state.equalsIgnoreCase("alive"))
     {
         Serial.println("   alive");
-//        _controllerNames->addController(name);
+        _controllerNames->addController(name);
         return;
     }
 
@@ -179,6 +255,6 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData) {
     Serial.println("   value = "+String(value));
     _activities->addActivity(name, value);
     Serial.println("   calling performActivities");
-//    _devices->performActivities(_activities);
+    _devices->performActivities(_activities);
     Serial.println("   subscript done");
 }

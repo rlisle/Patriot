@@ -5,7 +5,7 @@ This class is the abstract parent of classes that support actions
 
 http://www.github.com/rlisle/ParticleIoT
 
-Written by Ron Lisle, ron@lisles.net
+Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.

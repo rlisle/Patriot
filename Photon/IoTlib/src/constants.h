@@ -39,7 +39,8 @@ static const String kSupportedActivitiesVariableName = "Supported";
 static const String kActivitiesVariableName          = "Activities";
 static const String kControllersVariableName         = "Controllers";
 static const int    kMaxVariableStringLength         = 266;
+static const String kDevicesVariableName             = "Devices";
+static const int    kMaxNumberActivities             = 32;
 
-//#define kDevicesVariableName              "Devices"
 //#define kTestVariableName                 "Testing"
 //#define kTestFunctionName                 "test"
