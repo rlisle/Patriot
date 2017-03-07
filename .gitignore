@@ -32,3 +32,5 @@
 # Other
 .DS_Store
 
+# CLion work files
+cmake-build-debug
