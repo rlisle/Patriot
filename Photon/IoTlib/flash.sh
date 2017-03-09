@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 # Compile and flash
-particle flash RonTest examples/test
+particle flash Everything examples/everything

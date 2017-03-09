@@ -20,6 +20,7 @@ Changelog:
 2016-11-24: Initial version
 ******************************************************************/
 #include "IoT.h"
+#include "light.h"
 
 /**
  * Global subscribe handler
@@ -136,6 +137,8 @@ void IoT::begin()
  */
 void IoT::loop(long millis)
 {
+    if(!_hasBegun) return;
+
     _alive->loop(millis);
     _devices->loop();
     if(_presence != NULL && _proximity != NULL) {
@@ -149,6 +152,61 @@ void IoT::loop(long millis)
     if(_temperature != NULL) {
         _temperature->loop();
     }
+}
+
+//TODO: Move to behavior
+// Proximity (Note: currently only 1 proxmity sensor at a time supported)
+void IoT::monitorPresence(int triggerPin, int echoPin, int min, int max, String event)
+{
+    Serial.println("Monitoring presence on trigger pin "+String(triggerPin)+", echo pin "+String(echoPin));
+    if(_proximity != NULL) {
+        delete _proximity;
+        _proximity = NULL;
+    }
+    if(_presence != NULL) {
+        delete _presence;
+        _presence = NULL;
+    }
+    _proximity = new Proximity(triggerPin, echoPin);
+    _presence = new Presence(min, max, event, kPingInterval);
+}
+
+// Temperature
+void IoT::monitorTemperature(int pin, int type, String msg, long interval)
+{
+    if(_temperature == NULL) {
+        _temperature = new Temperature(pin, type);
+    }
+    _temperature->setText(msg);
+    if(interval > 0) {
+        _temperature->setInterval(interval);
+    }
+}
+
+
+// Fan
+void IoT::addFan(int pinNum, String name)
+{
+    Fan* fan = new Fan(pinNum, name);
+    _devices->addDevice(fan);
+    _deviceNames->addDevice(name+":fan");
+}
+
+// Lights
+void IoT::addLight(int pin, String name)
+{
+    Light* light = new Light(pin, name);
+    _devices->addDevice(light);
+    _deviceNames->addDevice(name+":light");
+}
+
+// Switches
+void IoT::addSwitch(int pin, String eventName)
+{
+    if(_switches == NULL) {
+        _switches = new Switches();
+    }
+    _switches->addSwitch(pin, eventName);
 }
 
 
