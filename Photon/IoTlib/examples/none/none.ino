@@ -39,6 +39,5 @@ void setup() {
 /*** LOOP ***/
 /************/
 void loop() {
-    long currentMillis = millis();
-    iot->loop(currentMillis);
+    iot->loop(millis());
 }

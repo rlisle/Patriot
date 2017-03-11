@@ -1,17 +1,22 @@
 /*******************************************************
 Everything ParticleIoT Example
 
-This example contains one of each IoT device type
-supported by ParticleIoT. This include the following:
+This example contains one or more of each IoT device type
+supported by ParticleIoT. This includes the following:
 
- * 4 LED Lights (Red, Green)
- * 4 Switches   (left, right)
- * DHT11 Temperature & Humidity sensor
+ * 4 LED Lights
+     - Red   = garage
+     - Green = kitchen
+     - Blue  = living room
+     - Amber = bedroom
+ * 4 Switches
+ * DHT11 or DHT22 Temperature & Humidity sensor
  * HC-SR04 Ultrasonic Proximity Sensor
- * Photoresistor light level sensor
- * Fan              (TODO:)
- * Servo Motor      (TODO:)
- * Stepper Motor    (TODO:)
+ * Photoresistor light level sensor (TODO:)
+ * Fan                              (TODO:)
+ * Servo Motor                      (TODO:)
+ * Stepper Motor                    (TODO:)
+
 
 http://www.github.com/rlisle/ParticleIoT
 
@@ -21,9 +26,13 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-11: TODO: add remaining devices.
 2017-03-07: Initial creation
 ********************************************************/
 
+/****************/
+/*** INCLUDES ***/
+/****************/
 #include <IoT.h>
 
 /*****************/
@@ -44,13 +53,13 @@ Changelog:
 #define kLed4Pin        WKP     // pin 5
 
 // LED light names
-#define kLight1         "light1"    // Can be any name you want
-#define kLight2         "light2"    // "
-#define kLight3         "light3"    // "
-#define kLight4         "light4"    // "
+#define kLight1         "garage"        // Can be any name you want
+#define kLight2         "kitchen"       // "
+#define kLight3         "livingroom"    // "
+#define kLight4         "bedroom"       // "
 
 // Switch inputs
-#define kSwitch1Pin     D4      // pin 17
+#define kSwitch1Pin     D4      // pin 17 Can be any event you want
 #define kSwitch2Pin     D5      // pin 18
 #define kSwitch3Pin     D6      // pin 19
 #define kSwitch4Pin     D7      // pin 20
@@ -74,46 +83,54 @@ Changelog:
 // and not just the name of an appliance. For example, "sleep"
 #define kEvent1         "sleep"     // Turn off all lights except night lights
 #define kEvent2         "watchtv"   // Dim living room lights
-#define kEvent3         "cook"      // Turn on kitchen lights fully
+#define kEvent3         "cook"      // Turn on kitchen lights, fan
 #define kEvent4         "bedtime"   // Turn on bedroom lights, all others off
+#define kEvent5         "kitchen"   // Kitchen temp & humidity
 
 /*****************/
 /*** VARIABLES ***/
 /*****************/
 IoT *iot;
 
-
 /*************/
 /*** SETUP ***/
 /*************/
 void setup() {
-    iot = IoT::getInstance();
-    iot->setControllerName("lislerv");
-    iot->setPublishName("RonTest");
-    iot->begin();
-
-    iot->addLight(kLed1Pin, kLight1);
-    iot->addLight(kLed2Pin, kLight2);
-    iot->addLight(kLed3Pin, kLight3);
-    iot->addLight(kLed4Pin, kLight4);
-
-    iot->addSwitch(kSwitch4Pin, kEvent4);
-    iot->addSwitch(kSwitch3Pin, kEvent3);
-    iot->addSwitch(kSwitch2Pin, kEvent2);
-    iot->addSwitch(kSwitch1Pin, kEvent1);
+    initializeIoT();
+    addLights();
+    addSwitches();
 
     iot->monitorPresence(kTriggerPin, kEchoPin, 3, 36, kEvent3);
-    iot->monitorTemperature(kDhtPin, kDhtType, kEvent2, 5000);
+    iot->monitorTemperature(kDhtPin, kDhtType, kEvent5, 5000);
 
     iot->exposeControllers();
     iot->exposeActivities();
 }
 
+void initializeIoT() {
+    iot = IoT::getInstance();
+    iot->setControllerName("lislerv");
+    iot->setPublishName("RonTest");
+    iot->begin();
+}
+
+void addSwitches() {
+    iot->addSwitch(kSwitch4Pin, kEvent4);
+    iot->addSwitch(kSwitch3Pin, kEvent3);
+    iot->addSwitch(kSwitch2Pin, kEvent2);
+    iot->addSwitch(kSwitch1Pin, kEvent1);
+}
+
+void addLights() {
+    iot->addLight(kLed1Pin, kLight1);
+    iot->addLight(kLed2Pin, kLight2);
+    iot->addLight(kLed3Pin, kLight3);
+    iot->addLight(kLed4Pin, kLight4);
+}
 
 /************/
 /*** LOOP ***/
 /************/
 void loop() {
-    long currentMillis = millis();
-    iot->loop(currentMillis);
+    iot->loop(millis());
 }
