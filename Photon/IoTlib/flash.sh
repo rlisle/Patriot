@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 # Compile and flash
-particle flash Everything examples/everything
+particle flash ParticleIoT examples/switchesAndLEDs
