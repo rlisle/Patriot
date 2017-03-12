@@ -72,6 +72,7 @@ void setup() {
     initializeIoT();
     addLights();
     addSwitches();
+    addBehaviors();
 
     iot->exposeControllers();
     iot->exposeActivities();
@@ -79,8 +80,8 @@ void setup() {
 
 void initializeIoT() {
     iot = IoT::getInstance();
-    iot->setControllerName("lislerv");
-    iot->setPublishName("RonTest");
+    iot->setControllerName("ParticleIoT");
+    iot->setPublishName("lislerv");
     iot->begin();
 }
 
@@ -96,6 +97,13 @@ void addLights() {
     iot->addLight(kLed2Pin, kLight2);
     iot->addLight(kLed3Pin, kLight3);
     iot->addLight(kLed4Pin, kLight4);
+}
+
+void addBehaviors() {
+    iot->addBehavior(kLight1, new Behavior(kEvent1,'>',0, 100));
+    iot->addBehavior(kLight2, new Behavior(kEvent2,'>',0, 100));
+    iot->addBehavior(kLight3, new Behavior(kEvent3,'>',0, 100));
+    iot->addBehavior(kLight4, new Behavior(kEvent4,'>',0, 100));
 }
 
 /************/
