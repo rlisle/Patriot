@@ -59,7 +59,6 @@ Changelog:
 #define kEvent2         "watchtv"   // Dim living room lights
 #define kEvent3         "cook"      // Turn on kitchen lights, fan
 #define kEvent4         "bedtime"   // Turn on bedroom lights, all others off
-#define kEvent5         "kitchen"   // Kitchen temp & humidity
 
 /*****************/
 /*** VARIABLES ***/
