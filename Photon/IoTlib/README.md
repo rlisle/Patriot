@@ -9,25 +9,29 @@ based automation projects that combine inputs from sensors, Alexa, and iOS devic
 
 ## Usage
 
-Start creating your Photon based project using any of the Photon examples provided.
+Start creating your Photon based project using any of the Photon examples provided
+in the examples folder.
 
 Here is the switchesAndLEDs example. It includes 4 switches and 4 LEDs.
 
-Note that the switches do not directly control the LEDs.
-Instead, each switch creates an event. Each event can control 1 or more
-different devices, each with different level settings.
- 
-In this example, four switches are used to trigger four events as shown in this table:
+Note that the switches do not directly control the LEDs. They could, but
+it's much more flexible to have them specify an _activity_, such as watching TV
+or going to sleep.  This is shown in the table below.
 
-| switch | event   | LED 1 outside | LED 2 kitchen | LED 3 bedroom | LED 4 bathroom |
-| ------ | ------- | ------------- | ------------- | ------------- | -------------- |
-|   1    | WakeUp  | Low           |  Low          |  On           | On             |
-|   2    | Sleep   | Off           |  Off          |  Off          | Low            |
-|   3    | Watchtv | On            |  Low          |  Low          | Off            |
-|   4    | Cook    | On            |  On           |  Low          | Low            |
+Each activity can then control one or more different devices, 
+each with individually specified settings, such as 0% to 100% brightness.
+ 
+
+| Switch | Activity | LED 1 Outside | LED 2 Kitchen | LED 3 Bedroom | LED 4 Bathroom |
+| ------ | -------- | ------------- | ------------- | ------------- | -------------- |
+|   1    | WakeUp   | Low           |  Low          |  On           | On             |
+|   2    | WatchTV  | On            |  Low          |  Low          | Off            |
+|   3    | Cook     | On            |  On           |  Low          | Low            |
+|   4    | Sleep    | Off           |  Off          |  Off          | Low            |
 
  
 ```
+#include <IoT>
 IoT *iot;
 
 void setup() {
@@ -36,20 +40,20 @@ void setup() {
     iot->setPublishName("myEvents");
     iot->begin();
     
-    iot->addSwitch(kSwitch4Pin, kEvent4);
-    iot->addSwitch(kSwitch3Pin, kEvent3);
-    iot->addSwitch(kSwitch2Pin, kEvent2);
-    iot->addSwitch(kSwitch1Pin, kEvent1);
+    iot->addSwitch(kSwitch4Pin, 'WakeUp');
+    iot->addSwitch(kSwitch3Pin, 'WatchTV');
+    iot->addSwitch(kSwitch2Pin, 'Cook');
+    iot->addSwitch(kSwitch1Pin, 'Sleep');
     
-    iot->addLight(kLed1Pin, kLight1);
-    iot->addLight(kLed2Pin, kLight2);
-    iot->addLight(kLed3Pin, kLight3);
-    iot->addLight(kLed4Pin, kLight4);
+    iot->addLight(kLed1Pin, 'Outside');
+    iot->addLight(kLed2Pin, 'Kitchen');
+    iot->addLight(kLed3Pin, 'Bedroom');
+    iot->addLight(kLed4Pin, 'Bathroom');
 
-    iot->addBehavior(kLight1, new Behavior(kEvent1,'>',0, 100));
-    iot->addBehavior(kLight2, new Behavior(kEvent2,'>',0, 100));
-    iot->addBehavior(kLight3, new Behavior(kEvent3,'>',0, 100));
-    iot->addBehavior(kLight4, new Behavior(kEvent4,'>',0, 100));
+    iot->addBehavior('Outside', new Behavior('Wakeup','>',0, 100));
+    iot->addBehavior('Kitchen', new Behavior('WatchTV','>',0, 100));
+    iot->addBehavior('Bedroom', new Behavior('Cook','>',0, 100));
+    iot->addBehavior('Bathroom', new Behavior('Sleep','>',0, 0));
 
     iot->exposeControllers();
     iot->exposeActivities();
@@ -61,14 +65,12 @@ void loop() {
 ```
 
 The polling of the switches, and fading of the LEDs is performed by the library.
-You sketch code just needs to call the IoT loop method, passing the current millis()
+Your sketch code just needs to call the IoT loop method, passing the current millis()
 time.
 
 See the [examples](examples) folder for more examples.
 
 ## Documentation
-
-TODO: Describe `IoT`
 
 Once you have created one or more photon based devices, you can access them
 using either or both an Alexa skill or iOS app.

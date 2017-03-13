@@ -4,16 +4,16 @@ Switches and LEDs ParticleIoT Example
 This example contains 4 switches and 4 LEDs:
 
  * 4 LED Lights
-     - Red   = garage       A3      Photon pin 9
-     - Green = kitchen      RX      Photon pin 4
-     - Blue  = living room  TX      Photon pin 3
-     - Amber = bedroom      WKP     Photon pin 5
+     - Red   = Outside      A3      Photon pin 9
+     - Green = Kitchen      RX      Photon pin 4
+     - Blue  = Bedroom      TX      Photon pin 3
+     - Amber = Bathroom     WKP     Photon pin 5
 
  * 4 Switches
-     - Switch 1             D4      Photon pin 17
-     - Switch 2             D5      Photon pin 18
-     - Switch 3             D6      Photon pin 19
-     - Switch 4             D7      Photon pin 20
+     - WakeUp               D4      Photon pin 17
+     - WatchTV              D5      Photon pin 18
+     - Cook                 D6      Photon pin 19
+     - Sleep                D7      Photon pin 20
 
 http://www.github.com/rlisle/ParticleIoT
 
@@ -27,88 +27,34 @@ Changelog:
 2017-03-07: Initial creation
 ********************************************************/
 
-/****************/
-/*** INCLUDES ***/
-/****************/
 #include <IoT.h>
-
-/*****************/
-/*** CONSTANTS ***/
-/*****************/
-// LED pins
-#define kLed1Pin        A3      // pin 9
-#define kLed2Pin        RX      // pin 4
-#define kLed3Pin        TX      // pin 3
-#define kLed4Pin        WKP     // pin 5
-
-// LED light names
-#define kLight1         "garage"        // Can be any name you want
-#define kLight2         "kitchen"       // "
-#define kLight3         "livingroom"    // "
-#define kLight4         "bedroom"       // "
-
-// Switch pins
-#define kSwitch1Pin     D4      // pin 17 Can be any event you want
-#define kSwitch2Pin     D5      // pin 18
-#define kSwitch3Pin     D6      // pin 19
-#define kSwitch4Pin     D7      // pin 20
-
-// Event names can be anything you want, but should indicate activity
-// and not just the name of an appliance.
-#define kEvent1         "sleep"     // Turn off all lights except night lights
-#define kEvent2         "watchtv"   // Dim living room lights
-#define kEvent3         "cook"      // Turn on kitchen lights, fan
-#define kEvent4         "bedtime"   // Turn on bedroom lights, all others off
-
-/*****************/
-/*** VARIABLES ***/
-/*****************/
 IoT *iot;
 
-/*************/
-/*** SETUP ***/
-/*************/
 void setup() {
-    initializeIoT();
-    addLights();
-    addSwitches();
-    addBehaviors();
+    iot = IoT::getInstance();
+    iot->setControllerName("ParticleIoT");
+    iot->setPublishName("RonsRV");
+    iot->begin();
+
+    iot->addLight(A3, 'Outside');
+    iot->addLight(RX, 'Kitchen');
+    iot->addLight(TX, 'Livingroom');
+    iot->addLight(WKP, 'Bedroom');
+
+    iot->addSwitch(D4, 'WakeUp');
+    iot->addSwitch(D5, 'WatchTV');
+    iot->addSwitch(D6, 'Cook');
+    iot->addSwitch(D7, 'Sleep');
+
+    iot->addBehavior('Outside', new Behavior('WakeUp','>',0, 100));
+    iot->addBehavior('Kitchen', new Behavior('WatchTV','>',0, 100));
+    iot->addBehavior('Livingroom', new Behavior('Cook','>',0, 100));
+    iot->addBehavior('Bedroom', new Behavior('Sleep','>',0, 100));
 
     iot->exposeControllers();
     iot->exposeActivities();
 }
 
-void initializeIoT() {
-    iot = IoT::getInstance();
-    iot->setControllerName("ParticleIoT");
-    iot->setPublishName("lislerv");
-    iot->begin();
-}
-
-void addSwitches() {
-    iot->addSwitch(kSwitch4Pin, kEvent4);
-    iot->addSwitch(kSwitch3Pin, kEvent3);
-    iot->addSwitch(kSwitch2Pin, kEvent2);
-    iot->addSwitch(kSwitch1Pin, kEvent1);
-}
-
-void addLights() {
-    iot->addLight(kLed1Pin, kLight1);
-    iot->addLight(kLed2Pin, kLight2);
-    iot->addLight(kLed3Pin, kLight3);
-    iot->addLight(kLed4Pin, kLight4);
-}
-
-void addBehaviors() {
-    iot->addBehavior(kLight1, new Behavior(kEvent1,'>',0, 100));
-    iot->addBehavior(kLight2, new Behavior(kEvent2,'>',0, 100));
-    iot->addBehavior(kLight3, new Behavior(kEvent3,'>',0, 100));
-    iot->addBehavior(kLight4, new Behavior(kEvent4,'>',0, 100));
-}
-
-/************/
-/*** LOOP ***/
-/************/
 void loop() {
     iot->loop(millis());
 }
