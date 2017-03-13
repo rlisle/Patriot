@@ -36,3 +36,5 @@
 cmake-build-debug
 **/.idea/workspace.xml
 **/.idea/tasks.xml
+.idea
+CMakeLists.txt

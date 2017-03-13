@@ -36,6 +36,7 @@ Switch::Switch(int pinNum, String name)
     : _pin(pinNum), _name(name)
 {
     pinMode(pinNum, INPUT_PULLUP);
+    _lastReadTime = millis();
 }
 
 bool Switch::isOn() {
