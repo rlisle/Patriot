@@ -5,7 +5,7 @@ This file contains common constants used by the IoT library.
 
 http://www.github.com/rlisle/ParticleIoT
 
-Written by Ron Lisle, ron@lisles.net
+Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
@@ -26,7 +26,7 @@ static const long kDefaultAliveInterval     = 60000;
  * Default particle.io publish/subscribe event name
  * This can be changed by IoT::publishName()
  */
-static const String kDefaultPublishName     = "iotEven";
+static const String kDefaultPublishName     = "iotEvent";
 
 /**
  * Default particle.io controller name

@@ -9,18 +9,31 @@ based automation projects that combine inputs from sensors, Alexa, and iOS devic
 
 ## Usage
 
-Start creating your Photon based project using any of the examples provided.
-Connect to your particle.io account by adding your user information 
-where indicated in the example. Then expand your project by adding the
-Alexa skill code and/or iOS app code provided.
+Start creating your Photon based project using any of the Photon examples provided.
 
+Here is the switchesAndLEDs example. It includes 4 switches and 4 LEDs.
+
+Note that the switches do not directly control the LEDs.
+Instead, each switch creates an event. Each event can control 1 or more
+different devices, each with different level settings.
+ 
+In this example, four switches are used to trigger four events as shown in this table:
+
+| switch | event   | LED 1 outside | LED 2 kitchen | LED 3 bedroom | LED 4 bathroom |
+| ------ | ------- | ------------- | ------------- | ------------- | -------------- |
+|   1    | WakeUp  | Low           |  Low          |  On           | On             |
+|   2    | Sleep   | Off           |  Off          |  Off          | Low            |
+|   3    | Watchtv | On            |  Low          |  Low          | Off            |
+|   4    | Cook    | On            |  On           |  Low          | Low            |
+
+ 
 ```
 IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("lislerv");
-    iot->setPublishName("RonTest");
+    iot->setControllerName("myPhoton");
+    iot->setPublishName("myEvents");
     iot->begin();
     
     iot->addSwitch(kSwitch4Pin, kEvent4);
@@ -33,6 +46,11 @@ void setup() {
     iot->addLight(kLed3Pin, kLight3);
     iot->addLight(kLed4Pin, kLight4);
 
+    iot->addBehavior(kLight1, new Behavior(kEvent1,'>',0, 100));
+    iot->addBehavior(kLight2, new Behavior(kEvent2,'>',0, 100));
+    iot->addBehavior(kLight3, new Behavior(kEvent3,'>',0, 100));
+    iot->addBehavior(kLight4, new Behavior(kEvent4,'>',0, 100));
+
     iot->exposeControllers();
     iot->exposeActivities();
 }
@@ -42,11 +60,24 @@ void loop() {
 }
 ```
 
-See the [examples](examples) folder for more details.
+The polling of the switches, and fading of the LEDs is performed by the library.
+You sketch code just needs to call the IoT loop method, passing the current millis()
+time.
+
+See the [examples](examples) folder for more examples.
 
 ## Documentation
 
 TODO: Describe `IoT`
+
+Once you have created one or more photon based devices, you can access them
+using either or both an Alexa skill or iOS app.
+
+Connect these to your particle.io account by adding your Particle.io
+account information where indicated in the sources.
+ 
+(TODO: allow connecting without modifying source and rebuilding) 
+
 
 ## Contributing
 
