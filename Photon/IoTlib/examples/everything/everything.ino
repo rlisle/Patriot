@@ -76,7 +76,7 @@ void setup() {
     //TODO: Add servo motor
 
     //TODO: Add stepper motor
-    
+
     iot->addBehavior('Outside', new Behavior('WakeUp','>',0, 100));
     iot->addBehavior('Kitchen', new Behavior('WatchTV','>',0, 100));
     iot->addBehavior('Livingroom', new Behavior('Cook','>',0, 100));

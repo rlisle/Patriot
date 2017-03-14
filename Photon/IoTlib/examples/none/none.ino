@@ -2,7 +2,7 @@
 Example starting point sketch for ParticleIoT library
 
 This example contains no devices.
-It is provided for comparison with other example sketches.
+It is provided as a starting point for you own sketches.
 
 http://www.github.com/rlisle/ParticleIoT
 
@@ -15,29 +15,16 @@ Changelog:
 2017-03-11: Initial creation
 ******************************************************************/
 
-/****************/
-/*** INCLUDES ***/
-/****************/
 #include <IoT.h>
-
-/*****************/
-/*** VARIABLES ***/
-/*****************/
 IoT *iot;
 
-/*************/
-/*** SETUP ***/
-/*************/
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("lislerv");
-    iot->setPublishName("RonTest");
+    iot->setControllerName("ParticleIoT");
+    iot->setPublishName("RonsRV");
     iot->begin();
 }
 
-/************/
-/*** LOOP ***/
-/************/
 void loop() {
     iot->loop(millis());
 }
