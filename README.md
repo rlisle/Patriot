@@ -1,20 +1,30 @@
-# Particle IoT
-Open source, Arduino hobby IoT project using Particle.io Photons,
-Alexa, and iOS apps.
+# Patriot
+Patriot is an open source, Arduino hobby IoT project using 
+Particle.io devices, Alexa, and iOS apps.
+
+It is intended to help other hobbyists quickly create Internet-of-Things
+projects that can be controlled using Voice (Alexa) and iOS devices
+without having to recreate new Alexa skills or iOS apps.
+
+Initially this project will consist of a published particle.io Photon
+library (IoTlib) and a published Alexa Smart Home skill (Patriot).
+
+An iOS control panel app exists that allows your old iPhones
+to be used as touch display control panels. This code is being
+cleaned up and will be open sourced and/or available on the app
+store soon.
+
+Your Photon based IoT projects can be created using any of the 
+standard particle.io development tools (Web IDE,
+Particle IDE, or Particle CLI).
+
+The main objective is to allow the creation of networks of IoT
+devices that can communicate with each other, and is:
+1. Easily extensible: new devices can be added without having to modify existing devices.
+2. Super simple to program
+3. Reuses existing code, including the Alexa skills, iOS apps, and Photon library code.
 
 Refer to my blog at lisles.net for more information.
-
-All this code is running in my RV and is a work-in-progress.
-
-It may take me awhile to get it all posted in this Github repo.
-I ask for your indulgence in allowing me time to get
-all the pieces uploaded here.
-
-This project is intended to help other hobbyist that want to create
-their own Arduino IoT devices, but may not want to create their own
-Alexa or iOS apps to control them. By using the published IoT library,
-your photon code can automatically connect to the Alexa and iOS
-applications.
 
 ## Devices
 Particle.io Photons are used to due to their ease of use and great
@@ -26,7 +36,7 @@ I've provided a set of source code files and instructions
 that can be used to simplify
 programming IoT devices using Particle's $19 Photon.
 
-I've also include the Eagle files and instructions for creating
+I've also included the Eagle files and instructions for creating
 general purpose IoT printed circuit boards. Using these files,
 PCBs can be ordered from China for about $1.50 each.
 
@@ -39,9 +49,10 @@ The Alexa smart home skill will automatically detect your devices
 and allow control of them based on the names and events coded in
 the Photon microcode.
 
-Currently the skill needs to be created in your own account with your
-own LWA credentials, but I intend to allow the use of a single,
-published skill using particle.io OAuth in the future.
+The Alexa skill will prompt you to login to your Particle.io account 
+when you install it. From that point on it will automatically 
+detect devices that you compile with the IoTlib, using the
+name and commands specified in the device's code.
 
 ## iOS Apps
 An iOS app can be used to control devices from your iPhone or iPad.
@@ -56,7 +67,7 @@ Currently the apps must be compiled in Xcode with your LWA credentials
 and downloaded to your iPhone manually, but I intend to allow the use
 of a single, published app using particle.io OAuth in the future.
 It remains to be seen whether Apple will allow certifying a hobbyist
-app such as this, but it's certainly worth a try.
+app such as this, but I'm going to try.
 
 ## Release History
 Refer to the (Releases page)[https://github.com/rlisle/ParticleIoT/releases]
