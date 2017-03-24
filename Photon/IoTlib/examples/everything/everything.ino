@@ -1,8 +1,8 @@
 /*******************************************************
-Everything ParticleIoT Example
+Everything Patriot Example
 
 This example contains one or more of each IoT device type
-supported by ParticleIoT. This includes the following:
+supported by Patriot. This includes the following:
 
  * 4 LED Lights
     - Red   = Outside       A3      Photon pin 9
@@ -38,7 +38,7 @@ supported by ParticleIoT. This includes the following:
     - Stepper pin 3         D2      Photon pin 15
     - Stepper pin 4         D3      Photon pin 16
 
-http://www.github.com/rlisle/ParticleIoT
+http://www.github.com/rlisle/Patriot
 
 Written by Ron Lisle
 
@@ -46,6 +46,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-24: Rename Patriot
 2017-03-11: TODO: add remaining devices.
 2017-03-07: Initial creation
 ********************************************************/
@@ -55,8 +56,8 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("ParticleIoT");
-    iot->setPublishName("RonsRV");
+    iot->setControllerName("myController");
+    iot->setPublishName("myEvent");
     iot->begin();
 
     iot->addLight(A3, 'Outside');
@@ -90,5 +91,5 @@ void setup() {
 }
 
 void loop() {
-    iot->loop(millis());
+    iot->loop();
 }

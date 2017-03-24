@@ -21,13 +21,14 @@ TODO:
   - Photon has 2k EEPROM (actually, flash working like EEPROM)
   - So can hold 128 x 16 byte activity structures per device
 
-http://www.github.com/rlisle/ParticleIoT
+http://www.github.com/rlisle/Patriot
 
-Written by Ron Lisle, ron@lisles.net
+Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-06-24: Initial version
 ******************************************************************/
@@ -55,31 +56,6 @@ int Behaviors::addBehavior(Behavior *behavior)
   return _numBehaviors-1;
 }
 
-// void Behaviors::performBehaviorsForActivity(Activity *activity) {
-//   for(int i=0; i<_numBehaviors; i++)
-//   {
-//     //TODO:
-//       /*if(_activities[i]->name.equalsIgnoreCase(name)) {
-//           _activities[i]->performAction(state);
-//       }*/
-//   }
-// }
-//
-// void Behaviors::performBehaviorsForActivities(Activities *activities) {
-//
-// }
-
-// int Behaviors::determineLevelForActivity(String name, int value) {
-//   int level = -1; // -1 means no matches for name, value
-//   for(int i = 0; i < _numBehaviors; i++) {
-//     Behavior* behavior = _behaviors[i];
-//     if(behavior->matchesCondition(name, value)) {
-//       return behavior->level;
-//     }
-//   }
-//   return level; // -1 means no matches for name, value
-// }
-//
 int Behaviors::determineLevelForActivities(int defaultPercent, Activities *activities) {
   Serial.println("determineLevelForActivities: "+String(_numBehaviors)+" behaviors");
   int level = defaultPercent;

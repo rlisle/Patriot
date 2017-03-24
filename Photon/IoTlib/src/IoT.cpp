@@ -1,5 +1,5 @@
 /******************************************************************
-This is the primary class for the IoT library.
+This is the primary class for the Patriot IoT library.
 
 It aggregates all the other classes, and provides
 a common API for adding and configuring devices.
@@ -8,14 +8,15 @@ This class coordinates realtime events.
 It subscribes to Particle.io notifications, and
         distributes them to devices and activities.
 
-http://www.github.com/rlisle/ParticleIoT
+http://www.github.com/rlisle/Patriot
 
-Written by Ron Lisle, ron@lisles.net
+Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2016-11-24: Initial version
 ******************************************************************/
@@ -135,11 +136,11 @@ void IoT::begin()
  * Loop method must be called periodically,
  * typically from the sketch loop() method.
  */
-void IoT::loop(long millis)
+void IoT::loop()
 {
     if(!_hasBegun) return;
 
-    _alive->loop(millis);
+    _alive->loop();
     _devices->loop();
     if(_presence != NULL && _proximity != NULL) {
         _presence->loop(_proximity);

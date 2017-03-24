@@ -1,5 +1,5 @@
 /*******************************************************
-Switches and LEDs ParticleIoT Example
+Switches and LEDs Patriot Example
 
 This example contains 4 switches and 4 LEDs:
 
@@ -15,7 +15,7 @@ This example contains 4 switches and 4 LEDs:
      - Cook                 D6      Photon pin 19
      - Sleep                D7      Photon pin 20
 
-http://www.github.com/rlisle/ParticleIoT
+http://www.github.com/rlisle/Patriot
 
 Written by Ron Lisle
 
@@ -23,6 +23,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-24: Rename Patriot
 2017-03-11: Created switch & leds
 2017-03-07: Initial creation
 ********************************************************/
@@ -32,8 +33,8 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("ParticleIoT");
-    iot->setPublishName("RonsRV");
+    iot->setControllerName("myController");
+    iot->setPublishName("myEvent");
     iot->begin();
 
     iot->addLight(A3, 'Outside');
@@ -56,5 +57,5 @@ void setup() {
 }
 
 void loop() {
-    iot->loop(millis());
+    iot->loop();
 }

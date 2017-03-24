@@ -1,10 +1,10 @@
 /******************************************************************
-Example starting point sketch for ParticleIoT library
+Example starting point sketch for Patriot library
 
 This example contains no devices.
 It is provided as a starting point for you own sketches.
 
-http://www.github.com/rlisle/ParticleIoT
+http://www.github.com/rlisle/Patriot
 
 Written by Ron Lisle
 
@@ -12,6 +12,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-24: Rename Patriot
 2017-03-11: Initial creation
 ******************************************************************/
 
@@ -20,11 +21,11 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("ParticleIoT");
-    iot->setPublishName("RonsRV");
+    iot->setControllerName("myController");
+    iot->setPublishName("myEvent");
     iot->begin();
 }
 
 void loop() {
-    iot->loop(millis());
+    iot->loop();
 }

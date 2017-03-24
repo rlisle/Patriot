@@ -2,7 +2,7 @@
 
 A framework for building powerful Photon based IoT projects.
 
-## Welcome to ParticleIoT
+## Welcome to Patriot
 
 This library makes it quick and easy to implement powerful particle.io Photon
 based automation projects that combine inputs from sensors, Alexa, and iOS devices.
@@ -162,17 +162,12 @@ I'll be adding a Hackster.io article about doing this in the near future.
 Once you have created one or more photon based devices, you can access them
 using either or both an Alexa skill or iOS app.
 
-The source for these is included in this repo.
+The Alexa skill was submitted to Amazon for public release on 3/24/17.
+
+The source for the iOS apps will be included in this repo when ready.
 Currently you'll need to build these yourself, including your Particle.io
 account information where indicated in the sources.
  
-Later on I plan on extending all these apps to use OAuth to allow users to
-log into their particle.io account safely, without modifying the source.
-Once this is done I'm going to try to submit these so that they can be used
-without having to build them from source. It remains to be seen if Apple and
-Amazon will allow an app for use by hobbyist created hardware, but I'm going 
-to try.
-
 ## Contributing
 
 Here's how you can make changes to this library and eventually contribute those changes back.
@@ -194,4 +189,4 @@ If you wish to make your library public, use `particle library publish` or `Publ
 ## LICENSE
 Copyright 2017 Ron Lisle
 
-Licensed under the <insert your choice of license here> license
+Refer to the included LICENSE file.

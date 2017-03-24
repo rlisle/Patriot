@@ -3,13 +3,14 @@ Devices collection
 
 This object manages a collection of device objects.
 
-http://www.github.com/rlisle/ParticleIoT
+http://www.github.com/rlisle/Patriot
 
-Written by Ron Lisle, ron@lisles.net
+Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-09-11: Initial version
 ******************************************************************/
