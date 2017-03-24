@@ -70,5 +70,5 @@ It remains to be seen whether Apple will allow certifying a hobbyist
 app such as this, but I'm going to try.
 
 ## Release History
-Refer to the (Releases page)[https://github.com/rlisle/ParticleIoT/releases]
+Refer to the (Releases page)[https://github.com/rlisle/Patriot/releases]
 for release history.
