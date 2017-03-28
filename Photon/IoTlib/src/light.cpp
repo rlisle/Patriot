@@ -24,11 +24,13 @@
 
 Light::Light(int pin, String name)
 {
+  Serial.println("Create light "+name+" on pin "+String(pin));
+
   _behaviors                = new Behaviors();
   _pin                      = pin;
   _name                     = name;
   _dimmingPercent           = 100;  // On full
-  _dimmingDuration          = 2.0;
+  _dimmingDuration          = Light::isPwmPin(pin) ? 2.0 : 0;
   _currentPercent           = 0.0;
   _targetPercent            = 0;
   _incrementPerMillisecond  = 0.0;
@@ -44,10 +46,7 @@ String Light::name() {
 // Handle 'On', 'Off', 'Toggle', '+', '-', or 0-100
 int Light::convertCommandToPercent(String dimming) {
 
-  Serial.print("Set light ");
-  Serial.print(_name);
-  Serial.print(" to ");
-  Serial.println(dimming);
+  Serial.println("Set light "+_name+" to "+String(dimming));
 
   int percent = 0;
   if(dimming.equalsIgnoreCase("on")) {
@@ -95,10 +94,14 @@ void Light::changePercent(int percent) {
   if(_targetPercent == percent) return;
 
   _targetPercent = percent;
-  if(_dimmingDuration == 0.0) {
+  if(_dimmingDuration == 0.0 || !Light::isPwmPin(_pin)) {
     Serial.println("Light setting percent to "+String(percent));
     _currentPercent = percent;
-    analogWrite(_pin,percent);
+      if(Light::isPwmPin(_pin)){
+          analogWrite(_pin,percent);
+      } else {
+          digitalWrite(_pin, (percent > 49) ? HIGH : LOW);
+      }
 
   } else {
     startSmoothDimming();
@@ -178,10 +181,15 @@ void Light::loop()
 };
 
 void Light::outputPWM() {
-  float pwm = _currentPercent;
-  pwm *= 255.0;
-  pwm /= 100.0;
-  analogWrite(_pin,(int)pwm);
+    if(Light::isPwmPin(_pin)) {
+        float pwm = _currentPercent;
+        pwm *= 255.0;
+        pwm /= 100.0;
+        Serial.println("outputPWM: " + String(pwm) + " on pin " + String(_pin));
+        analogWrite(_pin, (int) pwm);
+    } else {
+        digitalWrite(_pin, (_currentPercent > 49) ? HIGH : LOW);
+    }
 }
 
 int Light::addBehavior(Behavior *behavior)
@@ -194,4 +202,24 @@ void Light::performActivities(Activities* activities)
     int percent = _behaviors->determineLevelForActivities(_commandPercent, activities);
     Serial.println("Light "+_name+" performActivities: setting "+String(percent));
     changePercent(percent);
+}
+
+//TODO: Move this up to parent class Device
+bool Light::isPwmPin(int pin)
+{
+    switch(pin) {
+        case D0:
+        case D1:
+        case D2:
+        case D3:
+        case A4:
+        case A5:
+        case A7:    // aka WKP
+        case RX:
+        case TX:
+            return TRUE;
+        default:
+            break;
+    };
+    return FALSE;
 }

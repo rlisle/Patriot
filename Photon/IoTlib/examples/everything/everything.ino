@@ -1,6 +1,9 @@
 /*******************************************************
 Everything Patriot Example
 
+Note: this example is not yet complete, but works with
+      the devices that have been added so far.
+
 This example contains one or more of each IoT device type
 supported by Patriot. This includes the following:
 
@@ -46,6 +49,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-28: Use fixed 'patriot' event name.
 2017-03-24: Rename Patriot
 2017-03-11: TODO: add remaining devices.
 2017-03-07: Initial creation
@@ -56,8 +60,7 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myController");
-    iot->setPublishName("myEvent");
+    iot->setControllerName("myPhoton");
     iot->begin();
 
     iot->addLight(A3, 'Outside');

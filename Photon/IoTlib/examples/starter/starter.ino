@@ -1,7 +1,7 @@
 /******************************************************************
 Example starting point sketch for Patriot library
 
-This example uses the built-in LED only.
+This example uses the built-in blue LED only.
 It is provided as a quick start for your own sketches.
 
 http://www.github.com/rlisle/Patriot
@@ -12,6 +12,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-28: Use fixed 'patriot' event name.
 2017-03-24: Initial creation
 ******************************************************************/
 
@@ -20,13 +21,16 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myController");
-    iot->setPublishName("myEvent");         // Set all devices to the same event name
+    iot->setControllerName("myPhoton");  // The name of your Photon device. Can be whatever you named it.
     iot->begin();
 
-    iot->addLight(D7, 'Led');               // This is the small blue LED on a photon
-    // Alexa will repsond to "Alexa, turn lights on" or "Alexa, turn on lights"
-    iot->addBehavior('Led', new Behavior('Lights','>',0, 100));
+    //Note: D7 is not a PWM pin, so need to using digitalWrite instead of analogWrite
+    iot->addLight(D7, "Led");               // This is the small blue LED on a photon
+
+    // Alexa will respond to "Alexa, turn photon on" or "Alexa, turn on photon"
+    // You can change the word 'photon' to whatever you like, but it needs to be something
+    // that Alexa can recognize. For now, use a single word.
+    iot->addBehavior("Led", new Behavior("photon",'>',0, 100));
 }
 
 void loop() {

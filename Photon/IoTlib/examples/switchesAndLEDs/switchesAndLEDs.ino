@@ -23,6 +23,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-03-28: Use fixed 'patriot' event name.
 2017-03-24: Rename Patriot
 2017-03-11: Created switch & leds
 2017-03-07: Initial creation
@@ -33,8 +34,7 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myController");
-    iot->setPublishName("myEvent");
+    iot->setControllerName("myPhoton");
     iot->begin();
 
     iot->addLight(A3, 'Outside');

@@ -44,6 +44,7 @@ private:
   void      changePercent(int percent);
   void      startSmoothDimming();
   void      outputPWM();
+  static bool isPwmPin(int pin);
 
 public:
   Light(int pin, String name);

@@ -27,7 +27,7 @@ static const long kDefaultAliveInterval     = 60000;
  * Default particle.io publish/subscribe event name
  * This can be changed by IoT::publishName()
  */
-static const String kDefaultPublishName     = "iotEvent";
+static const String kDefaultPublishName     = "patriot";
 
 /**
  * Default particle.io controller name
@@ -42,3 +42,4 @@ static const String kControllersVariableName         = "Controllers";
 static const int    kMaxVariableStringLength         = 266;
 static const String kDevicesVariableName             = "Devices";
 static const int    kMaxNumberActivities             = 32;
+static const String kPublishVariableName             = "PublishName";

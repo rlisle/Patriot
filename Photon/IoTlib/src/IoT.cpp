@@ -45,6 +45,17 @@ void globalSubscribeHandler(const char *eventName, const char *rawData) {
 String supportedActivitiesVariable;
 
 /**
+ * Publish Name variable
+ * This variable communicates the Particle.io publish event name.
+ * This allows applications to automatically determine the event name
+ * to use when publishing or subscribing to events to/from this device.
+ *
+ * Note: Do not change this or the Alexa and iOS apps my not work.
+ *       This will be fixed in the future.
+ */
+String publishNameVariable;
+
+/**
  * Singleton IoT instance
  * Use getInstance() instead of constructor
  */
@@ -75,13 +86,13 @@ void IoT::log(String msg)
 IoT::IoT()
 {
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
-    _hasBegun       = false;
-    _publishName    = kDefaultPublishName;
-    _controllerName = kDefaultControllerName;
-    _presence = NULL;
-    _proximity = NULL;
-    _switches = NULL;       // Lazy loaded
-    _temperature = NULL;
+    _hasBegun               = false;
+    publishNameVariable     = kDefaultPublishName;
+    _controllerName         = kDefaultControllerName;
+    _presence               = NULL;
+    _proximity              = NULL;
+    _switches               = NULL;       // Lazy loaded
+    _temperature            = NULL;
     _numSupportedActivities = 0;
 }
 
@@ -96,9 +107,18 @@ IoT::IoT()
     }
 }
 
+/**
+ * This function is used to change the particle.io publish
+ * event name. Currently the event name is hardcoded to
+ * 'patriot' in the Alexa skills and iOS apps.
+ * In the future they will determine this from the Photon.
+ * Until then, do not use this function.
+ *
+ * @param publishName
+ */
 void IoT::setPublishName(String publishName)
 {
-    this->_publishName = publishName;
+    publishNameVariable = publishName;
     if(_alive != NULL) {
         _alive->setPublishName(publishName);
     }
@@ -119,15 +139,19 @@ void IoT::begin()
     _activities = new Activities();
     _alive = new Alive();
     _alive->setControllerName(_controllerName);
-    _alive->setPublishName(_publishName);
+    _alive->setPublishName(publishNameVariable);
     _controllerNames = new ControllerNames();
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
-    Particle.subscribe(_publishName,globalSubscribeHandler);
+    Particle.subscribe(publishNameVariable,globalSubscribeHandler);
     if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
     {
         Serial.println("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");
+    }
+    if(!Particle.variable(kPublishVariableName, publishNameVariable))
+    {
+        Serial.println("Unable to expose publishName variable");
     }
 
 }
@@ -212,7 +236,6 @@ void IoT::addSwitch(int pin, String eventName)
 
 
 // Activities
-//TODO: collect array of all supported behaviors
 void IoT::addBehavior(String deviceName, Behavior *behavior)
 {
     Serial.println("addBehavior: "+deviceName);
@@ -273,11 +296,12 @@ bool IoT::exposeControllers()
     return _controllerNames->expose();
 }
 
-
 /*************************/
 /*** Subscribe Handler ***/
 /*************************/
 void IoT::subscribeHandler(const char *eventName, const char *rawData) {
+
+    Serial.println("Subscribe handler event: "+String(eventName)+", data: "+String(rawData));
 
     String data(rawData);   // This apparently converts the data somehow
     int colonPosition = data.indexOf(':');
