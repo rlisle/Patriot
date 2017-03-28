@@ -37,7 +37,6 @@ IoT *iot;
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("myPhoton");
-    iot->setPublishName("myEvents");
     iot->begin();
     
     iot->addSwitch(kSwitch4Pin, 'WakeUp');
