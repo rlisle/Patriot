@@ -153,10 +153,12 @@ bool Temperature::isValidHumidityReading() {
 
 void Temperature::publishTemperature() {
   String data = eventText + "Temp:"+String(temperature);
-  Particle.publish("lislerv", data);
+  //TODO: get event name from IoT instead of hardcoding "patriot"
+  Particle.publish("patriot", data);
 }
 
 void Temperature::publishHumidity() {
   String data = eventText + "Humidity:"+String(humidity);
-  Particle.publish("lislerv", data);
+  //TODO: get event name from IoT instead of hardcoding "patriot"
+  Particle.publish("patriot", data);
 }
