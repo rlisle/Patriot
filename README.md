@@ -26,7 +26,8 @@ devices that can communicate with each other, and is:
 2. Super simple to program
 3. Reuses existing code, including the Alexa skills, iOS apps, and Photon library code.
 
-Refer to my blog at lisles.net for more information.
+Refer to [Alexa Controlled Photon Project without Alexa Coding](https://www.hackster.io/patriot-iot/alexa-controlled-photon-project-without-alexa-coding-f47d84)
+on Hackster.io or my blog at lisles.net for more information.
 
 ## Devices
 Particle.io Photons are used to due to their ease of use and great
@@ -65,8 +66,8 @@ In addition, I've created a separate iOS app that can run on older
 iOS devices. I use this to provide control panels by mounting unused,
 older iPhones directly to the wall in various places around my RV.
 
-Currently the apps must be compiled in Xcode with your LWA credentials
-and downloaded to your iPhone manually, but I intend to allow the use
+Currently the apps must be compiled in Xcode with your Particle.io credentials
+and downloaded to your iPhone or iPad manually, but I intend to allow the use
 of a single, published app using particle.io OAuth in the future.
 It remains to be seen whether Apple will allow certifying a hobbyist
 app such as this, but I'm going to try.
