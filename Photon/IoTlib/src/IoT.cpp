@@ -93,6 +93,7 @@ IoT::IoT()
     _proximity              = NULL;
     _switches               = NULL;       // Lazy loaded
     _temperature            = NULL;
+    _pressure               = NULL;
     _numSupportedActivities = 0;
 }
 
@@ -177,6 +178,10 @@ void IoT::loop()
     if(_temperature != NULL) {
         _temperature->loop();
     }
+
+    if(_pressure != NULL) {
+        _pressure->loop();
+    }
 }
 
 //TODO: Move to behavior
@@ -205,6 +210,19 @@ void IoT::monitorTemperature(int pin, int type, String msg, long interval)
     _temperature->setText(msg);
     if(interval > 0) {
         _temperature->setInterval(interval);
+    }
+}
+
+// Pressure
+void IoT::monitorPressure(String msg, long interval)
+{
+    if (_pressure == NULL) {
+        _pressure = new Pressure();
+    }
+    _pressure->setText(msg);
+
+    if (interval > 0) {
+        _pressure->setInterval(interval);
     }
 }
 
