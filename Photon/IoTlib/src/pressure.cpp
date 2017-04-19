@@ -1,12 +1,8 @@
 /******************************************************************
-Pressure
+Pressure sensor
 
 Features:
-- Publish periodic temperature, pressure and altitude events
-
-Note: temperature and humidity considered valid within limits
-     normal for indoors. Change constants if used outdoors in
-     extreme climates.
+- Publish periodic temperature, pressure and altitude events.
 
 http://www.github.com/devlware/Patriot
 
@@ -26,8 +22,8 @@ Changelog:
 
 // These constants define the expected reasonable values.
 // Readings outside of these values will be ignored.
-const int kMaxTemp     = 85;    // In celcius
-const int kMinTemp     = -40;   // In celcius
+const int kMaxTemp     = 85;    // In Celsius
+const int kMinTemp     = -40;   // In Celsius
 const int kMaxAltitude = 9000;  // In meters
 const int kMinAltitude = -500;  // In meters
 const int kMaxPressure = 1100;  // In hPa
@@ -49,7 +45,7 @@ Pressure::Pressure()
 
 float Pressure::read_p0(float myAltitude, float ABSpressure)
 {
-    float p0 = ABSpressure / pow((1.0 - ( myAltitude / 44330.0 )), 5.255);  
+    float p0 = ABSpressure / pow((1.0 - ( myAltitude / 44330.0 )), 5.255);
     return p0;
 }
 
@@ -78,17 +74,17 @@ void Pressure::processReading()
     Serial.print("Temperature = ");
     Serial.print(temperature);
     Serial.println(" *C");
-    
+
     pressure = bmp.readPressure() / 100.0f;
     Serial.print("Pressure = ");
     Serial.print(pressure);
     Serial.println(" Pa");
-    
+
     float p0 = read_p0(951, pressure);
     Serial.print("P0 = ");
     Serial.print(p0);
     Serial.println(" Pa");
-    
+
     // Calculate altitude assuming 'standard' barometric
     // pressure of 1013.25 millibar = 101325 Pascal
     altitude = bmp.readAltitude();
@@ -96,10 +92,10 @@ void Pressure::processReading()
     Serial.print(bmp.readAltitude());
     Serial.println(" meters");
 
-  // you can get a more precise measurement of altitude
-  // if you know the current sea level pressure which will
-  // vary with weather and such. If it is 1015 millibars
-  // that is equal to 101500 Pascals.
+    // you can get a more precise measurement of altitude
+    // if you know the current sea level pressure which will
+    // vary with weather and such. If it is 1015 millibars
+    // that is equal to 101500 Pascals.
 
     // Serial.print("Real altitude = ");
     // Serial.print(bmp.readAltitude(p0 * 100));

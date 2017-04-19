@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 # Compile and flash
-particle flash devel examples/starter
+particle flash myPhoton examples/test

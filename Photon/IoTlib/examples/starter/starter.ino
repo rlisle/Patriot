@@ -21,7 +21,7 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("photon");  // The name of your Photon device. Can be whatever you named it.
+    iot->setControllerName("myPhoton");  // The name of your Photon device. Can be whatever you named it.
     iot->begin();
 
     //Note: D7 is not a PWM pin, so need to using digitalWrite instead of analogWrite
@@ -31,7 +31,6 @@ void setup() {
     // You can change the word 'photon' to whatever you like, but it needs to be something
     // that Alexa can recognize. For now, use a single word.
     iot->addBehavior("Led", new Behavior("photon",'>',0, 100));
-
     iot->monitorPressure("Room", 30000);
 }
 

@@ -1,23 +1,19 @@
 /******************************************************************
- pressure sensor
+Pressure sensor
 
- Features:
- - pressure
- - altitude
+Features:
+- Publish periodic temperature, pressure and altitude events.
 
- http://www.github.com/devlware/Patriot
+http://www.github.com/devlware/Patriot
 
- Written by Diego W. Antunes
+Written by Diego W. Antunes
 
- BSD license, check license.txt for more information.
- All text above must be included in any redistribution.
+BSD license, check license.txt for more information.
+All text above must be included in any redistribution.
 
- Datasheets:
-
- Changelog:
- 2017-04-15: Initial version
- ******************************************************************/
-
+Changelog:
+2017-04-15: Initial version
+******************************************************************/
 #pragma once
 
 #include "application.h"
