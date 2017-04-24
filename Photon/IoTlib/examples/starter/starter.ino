@@ -31,6 +31,7 @@ void setup() {
     // You can change the word 'photon' to whatever you like, but it needs to be something
     // that Alexa can recognize. For now, use a single word.
     iot->addBehavior("Led", new Behavior("photon",'>',0, 100));
+    iot->monitorPressure("Room", 30000);
 }
 
 void loop() {

@@ -34,6 +34,7 @@ Changelog:
 #include "proximity.h"
 #include "switches.h"
 #include "temperature.h"
+#include "pressure.h"
 
 /**
  * Main IoT object.
@@ -78,6 +79,7 @@ public:
 
     void monitorPresence(int triggerPin, int sensorPin, int min, int max, String event);
     void monitorTemperature(int pin, int type, String msg, long interval);
+    void monitorPressure(String msg, long interval);
 
     void addBehavior(String deviceName, Behavior *behavior);
     void addFan(int pinNum, String name);
@@ -116,6 +118,7 @@ private:
     Presence    *_presence;
     Proximity   *_proximity;
     Temperature *_temperature;
+    Pressure    *_pressure;
     Switches    *_switches;       // lazy loaded
 
     void subscribeHandler(const char *eventName, const char *rawData);
