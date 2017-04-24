@@ -144,7 +144,7 @@ void IoT::begin()
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
-    Particle.subscribe(publishNameVariable,globalSubscribeHandler);
+    Particle.subscribe(publishNameVariable, globalSubscribeHandler, MY_DEVICES);
     if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
     {
         Serial.println("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");

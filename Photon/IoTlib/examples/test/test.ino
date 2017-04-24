@@ -17,17 +17,31 @@ Changelog:
 #include <IoT.h>
 IoT *iot;
 
+// Forward reference
+int testFunc(String data);
+
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("myPhoton");
     iot->begin();
 
+    iot->log("Test sketch started");
+
     iot->addLight(D7, "Led");               // This is the small blue LED on a photon
     iot->addBehavior("Led", new Behavior("photon",'>',0, 100));
     iot->exposeActivities();
     iot->exposeControllers();
+
+    // Test that user functions work
+    Particle.function("test", testFunc);
 }
 
 void loop() {
     iot->loop();
+}
+
+int testFunc(String data)
+{
+    iot->log("Test function called with string: "+data);
+    return 55;
 }
