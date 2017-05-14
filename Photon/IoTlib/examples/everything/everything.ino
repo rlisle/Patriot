@@ -89,8 +89,8 @@ void setup() {
 //    iot->monitorPresence(A1, A0, 3, 36, "Bathroom");
 //    iot->monitorTemperature(A2, DHT22, "Kitchen", 5000);
 
-    iot->exposeControllers();
-    iot->exposeActivities();
+//    iot->exposeControllers();
+//    iot->exposeActivities();
 }
 
 void loop() {

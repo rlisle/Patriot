@@ -33,7 +33,7 @@ Changelog:
 #include "presence.h"
 #include "proximity.h"
 #include "switches.h"
-#include "temperature.h"
+//#include "temperature.h"
 
 /**
  * Main IoT object.
@@ -77,7 +77,7 @@ public:
     bool exposeActivities();
 
     void monitorPresence(int triggerPin, int sensorPin, int min, int max, String event);
-    void monitorTemperature(int pin, int type, String msg, long interval);
+//    void monitorTemperature(int pin, int type, String msg, long interval);
 
     void addBehavior(String deviceName, Behavior *behavior);
     void addFan(int pinNum, String name);
@@ -115,12 +115,12 @@ private:
     ControllerNames *_controllerNames;
     Presence    *_presence;
     Proximity   *_proximity;
-    Temperature *_temperature;
+//    Temperature *_temperature;
     Switches    *_switches;       // lazy loaded
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
-    void dhtHandler();
+//    void dhtHandler();
 
 };

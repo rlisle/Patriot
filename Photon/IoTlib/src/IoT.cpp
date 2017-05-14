@@ -92,7 +92,7 @@ IoT::IoT()
     _presence               = NULL;
     _proximity              = NULL;
     _switches               = NULL;       // Lazy loaded
-    _temperature            = NULL;
+//    _temperature            = NULL;
     _numSupportedActivities = 0;
 }
 
@@ -144,16 +144,18 @@ void IoT::begin()
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
-    Particle.subscribe(publishNameVariable, globalSubscribeHandler, MY_DEVICES);
+    Particle.subscribe(publishNameVariable, globalSubscribeHandler);
     if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
     {
         Serial.println("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");
+        return;
     }
     if(!Particle.variable(kPublishVariableName, publishNameVariable))
     {
         Serial.println("Unable to expose publishName variable");
+        return;
     }
-
+    Serial.println("Publish set");
 }
 
 /**
@@ -174,39 +176,39 @@ void IoT::loop()
         _switches->loop();
     }
 
-    if(_temperature != NULL) {
-        _temperature->loop();
-    }
+//    if(_temperature != NULL) {
+//        _temperature->loop();
+//    }
 }
 
 //TODO: Move to behavior
 // Proximity (Note: currently only 1 proxmity sensor at a time supported)
-void IoT::monitorPresence(int triggerPin, int echoPin, int min, int max, String event)
-{
-    Serial.println("Monitoring presence on trigger pin "+String(triggerPin)+", echo pin "+String(echoPin));
-    if(_proximity != NULL) {
-        delete _proximity;
-        _proximity = NULL;
-    }
-    if(_presence != NULL) {
-        delete _presence;
-        _presence = NULL;
-    }
-    _proximity = new Proximity(triggerPin, echoPin);
-    _presence = new Presence(min, max, event, kPingInterval);
-}
+//void IoT::monitorPresence(int triggerPin, int echoPin, int min, int max, String event)
+//{
+//    Serial.println("Monitoring presence on trigger pin "+String(triggerPin)+", echo pin "+String(echoPin));
+//    if(_proximity != NULL) {
+//        delete _proximity;
+//        _proximity = NULL;
+//    }
+//    if(_presence != NULL) {
+//        delete _presence;
+//        _presence = NULL;
+//    }
+//    _proximity = new Proximity(triggerPin, echoPin);
+//    _presence = new Presence(min, max, event, kPingInterval);
+//}
 
 // Temperature
-void IoT::monitorTemperature(int pin, int type, String msg, long interval)
-{
-    if(_temperature == NULL) {
-        _temperature = new Temperature(pin, type);
-    }
-    _temperature->setText(msg);
-    if(interval > 0) {
-        _temperature->setInterval(interval);
-    }
-}
+//void IoT::monitorTemperature(int pin, int type, String msg, long interval)
+//{
+//    if(_temperature == NULL) {
+//        _temperature = new Temperature(pin, type);
+//    }
+//    _temperature->setText(msg);
+//    if(interval > 0) {
+//        _temperature->setInterval(interval);
+//    }
+//}
 
 
 // Fan
