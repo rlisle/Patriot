@@ -56,6 +56,9 @@ Changelog:
 ********************************************************/
 
 #include <IoT.h>
+#include "light.h"
+#include "switch.h"
+
 IoT *iot;
 
 void setup() {
@@ -63,15 +66,15 @@ void setup() {
     iot->setControllerName("myPhoton");
     iot->begin();
 
-    iot->addLight(A3, "Outside");
-    iot->addLight(RX, "Kitchen");
-    iot->addLight(TX, "Livingroom");
-    iot->addLight(WKP, "Bedroom");
+    iot->addDevice(new Light(A3, "Outside"));
+    iot->addDevice(new Light(RX, "Kitchen"));
+    iot->addDevice(new Light(TX, "Livingroom"));
+    iot->addDevice(new Light(WKP, "Bedroom"));
 
-    iot->addSwitch(D4, "WakeUp");
-    iot->addSwitch(D5, "WatchTV");
-    iot->addSwitch(D6, "Cook");
-    iot->addSwitch(D7, "Sleep");
+    iot->addDevice(new Switch(D4, "WakeUp"));
+    iot->addDevice(new Switch(D5, "WatchTV"));
+    iot->addDevice(new Switch(D6, "Cook"));
+    iot->addDevice(new Switch(D7, "Sleep"));
 
     //TODO: Add light level sensor
 

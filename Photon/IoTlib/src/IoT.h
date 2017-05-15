@@ -29,10 +29,10 @@ Changelog:
 #include "controllernames.h"
 #include "devices.h"
 #include "devicenames.h"
-#include "fan.h"
-#include "presence.h"
-#include "proximity.h"
-#include "switches.h"
+//#include "fan.h"
+//#include "presence.h"
+//#include "proximity.h"
+//#include "switches.h"
 //#include "temperature.h"
 
 /**
@@ -79,10 +79,11 @@ public:
     void monitorPresence(int triggerPin, int sensorPin, int min, int max, String event);
 //    void monitorTemperature(int pin, int type, String msg, long interval);
 
+    void addDevice(Device *device);
     void addBehavior(String deviceName, Behavior *behavior);
-    void addFan(int pinNum, String name);
-    void addLight(int pin, String name);
-    void addSwitch(int pinNum, String activity);
+//    void addFan(int pinNum, String name);
+//    void addLight(int pin, String name);
+//    void addSwitch(int pinNum, String activity);
 
     /**
      * Helper methods
@@ -111,12 +112,12 @@ private:
     Alive       *_alive;
     Activities  *_activities;
     Devices     *_devices;
-    DeviceNames *_deviceNames;
+    DeviceNames *_deviceNames;          // This is probably not needed
     ControllerNames *_controllerNames;
-    Presence    *_presence;
-    Proximity   *_proximity;
+//    Presence    *_presence;
+//    Proximity   *_proximity;
 //    Temperature *_temperature;
-    Switches    *_switches;       // lazy loaded
+//    Switches    *_switches;       // lazy loaded
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);

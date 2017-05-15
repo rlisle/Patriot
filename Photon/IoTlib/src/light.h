@@ -49,22 +49,22 @@ private:
 public:
   Light(int pin, String name);
 
-  virtual String    name();
-  virtual void      setPercent(int percent);
-  virtual int       getPercent();
-  virtual int       convertCommandToPercent(String command);
-  virtual void      setOn();
-  virtual void      setOff();
-  virtual bool      isOn();
-  virtual bool      isOff();
+  String    name();
+  void      setPercent(int percent);
+  int       getPercent();
+  int       convertCommandToPercent(String command);
+  void      setOn();
+  void      setOff();
+  bool      isOn();
+  bool      isOff();
 
   void      setDimmingPercent(int percent);
   void      setDimmingDuration(float duration);
   int       getDimmingPercent();
   float     getDimmingDuration();
 
-  virtual void      loop();
-  virtual int       addBehavior(Behavior* behavior);
-  virtual void      performActivities(Activities* activities);
+  void      loop();
+  int       addBehavior(Behavior* behavior);
+  void      performActivities(Activities* activities);
 
 };

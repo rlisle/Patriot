@@ -23,11 +23,14 @@ Changelog:
 #pragma once
 
 #include "application.h"
+#include "device.h"
 
-class Switch
+class Switch : public Device
 {
 public:
     Switch(int pinNum, String name);
+    String     name();
+    int        getPercent();
     bool       isOn();
     void       loop();
 

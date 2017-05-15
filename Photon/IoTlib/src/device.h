@@ -22,26 +22,33 @@ Changelog:
 
 class Behavior;
 
-class Device
-{
+class Device {
 public:
-  virtual String name() = 0;
-  virtual void   setPercent(int percent) = 0;
-  virtual int    getPercent() = 0;
+    // Required
+    virtual String name() = 0;
 
-  // Each device may use different commands (eg. bright vs fast vs cold)
-  // These need to be converted to a level by each device
-  virtual int    convertCommandToPercent(String command) = 0;
+    virtual int getPercent() = 0;
 
-  //TODO: Move these convenience methods to a device class as non-virtual
-  virtual void   setOn() = 0;
-  virtual void   setOff() = 0;
-  virtual bool   isOn() = 0;
-  virtual bool   isOff() = 0;
+    virtual bool isOn() = 0;
 
-  virtual void   loop() = 0;
+    // Optional
+    virtual void setPercent(int percent) {};
 
-  virtual int    addBehavior(Behavior* behavior) = 0;
-  virtual void   performActivities(Activities* activities) = 0;
+    // Each device may use different commands (eg. bright vs fast vs cold)
+    // These need to be converted to a level by each device
+    virtual int convertCommandToPercent(String command) {};
+
+    //TODO: Move these convenience methods to a device class as non-virtual
+    virtual void setOn() {};
+
+    virtual void setOff() {};
+
+    virtual bool isOff() { return isOn() == false; };
+
+    virtual void loop() {};
+
+    virtual int addBehavior(Behavior *behavior) {};
+
+    virtual void performActivities(Activities *activities) {};
 
 };

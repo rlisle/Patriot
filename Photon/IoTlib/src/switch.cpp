@@ -40,11 +40,27 @@ Switch::Switch(int pinNum, String name)
     _lastReadTime = millis();
 }
 
-bool Switch::isOn() {
+
+String Switch::name()
+{
+  return _name;
+}
+
+
+bool Switch::isOn()
+{
   return _isOn;
 }
 
-void Switch::loop() {
+
+int Switch::getPercent()
+{
+  return _isOn ? 100 : 0;
+}
+
+
+void Switch::loop()
+{
   if(isTimeToCheckSwitch()) {
     if(didSwitchChange()) {
       notify();
@@ -52,8 +68,10 @@ void Switch::loop() {
   }
 }
 
+
 // Private Helper Methods
-bool Switch::isTimeToCheckSwitch() {
+bool Switch::isTimeToCheckSwitch()
+{
   long currentTime = millis();
   if(currentTime < _lastReadTime + kDebounceDelay) {
     return false;
@@ -62,7 +80,9 @@ bool Switch::isTimeToCheckSwitch() {
   return true;
 }
 
-bool Switch::didSwitchChange() {
+
+bool Switch::didSwitchChange()
+{
   bool newState = digitalRead(_pin) == 0;
   if(newState == _isOn) {
     return false;
@@ -71,7 +91,9 @@ bool Switch::didSwitchChange() {
   return true;
 }
 
-void Switch::notify() {
+
+void Switch::notify()
+{
   String pubString = _name + ":" + (_isOn ? "100" : "0");
   Serial.println(pubString);
   //TODO: get event name from IoT instead of hardcoded "patriot"

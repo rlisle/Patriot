@@ -89,9 +89,9 @@ IoT::IoT()
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
-    _presence               = NULL;
-    _proximity              = NULL;
-    _switches               = NULL;       // Lazy loaded
+//    _presence               = NULL;
+//    _proximity              = NULL;
+//    _switches               = NULL;       // Lazy loaded
 //    _temperature            = NULL;
     _numSupportedActivities = 0;
 }
@@ -167,13 +167,13 @@ void IoT::loop()
 
     _alive->loop();
     _devices->loop();
-    if(_presence != NULL && _proximity != NULL) {
-        _presence->loop(_proximity);
-    }
+//    if(_presence != NULL && _proximity != NULL) {
+//        _presence->loop(_proximity);
+//    }
 
-    if(_switches != NULL) {
-        _switches->loop();
-    }
+//    if(_switches != NULL) {
+//        _switches->loop();
+//    }
 
 //    if(_temperature != NULL) {
 //        _temperature->loop();
@@ -209,30 +209,38 @@ void IoT::loop()
 //    }
 //}
 
-// Fan
-void IoT::addFan(int pinNum, String name)
+// Add a Device
+void IoT::addDevice(Device *device)
 {
-    Fan* fan = new Fan(pinNum, name);
-    _devices->addDevice(fan);
-    _deviceNames->addDevice(name+":fan");
+    _devices->addDevice(device);
+    _deviceNames->addDevice(device->name());
 }
+
+
+// Fan
+//void IoT::addFan(int pinNum, String name)
+//{
+//    Fan* fan = new Fan(pinNum, name);
+//    _devices->addDevice(fan);
+//    _deviceNames->addDevice(name+":fan");
+//}
 
 // Lights
-void IoT::addLight(int pin, String name)
-{
-    Light* light = new Light(pin, name);
-    _devices->addDevice(light);
-    _deviceNames->addDevice(name+":light");
-}
+//void IoT::addLight(int pin, String name)
+//{
+//    Light* light = new Light(pin, name);
+//    _devices->addDevice(light);
+//    _deviceNames->addDevice(name+":light");
+//}
 
 // Switches
-void IoT::addSwitch(int pin, String eventName)
-{
-    if(_switches == NULL) {
-        _switches = new Switches();
-    }
-    _switches->addSwitch(pin, eventName);
-}
+//void IoT::addSwitch(int pin, String eventName)
+//{
+//    if(_switches == NULL) {
+//        _switches = new Switches();
+//    }
+//    _switches->addSwitch(pin, eventName);
+//}
 
 
 // Activities
