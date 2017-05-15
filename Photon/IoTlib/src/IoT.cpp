@@ -209,24 +209,6 @@ void IoT::loop()
 //    }
 //}
 
-// Plugins
-void IoT::addPlugin(Plugin *plugin)
-{
-    _plugins->addPlugin(plugin);
-}
-
-// Add Plugin Device
-void IoT::addPlugin(Plugin *plugin, int type, String msg, long interval)
-{
-    if(_temperature == NULL) {
-        _temperature = new Temperature(pin, type);
-    }
-    _temperature->setText(msg);
-    if(interval > 0) {
-        _temperature->setInterval(interval);
-    }
-}
-
 // Fan
 void IoT::addFan(int pinNum, String name)
 {
