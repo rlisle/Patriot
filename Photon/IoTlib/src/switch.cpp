@@ -22,6 +22,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2016-07-29: Refactor to separate switch and switches classes
@@ -34,7 +35,7 @@ Changelog:
 #define kDebounceDelay  500    // 50 msec delay for switch to settle down
 
 Switch::Switch(int pinNum, String name)
-    : _pin(pinNum), _name(name)
+        : _pin(pinNum), _name(name)
 {
     pinMode(pinNum, INPUT_PULLUP);
     _lastReadTime = millis();
@@ -43,59 +44,63 @@ Switch::Switch(int pinNum, String name)
 
 String Switch::name()
 {
-  return _name;
+    return _name;
 }
 
 
 bool Switch::isOn()
 {
-  return _isOn;
+    return _isOn;
 }
 
 
 int Switch::getPercent()
 {
-  return _isOn ? 100 : 0;
+    return _isOn ? 100 : 0;
 }
 
 
 void Switch::loop()
 {
-  if(isTimeToCheckSwitch()) {
-    if(didSwitchChange()) {
-      notify();
+    if (isTimeToCheckSwitch())
+    {
+        if (didSwitchChange())
+        {
+            notify();
+        }
     }
-  }
 }
 
 
 // Private Helper Methods
 bool Switch::isTimeToCheckSwitch()
 {
-  long currentTime = millis();
-  if(currentTime < _lastReadTime + kDebounceDelay) {
-    return false;
-  }
-  _lastReadTime = currentTime;
-  return true;
+    long currentTime = millis();
+    if (currentTime < _lastReadTime + kDebounceDelay)
+    {
+        return false;
+    }
+    _lastReadTime = currentTime;
+    return true;
 }
 
 
 bool Switch::didSwitchChange()
 {
-  bool newState = digitalRead(_pin) == 0;
-  if(newState == _isOn) {
-    return false;
-  }
-  _isOn = newState;
-  return true;
+    bool newState = digitalRead(_pin) == 0;
+    if (newState == _isOn)
+    {
+        return false;
+    }
+    _isOn = newState;
+    return true;
 }
 
 
 void Switch::notify()
 {
-  String pubString = _name + ":" + (_isOn ? "100" : "0");
-  Serial.println(pubString);
-  //TODO: get event name from IoT instead of hardcoded "patriot"
-  Particle.publish("patriot",pubString);
+    String pubString = _name + ":" + (_isOn ? "100" : "0");
+    Serial.println(pubString);
+    //TODO: get event name from IoT instead of hardcoded "patriot"
+    Particle.publish("patriot", pubString);
 }

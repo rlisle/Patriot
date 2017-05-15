@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2016-11-24: Initial version
@@ -29,11 +30,6 @@ Changelog:
 #include "controllernames.h"
 #include "devices.h"
 #include "devicenames.h"
-//#include "fan.h"
-//#include "presence.h"
-//#include "proximity.h"
-//#include "switches.h"
-//#include "temperature.h"
 
 /**
  * Main IoT object.
@@ -76,14 +72,8 @@ public:
     bool exposeControllers();
     bool exposeActivities();
 
-    void monitorPresence(int triggerPin, int sensorPin, int min, int max, String event);
-//    void monitorTemperature(int pin, int type, String msg, long interval);
-
     void addDevice(Device *device);
     void addBehavior(String deviceName, Behavior *behavior);
-//    void addFan(int pinNum, String name);
-//    void addLight(int pin, String name);
-//    void addSwitch(int pinNum, String activity);
 
     /**
      * Helper methods
@@ -114,14 +104,9 @@ private:
     Devices     *_devices;
     DeviceNames *_deviceNames;          // This is probably not needed
     ControllerNames *_controllerNames;
-//    Presence    *_presence;
-//    Proximity   *_proximity;
-//    Temperature *_temperature;
-//    Switches    *_switches;       // lazy loaded
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
-//    void dhtHandler();
 
 };

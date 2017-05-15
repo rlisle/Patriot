@@ -15,6 +15,7 @@
  Datasheets:
 
  Changelog:
+ 2017-05-15: Make devices generic
  2017-03-24: Rename Patriot
  2016-07-07: Remove dimming mode
  2016-01-17: Initial version

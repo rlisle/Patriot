@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2016-11-24: Initial version
@@ -89,10 +90,6 @@ IoT::IoT()
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
-//    _presence               = NULL;
-//    _proximity              = NULL;
-//    _switches               = NULL;       // Lazy loaded
-//    _temperature            = NULL;
     _numSupportedActivities = 0;
 }
 
@@ -167,47 +164,8 @@ void IoT::loop()
 
     _alive->loop();
     _devices->loop();
-//    if(_presence != NULL && _proximity != NULL) {
-//        _presence->loop(_proximity);
-//    }
-
-//    if(_switches != NULL) {
-//        _switches->loop();
-//    }
-
-//    if(_temperature != NULL) {
-//        _temperature->loop();
-//    }
 }
 
-//TODO: Move to behavior
-// Proximity (Note: currently only 1 proxmity sensor at a time supported)
-//void IoT::monitorPresence(int triggerPin, int echoPin, int min, int max, String event)
-//{
-//    log("Monitoring presence on trigger pin "+String(triggerPin)+", echo pin "+String(echoPin));
-//    if(_proximity != NULL) {
-//        delete _proximity;
-//        _proximity = NULL;
-//    }
-//    if(_presence != NULL) {
-//        delete _presence;
-//        _presence = NULL;
-//    }
-//    _proximity = new Proximity(triggerPin, echoPin);
-//    _presence = new Presence(min, max, event, kPingInterval);
-//}
-
-// Temperature
-//void IoT::monitorTemperature(int pin, int type, String msg, long interval)
-//{
-//    if(_temperature == NULL) {
-//        _temperature = new Temperature(pin, type);
-//    }
-//    _temperature->setText(msg);
-//    if(interval > 0) {
-//        _temperature->setInterval(interval);
-//    }
-//}
 
 // Add a Device
 void IoT::addDevice(Device *device)
@@ -215,32 +173,6 @@ void IoT::addDevice(Device *device)
     _devices->addDevice(device);
     _deviceNames->addDevice(device->name());
 }
-
-
-// Fan
-//void IoT::addFan(int pinNum, String name)
-//{
-//    Fan* fan = new Fan(pinNum, name);
-//    _devices->addDevice(fan);
-//    _deviceNames->addDevice(name+":fan");
-//}
-
-// Lights
-//void IoT::addLight(int pin, String name)
-//{
-//    Light* light = new Light(pin, name);
-//    _devices->addDevice(light);
-//    _deviceNames->addDevice(name+":light");
-//}
-
-// Switches
-//void IoT::addSwitch(int pin, String eventName)
-//{
-//    if(_switches == NULL) {
-//        _switches = new Switches();
-//    }
-//    _switches->addSwitch(pin, eventName);
-//}
 
 
 // Activities
