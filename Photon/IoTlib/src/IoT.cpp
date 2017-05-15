@@ -134,7 +134,7 @@ void IoT::begin()
     _hasBegun = true;
 
     Serial.begin(57600);
-    Serial.println(_controllerName+" controller starting...");
+    log(_controllerName+" controller starting...");
 
     _activities = new Activities();
     _alive = new Alive();
@@ -147,15 +147,14 @@ void IoT::begin()
     Particle.subscribe(publishNameVariable, globalSubscribeHandler);
     if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
     {
-        Serial.println("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");
+        log("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");
         return;
     }
     if(!Particle.variable(kPublishVariableName, publishNameVariable))
     {
-        Serial.println("Unable to expose publishName variable");
+        log("Unable to expose publishName variable");
         return;
     }
-    Serial.println("Publish set");
 }
 
 /**
@@ -185,7 +184,7 @@ void IoT::loop()
 // Proximity (Note: currently only 1 proxmity sensor at a time supported)
 //void IoT::monitorPresence(int triggerPin, int echoPin, int min, int max, String event)
 //{
-//    Serial.println("Monitoring presence on trigger pin "+String(triggerPin)+", echo pin "+String(echoPin));
+//    log("Monitoring presence on trigger pin "+String(triggerPin)+", echo pin "+String(echoPin));
 //    if(_proximity != NULL) {
 //        delete _proximity;
 //        _proximity = NULL;
@@ -210,6 +209,18 @@ void IoT::loop()
 //    }
 //}
 
+
+// Add Plugin Device
+void IoT::addPlugin(Plugin *plugin, int type, String msg, long interval)
+{
+    if(_temperature == NULL) {
+        _temperature = new Temperature(pin, type);
+    }
+    _temperature->setText(msg);
+    if(interval > 0) {
+        _temperature->setInterval(interval);
+    }
+}
 
 // Fan
 void IoT::addFan(int pinNum, String name)
@@ -240,7 +251,6 @@ void IoT::addSwitch(int pin, String eventName)
 // Activities
 void IoT::addBehavior(String deviceName, Behavior *behavior)
 {
-    Serial.println("addBehavior: "+deviceName);
     // Note: devices must be created before behaviors
     Device *device = _devices->getDeviceWithName(deviceName);
     if(device != NULL) {
@@ -248,7 +258,7 @@ void IoT::addBehavior(String deviceName, Behavior *behavior)
         addToListOfSupportedActivities(behavior->activityName);
     } else {
         Particle.publish("ERROR", "IoT::addBehavior undefined device");
-        Serial.println("Error: IoT addBehavior undefined device");
+        log("Error: IoT addBehavior undefined device");
     }
 }
 
@@ -275,11 +285,11 @@ void IoT::buildSupportedActivitiesVariable()
     }
     if(newVariable.length() < kMaxVariableStringLength) {
         if(newVariable != supportedActivitiesVariable) {
-            Serial.println("Supported activities = "+newVariable);
+            log("Supported activities = "+newVariable);
             supportedActivitiesVariable = newVariable;
         }
     } else {
-        Serial.println("Supported activities variable is too long. Need to extend to a 2nd variable");
+        log("Supported activities variable is too long. Need to extend to a 2nd variable");
     }
 }
 
@@ -293,7 +303,6 @@ bool IoT::exposeActivities()
 
 bool IoT::exposeControllers()
 {
-    log("Expose controllers");
     _controllerNames->addController(_controllerName);
     return _controllerNames->expose();
 }
@@ -301,22 +310,18 @@ bool IoT::exposeControllers()
 /*************************/
 /*** Subscribe Handler ***/
 /*************************/
-void IoT::subscribeHandler(const char *eventName, const char *rawData) {
-
-    Serial.println("Subscribe handler event: "+String(eventName)+", data: "+String(rawData));
-
+void IoT::subscribeHandler(const char *eventName, const char *rawData)
+{
+//    log("Subscribe handler event: "+String(eventName)+", data: "+String(rawData));
     String data(rawData);   // This apparently converts the data somehow
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
 
-    log("IoT subscribe: received "+name+":"+state);
-
     // Is a device coming online? (eg. ""<devicename>:Alive")
     // Is this an alive message?
     if(state.equalsIgnoreCase("alive"))
     {
-        Serial.println("   alive");
         _controllerNames->addController(name);
         return;
     }
@@ -327,7 +332,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData) {
     // if(device)
     // {
     //   int percent = device->convertCommandToPercent(state);
-    //   Serial.println(" percent = "+String(percent));
+    //   log(" percent = "+String(percent));
     //   device->setPercent(percent);
     //   device->performActivities(_activities);
     //   return;
@@ -337,9 +342,6 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData) {
     //      search it like devices
     // If not, must be an activity/event name
     int value = state.toInt();
-    Serial.println("   value = "+String(value));
     _activities->addActivity(name, value);
-    Serial.println("   calling performActivities");
     _devices->performActivities(_activities);
-    Serial.println("   subscript done");
 }
