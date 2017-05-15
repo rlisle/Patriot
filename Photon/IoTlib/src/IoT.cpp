@@ -209,6 +209,11 @@ void IoT::loop()
 //    }
 //}
 
+// Plugins
+void IoT::addPlugin(Plugin *plugin)
+{
+    _plugins->addPlugin(plugin);
+}
 
 // Add Plugin Device
 void IoT::addPlugin(Plugin *plugin, int type, String msg, long interval)

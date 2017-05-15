@@ -18,7 +18,6 @@ Changelog:
 ******************************************************************/
 #pragma once
 
-#include "application.h"  // Defines String
 #include "behavior.h"
 
 class Behavior;
