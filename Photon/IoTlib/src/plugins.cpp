@@ -14,6 +14,7 @@ All text above must be included in any redistribution.
 Changelog:
 2017-05-14: Add plugins
 ******************************************************************/
+#include "application.h"
 #include "plugins.h"
 
 Plugins::Plugins() {
@@ -25,7 +26,7 @@ Plugins::Plugins() {
 // Returns non-zero if # devices exceeded
 int Plugins::addPlugin(Plugin *plugin)
 {
-  Serial.println("Adding plugin: "+plugin->name());
+  Serial.println("Adding plugin: "+plugin->name);
   if (_numPlugins < MAX_NUM_PLUGINS-1)
   {
     _plugins[_numPlugins++] = plugin;
@@ -55,7 +56,7 @@ Plugin* Plugins::getPluginWithName(String name)
 {
   for(int i=0; i<_numPlugins; i++)
   {
-      if(_plugins[i]->name().equalsIgnoreCase(name)) {
+      if(_plugins[i]->name.equalsIgnoreCase(name)) {
         return _plugins[i];
       }
   }

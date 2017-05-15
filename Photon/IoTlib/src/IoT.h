@@ -33,7 +33,7 @@ Changelog:
 #include "presence.h"
 #include "proximity.h"
 #include "switches.h"
-#include "plugin.h"
+#include "plugins.h"
 //#include "temperature.h"
 
 /**
@@ -80,6 +80,7 @@ public:
     void monitorPresence(int triggerPin, int sensorPin, int min, int max, String event);
 //    void monitorTemperature(int pin, int type, String msg, long interval);
 
+    void addPlugin(Plugin *plugin);
     void addBehavior(String deviceName, Behavior *behavior);
     void addFan(int pinNum, String name);
     void addLight(int pin, String name);
@@ -114,7 +115,7 @@ private:
     Devices     *_devices;
     DeviceNames *_deviceNames;
     ControllerNames *_controllerNames;
-    Plugin      *_plugins;
+    Plugins     *_plugins;
     Presence    *_presence;
     Proximity   *_proximity;
 //    Temperature *_temperature;
@@ -123,7 +124,6 @@ private:
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
-    void addPlugin(Plugin *plugin);
 //    void dhtHandler();
 
 };

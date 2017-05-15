@@ -6,6 +6,8 @@
 class String;
 
 class Plugin {
+public:
+
     String  name;
 
     Plugin(String name);

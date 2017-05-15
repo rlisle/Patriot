@@ -33,5 +33,5 @@ public:
 
 private:
   uint8_t     _numPlugins;
-  Plugins**    _plugins;
+  Plugin**    _plugins;
 };
