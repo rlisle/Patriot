@@ -210,6 +210,11 @@ void IoT::loop()
 //    }
 //}
 
+// Plugins
+void IoT::addPlugin(Plugin *plugin)
+{
+    _plugins->addPlugin(plugin);
+}
 
 // Fan
 void IoT::addFan(int pinNum, String name)

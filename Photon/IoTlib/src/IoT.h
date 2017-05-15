@@ -33,6 +33,7 @@ Changelog:
 #include "presence.h"
 #include "proximity.h"
 #include "switches.h"
+#include "plugin.h"
 //#include "temperature.h"
 
 /**
@@ -113,6 +114,7 @@ private:
     Devices     *_devices;
     DeviceNames *_deviceNames;
     ControllerNames *_controllerNames;
+    Plugin      *_plugins;
     Presence    *_presence;
     Proximity   *_proximity;
 //    Temperature *_temperature;
@@ -121,6 +123,7 @@ private:
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
+    void addPlugin(Plugin *plugin);
 //    void dhtHandler();
 
 };
