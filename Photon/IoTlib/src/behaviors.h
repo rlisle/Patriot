@@ -26,12 +26,13 @@ class Behaviors
 {
 public:
 
-  Behaviors();
+    Behaviors();
 
-  int         addBehavior(Behavior *behavior); // Returns # behaviors (index+1)
-  int         determineLevelForActivities(int defaultPercent, Activities *activities);
+    int addBehavior(Behavior *behavior); // Returns # behaviors (index+1)
+    void performActivities(Activities *activities);
+    int determineLevelForActivities(Device *device, int defaultPercent, Activities *activities);
 
 private:
-  uint8_t     _numBehaviors = 0;
-  Behavior*   _behaviors[MAX_NUM_BEHAVIORS];
+    uint8_t _numBehaviors = 0;
+    Behavior *_behaviors[MAX_NUM_BEHAVIORS];
 };

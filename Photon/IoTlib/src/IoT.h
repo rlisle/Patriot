@@ -27,6 +27,7 @@ Changelog:
 #include "constants.h"
 #include "alive.h"
 #include "activities.h"
+#include "behaviors.h"
 #include "controllernames.h"
 #include "devices.h"
 #include "devicenames.h"
@@ -73,7 +74,7 @@ public:
     bool exposeActivities();
 
     void addDevice(Device *device);
-    void addBehavior(String deviceName, Behavior *behavior);
+    void addBehavior(Behavior *behavior);
 
     /**
      * Helper methods
@@ -101,12 +102,14 @@ private:
      */
     Alive       *_alive;
     Activities  *_activities;
+    Behaviors   *_behaviors;
     Devices     *_devices;
-    DeviceNames *_deviceNames;          // This is probably not needed
+    DeviceNames *_deviceNames;          // TODO: This is probably not needed
     ControllerNames *_controllerNames;
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
+    void performActivities();
 
 };

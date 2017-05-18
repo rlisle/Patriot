@@ -27,7 +27,7 @@ Light::Light(int pin, String name)
 {
   Serial.println("Create light "+name+" on pin "+String(pin));
 
-  _behaviors                = new Behaviors();
+//  _behaviors                = new Behaviors();
   _pin                      = pin;
   _name                     = name;
   _dimmingPercent           = 100;  // On full
@@ -186,24 +186,24 @@ void Light::outputPWM() {
         float pwm = _currentPercent;
         pwm *= 255.0;
         pwm /= 100.0;
-        Serial.println("outputPWM: " + String(pwm) + " on pin " + String(_pin));
+//        Serial.println("outputPWM: " + String(pwm) + " on pin " + String(_pin));
         analogWrite(_pin, (int) pwm);
     } else {
         digitalWrite(_pin, (_currentPercent > 49) ? HIGH : LOW);
     }
 }
 
-int Light::addBehavior(Behavior *behavior)
-{
-  return _behaviors->addBehavior(behavior);
-}
+//int Light::addBehavior(Behavior *behavior)
+//{
+//  return _behaviors->addBehavior(behavior);
+//}
 
-void Light::performActivities(Activities* activities)
-{
-    int percent = _behaviors->determineLevelForActivities(_commandPercent, activities);
-    Serial.println("Light "+_name+" performActivities: setting "+String(percent));
-    changePercent(percent);
-}
+//void Light::performActivities(Activities* activities)
+//{
+//    int percent = _behaviors->determineLevelForActivities(_commandPercent, activities);
+//    Serial.println("Light "+_name+" performActivities: setting "+String(percent));
+//    changePercent(percent);
+//}
 
 //TODO: Move this up to parent class Device
 bool Light::isPwmPin(int pin)

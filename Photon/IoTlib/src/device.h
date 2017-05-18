@@ -37,7 +37,7 @@ public:
 
     // Each device may use different commands (eg. bright vs fast vs cold)
     // These need to be converted to a level by each device
-    virtual int convertCommandToPercent(String command) {};
+    virtual int convertCommandToPercent(String command) { return 0; };
 
     //TODO: Move these convenience methods to a device class as non-virtual
     virtual void setOn() {};
@@ -47,9 +47,5 @@ public:
     virtual bool isOff() { return isOn() == false; };
 
     virtual void loop() {};
-
-    virtual int addBehavior(Behavior *behavior) {};
-
-    virtual void performActivities(Activities *activities) {};
 
 };

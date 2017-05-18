@@ -24,12 +24,12 @@
 #pragma once
 
 #include "device.h"
-#include "behaviors.h"
+//#include "behaviors.h"
 
 class Light : public Device
 {
 private:
-  Behaviors *_behaviors;
+//  Behaviors *_behaviors;
   String    _name;
   int       _pin;
   int       _dimmingPercent;
@@ -65,7 +65,7 @@ public:
   float     getDimmingDuration();
 
   void      loop();
-  int       addBehavior(Behavior* behavior);
-  void      performActivities(Activities* activities);
+//  int       addBehavior(Behavior* behavior);
+//  void      performActivities(Activities* activities);
 
 };

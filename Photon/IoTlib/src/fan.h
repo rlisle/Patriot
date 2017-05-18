@@ -26,7 +26,7 @@ Changelog:
 #pragma once
 
 #include "device.h"
-#include "behaviors.h"
+//#include "behaviors.h"
 
 class Fan : public Device
 {
@@ -46,14 +46,14 @@ public:
 
     virtual void    loop();
 
-    virtual int     addBehavior(Behavior* behavior);
-    virtual void    performActivities(Activities* activities);
+//    virtual int     addBehavior(Behavior* behavior);
+//    virtual void    performActivities(Activities* activities);
 
 private:
     int       calculateFanSpeed(int temperature);
     void      setFanSpeed(int percent);
 
-    Behaviors *_behaviors;
+//    Behaviors *_behaviors;
     String    _name;
     int       _pinNum;
     int       _percent;

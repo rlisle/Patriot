@@ -66,15 +66,27 @@ void setup() {
     iot->setControllerName("myPhoton");
     iot->begin();
 
-    iot->addDevice(new Light(A3, "Outside"));
-    iot->addDevice(new Light(RX, "Kitchen"));
-    iot->addDevice(new Light(TX, "Livingroom"));
-    iot->addDevice(new Light(WKP, "Bedroom"));
+    // Create devices
+    Light *outside = new Light(A3, "Outside");
+    Light *kitchen = new Light(RX, "Kitchen");
+    Light *living = new Light(TX, "Livingroom");
+    Light *bedroom = new Light(WKP, "Bedroom");
 
-    iot->addDevice(new Switch(D4, "WakeUp"));
-    iot->addDevice(new Switch(D5, "WatchTV"));
-    iot->addDevice(new Switch(D6, "Cook"));
-    iot->addDevice(new Switch(D7, "Sleep"));
+    Switch *switch1 = new Switch(D4, "WakeUp");
+    Switch *switch2 = new Switch(D5, "WatchTV");
+    Switch *switch3 = new Switch(D6, "Cook");
+    Switch *switch4 = new Switch(D7, "Sleep");
+
+    // Add them
+    iot->addDevice(outside);
+    iot->addDevice(kitchen);
+    iot->addDevice(living);
+    iot->addDevice(bedroom);
+
+    iot->addDevice(switch1);
+    iot->addDevice(switch2);
+    iot->addDevice(switch3);
+    iot->addDevice(switch4);
 
     //TODO: Add light level sensor
 
@@ -85,10 +97,10 @@ void setup() {
     //TODO: Add stepper motor
 
     // Setup behaviors for our devices
-    iot->addBehavior("Outside", new Behavior("WakeUp",'>',0, 100));
-    iot->addBehavior("Kitchen", new Behavior("WatchTV",'>',0, 100));
-    iot->addBehavior("Livingroom", new Behavior("Cook",'>',0, 100));
-    iot->addBehavior("Bedroom", new Behavior("Sleep",'>',0, 100));
+    iot->addBehavior(new Behavior(outside, "WakeUp", '>', 0, 100));
+    iot->addBehavior(new Behavior(kitchen, "WatchTV", '>', 0, 100));
+    iot->addBehavior(new Behavior(living, "Cook", '>', 0, 100));
+    iot->addBehavior(new Behavior(bedroom, "Sleep",'>',0, 100));
 
 //    iot->monitorPresence(A1, A0, 3, 36, "Bathroom");
 //    iot->monitorTemperature(A2, DHT22, "Kitchen", 5000);

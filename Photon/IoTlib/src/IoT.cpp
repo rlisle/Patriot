@@ -79,6 +79,7 @@ IoT* IoT::_instance = NULL;
 void IoT::log(String msg)
 {
     Serial.println(msg);
+    Particle.publish("LOG", msg);
 }
 
 /**
@@ -137,6 +138,7 @@ void IoT::begin()
     _alive = new Alive();
     _alive->setControllerName(_controllerName);
     _alive->setPublishName(publishNameVariable);
+    _behaviors = new Behaviors();
     _controllerNames = new ControllerNames();
     _devices = new Devices();
     _deviceNames = new DeviceNames();
@@ -176,17 +178,10 @@ void IoT::addDevice(Device *device)
 
 
 // Activities
-void IoT::addBehavior(String deviceName, Behavior *behavior)
+void IoT::addBehavior(Behavior *behavior)
 {
-    // Note: devices must be created before behaviors
-    Device *device = _devices->getDeviceWithName(deviceName);
-    if(device != NULL) {
-        device->addBehavior(behavior);
-        addToListOfSupportedActivities(behavior->activityName);
-    } else {
-        Particle.publish("ERROR", "IoT::addBehavior undefined device");
-        log("Error: IoT addBehavior undefined device");
-    }
+    _behaviors->addBehavior(behavior);
+    addToListOfSupportedActivities(behavior->activityName);
 }
 
 void IoT::addToListOfSupportedActivities(String activity)
@@ -270,5 +265,21 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     // If not, must be an activity/event name
     int value = state.toInt();
     _activities->addActivity(name, value);
-    _devices->performActivities(_activities);
+    //_devices->performActivities(_activities);
+    performActivities();
 }
+
+
+void IoT::performActivities()
+{
+    Device *device;
+
+    for (int i = 0; i < _devices->numDevices(); i++)
+    {
+        device = _devices->getDeviceByNum(i);
+        int defaultPercent = 0;
+        int percent = _behaviors->determineLevelForActivities(device, defaultPercent, _activities);
+        device->setPercent(percent);
+    }
+}
+

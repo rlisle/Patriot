@@ -3,7 +3,6 @@ fan control
 
 Features:
 - Controls variable speed fan
-- Behaviors can be added to vary speed based on temperature, etc.
 
 http://www.github.com/rlisle/Patriot
 
@@ -22,7 +21,7 @@ Changelog:
 
 Fan::Fan(int pinNum, String name)
 {
-  _behaviors     = new Behaviors();
+//  _behaviors     = new Behaviors();
   _name          = name;
   _pinNum        = pinNum;
   _percent       = 0;
@@ -102,17 +101,17 @@ void Fan::loop()
   // Nothing to do
 }
 
-int Fan::addBehavior(Behavior *behavior)
-{
-  return _behaviors->addBehavior(behavior);
-}
-
-void Fan::performActivities(Activities* activities)
-{
-    int percent = _behaviors->determineLevelForActivities(0, activities);
-    Serial.println("Fan "+_name+" performActivities: setting "+String(percent));
-    setFanSpeed(percent);
-}
+//int Fan::addBehavior(Behavior *behavior)
+//{
+//  return _behaviors->addBehavior(behavior);
+//}
+//
+//void Fan::performActivities(Activities* activities)
+//{
+//    int percent = _behaviors->determineLevelForActivities(0, activities);
+//    Serial.println("Fan "+_name+" performActivities: setting "+String(percent));
+//    setFanSpeed(percent);
+//}
 
 void Fan::setFanSpeed(int percent)
 {
