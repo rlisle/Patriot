@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 # Compile only
-particle compile photon examples/everything
+particle compile photon examples/none
