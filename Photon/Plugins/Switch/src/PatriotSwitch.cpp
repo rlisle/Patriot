@@ -1,5 +1,5 @@
 /******************************************************************
-Patriot-Switch plugin
+PatriotSwitch plugin
 
 Features:
 - Read and debounce switch input
@@ -22,7 +22,9 @@ Changelog:
 2016-02-3: Initial version
 ******************************************************************/
 
-#include "Patriot-Switch.h"
+#include "PatriotSwitch.h"
+
+#define kDebounceDelay 50
 
 /**
  * Constructor
@@ -34,7 +36,7 @@ Switch::Switch(int pinNum, String name)
                   _name(name)
 {
     pinMode(pinNum, INPUT_PULLUP);
-    _lastReadTimel = millis();
+    _lastReadTime = millis();
 }
 
 

@@ -1,5 +1,5 @@
 /******************************************************************
-Patriot-Switch plugin
+PatriotSwitch plugin
 
 Features:
 - Read and debounce switch input
