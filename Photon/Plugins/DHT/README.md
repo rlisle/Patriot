@@ -1,41 +1,49 @@
-# Patriot-DHT
+# PatriotDHT
 
-A Particle library for Patriot-DHT
+A Patriot plugin to support DHT11/22 Temp & Humidity sensor.
 
-## Welcome to your library!
-
-To get started, modify the sources in [src](src). Rename the example folder inside [examples](examples) to a more meaningful name and add additional examples in separate folders.
-
-To compile your example you can use `particle compile examples/usage` command in [Particle CLI](https://docs.particle.io/guide/tools-and-features/cli#update-your-device-remotely) or use our [Desktop IDE](https://docs.particle.io/guide/tools-and-features/dev/#compiling-code).
-
-Libraries can also depend on other libraries. To add a dependency use [`particle library add`](https://docs.particle.io/guide/tools-and-features/cli#adding-a-library) or [library management](https://docs.particle.io/guide/tools-and-features/dev/#managing-libraries) in Desktop IDE.
-
-After the library is done you can upload it with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. If you wish to make your library public, use `particle library publish` or `Publish` command.
-
-_TODO: update this README_
+This library is used to support DHT11 and DHT22 temperature and
+humidity sensors. Any 2 Photon I/O pins may be used.
 
 ## Usage
 
-Connect XYZ hardware, add the Patriot-DHT library to your project and follow this simple example:
+Include this library in any Photon sketch that needs to support a
+DHT11 or DHT22 temperature sensor.
+
+This example creates a single DHT sensor device connected to pin D4
+and D5.
+
+When the reported temperature or humidity changes, an event named
+"indoor" will be published. Other device can define a behavior that uses
+this event.
+
+You can use the Particle.io console to monitor these events.
 
 ```
-#include "Patriot-DHT.h"
-PatriotDHT patriotDHT;
+#include <IoT>
+#include <PatriotDHT>
+
+IoT *iot;
 
 void setup() {
-  patriotDHT.begin();
+    iot = IoT::getInstance();
+    iot->setControllerName("myPhoton");
+    iot->begin();
+
+    DHT *dht1 = new DHT(D4, D5, "indoor");
+    iot->addDevice(dht1);
 }
 
 void loop() {
-  patriotDHT.process();
+    iot->loop();
 }
 ```
 
-See the [examples](examples) folder for more details.
-
 ## Documentation
 
-TODO: Describe `PatriotDHT`
+Refer to the Patriot Github repository and documentation for more
+information.
+
 
 ## Contributing
 
@@ -49,13 +57,13 @@ Modify the sources in <src> and <examples> with the new behavior.
 
 To compile an example, use `particle compile examples/usage` command in [Particle CLI](https://docs.particle.io/guide/tools-and-features/cli#update-your-device-remotely) or use our [Desktop IDE](https://docs.particle.io/guide/tools-and-features/dev/#compiling-code).
 
-After your changes are done you can upload them with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. Do `particle library add Patriot-DHT_myname` to add the library to a project on your machine or add the Patriot-DHT_myname library to a project on the Web IDE or Desktop IDE.
+After your changes are done you can upload them with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. Do `particle library add IoT_myname` to add the library to a project on your machine or add the IoT_myname library to a project on the Web IDE or Desktop IDE.
 
-At this point, you can create a [GitHub pull request](https://help.github.com/articles/about-pull-requests/) with your changes to the original library. 
+At this point, you can create a [GitHub pull request](https://help.github.com/articles/about-pull-requests/) with your changes to the original library.
 
 If you wish to make your library public, use `particle library publish` or `Publish` command.
 
 ## LICENSE
 Copyright 2017 Ron Lisle
 
-Licensed under the <insert your choice of license here> license
+Refer to the included LICENSE file.
