@@ -15,6 +15,8 @@ Changelog:
 ******************************************************************/
 
 #include <IoT.h>
+#include <PatriotLight.h>
+
 IoT *iot;
 
 // Forward reference
@@ -27,8 +29,11 @@ void setup() {
 
     iot->log("Test sketch started");
 
-    iot->addLight(D7, "Led");               // This is the small blue LED on a photon
-    iot->addBehavior("Led", new Behavior("photon",'>',0, 100));
+    Light *light = new Light(D7, "Led");  // This is the small blue LED on a photon
+    iot->addDevice(light);
+
+    iot->addBehavior(new Behavior(light, "photon", '>', 0, 100));
+
     iot->exposeActivities();
     iot->exposeControllers();
 

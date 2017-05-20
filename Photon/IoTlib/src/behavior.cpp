@@ -1,5 +1,5 @@
 /******************************************************************
-behavior
+Behavior
 
 This class represents a behavior, which is a response to an activity
 such as "tv" or "piano". Multiple activities can be specified, but
@@ -20,59 +20,62 @@ Changelog:
 ******************************************************************/
 #include "behavior.h"
 
-Behavior::Behavior(String activityName, char comparison, int value, int level)
+Behavior::Behavior(Device *device, String activityName, char comparison, int value, int level)
 {
-  this->activityName  = activityName;
-  _comparison        = comparison;     // '<', '=', '>', '!'
-  _value             = value;
-  this->level         = level;
+    this->device = device;
+    this->activityName = activityName;
+    _comparison = comparison;     // '<', '=', '>', '!'
+    _value = value;
+    this->level = level;
 }
 
 bool Behavior::matchesCondition(String name, int value)
 {
-  Serial.println("matchesCondition? "+name+String(value));
-  if(name.equalsIgnoreCase(activityName))
-  {
-    switch(_comparison) {
-      case '<':
-      if(value < _value){
-        return true;
-      }
-      break;
-      case '=':
-      if(value == _value)
-      {
-        return true;
-      }
-      break;
-      case '>':
-      if(value > _value)
-      {
-        return true;
-      }
-      break;
-      case '!':
-      if(value != _value)
-      {
-        return true;
-      }
-      break;
-      default:
-      break;
+    Serial.println("matchesCondition? " + name + String(value));
+    if (name.equalsIgnoreCase(activityName))
+    {
+        switch (_comparison)
+        {
+            case '<':
+                if (value < _value)
+                {
+                    return true;
+                }
+                break;
+            case '=':
+                if (value == _value)
+                {
+                    return true;
+                }
+                break;
+            case '>':
+                if (value > _value)
+                {
+                    return true;
+                }
+                break;
+            case '!':
+                if (value != _value)
+                {
+                    return true;
+                }
+                break;
+            default:
+                break;
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 int Behavior::determineLevel(Activities *activities)
 {
-  for(int i = 0; i < activities->count(); i++)
-  {
-      Activity *activity = activities->getActivityByNum(i);
-      if(matchesCondition(activity->_name, activity->_value))
-      {
-          return level;
-      }
-  }
-  return 0;
+    for (int i = 0; i < activities->count(); i++)
+    {
+        Activity *activity = activities->getActivityByNum(i);
+        if (matchesCondition(activity->_name, activity->_value))
+        {
+            return level;
+        }
+    }
+    return 0;
 }

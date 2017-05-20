@@ -1,9 +1,8 @@
 /******************************************************************
-switch control
+PatriotSwitch plugin
 
 Features:
 - Read and debounce switch input
-- Optional dimming control mode
 
 http://www.github.com/rlisle/Patriot
 
@@ -13,6 +12,8 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-05-17: Move to separate library
+2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2016-07-29: Refactor to separate switch and switches classes
@@ -22,14 +23,21 @@ Changelog:
 ******************************************************************/
 #pragma once
 
-#include "application.h"
+// This will load the definition for common Particle variable types
+#include "Particle.h"
+#include "device.h"
 
-class Switch
+class Switch : public Device
 {
 public:
+    /**
+     * Constructor
+     */
     Switch(int pinNum, String name);
-    bool       isOn();
-    void       loop();
+    String name();
+    int getPercent();
+    bool isOn();
+    void loop();
 
 private:
     int        _pin;

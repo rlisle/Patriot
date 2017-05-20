@@ -1,14 +1,12 @@
 /******************************************************************
 fan control
 
-This object controls fan operation.
-Currently, lowTemp and highTemp are used to set fan speed.
-Ultimately, behaviors will be used to define on/off and
-temperature control points, with interpolation between them.
+This object extends Patriot to support fan control.
 
-Features:
-- On/Off control
-- Temperature controlled PWM
+IoT Behaviors are used in conjunction with a temperature device such
+as DHT to define on/off and temperature control points.
+
+TODO: provide interpolation between temperature set points.
 
 http://www.github.com/rlisle/Patriot
 
@@ -18,6 +16,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-05-20: Convert to Patriot plugin library
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2016-12-08: Convert to IoT model.
@@ -25,12 +24,12 @@ Changelog:
 ******************************************************************/
 #pragma once
 
+#include "Particle.h"
 #include "device.h"
-#include "behaviors.h"
 
 class Fan : public Device
 {
-public:
+ public:
     Fan(int pinNum, String name);
 
     virtual String  name();
@@ -46,14 +45,10 @@ public:
 
     virtual void    loop();
 
-    virtual int     addBehavior(Behavior* behavior);
-    virtual void    performActivities(Activities* activities);
-
-private:
+ private:
     int       calculateFanSpeed(int temperature);
     void      setFanSpeed(int percent);
 
-    Behaviors *_behaviors;
     String    _name;
     int       _pinNum;
     int       _percent;

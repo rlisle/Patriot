@@ -56,6 +56,10 @@ Changelog:
 ********************************************************/
 
 #include <IoT.h>
+#include <PatriotLight.h>
+#include <PatriotSwitch.h>
+#include <PatriotFan.h>
+
 IoT *iot;
 
 void setup() {
@@ -63,34 +67,52 @@ void setup() {
     iot->setControllerName("myPhoton");
     iot->begin();
 
-    iot->addLight(A3, 'Outside');
-    iot->addLight(RX, 'Kitchen');
-    iot->addLight(TX, 'Livingroom');
-    iot->addLight(WKP, 'Bedroom');
+    // Create devices
+    Light *outside = new Light(A3, "Outside");
+    Light *kitchen = new Light(RX, "Kitchen");
+    Light *living = new Light(TX, "Livingroom");
+    Light *bedroom = new Light(WKP, "Bedroom");
 
-    iot->addSwitch(D4, 'WakeUp');
-    iot->addSwitch(D5, 'WatchTV');
-    iot->addSwitch(D6, 'Cook');
-    iot->addSwitch(D7, 'Sleep');
+    Switch *switch1 = new Switch(D4, "WakeUp");
+    Switch *switch2 = new Switch(D5, "WatchTV");
+    Switch *switch3 = new Switch(D6, "Cook");
+    Switch *switch4 = new Switch(D7, "Sleep");
+
+    Fan *fan = new Fan(DAC, "Fan");
+
+    // Add them
+    iot->addDevice(outside);
+    iot->addDevice(kitchen);
+    iot->addDevice(living);
+    iot->addDevice(bedroom);
+
+    iot->addDevice(switch1);
+    iot->addDevice(switch2);
+    iot->addDevice(switch3);
+    iot->addDevice(switch4);
+
+    iot->addDevice(fan);
 
     //TODO: Add light level sensor
-
-    //TODO: Add Fan control
 
     //TODO: Add servo motor
 
     //TODO: Add stepper motor
 
-    iot->addBehavior('Outside', new Behavior('WakeUp','>',0, 100));
-    iot->addBehavior('Kitchen', new Behavior('WatchTV','>',0, 100));
-    iot->addBehavior('Livingroom', new Behavior('Cook','>',0, 100));
-    iot->addBehavior('Bedroom', new Behavior('Sleep','>',0, 100));
+    // Setup behaviors for our devices
+    iot->addBehavior(new Behavior(outside, "WakeUp", '>', 0, 100));
+    iot->addBehavior(new Behavior(kitchen, "WatchTV", '>', 0, 100));
+    iot->addBehavior(new Behavior(living, "Cook", '>', 0, 100));
+    iot->addBehavior(new Behavior(bedroom, "Sleep",'>',0, 100));
 
-    iot->monitorPresence(A1, A0, 3, 36, 'Bathroom');
-    iot->monitorTemperature(A2, DHT22, 'Kitchen', 5000);
+    iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 75, 10));
+    iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 80, 50));
+    iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 85, 100));
 
-    iot->exposeControllers();
-    iot->exposeActivities();
+//    iot->monitorPresence(A1, A0, 3, 36, "Bathroom");
+
+//    iot->exposeControllers();
+//    iot->exposeActivities();
 }
 
 void loop() {

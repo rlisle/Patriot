@@ -25,20 +25,23 @@ Changelog:
 #include "activities.h"
 
 class Activities;
+class Device;
 
 class Behavior
 {
 private:
-  //TODO: use collection of activities to allow multiple
-  //TODO: convert these fields to a Trigger class
-  char        _comparison;  // '<', '=', or '>'
-  int         _value;
+    //TODO: use collection of activities to allow multiple
+    //TODO: convert these fields to a Trigger class
+    char _comparison;  // '<', '=', or '>'
+    int _value;
 
 public:
-  String      activityName;
-  int         level;       // level to set if event <comparison> value is true
-  bool        matchesCondition(String name, int value);
-  Behavior(String activityName, char comparison, int value, int level);
+    String activityName;
+    Device *device;
+    int level;       // level to set if event <comparison> value is true
+    bool matchesCondition(String name, int value);
 
-  int       determineLevel(Activities *activities);
+    Behavior(Device *device, String activityName, char comparison, int value, int level);
+
+    int determineLevel(Activities *activities);
 };

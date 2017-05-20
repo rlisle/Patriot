@@ -51,14 +51,16 @@
 #include "math.h"
 #include "DHT.h"
 
-// Note: this method is conflicting with the one in
-//       ../wiring/inc/spark_wiring_arduino.h so removing it (Ron)
+// Ron note: this method is conflicting with the one in
+//       ../wiring/inc/spark_wiring_arduino.h
+//       but when removed causes problems in the Particle IDE.
+
 // Thanks to Paul Kourany for this word type conversion function
-//uint16_t word(uint8_t high, uint8_t low) {
-//    uint16_t ret_val = low;
-//    ret_val += (high << 8);
-//    return ret_val;
-//}
+uint16_t word(uint8_t high, uint8_t low) {
+    uint16_t ret_val = low;
+    ret_val += (high << 8);
+    return ret_val;
+}
 
 /*
  * NOTE:  callback_wrapper is only here for backwards compatibility with v0.3 and earlier

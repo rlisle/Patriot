@@ -16,55 +16,58 @@ Changelog:
 ******************************************************************/
 #include "devices.h"
 
-Devices::Devices() {
+Devices::Devices()
+{
     // Without this method, strange error is reported and build fails
     _numDevices = 0;
+    //TODO: dynamically allocate array space
     _devices = new Device *[MAX_NUM_DEVICES];
 }
 
 // Returns non-zero if # devices exceeded
 int Devices::addDevice(Device *device)
 {
-  Serial.println("Adding device: "+device->name());
-  if (_numDevices < MAX_NUM_DEVICES-1)
-  {
-    _devices[_numDevices++] = device;
-  } else {
-    return -1;
-  }
-  return 0;
+    Serial.println("Adding device: " + device->name());
+    if (_numDevices < MAX_NUM_DEVICES - 1)
+    {
+        _devices[_numDevices++] = device;
+    } else
+    {
+        return -1;
+    }
+    return 0;
 }
 
 void Devices::loop()
 {
-  for(int x=0; x < _numDevices; x++) {
-    _devices[x]->loop();
-  }
+    for (int x = 0; x < _numDevices; x++)
+    {
+        _devices[x]->loop();
+    }
 }
 
-Device* Devices::getDeviceByNum(int deviceNum)
+Device *Devices::getDeviceByNum(int deviceNum)
 {
-  if (deviceNum < _numDevices)
-  {
-    return _devices[deviceNum];
-  }
-  return NULL;
+    if (deviceNum < _numDevices)
+    {
+        return _devices[deviceNum];
+    }
+    return NULL;
 }
 
-Device* Devices::getDeviceWithName(String name)
+Device *Devices::getDeviceWithName(String name)
 {
-  for(int i=0; i<_numDevices; i++)
-  {
-      if(_devices[i]->name().equalsIgnoreCase(name)) {
-        return _devices[i];
-      }
-  }
-  return NULL;
+    for (int i = 0; i < _numDevices; i++)
+    {
+        if (_devices[i]->name().equalsIgnoreCase(name))
+        {
+            return _devices[i];
+        }
+    }
+    return NULL;
 }
 
-void Devices::performActivities(Activities *activities)
+int Devices::numDevices()
 {
-  for(int i=0; i<_numDevices; i++) {
-    _devices[i]->performActivities(activities);
-  }
+    return _numDevices;
 }

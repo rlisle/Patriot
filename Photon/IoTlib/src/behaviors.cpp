@@ -34,7 +34,8 @@ Changelog:
 ******************************************************************/
 #include "behaviors.h"
 
-Behaviors::Behaviors() {
+Behaviors::Behaviors()
+{
     // Without this method, strange error is reported and build fails
     //TODO: Restore activities from EEPROM
     //size_t len = EEPROM.length();
@@ -42,31 +43,42 @@ Behaviors::Behaviors() {
 //    char numActivities = EEPROM[0];
 }
 
+
 // Returns # behaviors (index+1 of added behavior, or -1 if array already full)
 int Behaviors::addBehavior(Behavior *behavior)
 {
-  if (_numBehaviors < MAX_NUM_BEHAVIORS-1)
-  {
-    _behaviors[_numBehaviors++] = behavior;
-  } else {
-    return -1;
-  }
-  //TODO: Write out all behaviors to EEPROM
+    if (_numBehaviors < MAX_NUM_BEHAVIORS - 1)
+    {
+        _behaviors[_numBehaviors++] = behavior;
+    } else
+    {
+        return -1;
+    }
+    //TODO: Write out all behaviors to EEPROM
 
-  return _numBehaviors-1;
+    return _numBehaviors - 1;
 }
 
-int Behaviors::determineLevelForActivities(int defaultPercent, Activities *activities) {
-  Serial.println("determineLevelForActivities: "+String(_numBehaviors)+" behaviors");
-  int level = defaultPercent;
-  for(int i = 0; i < _numBehaviors; i++) {
-    Serial.println("checking behavior "+String(i));
-    Behavior* behavior = _behaviors[i];
-    int newLevel = behavior->determineLevel(activities);
-    // For now, simply select the highest level set by any behavior
-    // Later we may want to factor priorities, etc. into the equation
-    if( newLevel > level) level = newLevel;
-  }
-  Serial.println("   return "+String(level));
-  return level;
+
+int Behaviors::determineLevelForActivities(Device *device, int defaultPercent, Activities *activities)
+{
+    Serial.println("determineLevelForActivities: " + String(_numBehaviors) + " behaviors");
+    int level = defaultPercent;
+    for (int i = 0; i < _numBehaviors; i++)
+    {
+        Serial.println("checking behavior " + String(i));
+        Behavior *behavior = _behaviors[i];
+        if (behavior->device == device)
+        {
+            int newLevel = behavior->determineLevel(activities);
+            // For now, simply select the highest level set by any behavior
+            // Later we may want to factor priorities, etc. into the equation
+            if (newLevel > level)
+            {
+                level = newLevel;
+            }
+        }
+    }
+    Serial.println("   return " + String(level));
+    return level;
 }
