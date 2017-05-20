@@ -31,7 +31,6 @@
 class Light : public Device
 {
  private:
-    Behaviors *_behaviors;
     String    _name;
     int       _pin;
     int       _dimmingPercent;
@@ -67,7 +66,4 @@ class Light : public Device
     float     getDimmingDuration();
 
     void      loop();
-    int       addBehavior(Behavior* behavior);
-    void      performActivities(Activities* activities);
-
 };

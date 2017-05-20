@@ -31,9 +31,8 @@
  */
 Light::Light(int pinNum, String name)
 {
-    Serial.println("Create light "+name+" on pin "+String(pin));
+    Serial.println("Create light "+name+" on pin "+String(pinNum));
 
-    _behaviors                = new Behaviors();
     _pin                      = pinNum;
     _name                     = name;
     _dimmingPercent           = 100;  // On full
@@ -43,7 +42,7 @@ Light::Light(int pinNum, String name)
     _incrementPerMillisecond  = 0.0;
     _lastUpdateTime           = 0;
     _commandPercent            = 0;
-    pinMode(pin, OUTPUT);
+    pinMode(pinNum, OUTPUT);
 }
 
 

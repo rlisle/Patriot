@@ -19,6 +19,7 @@ Changelog:
 ******************************************************************/
 #pragma once
 
+#include "Particle.h"
 #include "device.h"
 
 #define MAX_NUM_DEVICES 64

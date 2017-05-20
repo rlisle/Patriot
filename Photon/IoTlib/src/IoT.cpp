@@ -22,7 +22,6 @@ Changelog:
 2016-11-24: Initial version
 ******************************************************************/
 #include "IoT.h"
-#include "light.h"
 
 /**
  * Global subscribe handler
