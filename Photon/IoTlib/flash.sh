@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 # Compile and flash
-particle flash Everything examples/none
+particle flash Everything examples/everything

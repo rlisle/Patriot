@@ -32,7 +32,6 @@ Changelog:
  */
 Fan::Fan(int pinNum, String name)
 {
-    _behaviors     = new Behaviors();
     _name          = name;
     _pinNum        = pinNum;
     _percent       = 0;

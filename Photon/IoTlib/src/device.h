@@ -23,7 +23,7 @@ Changelog:
 #pragma once
 
 class Device {
- private:
+ protected:
     String  _name;
     int     _percent;
 
@@ -39,8 +39,8 @@ class Device {
     virtual void setPercent(int percent) { _percent = percent; };
 
     // These are just convenience methods
-    virtual bool isOn() { return percent > 0; };
-    virtual bool isOff() { return percent == 0; };
+    virtual bool isOn() { return _percent > 0; };
+    virtual bool isOff() { return _percent == 0; };
 
     virtual void setOn() { setPercent(100); };
     virtual void setOff() { setPercent(0); };
