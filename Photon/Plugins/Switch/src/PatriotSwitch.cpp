@@ -35,37 +35,9 @@ Switch::Switch(int pinNum, String name)
                 : _pin(pinNum),
                   _name(name)
 {
+    _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);
     _lastReadTime = millis();
-}
-
-
-/**
- * name()
- * @return string name of switch
- */
-String Switch::name()
-{
-    return _name;
-}
-
-/**
- * isOn
- * @return bool true if switch is on
- */
-bool Switch::isOn()
-{
-    return _isOn;
-}
-
-
-/**
- * getPercent()
- * @return
- */
-int Switch::getPercent()
-{
-    return _isOn ? 100 : 0;
 }
 
 
@@ -109,11 +81,12 @@ bool Switch::isTimeToCheckSwitch()
 bool Switch::didSwitchChange()
 {
     bool newState = digitalRead(_pin) == 0;
-    if (newState == _isOn)
+    bool isOn = _percent > 0;
+    if (newState == isOn)
     {
         return false;
     }
-    _isOn = newState;
+    _percent = newState ? 100 : 0;
     return true;
 }
 
@@ -124,7 +97,7 @@ bool Switch::didSwitchChange()
  */
 void Switch::notify()
 {
-    String pubString = _name + ":" + (_isOn ? "100" : "0");
+    String pubString = _name + ":" + (_percent > 0 ? "100" : "0");
     Serial.println(pubString);
     //TODO: get event name from IoT instead of hardcoded "patriot"
     Particle.publish("patriot", pubString);

@@ -23,26 +23,19 @@ Changelog:
 ******************************************************************/
 #pragma once
 
-// This will load the definition for common Particle variable types
 #include "Particle.h"
 #include "device.h"
 
 class Switch : public Device
 {
 public:
-    /**
-     * Constructor
-     */
     Switch(int pinNum, String name);
-    String name();
-    int getPercent();
-    bool isOn();
+
     void loop();
 
 private:
     int        _pin;
     String     _name;
-    int        _isOn;
     long       _lastReadTime;
 
     bool      isTimeToCheckSwitch();
