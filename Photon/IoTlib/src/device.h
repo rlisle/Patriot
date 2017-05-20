@@ -12,6 +12,8 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-05-20: Provide default implementations for everything,
+            so this class is abstract anymore.
 2017-05-19: Remove dependencies to allow use in plugin.
 2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
@@ -21,28 +23,32 @@ Changelog:
 #pragma once
 
 class Device {
-public:
-    // Required
-    virtual String name() = 0;
+ private:
+    String  _name;
+    int     _percent;
 
-    virtual int getPercent() = 0;
+ public:
+    virtual String name() { return _name; };
 
-    virtual bool isOn() = 0;
+    // This method can either read the device directly, or use a value
+    // set in the loop() if continuous or asynchronous polling is used.
+    virtual int getPercent() { return _percent; }
 
-    // Optional
-    virtual void setPercent(int percent) {};
+    // You will need to override this if you are creating an output device
+    // This is the method that should control it.
+    virtual void setPercent(int percent) { _percent = percent; };
+
+    // These are just convenience methods
+    virtual bool isOn() { return percent > 0; };
+    virtual bool isOff() { return percent == 0; };
+
+    virtual void setOn() { setPercent(100); };
+    virtual void setOff() { setPercent(0); };
 
     // Each device may use different commands (eg. bright vs fast vs cold)
     // These need to be converted to a level by each device
     virtual int convertCommandToPercent(String command) { return 0; };
 
-    //TODO: Move these convenience methods to a device class as non-virtual
-    virtual void setOn() {};
-
-    virtual void setOff() {};
-
-    virtual bool isOff() { return isOn() == false; };
-
+    // Perform things continuously, such as fading or slewing
     virtual void loop() {};
-
 };

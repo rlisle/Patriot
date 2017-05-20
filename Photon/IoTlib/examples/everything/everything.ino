@@ -56,8 +56,9 @@ Changelog:
 ********************************************************/
 
 #include <IoT.h>
-#include "light.h"
-#include "switch.h"
+#include <PatriotLight.h>
+#include <PatriotSwitch.h>
+#include <PatriotFan.h>
 
 IoT *iot;
 
@@ -77,6 +78,8 @@ void setup() {
     Switch *switch3 = new Switch(D6, "Cook");
     Switch *switch4 = new Switch(D7, "Sleep");
 
+    Fan *fan = new Fan(DAC, "Fan");
+
     // Add them
     iot->addDevice(outside);
     iot->addDevice(kitchen);
@@ -88,9 +91,9 @@ void setup() {
     iot->addDevice(switch3);
     iot->addDevice(switch4);
 
-    //TODO: Add light level sensor
+    iot->addDevice(fan);
 
-    //TODO: Add Fan control
+    //TODO: Add light level sensor
 
     //TODO: Add servo motor
 
@@ -102,8 +105,11 @@ void setup() {
     iot->addBehavior(new Behavior(living, "Cook", '>', 0, 100));
     iot->addBehavior(new Behavior(bedroom, "Sleep",'>',0, 100));
 
+    iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 75, 10));
+    iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 80, 50));
+    iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 85, 100));
+
 //    iot->monitorPresence(A1, A0, 3, 36, "Bathroom");
-//    iot->monitorTemperature(A2, DHT22, "Kitchen", 5000);
 
 //    iot->exposeControllers();
 //    iot->exposeActivities();
