@@ -1,41 +1,56 @@
-# Patriot-Light
+# PatriotLight
 
-A Particle library for Patriot-Light
+A Patriot plugin to support dimmable light devices.
 
-## Welcome to your library!
-
-To get started, modify the sources in [src](src). Rename the example folder inside [examples](examples) to a more meaningful name and add additional examples in separate folders.
-
-To compile your example you can use `particle compile examples/usage` command in [Particle CLI](https://docs.particle.io/guide/tools-and-features/cli#update-your-device-remotely) or use our [Desktop IDE](https://docs.particle.io/guide/tools-and-features/dev/#compiling-code).
-
-Libraries can also depend on other libraries. To add a dependency use [`particle library add`](https://docs.particle.io/guide/tools-and-features/cli#adding-a-library) or [library management](https://docs.particle.io/guide/tools-and-features/dev/#managing-libraries) in Desktop IDE.
-
-After the library is done you can upload it with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. If you wish to make your library public, use `particle library publish` or `Publish` command.
-
-_TODO: update this README_
+This library makes it used to support dimmable lights using PWM,
+or simple on/off lights if connected to a non-PWM pin.
 
 ## Usage
 
-Connect XYZ hardware, add the Patriot-Light library to your project and follow this simple example:
+Include this library in any Photon sketch that needs to support a light.
+Refer to the more complex examples in the main Patriot IoT examples
+ directory.
+
+This example creates a single LED device connected to pin D7.
+This is the pin used by the onboard blue LED, so no additional
+hardware is needed.
+
+A behavior is setup to control this LED with an event named "Photon".
+
+Since Patriot supports automatic detection by the iOS app and Alexa,
+either of these can be used to control the LED once this sketch is
+loaded to a Photon. There may be a 15 minute delay before Alexa starts
+to work, since a "Discover Devices" cycle is needed. You can manually
+invoke a discovery using the Alexa app to eliminate the delay.
+
 
 ```
-#include "Patriot-Light.h"
-PatriotLight patriotLight;
+#include <IoT>
+#include <PatriotLight>
+
+IoT *iot;
 
 void setup() {
-  patriotLight.begin();
+    iot = IoT::getInstance();
+    iot->setControllerName("myPhoton");
+    iot->begin();
+
+    Light *light1 = new Light(kLed1Pin, "LED");
+    iot->addDevice(light1);
+
+    iot->addBehavior(light1, new Behavior("Photon", '>', 0, 100));
 }
 
 void loop() {
-  patriotLight.process();
+    iot->loop();
 }
 ```
 
-See the [examples](examples) folder for more details.
-
 ## Documentation
 
-TODO: Describe `PatriotLight`
+Refer to the Patriot Github repository and documentation for more
+information.
+
 
 ## Contributing
 
@@ -49,13 +64,13 @@ Modify the sources in <src> and <examples> with the new behavior.
 
 To compile an example, use `particle compile examples/usage` command in [Particle CLI](https://docs.particle.io/guide/tools-and-features/cli#update-your-device-remotely) or use our [Desktop IDE](https://docs.particle.io/guide/tools-and-features/dev/#compiling-code).
 
-After your changes are done you can upload them with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. Do `particle library add Patriot-Light_myname` to add the library to a project on your machine or add the Patriot-Light_myname library to a project on the Web IDE or Desktop IDE.
+After your changes are done you can upload them with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. Do `particle library add IoT_myname` to add the library to a project on your machine or add the IoT_myname library to a project on the Web IDE or Desktop IDE.
 
-At this point, you can create a [GitHub pull request](https://help.github.com/articles/about-pull-requests/) with your changes to the original library. 
+At this point, you can create a [GitHub pull request](https://help.github.com/articles/about-pull-requests/) with your changes to the original library.
 
 If you wish to make your library public, use `particle library publish` or `Publish` command.
 
 ## LICENSE
 Copyright 2017 Ron Lisle
 
-Licensed under the <insert your choice of license here> license
+Refer to the included LICENSE file.

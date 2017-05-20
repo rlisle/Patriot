@@ -1,41 +1,57 @@
-# Patriot-Fan
+# PatriotFan
 
-A Particle library for Patriot-Fan
+A Patriot plugin to support variable speed fan devices.
 
-## Welcome to your library!
-
-To get started, modify the sources in [src](src). Rename the example folder inside [examples](examples) to a more meaningful name and add additional examples in separate folders.
-
-To compile your example you can use `particle compile examples/usage` command in [Particle CLI](https://docs.particle.io/guide/tools-and-features/cli#update-your-device-remotely) or use our [Desktop IDE](https://docs.particle.io/guide/tools-and-features/dev/#compiling-code).
-
-Libraries can also depend on other libraries. To add a dependency use [`particle library add`](https://docs.particle.io/guide/tools-and-features/cli#adding-a-library) or [library management](https://docs.particle.io/guide/tools-and-features/dev/#managing-libraries) in Desktop IDE.
-
-After the library is done you can upload it with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. If you wish to make your library public, use `particle library publish` or `Publish` command.
-
-_TODO: update this README_
+This library is used to support variable speed fans using PWM,
+or simple on/off fans if connected to a non-PWM pin.
 
 ## Usage
 
-Connect XYZ hardware, add the Patriot-Fan library to your project and follow this simple example:
+Include this library in any Photon sketch that needs to support a fan.
+Refer to the more complex examples in the main Patriot IoT examples
+ directory.
+
+This example creates a single fan device connected to pin D6.
+
+A behavior is setup to control the fan with an event named "Temp".
+
+Since Patriot supports automatic detection by the iOS app and Alexa,
+either of these can be used to control the fan once this sketch is
+loaded to a Photon. There may be a 15 minute delay before Alexa starts
+to work, since a "Discover Devices" cycle is needed. You can manually
+invoke a discovery using the Alexa app to eliminate the delay.
+
+Note that the device is not controlled directly. It must be controlled
+by defining a behavior. The behavior can be turned on or off using
+Alexa or the iOS app, in addition to other input devices.
 
 ```
-#include "Patriot-Fan.h"
-PatriotFan patriotFan;
+#include <IoT>
+#include <PatriotFan>
+
+IoT *iot;
 
 void setup() {
-  patriotFan.begin();
+    iot = IoT::getInstance();
+    iot->setControllerName("myPhoton");
+    iot->begin();
+
+    Fan *fan1 = new Fan(D6, "kitchenfan");
+    iot->addDevice(fan1);
+
+    iot->addBehavior(fan1, new Behavior("Fan", '>', 0, 100));
 }
 
 void loop() {
-  patriotFan.process();
+    iot->loop();
 }
 ```
 
-See the [examples](examples) folder for more details.
-
 ## Documentation
 
-TODO: Describe `PatriotFan`
+Refer to the Patriot Github repository and documentation for more
+information.
+
 
 ## Contributing
 
@@ -49,13 +65,13 @@ Modify the sources in <src> and <examples> with the new behavior.
 
 To compile an example, use `particle compile examples/usage` command in [Particle CLI](https://docs.particle.io/guide/tools-and-features/cli#update-your-device-remotely) or use our [Desktop IDE](https://docs.particle.io/guide/tools-and-features/dev/#compiling-code).
 
-After your changes are done you can upload them with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. Do `particle library add Patriot-Fan_myname` to add the library to a project on your machine or add the Patriot-Fan_myname library to a project on the Web IDE or Desktop IDE.
+After your changes are done you can upload them with `particle library upload` or `Upload` command in the IDE. This will create a private (only visible by you) library that you can use in other projects. Do `particle library add IoT_myname` to add the library to a project on your machine or add the IoT_myname library to a project on the Web IDE or Desktop IDE.
 
-At this point, you can create a [GitHub pull request](https://help.github.com/articles/about-pull-requests/) with your changes to the original library. 
+At this point, you can create a [GitHub pull request](https://help.github.com/articles/about-pull-requests/) with your changes to the original library.
 
 If you wish to make your library public, use `particle library publish` or `Publish` command.
 
 ## LICENSE
 Copyright 2017 Ron Lisle
 
-Licensed under the <insert your choice of license here> license
+Refer to the included LICENSE file.
