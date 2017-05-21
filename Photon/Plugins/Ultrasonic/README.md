@@ -1,8 +1,8 @@
-# PatriotLight
+# PatriotUltrasonic
 
 A Patriot plugin to support ultrasonic proximity detector devices.
 
-This library is used to support ultrasonic proximity devices.
+This library is used to support HC-SR04 ultrasonic proximity devices.
 Any 2 Photon I/O pins may be used to provide pulse trigger and echo status.
 
 ## Usage
@@ -37,7 +37,7 @@ void setup() {
     iot->begin();
 
     // Create the HC-SR04 sensor device
-    Ultrasonic ultra1 = new Ultrasonic(A1, A0, "Proximity");
+    Ultrasonic *ultra1 = new Ultrasonic(A1, A0, "Proximity");
 
     // Add it to IoT
     iot->addDevice(ultra1);
