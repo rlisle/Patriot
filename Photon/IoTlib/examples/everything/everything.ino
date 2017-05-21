@@ -49,6 +49,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-05-21: Add plugins
 2017-03-28: Use fixed 'patriot' event name.
 2017-03-24: Rename Patriot
 2017-03-11: TODO: add remaining devices.
@@ -59,6 +60,7 @@ Changelog:
 #include <PatriotLight.h>
 #include <PatriotSwitch.h>
 #include <PatriotFan.h>
+#include <PatriotUltrasonic.h>
 
 IoT *iot;
 
@@ -80,6 +82,8 @@ void setup() {
 
     Fan *fan = new Fan(DAC, "Fan");
 
+    Ultrasonic *ultra = new Ultrasonic(A1, A0, "Proximity");
+
     // Add them
     iot->addDevice(outside);
     iot->addDevice(kitchen);
@@ -92,6 +96,8 @@ void setup() {
     iot->addDevice(switch4);
 
     iot->addDevice(fan);
+
+    iot->addDevice(ultra);
 
     //TODO: Add light level sensor
 
