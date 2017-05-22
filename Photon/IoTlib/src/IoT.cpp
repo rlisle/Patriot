@@ -142,7 +142,7 @@ void IoT::begin()
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
-    Particle.subscribe(publishNameVariable, globalSubscribeHandler);    //TODO: make private by adding ,MY_DEVICES
+    Particle.subscribe(publishNameVariable, globalSubscribeHandler, MY_DEVICES);
     if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
     {
         log("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");
