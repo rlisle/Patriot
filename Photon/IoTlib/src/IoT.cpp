@@ -78,7 +78,7 @@ IoT* IoT::_instance = NULL;
 void IoT::log(String msg)
 {
     Serial.println(msg);
-    Particle.publish("LOG", msg);
+    Particle.publish("LOG", msg, 60, PRIVATE);
 }
 
 /**

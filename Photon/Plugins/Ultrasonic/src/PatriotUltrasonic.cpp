@@ -131,5 +131,5 @@ void Ultrasonic::notify(int distance)
     String pubString = _name + ":" + String(distance);
     Serial.println(pubString);
     //TODO: get event name from IoT instead of hardcoded "patriot"
-    Particle.publish("patriot", pubString);
+    Particle.publish("patriot", pubString, 60, PRIVATE);
 }

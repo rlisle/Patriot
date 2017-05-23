@@ -39,7 +39,7 @@ Behaviors::Behaviors()
     // Without this method, strange error is reported and build fails
     //TODO: Restore activities from EEPROM
     //size_t len = EEPROM.length();
-    //Particle.publish("behaviors","EEPROM length is: "+String(len));
+    //Particle.publish("behaviors","EEPROM length is: "+String(len), 60, PRIVATE);
 //    char numActivities = EEPROM[0];
 }
 

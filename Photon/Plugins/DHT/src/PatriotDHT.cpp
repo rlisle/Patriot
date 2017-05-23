@@ -159,11 +159,11 @@ bool DHT::isValidHumidityReading() {
 void DHT::publishTemperature() {
     String data = eventText + "Temp:"+String(temperature);
     //TODO: get event name from IoT instead of hardcoding "patriot"
-    Particle.publish("patriot", data);
+    Particle.publish("patriot", data, 60, PRIVATE);
 }
 
 void DHT::publishHumidity() {
     String data = eventText + "Humidity:"+String(humidity);
     //TODO: get event name from IoT instead of hardcoding "patriot"
-    Particle.publish("patriot", data);
+    Particle.publish("patriot", data, 60, PRIVATE);
 }
