@@ -27,7 +27,6 @@ Devices::Devices()
 // Returns non-zero if # devices exceeded
 int Devices::addDevice(Device *device)
 {
-    Serial.println("Adding device: " + device->name());
     if (_numDevices < MAX_NUM_DEVICES - 1)
     {
         _devices[_numDevices++] = device;

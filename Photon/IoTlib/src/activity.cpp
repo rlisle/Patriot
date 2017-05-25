@@ -17,6 +17,8 @@ Changelog:
 
 Activity::Activity(String name, int value)
 {
+  Serial.print("New activity: ");
+  Serial.println(name);
   _value = value;
   _name = name;
 }

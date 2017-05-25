@@ -233,8 +233,9 @@ bool IoT::exposeControllers()
 /*************************/
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
-//    log("Subscribe handler event: "+String(eventName)+", data: "+String(rawData));
-    String data(rawData);   // This apparently converts the data somehow
+    String data(rawData);
+    String event(eventName);
+    Serial.println("Subscribe handler event: " + event + ", data: " + data);
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
@@ -263,6 +264,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     //      search it like devices
     // If not, must be an activity/event name
     int value = state.toInt();
+    Serial.println("   going to add " + name + " = " + String(value));
     _activities->addActivity(name, value);
     //_devices->performActivities(_activities);
     performActivities();
