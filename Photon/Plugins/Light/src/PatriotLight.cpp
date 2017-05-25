@@ -262,7 +262,6 @@ void Light::outputPWM() {
         float pwm = _currentPercent;
         pwm *= 255.0;
         pwm /= 100.0;
-        Serial.println("outputPWM: " + String(pwm) + " on pin " + String(_pin));
         analogWrite(_pin, (int) pwm);
     } else {
         digitalWrite(_pin, (_currentPercent > 49) ? HIGH : LOW);
