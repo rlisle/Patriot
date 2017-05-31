@@ -31,7 +31,7 @@ Behavior::Behavior(Device *device, String activityName, char comparison, int val
 
 bool Behavior::matchesCondition(String name, int value)
 {
-    Serial.println("matchesCondition? " + name + String(value));
+//    Serial.println("matchesCondition? " + name + String(value));
     if (name.equalsIgnoreCase(activityName))
     {
         switch (_comparison)

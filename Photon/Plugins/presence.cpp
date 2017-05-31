@@ -64,5 +64,5 @@ void Presence::publishPresenceDetected(bool present) {
   _isPresent = present;
   String data = present ? _event + ":100" : _event + ":0";
   Serial.println("Presence change: "+data);
-  Particle.publish("lislerv", data);
+  Particle.publish("lislerv", data, 60, PRIVATE);
 }

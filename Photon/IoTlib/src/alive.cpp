@@ -38,6 +38,6 @@ void Alive::loop() {
   long loopTime = millis();
   if(loopTime > _lastLoopTime + kDefaultAliveInterval) {
     _lastLoopTime = loopTime;
-    Particle.publish(_publishName, (_controllerName+":alive"));
+    Particle.publish(_publishName, (_controllerName+":alive"), 60, PRIVATE);
   }
 }

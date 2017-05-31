@@ -38,16 +38,16 @@ Activities::Activities() {
 }
 
 Activity *Activities::addActivity(String name, int value) {
-    Serial.println("addActivity " + name + "=" + String(value));
+    Serial.print("addActivity " + name + "=" + String(value));
     // Update existing activity if it exists
     Activity *activity = getActivityWithName(name);
     if (activity != NULL) {
-        Serial.println("   updating activity");
+        Serial.println(": updated");
         activity->_value = value;
 
         // If not, create a new activity
     } else {
-        Serial.println("   adding new activity");
+        Serial.println(": added");
         if (_numActivities < MAX_NUM_ACTIVITIES - 1) {
             activity = new Activity(name, value);
             _activities[_numActivities++] = activity;
@@ -90,8 +90,12 @@ bool Activities::expose() {
 void Activities::buildActivityVariable() {
     String newVariable = "";
     for (int i = 0; i < _numActivities; i++) {
+        Serial.print("activity=");
+        Serial.println(_activities[i]->_name);
         newVariable += _activities[i]->_name;
         newVariable += ":";
+        Serial.print("value=");
+        Serial.println(_activities[i]->_value);
         newVariable += String(_activities[i]->_value);
         if (i < _numActivities - 1) {
             newVariable += ",";
@@ -99,11 +103,12 @@ void Activities::buildActivityVariable() {
     }
     if (newVariable.length() < kMaxVariableStringLength) {
         if (newVariable != globalActivitiesVariable) {
-            Serial.println("Activities=" + newVariable);
             globalActivitiesVariable = newVariable;
         }
     } else {
         Serial.println("Variable is too long. Need to extend to a 2nd variable");
+        Serial.println(newVariable);
+        //WakeUp,WatchTV,Cook,Sleep
     }
 
 }

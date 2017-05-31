@@ -39,7 +39,7 @@ Behaviors::Behaviors()
     // Without this method, strange error is reported and build fails
     //TODO: Restore activities from EEPROM
     //size_t len = EEPROM.length();
-    //Particle.publish("behaviors","EEPROM length is: "+String(len));
+    //Particle.publish("behaviors","EEPROM length is: "+String(len), 60, PRIVATE);
 //    char numActivities = EEPROM[0];
 }
 
@@ -62,11 +62,9 @@ int Behaviors::addBehavior(Behavior *behavior)
 
 int Behaviors::determineLevelForActivities(Device *device, int defaultPercent, Activities *activities)
 {
-    Serial.println("determineLevelForActivities: " + String(_numBehaviors) + " behaviors");
     int level = defaultPercent;
     for (int i = 0; i < _numBehaviors; i++)
     {
-        Serial.println("checking behavior " + String(i));
         Behavior *behavior = _behaviors[i];
         if (behavior->device == device)
         {
@@ -79,6 +77,5 @@ int Behaviors::determineLevelForActivities(Device *device, int defaultPercent, A
             }
         }
     }
-    Serial.println("   return " + String(level));
     return level;
 }

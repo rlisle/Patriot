@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Compile and flash
-# The specific example is specified as the 1st argument, or defaults to "everything"
+# The specific example is specified as the 1st argument, or defaults to "switchesAndLEDs"
 # The photon device name is passed as the 2nd argument, or defaults to "myPhoton"
 device=myPhoton
-example=everything
+example=switchesAndLEDs
 if [ $# -gt 0 ]; then
     example=$1
     if [ "$2" != "" ]; then
