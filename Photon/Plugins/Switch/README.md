@@ -1,4 +1,4 @@
-# PatriotLight
+# PatriotSwitch
 
 A Patriot plugin to support input switch devices.
 
