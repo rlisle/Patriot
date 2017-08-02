@@ -1,4 +1,4 @@
-# PatriotLight
+# PatriotSwitch
 
 A Patriot plugin to support input switch devices.
 
@@ -23,8 +23,8 @@ this event.
 You can use the Particle.io console to monitor these events.
 
 ```
-#include <IoT>
-#include <PatriotSwitch>
+#include <IoT.h>
+#include <PatriotSwitch.h>
 
 IoT *iot;
 

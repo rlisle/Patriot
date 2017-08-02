@@ -15,8 +15,8 @@ Describe the plugin usage and example.
 
 Provide a copy of the example below, if it isn't too complex.
 ```
-#include <IoT>
-#include <PatriotMyDevice>
+#include <IoT.h>
+#include <PatriotMyDevice.h>
 
 IoT *iot;
 
