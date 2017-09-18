@@ -31,7 +31,7 @@ Changelog:
  * @param duration is the number of seconds required to open/close.
  * @param name String name used to address this device.
  */
-Motorized::Motorized(int openPinNum, int closePinNum, int milliseconds, String name)
+Motorized::Motorized(int openPinNum, int closePinNum, long milliseconds, String name)
 {
     _name             = name;
     _openPinNum       = openPinNum;
@@ -70,12 +70,12 @@ void Motorized::setPercent(int percent)
     if(percent > _startPercent) // Are we opening?
     {
         _state = 1;
-        digitalWrite(_openPin, HIGH);
+        digitalWrite(_openPinNum, HIGH);
     }
     else
     {
         _state = 2;
-        digitalWrite(_closePin, HIGH);
+        digitalWrite(_closePinNum, HIGH);
     }
 }
 
@@ -162,7 +162,7 @@ void Motorized::loop()
     }
 }
 
-long Motorized::neededDuration()
+unsigned long Motorized::neededDuration()
 {
     int deltaPercent = _percent - _startPercent;
     if(deltaPercent < 0) deltaPercent = -deltaPercent;

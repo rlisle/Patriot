@@ -48,6 +48,9 @@ class Motorized : public Device
     virtual void    loop();
 
  private:
+    unsigned long neededDuration();
+    void          turnOffMotor();
+
     String    _name;
     int       _openPinNum;
     int       _closePinNum;
