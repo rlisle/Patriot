@@ -15,6 +15,7 @@
  Datasheets:
 
  Changelog:
+ 2017-09-20: Add support for inverted and non-analog outputs
  2017-05-19: Extract to separate plugin library
  2017-05-15: Make devices generic
  2017-03-24: Rename Patriot
@@ -39,16 +40,19 @@ class Light : public Device
     int       _commandPercent;
     float     _incrementPerMillisecond;
     long      _lastUpdateTime;
+    bool      _isInverted;              // On state = LOW instead of default HIGH
+    bool      _forceDigital;            // On/Off only, even if PWM supported
 
     bool      isAlreadyOn();
     bool      isAlreadyOff();
     void      changePercent(int percent);
     void      startSmoothDimming();
     void      outputPWM();
-    static bool isPwmPin(int pin);
+    bool      isPwmSupported();
 
  public:
     Light(int pin, String name);
+    Light(int pin, String name, bool isInverted, bool forceDigital);
 
     String    name();
     void      setPercent(int percent);

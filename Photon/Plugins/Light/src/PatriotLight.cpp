@@ -28,23 +28,32 @@
  * Constructor
  * @param pinNum is the pin number that is connected to the light.
  * @param name String name used to address the light.
+ * @param isInverted True if On = output LOW
+ * @param forceDigital True if output On/Off only (even if pin supports PWM)
  */
-Light::Light(int pinNum, String name)
+Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
 {
     Serial.println("Create light "+name+" on pin "+String(pinNum));
 
     _pin                      = pinNum;
     _name                     = name;
-    _dimmingPercent           = 100;  // On full
-    _dimmingDuration          = Light::isPwmPin(pinNum) ? 2.0 : 0;
+    _isInverted               = isInverted;
+    _forceDigital             = forceDigital;
+    _dimmingPercent           = 100;                                // On full
+    _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
     _currentPercent           = 0.0;
     _targetPercent            = 0;
     _incrementPerMillisecond  = 0.0;
     _lastUpdateTime           = 0;
     _commandPercent            = 0;
     pinMode(pinNum, OUTPUT);
+    outputPWM();                        // Set initial off state
 }
 
+Light::Light(int pinNum, String name)
+{
+    return Light(pinNum, name, false, false);
+}
 
 /**
  * name
@@ -124,14 +133,10 @@ void Light::changePercent(int percent) {
     if(_targetPercent == percent) return;
 
     _targetPercent = percent;
-    if(_dimmingDuration == 0.0 || !Light::isPwmPin(_pin)) {
+    if(_dimmingDuration == 0.0 || isPwmSupported() == false) {
         Serial.println("Light setting percent to "+String(percent));
         _currentPercent = percent;
-        if(Light::isPwmPin(_pin)){
-            analogWrite(_pin,percent);
-        } else {
-            digitalWrite(_pin, (percent > 49) ? HIGH : LOW);
-        }
+        outputPWM();
 
     } else {
         startSmoothDimming();
@@ -258,13 +263,15 @@ void Light::loop()
  * Set the output PWM value (0-255) based on 0-100 percent value
  */
 void Light::outputPWM() {
-    if(Light::isPwmPin(_pin)) {
+    if(isPwmSupported()) {
         float pwm = _currentPercent;
         pwm *= 255.0;
         pwm /= 100.0;
         analogWrite(_pin, (int) pwm);
     } else {
-        digitalWrite(_pin, (_currentPercent > 49) ? HIGH : LOW);
+        bool isOn = _currentPercent > 49;
+        bool isHigh = (isOn & !_isInverted) || (!isOn && _isInverted);
+        digitalWrite(_pin, isHigh ? HIGH : LOW);
     }
 }
 
@@ -273,9 +280,9 @@ void Light::outputPWM() {
  * @param pin number
  * @return bool true if pin supports PWM
  */
-bool Light::isPwmPin(int pin)
+bool Light::isPwmSupported()
 {
-    switch(pin) {
+    switch(_pin) {
         case D0:
         case D1:
         case D2:
@@ -285,7 +292,7 @@ bool Light::isPwmPin(int pin)
         case A7:    // aka WKP
         case RX:
         case TX:
-            return TRUE;
+            return _forceDigital ? FALSE : TRUE;
         default:
             break;
     };
