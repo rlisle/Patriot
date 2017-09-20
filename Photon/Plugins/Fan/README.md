@@ -26,8 +26,8 @@ by defining a behavior. The behavior can be turned on or off using
 Alexa or the iOS app, in addition to other input devices.
 
 ```
-#include <IoT>
-#include <PatriotFan>
+#include <IoT.h>
+#include <PatriotFan.h>
 
 IoT *iot;
 

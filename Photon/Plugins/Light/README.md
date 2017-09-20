@@ -25,8 +25,8 @@ invoke a discovery using the Alexa app to eliminate the delay.
 
 
 ```
-#include <IoT>
-#include <PatriotLight>
+#include <IoT.h>
+#include <PatriotLight.h>
 
 IoT *iot;
 
