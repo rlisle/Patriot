@@ -34,12 +34,13 @@ class Relay : public Device
 
     static byte _currentState;  // up to 8 relays currently supported
 
-    void    initialize8RelayBoard();
+    void    initialize8RelayBoard(byte address);
 
  public:
     Relay(byte address, byte numRelays, byte relayNum, String name);
 
     String  name();
+    void    setPercent(int percent);
     void    setOn();
     void    setOff();
     bool    isOn();
