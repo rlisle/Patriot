@@ -1,14 +1,13 @@
 /*******************************************************
-Motorized Example
+Motorized Test
 
-This example shows how to create a motorized vent
+This sketch will exercise the Motorized plugin.
+For an example of how to use the motorized plugin in
+Patriot IoT, refer to the IoT examples/motorized.
 
- * Vent1     D7     Photon pin 7
-
-It assumes that a temperature device will broadcast events
-named "InsideTemp". The vent behavior will open the vent
- when InsideTemp is greater than 85, and close it when
- InsideTemp drops below 80.
+D7 is used for both the open and close operations
+so it can be observed using the blue LED.
+Normally separate I/O pins would be used.
 
 http://www.github.com/rlisle/Patriot
 
@@ -18,30 +17,19 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
-2017-09-17: Create motorized plugin library
+2017-10-02: Convert to a test sketch. Example moved to IoT examples
 ********************************************************/
-#include <IoT.h>
 #include <PatriotMotorized.h>
 
-IoT *iot;
+Motorized *vent;
 
 void setup() {
-    iot = IoT::getInstance();
-    iot->setControllerName("myPhoton");
-    iot->begin();
+    // Create device using D7 for both open and closed. Run for 5 seconds.
+    vent = new Motorized(D7, D7, 5000, "Vent1");
 
-    // Create device
-    Motorized *vent1 = new Motorized(D7, "Vent1");
-
-
-    // Add it
-    iot->addDevice(vent1);
-
-    // Setup behaviors to control vent based on temperature
-    iot->addBehavior(new Behavior(vent1, "InsideTemp", '>', 85, 100));
-    iot->addBehavior(new Behavior(vent1, "InsideTemp", '<', 80, 0));
+    vent->setPercent(100);
 }
 
 void loop() {
-    iot->loop();
+    vent->loop();
 }

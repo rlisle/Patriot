@@ -61,6 +61,9 @@ String Motorized::name() {
  */
 void Motorized::setPercent(int percent)
 {
+    Serial.print("setPercent ");
+    Serial.println(percent);
+
     if(percent == _percent) return;
 
     _startPercent = percent;    // May be unnecessary
@@ -155,8 +158,9 @@ void Motorized::loop()
     if(_state == 0) return;
 
     // Has the motor been on long enough?
-    if(millis() >= _startMillis + neededDuration())
+    if(millis() >= _startMillis + 5000) //neededDuration())
     {
+        Serial.println("Turning off motor");
         turnOffMotor();
         _state = 0;
     }

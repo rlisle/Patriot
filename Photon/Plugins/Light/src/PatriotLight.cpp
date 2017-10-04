@@ -33,7 +33,7 @@
  */
 Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
 {
-    Serial.println("Create light "+name+" on pin "+String(pinNum));
+    Particle.publish("DEBUG", "Create light "+name+" on pin "+String(pinNum), 60, PRIVATE);
 
     _pin                      = pinNum;
     _name                     = name;
@@ -52,7 +52,7 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
 
 Light::Light(int pinNum, String name)
 {
-    return Light(pinNum, name, false, false);
+    Light(pinNum, name, false, false);
 }
 
 /**
@@ -105,6 +105,7 @@ int Light::convertCommandToPercent(String dimming) {
  * @param percent Int 0 to 100
  */
 void Light::setPercent(int percent) {
+    Particle.publish("DEBUG", "setPercent: "+String(percent), 60, PRIVATE);
     _commandPercent = percent;
     changePercent(percent);
 }
@@ -130,15 +131,17 @@ void Light::setOn() {
  * @param percent Int new percent value
  */
 void Light::changePercent(int percent) {
+    Particle.publish("DEBUG", "changePercent: "+String(percent), 60, PRIVATE);
     if(_targetPercent == percent) return;
 
     _targetPercent = percent;
     if(_dimmingDuration == 0.0 || isPwmSupported() == false) {
-        Serial.println("Light setting percent to "+String(percent));
+        Particle.publish("DEBUG", "Light setting percent to: "+String(percent), 60, PRIVATE);
         _currentPercent = percent;
         outputPWM();
 
     } else {
+        Particle.publish("DEBUG", "startSmoothDimming: "+String(percent), 60, PRIVATE);
         startSmoothDimming();
     }
 }
@@ -267,10 +270,13 @@ void Light::outputPWM() {
         float pwm = _currentPercent;
         pwm *= 255.0;
         pwm /= 100.0;
+        Particle.publish("DEBUG", "outputPWM analog: "+String((int)pwm), 60, PRIVATE);
         analogWrite(_pin, (int) pwm);
     } else {
         bool isOn = _currentPercent > 49;
-        bool isHigh = (isOn & !_isInverted) || (!isOn && _isInverted);
+        //Particle.publish("DEBUG", "outputPWM digital isOn: "+String(isOn), 60, PRIVATE);
+        bool isHigh = (isOn && !_isInverted) || (!isOn && _isInverted);
+        Particle.publish("DEBUG", "outputPWM digital isHigh: "+String(isHigh), 60, PRIVATE);
         digitalWrite(_pin, isHigh ? HIGH : LOW);
     }
 }

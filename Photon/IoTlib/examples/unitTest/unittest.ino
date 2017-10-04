@@ -1,7 +1,8 @@
 /******************************************************************
-Test sketch for Patriot library
+UnitTest sketch for Patriot library
 
-This sketch is needed by the iOS unit tests.
+This sketch is needed by the iOS and Mocha unit tests.
+It is typically flashed to the UnitTest device using the web console.
 
 http://www.github.com/rlisle/Patriot
 

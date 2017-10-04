@@ -10,7 +10,7 @@ This object extends Patriot to support motorized devices such as
  from closed to fully open. So the vent device will be instantiated
  as follows:
 
- Motorized *vent = Motorized(D3, 15, "Roof Vent")
+ Motorized *vent = Motorized(D3, D4, 15000, "Roof Vent")
 
 http://www.github.com/rlisle/Patriot
 
