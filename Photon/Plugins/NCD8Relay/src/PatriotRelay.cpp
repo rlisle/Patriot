@@ -21,29 +21,52 @@
 
 /**
  * Constructor
- * @param address is the NCD 8 Relay board address (0-7)
+ * @param address is the board address set by jumpers (0-7)
+ * @param numRelays identifies which NCD Relay board by the number of relays on it
  * @param relayNum is the relay number on the NCD 8 Relay board (1-8)
  * @param name String name used to address the relay.
  */
-Relay::Relay(int address, int relayNum, String name)
+Relay::Relay(byte address, byte numRelays, byte relayNum, String name)
 {
     Particle.publish("DEBUG", "Create relay "+name+" for relay "+String(relayNum), 60, PRIVATE);
 
-    _address    = 0x20 + address;
     _relayNum   = relayNum;
     _name       = name;
+    _isOn       = false;
 
-    // Only the first relay needs to initialize the I2C link
+    switch(numRelays)
+    {
+        case 8:
+        default:
+            initialize8RelayBoard(address);
+            break;
+    }
+}
+
+void Relay::initialize8RelayBoard(byte address)
+{
+    _address = 0x20 + address;
+    _registerAddress = 0x0A;
+
+    // Only the first relay loaded needs to initialize the I2C link
     if(Wire.isEnabled()) return;
 
+    // Note: This is the sequence from the NCD 8 Relay library.
+    //       Lines with ??? appear to be wrong.
     Wire.begin();
-    Wire.beginTransmission(address);
-    Wire.write(0x00);   // Set all to outputs
-    Wire.write(0x00);
-    Wire.endTransmission(); // Write 'em, dano
-    Wire.write(0x06);
-    Wire.write(0x00);
+
+    Wire.beginTransmission(_address);
+    Wire.write(0x00);                   // Select IO Direction register
+    Wire.write(0x00);                   // Set all 8 to outputs
+    Wire.endTransmission();             // ??? Write 'em, Dano
+
+    // Note: pull-ups should have no effect on outputs, so this looks wrong.
+    Wire.write(0x06);                   // ??? Select pull-up resistor register
+    Wire.write(0x00);                   // ??? pull-ups disabled on all 8 outputs
     byte status = Wire.endTransmission();
+    //TODO: handle any errors, retry, etc.
+
+    _currentState = 0;                  // All 8 relays off initially
 }
 
 /**
@@ -59,7 +82,15 @@ String Relay::name() {
  */
 void Relay::setOn() {
     if(isAlreadyOn()) return;
-    //TODO: turn relay on
+
+    byte bitmap = 1 << _relayNum;
+    _currentState |= bitmap;            // Set relay's bit
+
+    Wire.beginTransmission(_address);
+    Wire.write(_registerAddress);
+    Wire.write(_currentState);
+    byte status = Wire.endTransmission();
+    //TODO: handle errors/retries
 }
 
 /**
@@ -67,7 +98,16 @@ void Relay::setOn() {
  */
 void Relay::setOff() {
     if(isAlreadyOff()) return;
-    setPercent(0);
+
+    byte bitmap = 1 << _relayNum;
+    bitmap = !bitmap;
+    _currentState &= bitmap;
+
+    Wire.beginTransmission(_address);
+    Wire.write(_registerAddress);
+    Wire.write(_currentState);
+    byte status = Wire.endTransmission();
+    //TODO: handle errors/retries
 }
 
 /**
@@ -75,7 +115,8 @@ void Relay::setOff() {
  * @return bool true if light is on
  */
 bool Relay::isOn() {
-    return !isOff();
+    byte mask = 1 << _relayNum;
+    return _currentState & mask;
 }
 
 /**
@@ -83,7 +124,7 @@ bool Relay::isOn() {
  * @return bool true if light is off
  */
 bool Relay::isOff() {
-    return _targetPercent == 0;
+    return !isOn();
 }
 
 /**

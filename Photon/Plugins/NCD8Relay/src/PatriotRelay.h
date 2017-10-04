@@ -25,18 +25,25 @@
 class Relay : public Device
 {
  private:
-    String    _name;
-    int       _relayNum;
-    int       _address;
+    String  _name;
+    byte    _relayNum;
+    byte    _address;
+
+    byte    _registerAddress;
+    bool    _isOn;
+
+    static byte _currentState;  // up to 8 relays currently supported
+
+    void    initialize8RelayBoard();
 
  public:
-    Relay(int address, int relayNum, String name);
+    Relay(byte address, byte numRelays, byte relayNum, String name);
 
-    String    name();
-    void      setOn();
-    void      setOff();
-    bool      isOn();
-    bool      isOff();
+    String  name();
+    void    setOn();
+    void    setOff();
+    bool    isOn();
+    bool    isOff();
 
-    void      loop();
+    void    loop();
 };
