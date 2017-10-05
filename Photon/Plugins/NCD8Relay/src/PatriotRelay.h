@@ -30,7 +30,6 @@ class Relay : public Device
     byte    _address;
 
     byte    _registerAddress;
-    bool    _isOn;
 
     static byte _currentState;  // up to 8 relays currently supported
 

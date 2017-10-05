@@ -31,9 +31,10 @@ Relay::Relay(byte address, byte numRelays, byte relayNum, String name)
     Particle.publish("DEBUG", "Create relay "+name+" for relay "+String(relayNum), 60, PRIVATE);
     Serial.println("Debug: creating relay "+name);
 
-    _relayNum               = relayNum;
-    _name                   = name;
-    _isOn                   = false;
+    _relayNum   = relayNum;
+    _name       = name;
+    _percent    = 0;
+    _address    = address;
 
     switch(numRelays)
     {
@@ -48,15 +49,14 @@ byte Relay::_currentState = 0;      // All relays initially off
 
 void Relay::initialize8RelayBoard(byte address)
 {
-    Serial.println("initializing board");
+    Serial.println("Initializing board: "+String(address)+" relay #"+String(_relayNum));
 
-    _address = 0x20 + address;
-    _registerAddress = 0x0A;
+    _registerAddress = 0x0A;    // Does this change for different boards?
 
     // Only the first relay loaded needs to initialize the I2C link
     if(Wire.isEnabled()) return;
 
-    Serial.println("initializing Wire");
+    Serial.println("Initializing Wire");
 
     // Note: This is the sequence from the NCD 8 Relay library.
     //       Lines with ??? appear to be wrong.
@@ -93,23 +93,24 @@ String Relay::name() {
 
 /**
  * Set percent
+ * This is how things are turned on/off in Patriot
  * @param percent Int 0 to 100. 0 = off, >0 = on
  */
 void Relay::setPercent(int percent) {
-    Particle.publish("DEBUG", "Relay setPercent: "+String(percent), 60, PRIVATE);
-    if(percent == 0) setOn();
-    else setOff();
+    Serial.println("DEBUG: setPercent: "+String(percent));
+    if(percent == 0) setOff();
+    else setOn();
 }
 
 /**
  * Set On
  */
 void Relay::setOn() {
-    Serial.println("Debug: setOn "+_relayNum);
+    Serial.println("DEBUG: setOn "+String(_relayNum));
     if(isOn()) return;
 
     _percent = 100;
-    Serial.println("Debug: doing it");
+    Serial.println("DEBUG: doing it");
 
     byte bitmap = 1 << _relayNum;
     Relay::_currentState |= bitmap;            // Set relay's bit
@@ -125,7 +126,7 @@ void Relay::setOn() {
  * Set relay off
  */
 void Relay::setOff() {
-    Serial.println("Debug: setOff "+_relayNum);
+    Serial.println("DEBUG: setOff "+String(_relayNum));
     if(isOff()) return;
 
     _percent = 0;
@@ -147,8 +148,7 @@ void Relay::setOff() {
  * @return bool true if light is on
  */
 bool Relay::isOn() {
-    byte mask = 1 << _relayNum;
-    return Relay::_currentState & mask;
+    return _percent != 0;
 }
 
 /**
@@ -156,7 +156,7 @@ bool Relay::isOn() {
  * @return bool true if light is off
  */
 bool Relay::isOff() {
-    return !isOn();
+    return _percent == 0;
 }
 
 /**
