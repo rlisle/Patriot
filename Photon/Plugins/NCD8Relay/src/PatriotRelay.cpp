@@ -1,6 +1,8 @@
 /******************************************************************
  Relay control
 
+ Up to 8 relay controllers can reside on a single I2C bus.
+
  Features:
  - On/Off control
 
@@ -19,6 +21,10 @@
 
 #include "PatriotRelay.h"
 
+int8_t Relay::_numControllers = 0;    // Count of relay boards on I2C bus
+int8_t Relay::_currentStates[8];      // All relays initially off
+int8_t Relay::_addresses[8];          // Addresses of up to 8 boards
+
 /**
  * Constructor
  * @param address is the board address set by jumpers (0-7)
@@ -26,43 +32,47 @@
  * @param relayNum is the relay number on the NCD 8 Relay board (1-8)
  * @param name String name used to address the relay.
  */
-Relay::Relay(byte address, byte numRelays, byte relayNum, String name)
+Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name)
 {
-    Particle.publish("DEBUG", "Create relay "+name+" for relay "+String(relayNum), 60, PRIVATE);
     Serial.println("Debug: creating relay "+name);
 
     _relayNum   = relayNum;
     _name       = name;
     _percent    = 0;
-    _address    = address;
 
     switch(numRelays)
     {
         case 8:
         default:
-            initialize8RelayBoard(address);
+            _boardIndex = initialize8RelayBoard(address);
             break;
     }
 }
 
-byte Relay::_currentState = 0;      // All relays initially off
-
-void Relay::initialize8RelayBoard(byte address)
-{
-    Serial.println("Initializing board: "+String(address)+" relay #"+String(_relayNum));
+int8_t Relay::initialize8RelayBoard(int8_t address) {
+    Serial.println("Initializing board: " + String(address) + " relay #" + String(_relayNum));
 
     _registerAddress = 0x0A;    // Does this change for different boards?
 
+    int8_t index = boardIndex(address);
+    if(index < 0)
+    {
+        index = initializeBoard(address);
+    }
+    return index;
+}
+
+int8_t Relay::initializeBoard(int8_t address) {
+
+    Serial.println("Adding new board "+String(address));
+
     // Only the first relay loaded needs to initialize the I2C link
-    if(Wire.isEnabled()) return;
+    if(!Wire.isEnabled()) {
+        Serial.println("Initializing Wire (one time only!)");
+        Wire.begin();
+    }
 
-    Serial.println("Initializing Wire");
-
-    // Note: This is the sequence from the NCD 8 Relay library.
-    //       Lines with ??? appear to be wrong.
-    Wire.begin();
-
-    Wire.beginTransmission(_address);
+    Wire.beginTransmission(address);
     Wire.write(0x00);                   // Select IO Direction register
     Wire.write(0x00);                   // Set all 8 to outputs
     Wire.endTransmission();             // ??? Write 'em, Dano
@@ -74,12 +84,30 @@ void Relay::initialize8RelayBoard(byte address)
 
     Serial.println("Turning off all relays");
 
-    Wire.write(_registerAddress);
-    Wire.write(Relay::_currentState);       // Turn off all relays
-    byte status = Wire.endTransmission();
-    //TODO: handle any errors, retry, etc.
+    return addAddressToArray(address);
+}
 
-    Serial.println("Done");
+int8_t Relay::boardIndex(int8_t address) {
+    for(int8_t index=0; index<_numControllers; index++) {
+        if(_addresses[index] == address) {
+            return index;
+        }
+    }
+    return -1;
+}
+
+int8_t Relay::addAddressToArray(int8_t address) {
+    _currentStates[_numControllers] = 0x00;
+    _addresses[_numControllers] = address;
+
+    Wire.write(_registerAddress);
+    Wire.write(0x00);                      // Turn off all relays
+    byte status = Wire.endTransmission();
+    if(status != 0) {
+        //TODO: handle any errors, retry, etc.
+        Serial.println("Error turning off relays");
+    }
+    return _numControllers++;
 }
 
 /**
@@ -113,13 +141,16 @@ void Relay::setOn() {
     Serial.println("DEBUG: doing it");
 
     byte bitmap = 1 << _relayNum;
-    Relay::_currentState |= bitmap;            // Set relay's bit
+    Relay::_currentStates[_boardIndex] |= bitmap;            // Set relay's bit
 
-    Wire.beginTransmission(_address);
+    Wire.beginTransmission(_addresses[_boardIndex]);
     Wire.write(_registerAddress);
-    Wire.write(Relay::_currentState);
+    Wire.write(Relay::_currentStates[_boardIndex]);
     byte status = Wire.endTransmission();
-    //TODO: handle errors/retries
+    if(status != 0) {
+        //TODO: handle any errors, retry, etc.
+        Serial.println("Error turning off relays");
+    }
 }
 
 /**
@@ -134,13 +165,16 @@ void Relay::setOff() {
 
     byte bitmap = 1 << _relayNum;
     bitmap = !bitmap;
-    Relay::_currentState &= bitmap;
+    Relay::_currentStates[_boardIndex] &= bitmap;
 
-    Wire.beginTransmission(_address);
+    Wire.beginTransmission(_addresses[_boardIndex]);
     Wire.write(_registerAddress);
-    Wire.write(Relay::_currentState);
+    Wire.write(Relay::_currentStates[_boardIndex]);
     byte status = Wire.endTransmission();
-    //TODO: handle errors/retries
+    if(status != 0) {
+        //TODO: handle any errors, retry, etc.
+        Serial.println("Error turning off relays");
+    }
 }
 
 /**

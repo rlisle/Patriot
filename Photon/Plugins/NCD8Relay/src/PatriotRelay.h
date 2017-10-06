@@ -1,8 +1,9 @@
 /******************************************************************
- Relay control
+ NCD Relay control
 
  Features:
  - On/Off control
+ - Supports multiple boards
 
  http://www.github.com/rlisle/Patriot
 
@@ -26,17 +27,21 @@ class Relay : public Device
 {
  private:
     String  _name;
-    byte    _relayNum;
-    byte    _address;
+    int8_t  _relayNum;
+    int8_t  _boardIndex;            // Index into static arrays
+    int8_t  _registerAddress;       // Is this different for different boards?
 
-    byte    _registerAddress;
+    static int8_t _numControllers;    // Count of relay boards on I2C bus
+    static int8_t _currentStates[];   // up to 8 relays currently supported
+    static int8_t _addresses[];       // Addresses of up to 8 boards
 
-    static byte _currentState;  // up to 8 relays currently supported
-
-    void    initialize8RelayBoard(byte address);
+    int8_t  initialize8RelayBoard(int8_t address);
+    int8_t  initializeBoard(int8_t address);
+    int8_t  boardIndex(int8_t address);
+    int8_t  addAddressToArray(int8_t address);
 
  public:
-    Relay(byte address, byte numRelays, byte relayNum, String name);
+    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name);
 
     String  name();
     void    setPercent(int percent);
