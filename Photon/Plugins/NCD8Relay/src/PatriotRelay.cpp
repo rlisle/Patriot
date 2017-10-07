@@ -32,7 +32,7 @@ int8_t Relay::_addresses[8];          // Addresses of up to 8 boards
  * @param relayNum is the relay number on the NCD 8 Relay board (1-8)
  * @param name String name used to address the relay.
  */
-Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, uint8_t duration=0)
+Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, uint8_t duration)
 {
     Serial.println("Debug: creating relay "+name);
 
@@ -48,6 +48,11 @@ Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, uin
             _boardIndex = initialize8RelayBoard(address);
             break;
     }
+}
+
+Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name)
+{
+    Relay(address, numRelays, relayNum, name, 0);
 }
 
 int8_t Relay::initialize8RelayBoard(int8_t address) {

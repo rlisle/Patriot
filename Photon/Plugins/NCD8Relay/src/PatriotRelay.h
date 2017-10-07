@@ -43,7 +43,8 @@ class Relay : public Device
     int8_t  addAddressToArray(int8_t address);
 
  public:
-    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration=0);
+    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name);
+    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration);
 
     String  name();
     void    setPercent(int percent);
