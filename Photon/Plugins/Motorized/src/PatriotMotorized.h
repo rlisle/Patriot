@@ -33,12 +33,7 @@ class Motorized : public Device
 {
  public:
     Motorized(int8_t openPinNum, int8_t closePinNum, int8_t seconds, String name);
-
     virtual void    setPercent(int percent);
-
-    // TODO: deprecate this
-    virtual int     convertCommandToPercent(String command);
-
     virtual void    loop();
 
  private:
@@ -54,6 +49,6 @@ class Motorized : public Device
 
     unsigned long   _stopMillis;    // Time to stop motor
 
-    unsigned long calcStopTime();
+    unsigned long calcStopTime(int percent);
     void          turnOffMotor();
 };
