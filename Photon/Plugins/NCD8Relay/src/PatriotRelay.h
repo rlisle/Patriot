@@ -37,6 +37,7 @@ class Relay : public Device
     static int8_t _currentStates[];   // up to 8 relays currently supported
     static int8_t _addresses[];       // Addresses of up to 8 boards
 
+    void    init(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration);
     int8_t  initialize8RelayBoard(int8_t address);
     int8_t  initializeBoard(int8_t address);
     int8_t  boardIndex(int8_t address);

@@ -32,7 +32,17 @@ int8_t Relay::_addresses[8];          // Addresses of up to 8 boards
  * @param relayNum is the relay number on the NCD 8 Relay board (1-8)
  * @param name String name used to address the relay.
  */
-Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, uint8_t duration)
+Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
+{
+    init(address, numRelays, relayNum, name, duration);
+}
+
+Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name)
+{
+    init(address, numRelays, relayNum, name, 0);
+}
+
+void Relay::init(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
 {
     Serial.println("Debug: creating relay "+name);
 
@@ -48,11 +58,6 @@ Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, uin
             _boardIndex = initialize8RelayBoard(address);
             break;
     }
-}
-
-Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name)
-{
-    Relay(address, numRelays, relayNum, name, 0);
 }
 
 int8_t Relay::initialize8RelayBoard(int8_t address) {
@@ -131,7 +136,6 @@ String Relay::name() {
  * @param percent Int 0 to 100. 0 = off, >0 = on
  */
 void Relay::setPercent(int percent) {
-    Serial.println("DEBUG: setPercent: "+String(percent));
     if(percent == 0) setOff();
     else setOn();
 }
@@ -143,7 +147,7 @@ void Relay::setOn() {
     if(isOn()) return;
 
     _percent = 100;
-    Serial.println("DEBUG: setOn "+String(_relayNum));
+    Serial.println("DEBUG: setOn relay "+String(_name)+" # "+String(_relayNum));
 
     byte bitmap = 1 << _relayNum;
     Relay::_currentStates[_boardIndex] |= bitmap;            // Set relay's bit
@@ -154,7 +158,7 @@ void Relay::setOn() {
     byte status = Wire.endTransmission();
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
-        Serial.println("Error turning off relays");
+        Serial.println("Error turning on relays");
     }
 }
 
@@ -165,13 +169,13 @@ void Relay::setOff() {
     if(isOff()) return;
 
     _percent = 0;
-    Serial.println("DEBUG: setOff "+String(_relayNum));
+//    Serial.println("DEBUG: setOff relay "+String(_name)+" # "+String(_relayNum));
 
     byte bitmap = 1 << _relayNum;
     bitmap = !bitmap;
-    Serial.println("DEBUG: bitmap = "+String(bitmap));
+//    Serial.println("DEBUG: bitmap = "+String(bitmap));
     Relay::_currentStates[_boardIndex] &= bitmap;
-    Serial.println("DEBUG: new state = "+String(_currentStates[_boardIndex]));
+//    Serial.println("DEBUG: new state = "+String(_currentStates[_boardIndex]));
 
     Wire.beginTransmission(_addresses[_boardIndex]);
     Wire.write(_registerAddress);
