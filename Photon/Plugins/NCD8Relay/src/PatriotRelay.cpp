@@ -44,8 +44,6 @@ Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name)
 
 void Relay::init(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
 {
-    Serial.println("Debug: creating relay "+name);
-
     _relayNum   = relayNum;
     _name       = name;
     _percent    = 0;
@@ -61,7 +59,6 @@ void Relay::init(int8_t address, int8_t numRelays, int8_t relayNum, String name,
 }
 
 int8_t Relay::initialize8RelayBoard(int8_t address) {
-    Serial.println("Initializing board: " + String(address) + " relay #" + String(_relayNum));
 
     _registerAddress = 0x0A;    // Does this change for different boards?
 
@@ -75,11 +72,8 @@ int8_t Relay::initialize8RelayBoard(int8_t address) {
 
 int8_t Relay::initializeBoard(int8_t address) {
 
-    Serial.println("Adding new board "+String(address));
-
     // Only the first relay loaded needs to initialize the I2C link
     if(!Wire.isEnabled()) {
-        Serial.println("Initializing Wire (one time only!)");
         Wire.begin();
     }
 
@@ -92,8 +86,6 @@ int8_t Relay::initializeBoard(int8_t address) {
     Wire.write(0x06);                   // ??? Select pull-up resistor register
     Wire.write(0x00);                   // ??? pull-ups disabled on all 8 outputs
     Wire.endTransmission();
-
-    Serial.println("Turning off all relays");
 
     return addAddressToArray(address);
 }
@@ -147,7 +139,6 @@ void Relay::setOn() {
     if(isOn()) return;
 
     _percent = 100;
-    Serial.println("DEBUG: setOn relay "+String(_name)+" # "+String(_relayNum));
 
     byte bitmap = 1 << _relayNum;
     Relay::_currentStates[_boardIndex] |= bitmap;            // Set relay's bit
@@ -169,13 +160,10 @@ void Relay::setOff() {
     if(isOff()) return;
 
     _percent = 0;
-//    Serial.println("DEBUG: setOff relay "+String(_name)+" # "+String(_relayNum));
 
     byte bitmap = 1 << _relayNum;
-    bitmap = !bitmap;
-//    Serial.println("DEBUG: bitmap = "+String(bitmap));
+    bitmap = 0xff ^ bitmap;
     Relay::_currentStates[_boardIndex] &= bitmap;
-//    Serial.println("DEBUG: new state = "+String(_currentStates[_boardIndex]));
 
     Wire.beginTransmission(_addresses[_boardIndex]);
     Wire.write(_registerAddress);
