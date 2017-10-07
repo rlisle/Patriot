@@ -30,6 +30,8 @@ class Relay : public Device
     int8_t  _relayNum;
     int8_t  _boardIndex;            // Index into static arrays
     int8_t  _registerAddress;       // Is this different for different boards?
+    int8_t  _duration;              // # seconds to keep on. 0 = forever
+    long    _startMsecs;            // msecs when started
 
     static int8_t _numControllers;    // Count of relay boards on I2C bus
     static int8_t _currentStates[];   // up to 8 relays currently supported
@@ -41,7 +43,7 @@ class Relay : public Device
     int8_t  addAddressToArray(int8_t address);
 
  public:
-    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name);
+    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration=0);
 
     String  name();
     void    setPercent(int percent);

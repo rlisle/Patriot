@@ -32,13 +32,14 @@ int8_t Relay::_addresses[8];          // Addresses of up to 8 boards
  * @param relayNum is the relay number on the NCD 8 Relay board (1-8)
  * @param name String name used to address the relay.
  */
-Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name)
+Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, uint8_t duration=0)
 {
     Serial.println("Debug: creating relay "+name);
 
     _relayNum   = relayNum;
     _name       = name;
     _percent    = 0;
+    _duration   = duration;
 
     switch(numRelays)
     {
@@ -134,11 +135,10 @@ void Relay::setPercent(int percent) {
  * Set On
  */
 void Relay::setOn() {
-    Serial.println("DEBUG: setOn "+String(_relayNum));
     if(isOn()) return;
 
     _percent = 100;
-    Serial.println("DEBUG: doing it");
+    Serial.println("DEBUG: setOn "+String(_relayNum));
 
     byte bitmap = 1 << _relayNum;
     Relay::_currentStates[_boardIndex] |= bitmap;            // Set relay's bit
@@ -157,15 +157,16 @@ void Relay::setOn() {
  * Set relay off
  */
 void Relay::setOff() {
-    Serial.println("DEBUG: setOff "+String(_relayNum));
     if(isOff()) return;
 
     _percent = 0;
-    Serial.println("Debug: doing it");
+    Serial.println("DEBUG: setOff "+String(_relayNum));
 
     byte bitmap = 1 << _relayNum;
     bitmap = !bitmap;
+    Serial.println("DEBUG: bitmap = "+String(bitmap));
     Relay::_currentStates[_boardIndex] &= bitmap;
+    Serial.println("DEBUG: new state = "+String(_currentStates[_boardIndex]));
 
     Wire.beginTransmission(_addresses[_boardIndex]);
     Wire.write(_registerAddress);
