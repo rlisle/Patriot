@@ -31,7 +31,7 @@ class Relay : public Device
     int8_t  _boardIndex;            // Index into static arrays
     int8_t  _registerAddress;       // Is this different for different boards?
     int8_t  _duration;              // # seconds to keep on. 0 = forever
-    long    _startMsecs;            // msecs when started
+    long    _stopMillis;            // time in millis to auto-stop
 
     static int8_t _numControllers;    // Count of relay boards on I2C bus
     static int8_t _currentStates[];   // up to 8 relays currently supported

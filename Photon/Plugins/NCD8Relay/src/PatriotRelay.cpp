@@ -21,6 +21,8 @@
 
 #include "PatriotRelay.h"
 
+#define MILLIS_PER_SECOND 1000
+
 int8_t Relay::_numControllers = 0;    // Count of relay boards on I2C bus
 int8_t Relay::_currentStates[8];      // All relays initially off
 int8_t Relay::_addresses[8];          // Addresses of up to 8 boards
@@ -48,6 +50,7 @@ void Relay::init(int8_t address, int8_t numRelays, int8_t relayNum, String name,
     _name       = name;
     _percent    = 0;
     _duration   = duration;
+    _stopMillis = 0;
 
     switch(numRelays)
     {
@@ -140,6 +143,11 @@ void Relay::setOn() {
 
     _percent = 100;
 
+    if(_duration != 0)
+    {
+        _stopMillis = millis() + (_duration * MILLIS_PER_SECOND);
+    }
+
     byte bitmap = 1 << _relayNum;
     Relay::_currentStates[_boardIndex] |= bitmap;            // Set relay's bit
 
@@ -160,6 +168,7 @@ void Relay::setOff() {
     if(isOff()) return;
 
     _percent = 0;
+    _stopMillis = 0;
 
     byte bitmap = 1 << _relayNum;
     bitmap = 0xff ^ bitmap;
@@ -200,5 +209,12 @@ bool Relay::isOff() {
  */
 void Relay::loop()
 {
-    // Nothing to do
+    if(_stopMillis != 0)
+    {
+        if(millis() >= _stopMillis)
+        {
+            _stopMillis = 0;
+            setOff();
+        }
+    }
 };
