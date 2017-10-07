@@ -31,26 +31,19 @@ Changelog:
  * @param duration is the number of seconds required to open/close.
  * @param name String name used to address this device.
  */
-Motorized::Motorized(int openPinNum, int closePinNum, long milliseconds, String name)
+Motorized::Motorized(int8_t openPinNum, int8_t closePinNum, int8_t duration, String name)
 {
     _name             = name;
     _openPinNum       = openPinNum;
     _closePinNum      = closePinNum;
-    _milliseconds     = milliseconds;
+    _duration         = duration;
     _percent          = 0;          // 0 = closed, 100 = fully open
     _state            = 0;          // 0 = not changing
+    _stopMillis       = 0;
     pinMode(openPinNum, OUTPUT);
     pinMode(closePinNum, OUTPUT);
     digitalWrite(openPinNum, LOW);
     digitalWrite(closePinNum, LOW);
-}
-
-/**
- * name
- * @return String name of fan
- */
-String Motorized::name() {
-    return _name;
 }
 
 /**
@@ -66,11 +59,11 @@ void Motorized::setPercent(int percent)
 
     if(percent == _percent) return;
 
-    _startPercent = percent;    // May be unnecessary
-    _percent = percent;         // Target percent
-    _startMillis = millis();    // Remember starting time in milliseconds
+    Serial.println("DEBUG: changing percent to "+String(percent));
 
-    if(percent > _startPercent) // Are we opening?
+    _stopMillis = calcStopTime(percent);
+
+    if(percent > _percent) // Are we opening?
     {
         _state = 1;
         digitalWrite(_openPinNum, HIGH);
@@ -80,101 +73,41 @@ void Motorized::setPercent(int percent)
         _state = 2;
         digitalWrite(_closePinNum, HIGH);
     }
-}
-
-/**
- * Get percent
- * @return Int current 0-100 percent value (0 closed, 100 open)
- */
-int Motorized::getPercent()
-{
-    return _percent;
-}
-
-// Handle command words like 'Open', 'Close', '+', '-', or 0-100
-/**
- * Convert commands such as "Open", "Close", and "Half" to a percent
- * @param position String command name specific to a motorized device
- * @return Int mapped percent value (0 to 100)
- */
-int Motorized::convertCommandToPercent(String position)
-{
-    Serial.print("Set motorized ");
-    Serial.print(_name);
-    Serial.print(" to ");
-    Serial.println(position);
-
-    int percent = 0;
-    if(position.equalsIgnoreCase("open")) {
-        percent = 100;
-
-    } else if(position.equalsIgnoreCase("close")) {
-        percent = 0;
-
-    } else if(position.equalsIgnoreCase("closed")) {
-        percent = 0;
-
-    } else if(position == "+") {
-        int increasedPercent = _percent + 10;
-        if(increasedPercent > 100) increasedPercent = 100;
-        percent = increasedPercent;
-
-    } else if(position == "-") {
-        int decreasedPercent = _percent - 10;
-        if(decreasedPercent < 0) decreasedPercent = 0;
-        percent = decreasedPercent;
-
-    } else {
-        int newPercent = position.toInt();
-        if(newPercent > 100) newPercent = 100;
-        percent = newPercent;
-    }
-    return percent;
-}
-
-void Motorized::setOn()
-{
-    setPercent(100);
-}
-
-void Motorized::setOff()
-{
-    setPercent(0);
-}
-
-bool Motorized::isOn()  // TODO: isOpen or isClosed would be more appropriate
-{
-    return(_percent != 0);
-}
-
-bool Motorized::isOff()
-{
-    return(_percent == 0);
+    _percent = percent;             // Target percent
 }
 
 void Motorized::loop()
 {
     // TODO: wait until elapsed time to shut off motor
-    if(_state == 0) return;
+    if(_state == 0 || _stopMillis == 0) return;
 
     // Has the motor been on long enough?
-    if(millis() >= _startMillis + 5000) //neededDuration())
+    if(millis() >= _stopMillis)
     {
-        Serial.println("Turning off motor");
         turnOffMotor();
-        _state = 0;
     }
 }
 
-unsigned long Motorized::neededDuration()
+unsigned long Motorized::calcStopTime(int percent)
 {
-    int deltaPercent = _percent - _startPercent;
+    int deltaPercent = percent - _percent;
     if(deltaPercent < 0) deltaPercent = -deltaPercent;
-    return _milliseconds * 100 / deltaPercent;
+    unsigned long stopTime = millis();
+    stopTime += (_duration * 100000) / deltaPercent;
+
+    Serial.println("Current time = "+String(millis())+", stop time = "+String(stopTime));
+
+    return stopTime;
 }
 
 void Motorized::turnOffMotor()
 {
+    Serial.println("Turning off motor");
+
+    _stopMillis = 0;
+
     digitalWrite(_openPinNum, LOW);
     digitalWrite(_closePinNum, LOW);
+
+    _state = 0;
 }

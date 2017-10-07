@@ -32,32 +32,28 @@ enum MotorizedState { inactive, opening, closing };
 class Motorized : public Device
 {
  public:
-    Motorized(int openPinNum, int closePinNum, long milliseconds, String name);
+    Motorized(int8_t openPinNum, int8_t closePinNum, int8_t seconds, String name);
 
-    virtual String  name();
     virtual void    setPercent(int percent);
-    virtual int     getPercent();
-    virtual int     convertCommandToPercent(String command);
 
-    //TODO: Move these convenience methods to the device class as non-virtual
-    virtual void    setOn();
-    virtual void    setOff();
-    virtual bool    isOn();
-    virtual bool    isOff();
+    // TODO: deprecate this
+    virtual int     convertCommandToPercent(String command);
 
     virtual void    loop();
 
  private:
-    unsigned long neededDuration();
-    void          turnOffMotor();
-
     String    _name;
-    int       _openPinNum;
-    int       _closePinNum;
-    int       _percent;
-    long      _milliseconds; // Milliseconds needed to fully open or close
+    int8_t    _openPinNum;
+    int8_t    _closePinNum;
+    int8_t    _duration;            // Seconds needed to fully open or close
 
-    int       _state;        // 0=inactive, 1=opening, 2=closing TODO: switch to enum
-    int       _startPercent; // Origin of change when opening/closing
-    long      _startMillis;  // Time when change started
+    int       _percent;             // Current percent open (0-100)
+
+    // TODO: switch to enum
+    int             _state;         // 0=inactive, 1=opening, 2=closing
+
+    unsigned long   _stopMillis;    // Time to stop motor
+
+    unsigned long calcStopTime();
+    void          turnOffMotor();
 };
