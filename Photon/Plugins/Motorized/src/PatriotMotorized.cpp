@@ -57,10 +57,10 @@ Motorized::Motorized(int8_t openPinNum, int8_t closePinNum, int8_t duration, Str
 }
 
 
-Motorized::setPulseMode(int8_t msecs)
+void Motorized::setPulseMode(int8_t msecsX10)
 {
-    _mode = 1;              // Pulse either pin to start, pulse both to stop
-    _pulseMsecs = msecs;    // Used to end pulses
+    _mode = 1;                          // Pulse either pin to start, pulse both to stop
+    _pulseDurationX10msecs = msecsX10;  // Used to end pulses
 }
 
 
@@ -104,7 +104,7 @@ void Motorized::loop()
     if(_state == 0) return;     // Nothing to do if we're idle
 
     // Has the motor been on long enough?
-    if(_stopMsecs != 0)
+    if(_stopTimeMsecs != 0)
     {
         if(millis() >= _stopTimeMsecs)
         {
@@ -154,5 +154,5 @@ void Motorized::turnOffMotor()
         digitalWrite(_openPinNum, HIGH);
         digitalWrite(_closePinNum, HIGH);
     }
-    _stopMsecs = 0;
+    _stopTimeMsecs = 0;
 }
