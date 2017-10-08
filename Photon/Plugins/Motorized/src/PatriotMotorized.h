@@ -37,17 +37,18 @@ class Motorized : public Device
     virtual void    loop();
 
  private:
-    String    _name;
-    int8_t    _openPinNum;
-    int8_t    _closePinNum;
-    int8_t    _duration;            // Seconds needed to fully open or close
+    String  _name;
+    int8_t  _openPinNum;
+    int8_t  _closePinNum;
+    int8_t  _durationSeconds;       // Seconds needed to fully open or close
+    int8_t  _pulseDurationMsecs;    // Length of start/stop pulses in msecs
 
-    int       _percent;             // Current percent open (0-100)
+    // TODO: switch to enums
+    int8_t      _state;             // 0=inactive, 1=opening, 2=closing
+    int8_t      _mode;              // 0=hold on/off, 1=pulse on/off, pulse both to stop
 
-    // TODO: switch to enum
-    int             _state;         // 0=inactive, 1=opening, 2=closing
-
-    unsigned long   _stopMillis;    // Time to stop motor
+    unsigned long   _stopTimeMsecs;     // Time to stop motor
+    unsigned long   _pulseTimeMsecs;    // Time to end pulse (if mode == 1)
 
     unsigned long calcStopTime(int percent);
     void          turnOffMotor();
