@@ -33,6 +33,7 @@ class Motorized : public Device
 {
  public:
     Motorized(int8_t openPinNum, int8_t closePinNum, int8_t seconds, String name);
+    void            setPulseMode(int8_t msecs);
     virtual void    setPercent(int percent);
     virtual void    loop();
 

@@ -57,10 +57,10 @@ Motorized::Motorized(int8_t openPinNum, int8_t closePinNum, int8_t duration, Str
 }
 
 
-Motorized::setPulseMode(int8_t pulseDurationMsecs)
+Motorized::setPulseMode(int8_t msecs)
 {
-    _mode = 1;          // Pulse either pin to start, pulse both to stop
-    _pulseMsecs = 0;    // Used to end pulses
+    _mode = 1;              // Pulse either pin to start, pulse both to stop
+    _pulseMsecs = msecs;    // Used to end pulses
 }
 
 
@@ -79,7 +79,7 @@ void Motorized::setPercent(int percent)
 
     Serial.println("DEBUG: changing percent to "+String(percent));
 
-    _stopMsecs = calcStopTime(percent);
+    _stopTimeMsecs = calcStopTime(percent);
 
     if(percent > _percent) // Are we opening?
     {
@@ -95,7 +95,7 @@ void Motorized::setPercent(int percent)
 
     if(_mode != 0)
     {
-        _pulseMsecs = millis() + _pulseMsecs;
+        _pulseTimeMsecs = millis() + _pulseDurationMsecs;
     }
 }
 
@@ -106,26 +106,23 @@ void Motorized::loop()
     // Has the motor been on long enough?
     if(_stopMsecs != 0)
     {
-        if(millis() >= _stopMsecs)
+        if(millis() >= _stopTimeMsecs)
         {
             turnOffMotor();
         }
     }
 
     // Has our pulse been on long enough?
-    if(_pulseMsecs != 0)
+    if(_pulseTimeMsecs != 0 && millis() >= _pulseTimeMsecs)
     {
-        if(millis() >= _pulseMsecs)
-        {
-            _pulseMsecs = 0;
-            digitalWrite(_openPinNum, LOW);
-            digitalWrite(_closePinNum, LOW);
+        _pulseTimeMsecs = 0;
+        digitalWrite(_openPinNum, LOW);
+        digitalWrite(_closePinNum, LOW);
 
-            // Was this the stop pulse?
-            if(_stopMsecs == 0)
-            {
-                _state = 0;
-            }
+        // Was this the stop pulse?
+        if(_stopTimeMsecs == 0)
+        {
+            _state = 0;
         }
     }
 }
@@ -135,7 +132,7 @@ unsigned long Motorized::calcStopTime(int percent)
     int deltaPercent = percent - _percent;
     if(deltaPercent < 0) deltaPercent = -deltaPercent;
     unsigned long stopTime = millis();
-    stopTime += (_duration * 100000) / deltaPercent;
+    stopTime += (_durationSeconds * 100000) / deltaPercent;
 
     Serial.println("Current time = "+String(millis())+", stop time = "+String(stopTime));
 
@@ -153,7 +150,7 @@ void Motorized::turnOffMotor()
         digitalWrite(_closePinNum, LOW);
 
     } else {            // Pulse both pins to "stop"
-        _pulseMsecs = millis() + _pulseDuration;
+        _pulseTimeMsecs = millis() + _pulseDurationMsecs;
         digitalWrite(_openPinNum, HIGH);
         digitalWrite(_closePinNum, HIGH);
     }
