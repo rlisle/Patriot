@@ -38,17 +38,17 @@ Changelog:
  */
 Motorized::Motorized(int8_t openPinNum, int8_t closePinNum, int8_t duration, String name)
 {
-    _name               = name;
-    _openPinNum         = openPinNum;
-    _closePinNum        = closePinNum;
-    _durationSeconds    = duration;     // # seconds to go from fully closed to open
-    _pulseDurationMsecs = 0;            // Duration of pulse (used in pulse mode only)
-    _mode               = 0;            // 1 = pulse mode, pulse both to stop
-    _percent            = 0;            // 0 = closed, 100 = fully open
-    _state              = 0;            // 0 = not changing
+    _name                   = name;
+    _openPinNum             = openPinNum;
+    _closePinNum            = closePinNum;
+    _durationSeconds        = duration;     // # seconds to go from fully closed to open
+    _pulseDurationX10msecs  = 0;            // Duration of pulse in msecs x 10 (eg. 100 = 1 second)
+    _mode                   = 0;            // 1 = pulse mode, pulse both to stop
+    _percent                = 0;            // 0 = closed, 100 = fully open
+    _state                  = 0;            // 0 = not changing
 
-    _stopTimeMsecs      = 0;
-    _pulseTimeMsecs     = 0;
+    _stopTimeMsecs          = 0;
+    _pulseTimeMsecs         = 0;
 
     pinMode(openPinNum, OUTPUT);
     pinMode(closePinNum, OUTPUT);
@@ -95,7 +95,7 @@ void Motorized::setPercent(int percent)
 
     if(_mode != 0)
     {
-        _pulseTimeMsecs = millis() + _pulseDurationMsecs;
+        _pulseTimeMsecs = millis() + ((long)_pulseDurationX10msecs * 10l);
     }
 }
 
@@ -150,7 +150,7 @@ void Motorized::turnOffMotor()
         digitalWrite(_closePinNum, LOW);
 
     } else {            // Pulse both pins to "stop"
-        _pulseTimeMsecs = millis() + _pulseDurationMsecs;
+        _pulseTimeMsecs = millis() + ((long)_pulseDurationX10msecs * 10l);
         digitalWrite(_openPinNum, HIGH);
         digitalWrite(_closePinNum, HIGH);
     }

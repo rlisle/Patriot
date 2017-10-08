@@ -33,7 +33,7 @@ class Motorized : public Device
 {
  public:
     Motorized(int8_t openPinNum, int8_t closePinNum, int8_t seconds, String name);
-    void            setPulseMode(int8_t msecs);
+    void            setPulseMode(int8_t msecsX10);
     virtual void    setPercent(int percent);
     virtual void    loop();
 
@@ -42,7 +42,7 @@ class Motorized : public Device
     int8_t  _openPinNum;
     int8_t  _closePinNum;
     int8_t  _durationSeconds;       // Seconds needed to fully open or close
-    int8_t  _pulseDurationMsecs;    // Length of start/stop pulses in msecs
+    int8_t  _pulseDurationX10msecs; // Length of start/stop pulses in msecs
 
     // TODO: switch to enums
     int8_t      _state;             // 0=inactive, 1=opening, 2=closing
