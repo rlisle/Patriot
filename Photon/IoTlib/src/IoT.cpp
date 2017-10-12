@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-12: Add control using device names
 2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
@@ -248,25 +249,21 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
         return;
     }
 
-    // //TODO: Deprecate direct device commands
-    // //      Instead, update current behavior
-    // Device* device = _devices->getDeviceWithName(name);
-    // if(device)
-    // {
-    //   int percent = device->convertCommandToPercent(state);
-    //   log(" percent = "+String(percent));
-    //   device->setPercent(percent);
-    //   device->performActivities(_activities);
-    //   return;
-    // }
-    //
-    //TODO: maintain a list of supported activities, and
-    //      search it like devices
-    // If not, must be an activity/event name
+    // See if this is a device name. If so, update it.
+     Device* device = _devices->getDeviceWithName(name);
+     if(device)
+     {
+       int percent = state.toInt();
+       log(" percent = "+String(percent));
+       device->setPercent(percent);
+       //device->performActivities(_activities);
+       return;
+     }
+
+    // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
     Serial.println("   going to add " + name + " = " + String(value));
     _activities->addActivity(name, value);
-    //_devices->performActivities(_activities);
     performActivities();
 }
 
