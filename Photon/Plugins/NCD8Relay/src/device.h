@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-20: Switch to "scenes" style activities.
 2017-05-20: Provide default implementations for everything,
             so this class is abstract anymore.
 2017-05-19: Remove dependencies to allow use in plugin.
@@ -47,6 +48,7 @@ class Device {
 
     // Each device may use different commands (eg. bright vs fast vs cold)
     // These need to be converted to a level by each device
+    // Note: this is being deprecated.
     virtual int convertCommandToPercent(String command) { return 0; };
 
     // Perform things continuously, such as fading or slewing

@@ -94,7 +94,7 @@ devices can be added without having to modifying any other devices.
 Instead of directly controlling devices using commands such as 
 "turn the living room lamp on", each device is controlled by defining
 _behaviors_ that respond to _activities_. So for example, in order to turn
-that living room light on, you might define an activity called "Watch TV",
+the living room light on, you might define an activity called "Watch TV",
 and a behavior for that lamp that would turn it on whenever "Watch TV" is
 active.
 
@@ -107,13 +107,24 @@ Or you could add another lamp controller, and have it respond to the "Watch TV"
 activity also, and you wouldn't have to modify the existing controllers. 
 
 This may sound similar to what HomeKit and other IoT architectures refer to
-as _scenes_. And while they are indeed similar, a key difference between the
-use of _activities_ and _scenes_ is that _activities_ start and stop, and it
-is expected that multiple _activities_ can be active at the same time.
-When one activity ends, all other current activities are evaluated in order
-to set the new state of devices. This is different from most _scene_ approaches
-that simply set the state of a group of devices when a _scene_ is set, regardless
-of what other _scenes_ might have been set previously.
+as _scenes_. And while might be similar, it is important to understand that 
+activities are not just a grouping of devices. It is anticipated that activities
+will eventually be able to learn new behaviors. 
+
+For example, let's says that I currently have two outside lights: "Porch" and 
+"Awning". I can control both of these by defining an "outside" activity.
+Then when I tell Alexa to "turn on outside", both lights will come on.
+What happens then when I add another outside light? 
+I could update the programming to add the new light to the the "outside"
+activity, but wouldn't it be better if the system could learn to include
+the new light in the "outside" activity. For example, if I set the outside
+activity, and then always turn on the new light, couldn't the system
+figurout out that I want the new light turned on also when I set "outside"?
+
+So that's the dream, and it will remain to be seen whether we can figure out
+how to do this. In the mean time, it's important to create activities with
+that sort of behavior in mind.   
+
 
 ### Why Particle.io and Photon?
 
