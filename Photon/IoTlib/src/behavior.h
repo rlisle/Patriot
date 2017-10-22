@@ -27,7 +27,6 @@ Changelog:
 #include "device.h"
 
 class Activities;
-//class Device;
 
 class Behavior
 {

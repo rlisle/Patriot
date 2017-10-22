@@ -14,7 +14,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
-2017-10-22: Convert to "scenes"
+2017-10-22: Convert to scenes-like behavior
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-07-24: Initial version
@@ -32,7 +32,6 @@ Behavior::Behavior(Device *device, String activityName, char comparison, int val
 
 bool Behavior::matchesCondition(String name, int value)
 {
-//    Serial.println("matchesCondition? " + name + String(value));
     if (name.equalsIgnoreCase(activityName))
     {
         switch (_comparison)
