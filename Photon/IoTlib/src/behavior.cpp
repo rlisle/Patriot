@@ -14,6 +14,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-22: Convert to "scenes"
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-07-24: Initial version
@@ -67,15 +68,10 @@ bool Behavior::matchesCondition(String name, int value)
     return false;
 }
 
-int Behavior::determineLevel(Activities *activities)
+void Behavior::performActivity(String name, int value)
 {
-    for (int i = 0; i < activities->count(); i++)
+    if (matchesCondition(name, value))
     {
-        Activity *activity = activities->getActivityByNum(i);
-        if (matchesCondition(activity->_name, activity->_value))
-        {
-            return level;
-        }
+        device->setPercent(value);
     }
-    return 0;
 }

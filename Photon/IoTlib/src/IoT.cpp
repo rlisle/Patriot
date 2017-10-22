@@ -243,6 +243,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     // Is a device coming online? (eg. ""<devicename>:Alive")
     // Is this an alive message?
+    // Note: probably want to deprecate this per note in .h
     if(state.equalsIgnoreCase("alive"))
     {
         _controllerNames->addController(name);
@@ -254,30 +255,13 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
      if(device)
      {
        int percent = state.toInt();
-       log(" percent = "+String(percent));
+       Serial.println(" percent = "+String(percent));
        device->setPercent(percent);
-       //device->performActivities(_activities);
        return;
      }
 
     // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
-    Serial.println("   going to add " + name + " = " + String(value));
-    _activities->addActivity(name, value);
-    performActivities();
+    Serial.println("   performing activity " + name + " = " + String(value));
+    _behaviors->performActivity(name, value);
 }
-
-
-void IoT::performActivities()
-{
-    Device *device;
-
-    for (int i = 0; i < _devices->numDevices(); i++)
-    {
-        device = _devices->getDeviceByNum(i);
-        int defaultPercent = 0;
-        int percent = _behaviors->determineLevelForActivities(device, defaultPercent, _activities);
-        device->setPercent(percent);
-    }
-}
-

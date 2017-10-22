@@ -6,16 +6,6 @@ A Behavior object describes the response of a device
 to received "activity notifications".
 Activities are received via Particle.io Pub/Sub.
 
-Multiple activities can be active at the same time, so it is
-important to combine their effects, in addition to stopping an
-activity in a manner that doesn't break activities that continue
-to be in effect.
-
-When an activity is started, its name is added to an array of
-active activities. When the activity is stopped, its name is
-removed from the array. The activity array is passed to the
-performBehaviors() function whenever there is a change.
-
 TODO:
 1. persist behaviors to EEPROM
   - Photon has 2k EEPROM (actually, flash working like EEPROM)
@@ -28,6 +18,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-22: Convert to "scenes" behavior.
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-06-24: Initial version
@@ -63,22 +54,13 @@ int Behaviors::addBehavior(Behavior *behavior)
 }
 
 
-int Behaviors::determineLevelForActivities(Device *device, int defaultPercent, Activities *activities)
+void performActivity(String name, int value)
 {
-    int level = defaultPercent;
+    Serial.println("Behaviors performing activity "+name+" = "+String(value));
+
     for (int i = 0; i < _numBehaviors; i++)
     {
         Behavior *behavior = _behaviors[i];
-        if (behavior->device == device)
-        {
-            int newLevel = behavior->determineLevel(activities);
-            // For now, simply select the highest level set by any behavior
-            // Later we may want to factor priorities, etc. into the equation
-            if (newLevel > level)
-            {
-                level = newLevel;
-            }
-        }
+        behavior->performActivity(name, level);
     }
-    return level;
 }

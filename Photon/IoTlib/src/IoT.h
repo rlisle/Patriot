@@ -70,7 +70,12 @@ public:
      */
     void loop();
 
+    // exposeControllers will probably be deprecated
+    // and replaced with particle.io list devices API
     bool exposeControllers();
+
+    // exposeActivities will probably be deprecated
+    // and replaced by a separate Raspberry Pi
     bool exposeActivities();
 
     void addDevice(Device *device);
@@ -104,7 +109,7 @@ private:
     Activities  *_activities;
     Behaviors   *_behaviors;
     Devices     *_devices;
-    DeviceNames *_deviceNames;          // TODO: This is probably not needed
+    DeviceNames *_deviceNames;
     ControllerNames *_controllerNames;
 
     void subscribeHandler(const char *eventName, const char *rawData);

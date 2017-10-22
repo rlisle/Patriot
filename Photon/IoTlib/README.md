@@ -119,7 +119,7 @@ I could update the programming to add the new light to the the "outside"
 activity, but wouldn't it be better if the system could learn to include
 the new light in the "outside" activity. For example, if I set the outside
 activity, and then always turn on the new light, couldn't the system
-figurout out that I want the new light turned on also when I set "outside"?
+figure out that I want the new light turned on also when I set "outside"?
 
 So that's the dream, and it will remain to be seen whether we can figure out
 how to do this. In the mean time, it's important to create activities with

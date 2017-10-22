@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-22: Changed to perform like "scenes".
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-09-09: Initial version
@@ -20,6 +21,7 @@ Changelog:
 
 #include "behavior.h"
 
+//TODO: change to dynamic array or linked list
 #define MAX_NUM_BEHAVIORS 64
 
 class Behaviors
@@ -29,8 +31,7 @@ public:
     Behaviors();
 
     int addBehavior(Behavior *behavior); // Returns # behaviors (index+1)
-    void performActivities(Activities *activities);
-    int determineLevelForActivities(Device *device, int defaultPercent, Activities *activities);
+    void performActivity(String name, int value);
 
 private:
     uint8_t _numBehaviors = 0;
