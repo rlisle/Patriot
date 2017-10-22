@@ -54,13 +54,13 @@ int Behaviors::addBehavior(Behavior *behavior)
 }
 
 
-void performActivity(String name, int value)
+void Behaviors::performActivity(String name, int value)
 {
     Serial.println("Behaviors performing activity "+name+" = "+String(value));
 
     for (int i = 0; i < _numBehaviors; i++)
     {
         Behavior *behavior = _behaviors[i];
-        behavior->performActivity(name, level);
+        behavior->performActivity(name, value);
     }
 }

@@ -24,9 +24,10 @@ Changelog:
 #pragma once
 
 #include "activities.h"
+#include "device.h"
 
 class Activities;
-class Device;
+//class Device;
 
 class Behavior
 {
@@ -43,5 +44,5 @@ public:
 
     Behavior(Device *device, String activityName, char comparison, int value, int level);
 
-    int performActivity(String name, int level);
+    void performActivity(String name, int level);
 };
