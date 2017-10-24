@@ -20,6 +20,8 @@ Changelog:
 2016-07-24: Initial version
 ******************************************************************/
 #include "behavior.h"
+//#include "IoT.h"
+
 
 Behavior::Behavior(Device *device, String activityName, char comparison, int value, int level)
 {
@@ -71,6 +73,8 @@ void Behavior::performActivity(String name, int value)
 {
     if (matchesCondition(name, value))
     {
-        device->setPercent(value);
+        //IoT* iot = IoT::getInstance();
+        //iot->log("Behavior "+String(activityName)+" setting level "+String(level));
+        device->setPercent(level);
     }
 }

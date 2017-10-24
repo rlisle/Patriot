@@ -43,5 +43,5 @@ public:
 
     Behavior(Device *device, String activityName, char comparison, int value, int level);
 
-    void performActivity(String name, int level);
+    void performActivity(String name, int value);
 };

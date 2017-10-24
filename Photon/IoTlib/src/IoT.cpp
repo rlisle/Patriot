@@ -263,6 +263,6 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
-    Serial.println("   performing activity " + name + " = " + String(value));
+    log("   performing activity " + name + " = " + String(value));
     _behaviors->performActivity(name, value);
 }
