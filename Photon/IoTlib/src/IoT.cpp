@@ -95,6 +95,7 @@ IoT::IoT()
     _numSupportedActivities = 0;
 }
 
+//TODO: Eliminate this method by using the firmware Get Device Name
 /**
  * Configuration methods
  */

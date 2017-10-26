@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-25: Update for IoT v1.2.0. Add off behavior.
 2017-05-19: Create fan plugin library
 ********************************************************/
 #include <IoT.h>
@@ -39,6 +40,7 @@ void setup() {
     iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 75, 10));
     iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 80, 50));
     iot->addBehavior(new Behavior(fan, "InsideTemp", '>', 85, 100));
+    iot->addBehavior(new Behavior(fan, "InsideTemp", '<', 76, 0));
 }
 
 void loop() {

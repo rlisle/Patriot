@@ -22,6 +22,7 @@ IoT *iot;
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("myPhoton");
+    iot->setPublishName("patriot");
     iot->begin();
     iot->addDevice(new DHT(D4, DHT11));
 }

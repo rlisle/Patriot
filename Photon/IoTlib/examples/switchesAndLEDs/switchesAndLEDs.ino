@@ -1,8 +1,12 @@
 /*******************************************************
 Switches and LEDs Patriot Example
 
-This example contains 4 switches and 4 LEDs:
+This example requires some breadboarding.
+It uses 4 LEDs and 4 switch to demonstrate the more complex
+capabilites when using multiple devices.
 
+You can use a jumper wire to connect D0 to ground to turn the
+LED on and off, or use the iOS app or Alexa.
  * 4 LED Lights
      - Red   = Outside      A3      Photon pin 9
      - Green = Kitchen      RX      Photon pin 4
@@ -23,6 +27,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-26: Update for v2.
 2017-03-28: Use fixed 'patriot' event name.
 2017-03-24: Rename Patriot
 2017-03-11: Created switch & leds
@@ -37,7 +42,6 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myPhoton");
     iot->begin();
 
     // Create devices
@@ -63,6 +67,7 @@ void setup() {
     iot->addDevice(switch4);
 
     // Setup behaviors for our devices
+    // Behaviors can be named whatever you like, and can control multiple devices.
     iot->addBehavior(new Behavior(outside, "WakeUp", '>', 0, 100));
     iot->addBehavior(new Behavior(kitchen, "WatchTV", '>', 0, 100));
     iot->addBehavior(new Behavior(living, "Cook", '>', 0, 100));
