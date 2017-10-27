@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-27: v2.0.0. Change name to command.
 2017-05-17: Move to separate library
 2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
@@ -31,9 +32,7 @@ Changelog:
  * @param pinNum int pin number that is connected to the switch
  * @param name  String name of the event to send when switch changes
  */
-Switch::Switch(int pinNum, String name)
-                : Device(name),
-                  _pin(pinNum)
+Switch::Switch(int pinNum, String command) : _pin(pinNum), _command(command)
 {
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);
@@ -97,7 +96,7 @@ bool Switch::didSwitchChange()
  */
 void Switch::notify()
 {
-    String pubString = _name + ":" + (_percent > 0 ? "100" : "0");
+    String pubString = _command + ":" + (_percent > 0 ? "100" : "0");
     Serial.println(pubString);
     //TODO: get event name from IoT instead of hardcoded "patriot"
     Particle.publish("patriot", pubString, 60, PRIVATE);

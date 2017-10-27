@@ -29,11 +29,12 @@ Changelog:
 class Switch : public Device
 {
 public:
-    Switch(int pinNum, String name);
+    Switch(int pinNum, String command);
 
     void loop();
 
 private:
+    String     _command;
     int        _pin;
     long       _lastReadTime;
 
