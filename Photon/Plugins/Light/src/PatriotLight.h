@@ -23,7 +23,8 @@
  2016-01-17: Initial version
  ******************************************************************/
 
-#pragma once
+#ifndef PATRIOTLIGHT_H
+#define PATRIOTLIGHT_H
 
 #include "Particle.h"
 #include "device.h"
@@ -31,7 +32,6 @@
 class Light : public Device
 {
  private:
-    String    _name;
     int       _pin;
     int       _dimmingPercent;
     float     _dimmingDuration;
@@ -51,10 +51,8 @@ class Light : public Device
     bool      isPwmSupported();
 
  public:
-    Light(int pin, String name);
-    Light(int pin, String name, bool isInverted, bool forceDigital);
+    Light(int pin, String name, bool isInverted=false, bool forceDigital=false);
 
-    String    name();
     void      setPercent(int percent);
     int       getPercent();
     int       convertCommandToPercent(String command);
@@ -70,3 +68,4 @@ class Light : public Device
 
     void      loop();
 };
+#endif

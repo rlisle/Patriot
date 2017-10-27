@@ -31,14 +31,10 @@
  * @param isInverted True if On = output LOW
  * @param forceDigital True if output On/Off only (even if pin supports PWM)
  */
-Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
+Light::Light(int pinNum, String name, bool isInverted, bool forceDigital) : Device(name), _pin(pinNum), _isInverted(isInverted), _forceDigital(forceDigital)
 {
-    Particle.publish("DEBUG", "Create light "+name+" on pin "+String(pinNum), 60, PRIVATE);
+    Serial.println("Light constructor name: "+name+".");
 
-    _pin                      = pinNum;
-    _name                     = name;
-    _isInverted               = isInverted;
-    _forceDigital             = forceDigital;
     _dimmingPercent           = 100;                                // On full
     _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
     _currentPercent           = 0.0;
@@ -48,20 +44,9 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
     _commandPercent            = 0;
     pinMode(pinNum, OUTPUT);
     outputPWM();                        // Set initial off state
+    Serial.println("Light constructor returning _name: "+_name+".");
 }
 
-Light::Light(int pinNum, String name)
-{
-    Light(pinNum, name, false, false);
-}
-
-/**
- * name
- * @return String name of light
- */
-String Light::name() {
-    return _name;
-}
 
 /**
  * convert commands such as "on" or "off" to percent
