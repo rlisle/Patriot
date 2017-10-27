@@ -174,6 +174,7 @@ void IoT::loop()
 // Add a Device
 void IoT::addDevice(Device *device)
 {
+    Serial.println("IoT adding device: "+device->name()+".");
     _devices->addDevice(device);
     _deviceNames->addDevice(device->name());
 }

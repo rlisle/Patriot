@@ -32,8 +32,8 @@ Changelog:
  * @param name  String name of the event to send when switch changes
  */
 Switch::Switch(int pinNum, String name)
-                : _pin(pinNum),
-                  _name(name)
+                : Device(name),
+                  _pin(pinNum)
 {
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);

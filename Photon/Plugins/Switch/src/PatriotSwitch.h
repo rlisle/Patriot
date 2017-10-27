@@ -35,7 +35,6 @@ public:
 
 private:
     int        _pin;
-    String     _name;
     long       _lastReadTime;
 
     bool      isTimeToCheckSwitch();

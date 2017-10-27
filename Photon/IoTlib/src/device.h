@@ -12,8 +12,9 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-27: V2.0.0
 2017-05-20: Provide default implementations for everything,
-            so this class is abstract anymore.
+            so this class is not abstract anymore.
 2017-05-19: Remove dependencies to allow use in plugin.
 2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
@@ -28,6 +29,10 @@ class Device {
     int     _percent;
 
  public:
+    // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
+    //       for an explanation of how derived constructor member initialization works.
+    Device(String name) : _name(name) { };
+
     virtual String name() { return _name; };
 
     // This method can either read the device directly, or use a value

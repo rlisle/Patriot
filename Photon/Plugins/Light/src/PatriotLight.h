@@ -23,8 +23,7 @@
  2016-01-17: Initial version
  ******************************************************************/
 
-#ifndef PATRIOTLIGHT_H
-#define PATRIOTLIGHT_H
+#pragma once
 
 #include "Particle.h"
 #include "device.h"
@@ -68,4 +67,3 @@ class Light : public Device
 
     void      loop();
 };
-#endif
