@@ -50,10 +50,6 @@ class Device {
     virtual void setOn() { setPercent(100); };
     virtual void setOff() { setPercent(0); };
 
-    // Each device may use different commands (eg. bright vs fast vs cold)
-    // These need to be converted to a level by each device
-    virtual int convertCommandToPercent(String command) { return 0; };
-
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
 };

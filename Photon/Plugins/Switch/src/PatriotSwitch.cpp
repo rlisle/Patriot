@@ -25,6 +25,8 @@ Changelog:
 
 #include "PatriotSwitch.h"
 
+extern String publishNameVariable;
+
 #define kDebounceDelay 50
 
 /**
@@ -32,7 +34,9 @@ Changelog:
  * @param pinNum int pin number that is connected to the switch
  * @param name  String name of the event to send when switch changes
  */
-Switch::Switch(int pinNum, String command) : _pin(pinNum), _command(command)
+Switch::Switch(int pinNum, String command)
+        : _pin(pinNum),
+          _command(command)
 {
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);
@@ -99,5 +103,7 @@ void Switch::notify()
     String pubString = _command + ":" + (_percent > 0 ? "100" : "0");
     Serial.println(pubString);
     //TODO: get event name from IoT instead of hardcoded "patriot"
-    Particle.publish("patriot", pubString, 60, PRIVATE);
+    //Particle.publish("patriot", pubString, 60, PRIVATE);
+
+    Particle.publish(publishNameVariable, pubString, 60, PRIVATE);
 }

@@ -15,6 +15,7 @@
  Datasheets:
 
  Changelog:
+ 2017-10-28: Convert to v2.
  2017-09-20: Add support for inverted and non-analog outputs
  2017-05-19: Extract to separate plugin library
  2017-05-15: Make devices generic
@@ -54,7 +55,6 @@ class Light : public Device
 
     void      setPercent(int percent);
     int       getPercent();
-    int       convertCommandToPercent(String command);
     void      setOn();
     void      setOff();
     bool      isOn();
