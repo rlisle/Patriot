@@ -26,7 +26,6 @@
 class Relay : public Device
 {
  private:
-    String  _name;
     int8_t  _relayNum;
     int8_t  _boardIndex;            // Index into static arrays
     int8_t  _registerAddress;       // Is this different for different boards?
@@ -37,15 +36,13 @@ class Relay : public Device
     static int8_t _currentStates[];   // up to 8 relays currently supported
     static int8_t _addresses[];       // Addresses of up to 8 boards
 
-    void    init(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration);
     int8_t  initialize8RelayBoard(int8_t address);
     int8_t  initializeBoard(int8_t address);
     int8_t  boardIndex(int8_t address);
     int8_t  addAddressToArray(int8_t address);
 
  public:
-    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name);
-    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration);
+    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration = 0);
 
     String  name();
     void    setPercent(int percent);

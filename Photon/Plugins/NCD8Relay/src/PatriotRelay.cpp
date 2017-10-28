@@ -35,19 +35,9 @@ int8_t Relay::_addresses[8];          // Addresses of up to 8 boards
  * @param name String name used to address the relay.
  */
 Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
-{
-    init(address, numRelays, relayNum, name, duration);
-}
-
-Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name)
-{
-    init(address, numRelays, relayNum, name, 0);
-}
-
-void Relay::init(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
+    : Device(name)
 {
     _relayNum   = relayNum;
-    _name       = name;
     _percent    = 0;
     _duration   = duration;
     _stopMillis = 0;
@@ -117,15 +107,6 @@ int8_t Relay::addAddressToArray(int8_t address) {
 }
 
 /**
- * name
- * @return String name of relay
- */
-String Relay::name() {
-    return _name;
-}
-
-
-/**
  * Set percent
  * This is how things are turned on/off in Patriot
  * @param percent Int 0 to 100. 0 = off, >0 = on
@@ -182,22 +163,6 @@ void Relay::setOff() {
         //TODO: handle any errors, retry, etc.
         Serial.println("Error turning off relays");
     }
-}
-
-/**
- * Is light on?
- * @return bool true if light is on
- */
-bool Relay::isOn() {
-    return _percent != 0;
-}
-
-/**
- * Is light off?
- * @return bool true if light is off
- */
-bool Relay::isOff() {
-    return _percent == 0;
 }
 
 /**
