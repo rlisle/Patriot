@@ -32,24 +32,12 @@ class Fan : public Device
  public:
     Fan(int pinNum, String name);
 
-    virtual String  name();
     virtual void    setPercent(int percent);
-    virtual int     getPercent();
-    virtual int     convertCommandToPercent(String command);
-
-    //TODO: Move these convenience methods to the device class as non-virtual
-    virtual void    setOn();
-    virtual void    setOff();
-    virtual bool    isOn();
-    virtual bool    isOff();
-
-    virtual void    loop();
 
  private:
     int       calculateFanSpeed(int temperature);
     void      setFanSpeed(int percent);
 
-    String    _name;
     int       _pinNum;
     int       _percent;
 };
