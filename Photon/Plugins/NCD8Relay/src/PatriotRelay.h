@@ -44,12 +44,9 @@ class Relay : public Device
  public:
     Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration = 0);
 
-    String  name();
     void    setPercent(int percent);
     void    setOn();
     void    setOff();
-    bool    isOn();
-    bool    isOff();
 
     void    loop();
 };
