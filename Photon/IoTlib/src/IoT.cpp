@@ -108,9 +108,6 @@ IoT::IoT()
 void IoT::setPublishName(String publishName)
 {
     publishNameVariable = publishName;
-    if(_alive != NULL) {
-        _alive->setPublishName(publishName);
-    }
 }
 
 /**
@@ -123,7 +120,6 @@ void IoT::begin()
     _hasBegun = true;
 
     Serial.begin(57600);
-    log(_controllerName+" controller starting...");
 
     _activities = new Activities();
     _behaviors = new Behaviors();
@@ -159,13 +155,13 @@ void IoT::loop()
 void IoT::addDevice(Device *device)
 {
     _devices->addDevice(device);
-    if(device->name != "") {
+    if(device->name() != "") {
         Serial.println("IoT adding device: "+device->name()+".");
         _deviceNames->addDevice(device->name());
     }
     else
     {
-        Serial.println("IoT adding unnamed device");
+        Serial.println("IoT adding unnamed device. (Probably an input only device)");
     }
 }
 

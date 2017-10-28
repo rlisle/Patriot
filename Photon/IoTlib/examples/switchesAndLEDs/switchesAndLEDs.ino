@@ -79,8 +79,10 @@ void setup() {
     iot->addBehavior(new Behavior(outside, "Wake Up", '>', 0, 0));    // Wake up turns off outside lights
     iot->addBehavior(new Behavior(bedroom, "Wake Up", '>', 0, 100));  // and turns on the bedroom lights
 
-    iot->addBehavior(new Behavior(kitchen, "Watch TV", '>', 0, 50));  // Watch TV "on" sets living room lights to 50%
-    iot->addBehavior(new Behavior(kitchen, "Watch TV", '=', 0, 0));   // Watch TV "off" turns living room lights off
+    iot->addBehavior(new Behavior(kitchen, "Watch TV", '>', 0, 50));  // Watch TV "on" sets kitchen lights to 50%
+    iot->addBehavior(new Behavior(kitchen, "Watch TV", '=', 0, 0));   // Watch TV "off" turns kitchen lights off
+    iot->addBehavior(new Behavior(living, "Watch TV", '>', 0, 100));  // Watch TV "on" sets living room lights to 50%
+    iot->addBehavior(new Behavior(living, "Watch TV", '=', 0, 0));   // Watch TV "off" turns living room lights off
 
     iot->addBehavior(new Behavior(bedroom, "Sleep",'>',0, 0));      // Sleep turns off bedroom lights
     iot->addBehavior(new Behavior(kitchen, "Sleep",'>',0, 0));      // and kitchen lights
