@@ -51,6 +51,6 @@ void setup() {
     iot->addBehavior(new Behavior(light1, "photon", '=', 0, 0));        // Off
 }
 
-void loop() {w
+void loop() {
     iot->loop();
 }

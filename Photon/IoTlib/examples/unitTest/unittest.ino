@@ -12,6 +12,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-28: Updated to v2.0.0
 2017-04-03: Created based on starter.ino
 ******************************************************************/
 
@@ -25,7 +26,6 @@ int testFunc(String data);
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myPhoton");
     iot->begin();
 
     iot->log("Test sketch started");
@@ -33,10 +33,8 @@ void setup() {
     Light *light = new Light(D7, "Led");  // This is the small blue LED on a photon
     iot->addDevice(light);
 
-    iot->addBehavior(new Behavior(light, "photon", '>', 0, 100));
-
-    iot->exposeActivities();
-    iot->exposeControllers();
+    iot->addBehavior(new Behavior(light, "photon", '>', 0, 100));   // Turn on blue LED
+    iot->addBehavior(new Behavior(light, "photon", '=', 0, 0));     // Turn off blue LED
 
     // Test that user functions work
     Particle.function("test", testFunc);
