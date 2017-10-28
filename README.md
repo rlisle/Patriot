@@ -12,9 +12,12 @@ Initially this project will consist of a published particle.io Photon
 library (IoTlib) and a published Alexa Smart Home skill (Patriot).
 
 An iOS control panel app exists that allows your old iPhones
-to be used as touch display control panels. This code is being
-cleaned up and will be open sourced and/or available on the app
-store soon.
+to be used as touch display control panels. This code resides in the
+Patriot-iOS repository.
+
+If you are using an Alexa device, then you can also use the Alexa
+app Smart Home page to monitor and control your devices in addition
+to or instead of using the Patriot-iOS app.
 
 Your Photon based IoT projects can be created using any of the 
 standard particle.io development tools (Web IDE,
@@ -42,6 +45,14 @@ programming IoT devices using Particle's $19 Photon.
 I've also included the Eagle files and instructions for creating
 general purpose IoT printed circuit boards. Using these files,
 PCBs can be ordered from China for about $1.50 each.
+
+Recently Particle announced that their P0 and P1 parts are now supported
+in Seeed's PCB Fusion program.
+This enables the creation of low cost custom PCBs using the smaller, lower 
+cost P0 and P1 chips, and optional assembly. Wow!
+I've not tried this yet, but it looks very promising and I will post
+my designs once I do so.
+
 
 ## Alexa Smart Home Skill
 An Alexa smart home skill can be used to voice control the devices.
@@ -71,6 +82,8 @@ and downloaded to your iPhone or iPad manually, but I intend to allow the use
 of a single, published app using particle.io OAuth in the future.
 It remains to be seen whether Apple will allow certifying a hobbyist
 app such as this, but I'm going to try.
+
+And as mentioned above also, the Alexa app can be used to control your devices.
 
 ## Release History
 Refer to the (Releases page)[https://github.com/rlisle/Patriot/releases]
