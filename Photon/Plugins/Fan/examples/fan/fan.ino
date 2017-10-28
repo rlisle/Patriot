@@ -16,7 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
-2017-10-25: Update for IoT v1.2.0. Add off behavior.
+2017-10-25: Update for IoT v2. Add off behavior.
 2017-05-19: Create fan plugin library
 ********************************************************/
 #include <IoT.h>
@@ -26,7 +26,6 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myPhoton");
     iot->begin();
 
     // Create device
