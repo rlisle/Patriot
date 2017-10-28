@@ -11,6 +11,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-28: Update for v2.
 2017-05-20: Initial DHT plugin creation.
 ********************************************************/
 
@@ -21,8 +22,6 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myPhoton");
-    iot->setPublishName("patriot");
     iot->begin();
     iot->addDevice(new DHT(D4, DHT11));
 }
