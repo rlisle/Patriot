@@ -31,7 +31,7 @@ class Device {
  public:
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
-    Device(String name) : _name(name) { };
+    Device(String name = "") : _name(name) { };
 
     virtual String name() { return _name; };
 
