@@ -26,10 +26,8 @@ Changelog:
 
 #include "Particle.h"
 #include "constants.h"
-#include "alive.h"
 #include "activities.h"
 #include "behaviors.h"
-#include "controllernames.h"
 #include "devices.h"
 #include "devicenames.h"
 
@@ -57,7 +55,6 @@ public:
      * Only these methods may be called before begin()
      */
     void setPublishName(String publishName);
-    void setControllerName(String controllerName);
 
     /**
      * begin
@@ -70,14 +67,6 @@ public:
      * Loop needs to be called periodically
      */
     void loop();
-
-    // exposeControllers will probably be deprecated
-    // and replaced with particle.io list devices API
-    bool exposeControllers();
-
-    // exposeActivities will probably be deprecated
-    // and replaced by a separate Raspberry Pi
-    bool exposeActivities();
 
     void addDevice(Device *device);
     void addBehavior(Behavior *behavior);
@@ -92,7 +81,6 @@ private:
     static IoT* _instance;
     bool    _hasBegun;
     String  _publishName;
-    String  _controllerName;
     String  _proximityEvent;
     String  _supportedActivities[kMaxNumberActivities];
     int     _numSupportedActivities;
@@ -106,16 +94,14 @@ private:
     /**
      * Include other needed objects
      */
-    Alive       *_alive;
     Activities  *_activities;
     Behaviors   *_behaviors;
     Devices     *_devices;
     DeviceNames *_deviceNames;
-    ControllerNames *_controllerNames;
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
-    void performActivities();
+    void performActivities();   //TODO: To be deprecated
 
 };

@@ -52,6 +52,8 @@ String supportedActivitiesVariable;
  * This allows applications to automatically determine the event name
  * to use when publishing or subscribing to events to/from this device.
  *
+ * It is also used by plugins when publishing events.
+ *
  * Note: Do not change this or the Alexa and iOS apps my not work.
  *       This will be fixed in the future.
  */
@@ -91,20 +93,7 @@ IoT::IoT()
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
-    _controllerName         = kDefaultControllerName;
     _numSupportedActivities = 0;
-}
-
-//TODO: Eliminate this method by using the firmware Get Device Name
-/**
- * Configuration methods
- */
- void IoT::setControllerName(String controllerName)
-{
-    this->_controllerName = controllerName;
-    if(_alive != NULL) {
-        _alive->setControllerName(controllerName);
-    }
 }
 
 /**
@@ -137,11 +126,7 @@ void IoT::begin()
     log(_controllerName+" controller starting...");
 
     _activities = new Activities();
-    _alive = new Alive();
-    _alive->setControllerName(_controllerName);
-    _alive->setPublishName(publishNameVariable);
     _behaviors = new Behaviors();
-    _controllerNames = new ControllerNames();
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
@@ -166,7 +151,6 @@ void IoT::loop()
 {
     if(!_hasBegun) return;
 
-    _alive->loop();
     _devices->loop();
 }
 
@@ -174,9 +158,15 @@ void IoT::loop()
 // Add a Device
 void IoT::addDevice(Device *device)
 {
-    Serial.println("IoT adding device: "+device->name()+".");
     _devices->addDevice(device);
-    _deviceNames->addDevice(device->name());
+    if(device->name != "") {
+        Serial.println("IoT adding device: "+device->name()+".");
+        _deviceNames->addDevice(device->name());
+    }
+    else
+    {
+        Serial.println("IoT adding unnamed device");
+    }
 }
 
 
@@ -218,20 +208,6 @@ void IoT::buildSupportedActivitiesVariable()
     }
 }
 
-/******************************************************/
-/*** Expose variables listing devices and activities **/
-/******************************************************/
-bool IoT::exposeActivities()
-{
-    return _activities->expose();
-}
-
-bool IoT::exposeControllers()
-{
-    _controllerNames->addController(_controllerName);
-    return _controllerNames->expose();
-}
-
 /*************************/
 /*** Subscribe Handler ***/
 /*************************/
@@ -243,15 +219,6 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
-
-    // Is a device coming online? (eg. ""<devicename>:Alive")
-    // Is this an alive message?
-    // Note: probably want to deprecate this per note in .h
-    if(state.equalsIgnoreCase("alive"))
-    {
-        _controllerNames->addController(name);
-        return;
-    }
 
     // See if this is a device name. If so, update it.
      Device* device = _devices->getDeviceWithName(name);
