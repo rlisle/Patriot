@@ -17,6 +17,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-25: Update for IoT v1.2.0. Add OFF behaviors.
 2017-05-19: Convert to plugin library
 2017-03-28: Use fixed 'patriot' event name.
 2017-03-24: Rename Patriot
@@ -32,6 +33,7 @@ IoT *iot;
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("myPhoton");
+    iot->setPublishName("patriot");
     iot->begin();
 
     // Create devices
@@ -47,11 +49,15 @@ void setup() {
     iot->addDevice(reading);
     iot->addDevice(sink);
 
-    // Setup behaviors for our devices
+    // Setup behaviors for our devices (provide both on and off for v1.2.0)
     iot->addBehavior(new Behavior(porch, "Outside", '>', 0, 100));
+    iot->addBehavior(new Behavior(porch, "Outside", '=', 0, 0));
     iot->addBehavior(new Behavior(table, "Kitchen", '>', 0, 100));
+    iot->addBehavior(new Behavior(table, "Kitchen", '=', 0, 0));
     iot->addBehavior(new Behavior(reading, "Bedroom", '>', 0, 100));
+    iot->addBehavior(new Behavior(reading, "Bedroom", '=', 0, 0));
     iot->addBehavior(new Behavior(sink, "Bathroom",'>',0, 100));
+    iot->addBehavior(new Behavior(sink, "Bathroom",'=',0, 0));
 }
 
 void loop() {

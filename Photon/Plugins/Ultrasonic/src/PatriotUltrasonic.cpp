@@ -24,11 +24,13 @@ Changelog:
 
 #include "PatriotUltrasonic.h"
 
+extern String publishNameVariable;
+
 Ultrasonic::Ultrasonic(int triggerPin, int echoPin, String name)
+    : Device(name)
 {
     _triggerPin         = triggerPin;
     _echoPin            = echoPin;
-    _name               = name;
     _thresholdInInches  = kThresholdInInches;
 
     distanceInInches    = 0;
@@ -130,6 +132,5 @@ void Ultrasonic::notify(int distance)
 {
     String pubString = _name + ":" + String(distance);
     Serial.println(pubString);
-    //TODO: get event name from IoT instead of hardcoded "patriot"
-    Particle.publish("patriot", pubString, 60, PRIVATE);
+    Particle.publish(publishNameVariable, pubString, 60, PRIVATE);
 }

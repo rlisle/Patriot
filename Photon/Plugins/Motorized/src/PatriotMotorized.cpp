@@ -23,6 +23,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-28: Convert to v2.
 2017-10-08: Add pulse mode
 2017-09-17: Initial version based on fan plugin.
 ******************************************************************/
@@ -37,8 +38,8 @@ Changelog:
  * @param name String name used to address this device.
  */
 Motorized::Motorized(int8_t openPinNum, int8_t closePinNum, int8_t duration, String name)
+    : Device(name)
 {
-    _name                   = name;
     _openPinNum             = openPinNum;
     _closePinNum            = closePinNum;
     _durationSeconds        = duration;     // # seconds to go from fully closed to open

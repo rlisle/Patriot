@@ -8,14 +8,14 @@ or simple on/off lights if connected to a non-PWM pin.
 ## Usage
 
 Include this library in any Photon sketch that needs to support a light.
-Refer to the more complex examples in the main Patriot IoT examples
- directory.
+Refer to the included example sketch, or to the more complex examples 
+in the main Patriot IoT examples directory.
 
-This example creates a single LED device connected to pin D7.
+This example creates a single LED device connected to pin D7 named "blue".
 This is the pin used by the onboard blue LED, so no additional
 hardware is needed.
 
-A behavior is setup to control this LED with an event named "Photon".
+An additional behavior is setup to control this LED with an event named "Photon".
 
 Since Patriot supports automatic detection by the iOS app and Alexa,
 either of these can be used to control the LED once this sketch is
@@ -32,10 +32,9 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myPhoton");
     iot->begin();
 
-    Light *light1 = new Light(kLed1Pin, "LED");
+    Light *light1 = new Light(kLed1Pin, "blue", false, true);
     iot->addDevice(light1);
 
     iot->addBehavior(light1, new Behavior("Photon", '>', 0, 100));

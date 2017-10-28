@@ -1,12 +1,9 @@
-/******************************************************************
-Example starting point sketch for Patriot library
+/*******************************************************
+Example switch and LED Patriot sketch
 
-This example uses the built-in blue LED.
-You can use the Patriot iOS app or Alexa or the Alexa app to turn
-the LED on or off.
-
-It is provided as a quick start for your own sketches.
-Refer also to the examples included with each Patriot plugin library.
+This example uses the built-in blue LED and a switch on D0.
+You can use a jumper wire to connect D0 to ground to turn the
+LED on and off, or use the iOS app or Alexa.
 
 http://www.github.com/rlisle/Patriot
 
@@ -17,13 +14,15 @@ All text above must be included in any redistribution.
 
 Changelog:
 2017-10-25: Update for IoT v2. Add OFF behaviors.
-            Remove switch. Refer to the SwitchAndLED example instead.
 2017-03-28: Use fixed 'patriot' event name.
-2017-03-24: Initial creation
-******************************************************************/
+2017-03-24: Rename Patriot
+2017-03-11: Created switch & leds
+2017-03-07: Initial creation
+********************************************************/
 
 #include <IoT.h>
 #include <PatriotLight.h>
+#include <PatriotSwitch.h>
 
 IoT *iot;
 
@@ -38,8 +37,15 @@ void setup() {
     // that Alexa can recognize.
     Light *light1 = new Light(D7, "LED");
 
+    // The name provided to the switch is the name that will be published.
+    // So give it the name corresponding with either a device to be controlled,
+    // or better yet a behavior name. In this case, the switch will control the
+    // behavior named "photon".
+    Switch *switch1 = new Switch(D0, "photon");
+
     // Tell IoT about the devices you defined above
     iot->addDevice(light1);
+    iot->addDevice(switch1);
 
     // The "behavior" defines additional commands that control things.
     // Note that the name of each device can be used to control it, so behaviors are

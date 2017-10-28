@@ -14,11 +14,14 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-22: Convert to scenes-like behavior
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-07-24: Initial version
 ******************************************************************/
 #include "behavior.h"
+//#include "IoT.h"
+
 
 Behavior::Behavior(Device *device, String activityName, char comparison, int value, int level)
 {
@@ -31,7 +34,6 @@ Behavior::Behavior(Device *device, String activityName, char comparison, int val
 
 bool Behavior::matchesCondition(String name, int value)
 {
-//    Serial.println("matchesCondition? " + name + String(value));
     if (name.equalsIgnoreCase(activityName))
     {
         switch (_comparison)
@@ -67,15 +69,12 @@ bool Behavior::matchesCondition(String name, int value)
     return false;
 }
 
-int Behavior::determineLevel(Activities *activities)
+void Behavior::performActivity(String name, int value)
 {
-    for (int i = 0; i < activities->count(); i++)
+    if (matchesCondition(name, value))
     {
-        Activity *activity = activities->getActivityByNum(i);
-        if (matchesCondition(activity->_name, activity->_value))
-        {
-            return level;
-        }
+        //IoT* iot = IoT::getInstance();
+        //iot->log("Behavior "+String(activityName)+" setting level "+String(level));
+        device->setPercent(level);
     }
-    return 0;
 }

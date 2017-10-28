@@ -25,6 +25,8 @@ Changelog:
 #include "PatriotDHT.h"
 #include "math.h"         // Needed for lround()
 
+extern String publishNameVariable;
+
 #define kDefaultInterval 15000              // Every 15 seconds
 #define kDefaultText     "Unnamed"
 
@@ -158,12 +160,10 @@ bool DHT::isValidHumidityReading() {
 
 void DHT::publishTemperature() {
     String data = eventText + "Temp:"+String(temperature);
-    //TODO: get event name from IoT instead of hardcoding "patriot"
-    Particle.publish("patriot", data, 60, PRIVATE);
+    Particle.publish(publishNameVariable, data, 60, PRIVATE);
 }
 
 void DHT::publishHumidity() {
     String data = eventText + "Humidity:"+String(humidity);
-    //TODO: get event name from IoT instead of hardcoding "patriot"
-    Particle.publish("patriot", data, 60, PRIVATE);
+    Particle.publish(publishNameVariable, data, 60, PRIVATE);
 }

@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-22: Convert to scene-like behavior
 2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
@@ -25,10 +26,8 @@ Changelog:
 
 #include "Particle.h"
 #include "constants.h"
-#include "alive.h"
 #include "activities.h"
 #include "behaviors.h"
-#include "controllernames.h"
 #include "devices.h"
 #include "devicenames.h"
 
@@ -56,7 +55,6 @@ public:
      * Only these methods may be called before begin()
      */
     void setPublishName(String publishName);
-    void setControllerName(String controllerName);
 
     /**
      * begin
@@ -69,9 +67,6 @@ public:
      * Loop needs to be called periodically
      */
     void loop();
-
-    bool exposeControllers();
-    bool exposeActivities();
 
     void addDevice(Device *device);
     void addBehavior(Behavior *behavior);
@@ -86,7 +81,6 @@ private:
     static IoT* _instance;
     bool    _hasBegun;
     String  _publishName;
-    String  _controllerName;
     String  _proximityEvent;
     String  _supportedActivities[kMaxNumberActivities];
     int     _numSupportedActivities;
@@ -100,16 +94,14 @@ private:
     /**
      * Include other needed objects
      */
-    Alive       *_alive;
     Activities  *_activities;
     Behaviors   *_behaviors;
     Devices     *_devices;
-    DeviceNames *_deviceNames;          // TODO: This is probably not needed
-    ControllerNames *_controllerNames;
+    DeviceNames *_deviceNames;
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
-    void performActivities();
+    void performActivities();   //TODO: To be deprecated
 
 };

@@ -34,8 +34,7 @@ public:
   int         addDevice(Device *device);
   Device*     getDeviceByNum(int deviceNum);
   Device*     getDeviceWithName(String name);
-    int     numDevices();
-//  void        performActivities(Activities *activities);
+  int         numDevices();
 
   bool       expose(String variableName);
 

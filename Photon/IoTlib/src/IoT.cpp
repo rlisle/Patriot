@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2017-10-22: Convert to scene-like behavior
 2017-10-12: Add control using device names
 2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
@@ -50,6 +51,8 @@ String supportedActivitiesVariable;
  * This variable communicates the Particle.io publish event name.
  * This allows applications to automatically determine the event name
  * to use when publishing or subscribing to events to/from this device.
+ *
+ * It is also used by plugins when publishing events.
  *
  * Note: Do not change this or the Alexa and iOS apps my not work.
  *       This will be fixed in the future.
@@ -90,19 +93,7 @@ IoT::IoT()
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
-    _controllerName         = kDefaultControllerName;
     _numSupportedActivities = 0;
-}
-
-/**
- * Configuration methods
- */
- void IoT::setControllerName(String controllerName)
-{
-    this->_controllerName = controllerName;
-    if(_alive != NULL) {
-        _alive->setControllerName(controllerName);
-    }
 }
 
 /**
@@ -117,9 +108,6 @@ IoT::IoT()
 void IoT::setPublishName(String publishName)
 {
     publishNameVariable = publishName;
-    if(_alive != NULL) {
-        _alive->setPublishName(publishName);
-    }
 }
 
 /**
@@ -132,14 +120,9 @@ void IoT::begin()
     _hasBegun = true;
 
     Serial.begin(57600);
-    log(_controllerName+" controller starting...");
 
     _activities = new Activities();
-    _alive = new Alive();
-    _alive->setControllerName(_controllerName);
-    _alive->setPublishName(publishNameVariable);
     _behaviors = new Behaviors();
-    _controllerNames = new ControllerNames();
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
@@ -164,7 +147,6 @@ void IoT::loop()
 {
     if(!_hasBegun) return;
 
-    _alive->loop();
     _devices->loop();
 }
 
@@ -173,7 +155,14 @@ void IoT::loop()
 void IoT::addDevice(Device *device)
 {
     _devices->addDevice(device);
-    _deviceNames->addDevice(device->name());
+    if(device->name() != "") {
+        Serial.println("IoT adding device: "+device->name()+".");
+        _deviceNames->addDevice(device->name());
+    }
+    else
+    {
+        Serial.println("IoT adding unnamed device. (Probably an input only device)");
+    }
 }
 
 
@@ -215,20 +204,6 @@ void IoT::buildSupportedActivitiesVariable()
     }
 }
 
-/******************************************************/
-/*** Expose variables listing devices and activities **/
-/******************************************************/
-bool IoT::exposeActivities()
-{
-    return _activities->expose();
-}
-
-bool IoT::exposeControllers()
-{
-    _controllerNames->addController(_controllerName);
-    return _controllerNames->expose();
-}
-
 /*************************/
 /*** Subscribe Handler ***/
 /*************************/
@@ -241,43 +216,18 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
 
-    // Is a device coming online? (eg. ""<devicename>:Alive")
-    // Is this an alive message?
-    if(state.equalsIgnoreCase("alive"))
-    {
-        _controllerNames->addController(name);
-        return;
-    }
-
     // See if this is a device name. If so, update it.
      Device* device = _devices->getDeviceWithName(name);
      if(device)
      {
        int percent = state.toInt();
-       log(" percent = "+String(percent));
+       Serial.println(" percent = "+String(percent));
        device->setPercent(percent);
-       //device->performActivities(_activities);
        return;
      }
 
     // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
-    Serial.println("   going to add " + name + " = " + String(value));
-    _activities->addActivity(name, value);
-    performActivities();
+    log("   performing activity " + name + " = " + String(value));
+    _behaviors->performActivity(name, value);
 }
-
-
-void IoT::performActivities()
-{
-    Device *device;
-
-    for (int i = 0; i < _devices->numDevices(); i++)
-    {
-        device = _devices->getDeviceByNum(i);
-        int defaultPercent = 0;
-        int percent = _behaviors->determineLevelForActivities(device, defaultPercent, _activities);
-        device->setPercent(percent);
-    }
-}
-
