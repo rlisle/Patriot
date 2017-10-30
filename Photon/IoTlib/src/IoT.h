@@ -38,7 +38,7 @@ Changelog:
 class IoT {
 
     friend void globalSubscribeHandler(const char *eventName, const char *rawData);
-    friend void globalDhtHandler();
+//    friend void globalDhtHandler();
 
 public:
 
