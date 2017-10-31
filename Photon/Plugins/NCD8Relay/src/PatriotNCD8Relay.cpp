@@ -1,10 +1,12 @@
 /******************************************************************
- Relay control
+ NCD 8 Relay board control
 
- Up to 8 relay controllers can reside on a single I2C bus.
+ Up to 8 relay boards can reside on a single I2C bus.
 
  Features:
  - On/Off control
+ - Supports multiple boards
+ - Automatic shut off if duration specified
 
  http://www.github.com/rlisle/Patriot
 
@@ -19,13 +21,13 @@
  2017-10-03: Initial creation
  ******************************************************************/
 
-#include "PatriotRelay.h"
+#include "PatriotNCD8Relay.h"
 
 #define MILLIS_PER_SECOND 1000
 
-int8_t Relay::_numControllers = 0;    // Count of relay boards on I2C bus
-int8_t Relay::_currentStates[8];      // All relays initially off
-int8_t Relay::_addresses[8];          // Addresses of up to 8 boards
+int8_t NCD8Relay::_numControllers = 0;  // Count of relay boards on I2C bus
+int8_t NCD8Relay::_currentStates[8];    // All relays initially off
+int8_t NCD8Relay::_addresses[8];        // Addresses of up to 8 boards
 
 /**
  * Constructor
@@ -33,8 +35,9 @@ int8_t Relay::_addresses[8];          // Addresses of up to 8 boards
  * @param numRelays identifies which NCD Relay board by the number of relays on it
  * @param relayNum is the relay number on the NCD 8 Relay board (1-8)
  * @param name String name used to address the relay.
+ * @param duration Optional seconds value to automatically turn off relay. 0 = no automatic turn off.
  */
-Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
+NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
     : Device(name)
 {
     _relayNum   = relayNum;
@@ -51,7 +54,7 @@ Relay::Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int
     }
 }
 
-int8_t Relay::initialize8RelayBoard(int8_t address) {
+int8_t NCD8Relay::initialize8RelayBoard(int8_t address) {
 
     _registerAddress = 0x0A;    // Does this change for different boards?
 
@@ -63,7 +66,7 @@ int8_t Relay::initialize8RelayBoard(int8_t address) {
     return index;
 }
 
-int8_t Relay::initializeBoard(int8_t address) {
+int8_t NCD8Relay::initializeBoard(int8_t address) {
 
     // Only the first relay loaded needs to initialize the I2C link
     if(!Wire.isEnabled()) {
@@ -83,7 +86,7 @@ int8_t Relay::initializeBoard(int8_t address) {
     return addAddressToArray(address);
 }
 
-int8_t Relay::boardIndex(int8_t address) {
+int8_t NCD8Relay::boardIndex(int8_t address) {
     for(int8_t index=0; index<_numControllers; index++) {
         if(_addresses[index] == address) {
             return index;
@@ -92,7 +95,7 @@ int8_t Relay::boardIndex(int8_t address) {
     return -1;
 }
 
-int8_t Relay::addAddressToArray(int8_t address) {
+int8_t NCD8Relay::addAddressToArray(int8_t address) {
     _currentStates[_numControllers] = 0x00;
     _addresses[_numControllers] = address;
 
@@ -111,7 +114,7 @@ int8_t Relay::addAddressToArray(int8_t address) {
  * This is how things are turned on/off in Patriot
  * @param percent Int 0 to 100. 0 = off, >0 = on
  */
-void Relay::setPercent(int percent) {
+void NCD8Relay::setPercent(int percent) {
     if(percent == 0) setOff();
     else setOn();
 }
@@ -119,7 +122,7 @@ void Relay::setPercent(int percent) {
 /**
  * Set On
  */
-void Relay::setOn() {
+void NCD8Relay::setOn() {
     if(isOn()) return;
 
     _percent = 100;
@@ -130,11 +133,11 @@ void Relay::setOn() {
     }
 
     byte bitmap = 1 << _relayNum;
-    Relay::_currentStates[_boardIndex] |= bitmap;            // Set relay's bit
+    NCD8Relay::_currentStates[_boardIndex] |= bitmap;            // Set relay's bit
 
     Wire.beginTransmission(_addresses[_boardIndex]);
     Wire.write(_registerAddress);
-    Wire.write(Relay::_currentStates[_boardIndex]);
+    Wire.write(NCD8Relay::_currentStates[_boardIndex]);
     byte status = Wire.endTransmission();
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
@@ -145,7 +148,7 @@ void Relay::setOn() {
 /**
  * Set relay off
  */
-void Relay::setOff() {
+void NCD8Relay::setOff() {
     if(isOff()) return;
 
     _percent = 0;
@@ -153,11 +156,11 @@ void Relay::setOff() {
 
     byte bitmap = 1 << _relayNum;
     bitmap = 0xff ^ bitmap;
-    Relay::_currentStates[_boardIndex] &= bitmap;
+    NCD8Relay::_currentStates[_boardIndex] &= bitmap;
 
     Wire.beginTransmission(_addresses[_boardIndex]);
     Wire.write(_registerAddress);
-    Wire.write(Relay::_currentStates[_boardIndex]);
+    Wire.write(NCD8Relay::_currentStates[_boardIndex]);
     byte status = Wire.endTransmission();
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
@@ -172,7 +175,7 @@ void Relay::setOff() {
 /**
  * loop()
  */
-void Relay::loop()
+void NCD8Relay::loop()
 {
     if(_stopMillis != 0)
     {
