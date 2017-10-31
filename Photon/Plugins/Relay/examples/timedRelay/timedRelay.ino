@@ -1,7 +1,10 @@
 /*******************************************************
-Relay Example
+Timed Relay Example
 
 This example supports a relay connected to pin D7.
+It will automatically turn off the relay 5 seconds
+after the relay is turned on.
+
 D7 is also connected to the built-in blue LED, so
 it can be used to view operation.
 
@@ -25,10 +28,8 @@ void setup() {
     iot = IoT::getInstance();
     iot->begin();
 
-    // Define our "relay" device on pin D7
-    // Since no duration is specified, it is set to a
-    // default value of 0 meaning no automatic turn off.
-    Relay *relay = new Relay(D7, "relay");
+    // Define our "relay" device on pin D7 with 5 second duration
+    Relay *relay = new Relay(D7, "relay", 5);
     iot->addDevice(relay);
 }
 

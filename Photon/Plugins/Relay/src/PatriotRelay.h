@@ -2,8 +2,8 @@
  Patriot Relay control
 
  Features:
- - On/Off control
- - Supports relays connected to GPIO pins.
+ - On/Off control of relays and other devices connected to GPIO.
+ - Duration can be specified allowing automatic timed turn-off.
 
  http://www.github.com/rlisle/Patriot
 
@@ -11,8 +11,6 @@
 
  BSD license, check license.txt for more information.
  All text above must be included in any redistribution.
-
- Datasheets:
 
  Changelog:
  2017-10-31: Initial creation
@@ -34,8 +32,6 @@ class Relay : public Device
     Relay(int8_t pinNum, String name, int8_t duration = 0);
 
     void    setPercent(int percent);
-    void    setOn();
-    void    setOff();
 
     void    loop();
 };
