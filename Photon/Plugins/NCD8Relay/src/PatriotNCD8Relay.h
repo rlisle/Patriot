@@ -4,6 +4,7 @@
  Features:
  - On/Off control
  - Supports multiple boards
+ - Automatic shut off if duration specified
 
  http://www.github.com/rlisle/Patriot
 
@@ -23,7 +24,7 @@
 #include "Particle.h"
 #include "device.h"
 
-class Relay : public Device
+class NCD8Relay : public Device
 {
  private:
     int8_t  _relayNum;
@@ -42,7 +43,7 @@ class Relay : public Device
     int8_t  addAddressToArray(int8_t address);
 
  public:
-    Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration = 0);
+    NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration = 0);
 
     void    setPercent(int percent);
     void    setOn();

@@ -1,27 +1,28 @@
-# PatriotNCD8Relay
+# PatriotRelay
 
-A Patriot plugin to support NCD 8 Relay boards
-
-This library makes it used to support relay devices using the 
-NCD 8 relay board.
+A Patriot plugin to support simple relays.
 
 ## Usage
 
-Include this library in a Photon sketch running on the NCD 8 relay board.
-Refer to the more complex examples in the main Patriot IoT examples
- directory.
+Include this library in a Photon sketch to control simple on/off
+devices such as relays.
 
-This example creates a single device connected to relay 1.
-You can view the state of the relay using the LED associated with
-relay 1 on the 8 Relay board.
+Note that many relay type devices require more current than can be 
+safely provided by a GPIO pin. In these cases you will need to provide
+some sort of driver circuit (eg. transistor, MOSFET, etc) to provide
+ample current to the device.
 
-A behavior is setup to control this LED with an event named "Relay".
+This example creates a single device connected to a relay attached
+to GPIO D0. The device is named "relay".
 
 Since Patriot supports automatic detection by the iOS app and Alexa,
 either of these can be used to control the relay once this sketch is
 loaded to a Photon. There may be a 15 minute delay before Alexa starts
 to work, since a "Discover Devices" cycle is needed. You can manually
 invoke a discovery using the Alexa app to eliminate the delay.
+
+After Alexa discovery is performed, you can control this by saying
+"Alexa, turn on relay" or "Alexa, turn off relay".
 
 
 ## Documentation
