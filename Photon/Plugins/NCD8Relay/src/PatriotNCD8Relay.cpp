@@ -11,6 +11,7 @@
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
+ Based on NCD8Relay library.
 
  BSD license, check license.txt for more information.
  All text above must be included in any redistribution.
@@ -18,6 +19,7 @@
  Datasheets:
 
  Changelog:
+ 2017-12-03: Add retry.
  2017-10-03: Initial creation
  ******************************************************************/
 
@@ -67,21 +69,31 @@ int8_t NCD8Relay::initialize8RelayBoard(int8_t address) {
 }
 
 int8_t NCD8Relay::initializeBoard(int8_t address) {
+    int retries;
+    byte status;
 
     // Only the first relay loaded needs to initialize the I2C link
     if(!Wire.isEnabled()) {
         Wire.begin();
     }
 
-    Wire.beginTransmission(address);
-    Wire.write(0x00);                   // Select IO Direction register
-    Wire.write(0x00);                   // Set all 8 to outputs
-    Wire.endTransmission();             // ??? Write 'em, Dano
+    retries = 0;
+    do {
+        Wire.beginTransmission(address);
+        Wire.write(0x00);                   // Select IO Direction register
+        Wire.write(0x00);                   // Set all 8 to outputs
+        status = Wire.endTransmission();    // ??? Write 'em, Dano
 
-    // Note: pull-ups should have no effect on outputs, so this looks wrong.
-    Wire.write(0x06);                   // ??? Select pull-up resistor register
-    Wire.write(0x00);                   // ??? pull-ups disabled on all 8 outputs
-    Wire.endTransmission();
+        // Note: pull-ups should have no effect on outputs, so this looks wrong.
+        Wire.write(0x06);                   // ??? Select pull-up resistor register
+        Wire.write(0x00);                   // ??? pull-ups disabled on all 8 outputs
+        status = Wire.endTransmission();
+    } while( status != 0 && retries++ < 3);
+
+    if(status != 0) {
+        Serial.println("Set address failed");
+        //TODO: handle error
+    }
 
     return addAddressToArray(address);
 }
@@ -123,6 +135,7 @@ void NCD8Relay::setPercent(int percent) {
  * Set On
  */
 void NCD8Relay::setOn() {
+
     if(isOn()) return;
 
     _percent = 100;
@@ -135,10 +148,15 @@ void NCD8Relay::setOn() {
     byte bitmap = 1 << _relayNum;
     NCD8Relay::_currentStates[_boardIndex] |= bitmap;            // Set relay's bit
 
-    Wire.beginTransmission(_addresses[_boardIndex]);
-    Wire.write(_registerAddress);
-    Wire.write(NCD8Relay::_currentStates[_boardIndex]);
-    byte status = Wire.endTransmission();
+    byte status;
+    int retries = 0;
+    do {
+        Wire.beginTransmission(_addresses[_boardIndex]);
+        Wire.write(_registerAddress);
+        Wire.write(NCD8Relay::_currentStates[_boardIndex]);
+        status = Wire.endTransmission();
+    } while(status != 0 && retries++ < 3);
+
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
         Serial.println("Error turning on relays");
@@ -158,10 +176,15 @@ void NCD8Relay::setOff() {
     bitmap = 0xff ^ bitmap;
     NCD8Relay::_currentStates[_boardIndex] &= bitmap;
 
-    Wire.beginTransmission(_addresses[_boardIndex]);
-    Wire.write(_registerAddress);
-    Wire.write(NCD8Relay::_currentStates[_boardIndex]);
-    byte status = Wire.endTransmission();
+    byte status;
+    int retries = 0;
+    do {
+        Wire.beginTransmission(_addresses[_boardIndex]);
+        Wire.write(_registerAddress);
+        Wire.write(NCD8Relay::_currentStates[_boardIndex]);
+        byte status = Wire.endTransmission();
+    } while(status != 0 && retries++ < 3);
+
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
         Serial.println("Error turning off relays");
