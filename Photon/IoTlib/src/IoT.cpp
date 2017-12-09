@@ -244,7 +244,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
  * It will define a new behavior for an activity for the specified device,
  * and return an int indicating if the activity is new or changed.
  *
- * @param command "activity:device:compare:value:level"
+ * @param command "device:activity:compare:value:level"
  * @returns int response indicating if activity already existed (1) or error (-1)
  */
 int IoT::programHandler(String command) {
