@@ -244,12 +244,39 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
  * It will define a new behavior for an activity for the specified device,
  * and return an int indicating if the activity is new or changed.
  *
- * @param command "activity:device=value"
+ * @param command "activity:device:compare:value:level"
  * @returns int response indicating if activity already existed (1) or error (-1)
  */
 int IoT::programHandler(String command) {
     log("programHandler called with command: " + command);
+    String components[5];
 
-    return -1;  // Error (not implemented yet)
+    int lastColonPosition = -1;
+    for(int i = 0; i < 4; i++)
+    {
+        int colonPosition = command.indexOf(':', lastColonPosition+1);
+        if(colonPosition == -1)
+        {
+            return -1 - i;
+        }
+        components[i] = command.substring(lastColonPosition+1, colonPosition);
+        lastColonPosition = colonPosition;
+    }
+    components[4] = command.substring(lastColonPosition+1);
+
+    // Parse out each item into the correct type
+    Device *device = _devices->getDeviceWithName(components[0]);
+    String activity = components[1];
+    char compare = components[2].charAt(0);
+    int value = components[3].toInt();
+    int level = components[4].toInt();
+
+    //TODO: see if behavior already exists. If so, then change it.
+
+
+    //TODO: Otherwise just add a new behavior.
+    log("programHandler: new behavior("+components[0]+", "+components[1]+", "+components[2]+", "+components[3]+", "+components[4]+")");
+    addBehavior(new Behavior(device, activity, compare, value, level));
+    return 0;
 }
 
