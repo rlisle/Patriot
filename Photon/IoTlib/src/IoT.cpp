@@ -143,7 +143,6 @@ void IoT::begin()
     }
 }
 
-int
 
 /**
  * Loop method must be called periodically,

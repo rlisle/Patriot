@@ -103,7 +103,7 @@ private:
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
     void performActivities();   //TODO: To be deprecated
-    
+
     int  programHandler(String command);
 
 };
