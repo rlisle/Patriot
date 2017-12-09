@@ -137,7 +137,13 @@ void IoT::begin()
         log("Unable to expose publishName variable");
         return;
     }
+    if(!Particle.function("program", &IoT::programHandler, this))
+    {
+        log("Unable to register program handler");
+    }
 }
+
+int
 
 /**
  * Loop method must be called periodically,
@@ -231,3 +237,20 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     log("   performing activity " + name + " = " + String(value));
     _behaviors->performActivity(name, value);
 }
+
+
+/**
+ * Program Handler
+ * Called by particle.io to update behaviors.
+ * It will define a new behavior for an activity for the specified device,
+ * and return an int indicating if the activity is new or changed.
+ *
+ * @param command "activity:device=value"
+ * @returns int response indicating if activity already existed (1) or error (-1)
+ */
+int IoT::programHandler(String command) {
+    log("programHandler called with command: " + command);
+
+    return -1;  // Error (not implemented yet)
+}
+
