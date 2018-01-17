@@ -272,11 +272,13 @@ int IoT::programHandler(String command) {
     int level = components[4].toInt();
 
     //TODO: see if behavior already exists. If so, then change it.
+    //      Is there already a behavior for the same device and activity?
 
 
     //TODO: Otherwise just add a new behavior.
     log("programHandler: new behavior("+components[0]+", "+components[1]+", "+components[2]+", "+components[3]+", "+components[4]+")");
     addBehavior(new Behavior(device, activity, compare, value, level));
+    addBehavior(new Behavior(device, activity, '=', 0, 0));         // Add 'Off' state also
     return 0;
 }
 

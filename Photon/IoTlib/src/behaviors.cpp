@@ -6,11 +6,6 @@ A Behavior object describes the response of a device
 to received "activity notifications".
 Activities are received via Particle.io Pub/Sub.
 
-TODO:
-1. persist behaviors to EEPROM
-  - Photon has 2k EEPROM (actually, flash working like EEPROM)
-  - So can hold 128 x 16 byte activity structures per device
-
 http://www.github.com/rlisle/Patriot
 
 Written by Ron Lisle
@@ -48,7 +43,6 @@ int Behaviors::addBehavior(Behavior *behavior)
         IoT::log("Max # behaviors exceeded");
         return -1;
     }
-    //TODO: Write out all behaviors to EEPROM
 
     return _numBehaviors - 1;
 }
@@ -56,11 +50,11 @@ int Behaviors::addBehavior(Behavior *behavior)
 
 void Behaviors::performActivity(String name, int value)
 {
-    Serial.println("Behaviors performing activity "+name+" = "+String(value));
-
     for (int i = 0; i < _numBehaviors; i++)
     {
         Behavior *behavior = _behaviors[i];
         behavior->performActivity(name, value);
     }
 }
+
+Behavior *getBehavior()
