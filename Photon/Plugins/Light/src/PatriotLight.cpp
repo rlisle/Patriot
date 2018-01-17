@@ -34,6 +34,7 @@
  */
 Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
         : Device(name),
+          _type("light"),
           _pin(pinNum),
           _isInverted(isInverted),
           _forceDigital(forceDigital)
@@ -48,7 +49,6 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
     pinMode(pinNum, OUTPUT);
     outputPWM();                        // Set initial off state
 }
-
 
 /**
  * Set percent

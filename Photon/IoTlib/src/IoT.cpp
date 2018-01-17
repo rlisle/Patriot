@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-17: Add functions for device state and type
 2017-10-22: Convert to scene-like behavior
 2017-10-12: Add control using device names
 2017-05-15: Make devices generic
@@ -126,7 +127,11 @@ void IoT::begin()
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
+    // Subscribe to events. There is a 1/second limit for events.
     Particle.subscribe(publishNameVariable, globalSubscribeHandler, MY_DEVICES);
+
+    // Register cloud variables. Up to 20 may be registered. Name length max 12.
+    // There does not appear to be any time limit/throttle on variable reads.
     if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
     {
         log("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");
@@ -137,9 +142,21 @@ void IoT::begin()
         log("Unable to expose publishName variable");
         return;
     }
+
+    // Register cloud functions. Up to 15 may be registered. Name length max 12.
+    // Allows 1 string argument up to 63 chars long.
+    // There does not appear to be any time limit/throttle on function calls.
     if(!Particle.function("program", &IoT::programHandler, this))
     {
         log("Unable to register program handler");
+    }
+    if(!Particle.function("value", &IoT::valueHandler, this))
+    {
+        log("Unable to register value handler");
+    }
+    if(!Particle.function("type", &IoT::typeHandler, this))
+    {
+        log("Unable to register type handler");
     }
 }
 
@@ -282,3 +299,39 @@ int IoT::programHandler(String command) {
     return 0;
 }
 
+/**
+ * Value Handler
+ * Called by particle.io to read device current value.
+ * It will return an int indicating the current value of the specified device.
+ *
+ * @param deviceName String name of device
+ * @returns int response indicating value (0-100) or -1 if invalid device or error.
+ */
+int IoT::valueHandler(String deviceName) {
+    log("valueHandler called with device name: " + deviceName);
+
+    Device *device = _devices->getDeviceWithName(deviceName);
+    if(device==NULL) {
+        return -1;
+    }
+    return device->getPercent();
+}
+
+/**
+ * Type Handler
+ * Called by particle.io to read device type (enum).
+ * It will return a string indicating the type of the specified device.
+ * A string is used to allow flexibility and simple future expansion.
+ *
+ * @param deviceName String name of device
+ * @returns String indicating type of device (eg. "light", "unknown", "error", etc.)
+ */
+String IoT::typeHandler(String deviceName) {
+    log("typeHandler called with device name: " + deviceName);
+
+    Device *device = _devices->getDeviceWithName(deviceName);
+    if(device==NULL) {
+        return "error";
+    }
+    return device->type();
+}
