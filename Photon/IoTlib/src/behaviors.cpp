@@ -56,5 +56,3 @@ void Behaviors::performActivity(String name, int value)
         behavior->performActivity(name, value);
     }
 }
-
-Behavior *getBehavior()

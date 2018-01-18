@@ -107,5 +107,5 @@ private:
 
     int  programHandler(String command);
     int  valueHandler(String deviceName);
-    String typeHandler(String deviceName);
+    int  typeHandler(String deviceName);
 };

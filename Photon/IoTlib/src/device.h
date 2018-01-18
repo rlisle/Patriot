@@ -24,16 +24,29 @@ Changelog:
 ******************************************************************/
 #pragma once
 
+enum DeviceType {
+    Unknown,
+    Fan,
+    Light,
+    Motor,
+    NCD8Relay,
+    Presence,
+    Relay,
+    Switch,
+    TempHumidity,
+    Ultrasonic
+};
+
 class Device {
  protected:
-    String  _name;
-    String  _type;
-    int     _percent;
+    String     _name;
+    DeviceType _type;
+    int        _percent;
 
  public:
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
-    Device(String name = "", Int type = "unknown") : _name(name), _type(type) { }
+    Device(String name = "", DeviceType type = Unknown) : _name(name), _type(type) { }
 
     virtual String name() { return _name; };
     virtual String type() { return _type; };

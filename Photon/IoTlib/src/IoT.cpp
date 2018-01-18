@@ -326,12 +326,12 @@ int IoT::valueHandler(String deviceName) {
  * @param deviceName String name of device
  * @returns String indicating type of device (eg. "light", "unknown", "error", etc.)
  */
-String IoT::typeHandler(String deviceName) {
+int IoT::typeHandler(String deviceName) {
     log("typeHandler called with device name: " + deviceName);
 
     Device *device = _devices->getDeviceWithName(deviceName);
     if(device==NULL) {
-        return "error";
+        return -1;
     }
     return device->type();
 }
