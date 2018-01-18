@@ -324,7 +324,7 @@ int IoT::valueHandler(String deviceName) {
  * A string is used to allow flexibility and simple future expansion.
  *
  * @param deviceName String name of device
- * @returns String indicating type of device (eg. "light", "unknown", "error", etc.)
+ * @returns int indicating DeviceType of device
  */
 int IoT::typeHandler(String deviceName) {
     log("typeHandler called with device name: " + deviceName);
@@ -333,5 +333,5 @@ int IoT::typeHandler(String deviceName) {
     if(device==NULL) {
         return -1;
     }
-    return device->type();
+    return static_cast<int>(device->type());
 }

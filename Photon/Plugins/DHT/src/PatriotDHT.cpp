@@ -42,7 +42,7 @@ extern String publishNameVariable;
  * Constructor.
  */
 DHT::DHT(int pin, String name, int type)
-    : Device(name, "TempHumidity")
+    : Device(name, DeviceType::TempHumidity)
 {
     lastLoopTime = 0;
     interval = kDefaultInterval;
