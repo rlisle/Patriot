@@ -49,7 +49,7 @@ class Device {
     Device(String name = "", DeviceType type = Unknown) : _name(name), _type(type) { }
 
     virtual String name() { return _name; };
-    virtual String type() { return _type; };
+    virtual DeviceType type() { return _type; };
 
     // This method can either read the device directly, or use a value
     // set in the loop() if continuous or asynchronous polling is used.
