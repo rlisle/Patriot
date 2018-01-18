@@ -16,6 +16,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-18: Add type property
 2017-10-28: Convert to v2.
 2017-05-20: Convert to Patriot plugin library
 2017-03-24: Rename Patriot
@@ -32,7 +33,7 @@ Changelog:
  * @param name String name used to address the fan.
  */
 Fan::Fan(int pinNum, String name)
-    : Device(name)
+    : Device(name, "fan")
 {
     _pinNum        = pinNum;
     _percent       = 0;

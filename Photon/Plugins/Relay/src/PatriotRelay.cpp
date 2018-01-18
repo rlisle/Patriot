@@ -13,6 +13,7 @@
  All text above must be included in any redistribution.
 
  Changelog:
+ 2018-01-18: Add type property
  2017-10-31: Initial creation
  ******************************************************************/
 
@@ -27,7 +28,7 @@
  * @param duration is an optional automatic turn off duration in seconds.
  */
 Relay::Relay(int8_t pinNum, String name, int8_t duration)
-    : Device(name)
+    : Device(name, "relay")
 {
     _pinNum     = pinNum;
     _duration   = duration;

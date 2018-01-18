@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-18: Add name and type properties
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2016-11-25: Initial version
@@ -36,7 +37,7 @@ private:
   void    publishPresenceDetected(bool present);
 
 public:
-  Presence(int minInches, int maxInches, String event, long interval);
+  Presence(String name, int minInches, int maxInches, String event, long interval);
   bool loop(Proximity *proximity);
 
 };

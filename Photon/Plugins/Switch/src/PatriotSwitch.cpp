@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-18: Add type property
 2017-10-27: v2.0.0. Change name to command.
 2017-05-17: Move to separate library
 2017-05-15: Make devices generic
@@ -34,9 +35,10 @@ extern String publishNameVariable;
  * @param pinNum int pin number that is connected to the switch
  * @param name  String name of the event to send when switch changes
  */
-Switch::Switch(int pinNum, String command)
-        : _pin(pinNum),
-          _command(command)
+Switch::Switch(int pinNum, String name, String command)
+        : Device(name, "switch"),
+        _pin(pinNum),
+        _command(command)
 {
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);

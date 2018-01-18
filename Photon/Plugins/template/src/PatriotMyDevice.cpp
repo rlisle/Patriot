@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-18: Add type property
 2017-05-17: Move to separate library
 2017-05-15: Make devices generic
 2017-03-24: Rename Patriot
@@ -34,7 +35,7 @@ extern String publishNameVariable;
  * @param name  String name of the event to send when switch changes
  */
 Switch::Switch(int pinNum, String name)
-                : Device(name),
+                : Device(name, "mytype"),
                   _pin(pinNum)
 {
     pinMode(pinNum, INPUT_PULLUP);
