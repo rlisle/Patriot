@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-17: Add functions for device state and type
 2017-10-22: Convert to scene-like behavior
 2017-10-12: Add control using device names
 2017-05-15: Make devices generic
@@ -126,7 +127,11 @@ void IoT::begin()
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
+    // Subscribe to events. There is a 1/second limit for events.
     Particle.subscribe(publishNameVariable, globalSubscribeHandler, MY_DEVICES);
+
+    // Register cloud variables. Up to 20 may be registered. Name length max 12.
+    // There does not appear to be any time limit/throttle on variable reads.
     if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
     {
         log("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");
@@ -137,7 +142,24 @@ void IoT::begin()
         log("Unable to expose publishName variable");
         return;
     }
+
+    // Register cloud functions. Up to 15 may be registered. Name length max 12.
+    // Allows 1 string argument up to 63 chars long.
+    // There does not appear to be any time limit/throttle on function calls.
+    if(!Particle.function("program", &IoT::programHandler, this))
+    {
+        log("Unable to register program handler");
+    }
+    if(!Particle.function("value", &IoT::valueHandler, this))
+    {
+        log("Unable to register value handler");
+    }
+    if(!Particle.function("type", &IoT::typeHandler, this))
+    {
+        log("Unable to register type handler");
+    }
 }
+
 
 /**
  * Loop method must be called periodically,
@@ -230,4 +252,86 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     int value = state.toInt();
     log("   performing activity " + name + " = " + String(value));
     _behaviors->performActivity(name, value);
+}
+
+
+/**
+ * Program Handler
+ * Called by particle.io to update behaviors.
+ * It will define a new behavior for an activity for the specified device,
+ * and return an int indicating if the activity is new or changed.
+ *
+ * @param command "device:activity:compare:value:level"
+ * @returns int response indicating if activity already existed (1) or error (-1)
+ */
+int IoT::programHandler(String command) {
+    log("programHandler called with command: " + command);
+    String components[5];
+
+    int lastColonPosition = -1;
+    for(int i = 0; i < 4; i++)
+    {
+        int colonPosition = command.indexOf(':', lastColonPosition+1);
+        if(colonPosition == -1)
+        {
+            return -1 - i;
+        }
+        components[i] = command.substring(lastColonPosition+1, colonPosition);
+        lastColonPosition = colonPosition;
+    }
+    components[4] = command.substring(lastColonPosition+1);
+
+    // Parse out each item into the correct type
+    Device *device = _devices->getDeviceWithName(components[0]);
+    String activity = components[1];
+    char compare = components[2].charAt(0);
+    int value = components[3].toInt();
+    int level = components[4].toInt();
+
+    //TODO: see if behavior already exists. If so, then change it.
+    //      Is there already a behavior for the same device and activity?
+
+
+    //TODO: Otherwise just add a new behavior.
+    log("programHandler: new behavior("+components[0]+", "+components[1]+", "+components[2]+", "+components[3]+", "+components[4]+")");
+    addBehavior(new Behavior(device, activity, compare, value, level));
+    addBehavior(new Behavior(device, activity, '=', 0, 0));         // Add 'Off' state also
+    return 0;
+}
+
+/**
+ * Value Handler
+ * Called by particle.io to read device current value.
+ * It will return an int indicating the current value of the specified device.
+ *
+ * @param deviceName String name of device
+ * @returns int response indicating value (0-100) or -1 if invalid device or error.
+ */
+int IoT::valueHandler(String deviceName) {
+    log("valueHandler called with device name: " + deviceName);
+
+    Device *device = _devices->getDeviceWithName(deviceName);
+    if(device==NULL) {
+        return -1;
+    }
+    return device->getPercent();
+}
+
+/**
+ * Type Handler
+ * Called by particle.io to read device type (enum).
+ * It will return a string indicating the type of the specified device.
+ * A string is used to allow flexibility and simple future expansion.
+ *
+ * @param deviceName String name of device
+ * @returns int indicating DeviceType of device
+ */
+int IoT::typeHandler(String deviceName) {
+    log("typeHandler called with device name: " + deviceName);
+
+    Device *device = _devices->getDeviceWithName(deviceName);
+    if(device==NULL) {
+        return -1;
+    }
+    return static_cast<int>(device->type());
 }

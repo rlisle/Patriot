@@ -19,6 +19,7 @@
  Datasheets:
 
  Changelog:
+ 2018-01-18: Add type property
  2017-12-03: Add retry.
  2017-10-03: Initial creation
  ******************************************************************/
@@ -40,7 +41,7 @@ int8_t NCD8Relay::_addresses[8];        // Addresses of up to 8 boards
  * @param duration Optional seconds value to automatically turn off relay. 0 = no automatic turn off.
  */
 NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
-    : Device(name)
+    : Device(name, DeviceType::NCD8Relay)
 {
     _relayNum   = relayNum;
     _percent    = 0;
