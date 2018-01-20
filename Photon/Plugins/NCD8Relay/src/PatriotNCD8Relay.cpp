@@ -41,7 +41,7 @@ int8_t NCD8Relay::_addresses[8];        // Addresses of up to 8 boards
  * @param duration Optional seconds value to automatically turn off relay. 0 = no automatic turn off.
  */
 NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
-    : Device(name, "NCDRelay")
+    : Device(name, DeviceType::NCD8Relay)
 {
     _relayNum   = relayNum;
     _percent    = 0;

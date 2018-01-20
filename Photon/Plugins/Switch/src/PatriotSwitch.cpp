@@ -36,7 +36,7 @@ extern String publishNameVariable;
  * @param name  String name of the event to send when switch changes
  */
 Switch::Switch(int pinNum, String name, String command)
-        : Device(name, "switch"),
+        : Device(name, DeviceType::Switch),
         _pin(pinNum),
         _command(command)
 {

@@ -28,7 +28,7 @@
  * @param duration is an optional automatic turn off duration in seconds.
  */
 Relay::Relay(int8_t pinNum, String name, int8_t duration)
-    : Device(name, "relay")
+    : Device(name, DeviceType::Relay)
 {
     _pinNum     = pinNum;
     _duration   = duration;

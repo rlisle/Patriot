@@ -33,7 +33,7 @@ Changelog:
  * @param name String name used to address the fan.
  */
 Fan::Fan(int pinNum, String name)
-    : Device(name, "fan")
+    : Device(name, DeviceType::Fan)
 {
     _pinNum        = pinNum;
     _percent       = 0;

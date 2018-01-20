@@ -20,11 +20,12 @@ Changelog:
 #include "application.h"
 #include "presence.h"
 #include "proximity.h"
+#include "../IoTlib/src/device.h"
 
 #define kDefaultShutOffDelay 5000    // 5 seconds
 
 Presence::Presence(String name, int min, int max, String event, long interval)
-         : Device(name, "presence"),
+         : Device(name, DeviceType::Presence),
            _minInches(min),
            _maxInches(max),
            _event(event),

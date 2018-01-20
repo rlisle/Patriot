@@ -39,7 +39,7 @@ Changelog:
  * @param name String name used to address this device.
  */
 Motorized::Motorized(int8_t openPinNum, int8_t closePinNum, int8_t duration, String name)
-    : Device(name, "motor")
+    : Device(name, DeviceType::Motor)
 {
     _openPinNum             = openPinNum;
     _closePinNum            = closePinNum;

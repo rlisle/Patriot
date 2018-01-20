@@ -28,7 +28,7 @@ Changelog:
 extern String publishNameVariable;
 
 Ultrasonic::Ultrasonic(int triggerPin, int echoPin, String name)
-    : Device(name, "ultrasonic")
+    : Device(name, DeviceType::Ultrasonic)
 {
     _triggerPin         = triggerPin;
     _echoPin            = echoPin;
