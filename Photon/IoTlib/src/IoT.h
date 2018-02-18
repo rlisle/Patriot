@@ -30,6 +30,7 @@ Changelog:
 #include "behaviors.h"
 #include "devices.h"
 #include "devicenames.h"
+#include "MQTT.h"
 
 /**
  * Main IoT object.

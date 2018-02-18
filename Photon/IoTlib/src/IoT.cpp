@@ -25,6 +25,11 @@ Changelog:
 ******************************************************************/
 #include "IoT.h"
 
+void mqttHandler(char* topic, byte* payload, unsigned int length);
+
+byte server[] = { 192, 168, 10, 124 };
+MQTT mqtt(server, 1883, callback);
+
 /**
  * Global subscribe handler
  * Called by particle.io when events are published.
@@ -36,7 +41,6 @@ void globalSubscribeHandler(const char *eventName, const char *rawData) {
     IoT* iot = IoT::getInstance();
     iot->subscribeHandler(eventName,rawData);
 }
-
 
 /**
  * Supported Activities variable
@@ -137,6 +141,13 @@ void IoT::begin()
         log("Unable to expose publishName variable");
         return;
     }
+
+    // connect to MQTT broker
+    mqtt.connect(publishNameVariable);  // argument ignored?
+    if (mqtt.isConnected()) {
+//        mqtt.publish("outTopic/message","hello world");
+        mqtt.subscribe(publishNameVariable);
+    }
 }
 
 /**
@@ -204,9 +215,9 @@ void IoT::buildSupportedActivitiesVariable()
     }
 }
 
-/*************************/
-/*** Subscribe Handler ***/
-/*************************/
+/*************************************/
+/*** Particle.io Subscribe Handler ***/
+/*************************************/
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
     String data(rawData);
@@ -225,6 +236,36 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
        device->setPercent(percent);
        return;
      }
+
+    // If it wasn't a device name, it must be an activity.
+    int value = state.toInt();
+    log("   performing activity " + name + " = " + String(value));
+    _behaviors->performActivity(name, value);
+}
+
+/******************************/
+/*** MQTT Subscribe Handler ***/
+/******************************/
+void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
+//    char p[length + 1];
+//    memcpy(p, payload, length);
+//    p[length] = NULL;
+    String data(payload);
+    String event(topic);
+    Serial.println("MQTT handler event: " + event + ", data: " + data);
+    int colonPosition = data.indexOf(':');
+    String name = data.substring(0,colonPosition);
+    String state = data.substring(colonPosition+1);
+
+    // See if this is a device name. If so, update it.
+    Device* device = _devices->getDeviceWithName(name);
+    if(device)
+    {
+        int percent = state.toInt();
+        Serial.println(" percent = "+String(percent));
+        device->setPercent(percent);
+        return;
+    }
 
     // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
