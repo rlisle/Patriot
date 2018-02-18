@@ -99,6 +99,7 @@ private:
     Behaviors   *_behaviors;
     Devices     *_devices;
     DeviceNames *_deviceNames;
+    MQTT        *_mqtt;
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);

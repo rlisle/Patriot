@@ -27,9 +27,6 @@ Changelog:
 
 void mqttHandler(char* topic, byte* payload, unsigned int length);
 
-byte server[] = { 192, 168, 10, 124 };
-MQTT mqtt(server, 1883, callback);
-
 /**
  * Global subscribe handler
  * Called by particle.io when events are published.
@@ -149,6 +146,16 @@ void IoT::begin()
         mqtt.subscribe(publishNameVariable);
     }
 }
+
+void IoT::connectMQTT(char *brokerIP)
+{
+    _mqtt = MQTT(brokerIP, 1883, callback);
+    _mqtt.connect(publishNameVariable);  // argument ignored?
+    if (_mqtt.isConnected()) {
+        _mqtt.subscribe(publishNameVariable);
+    }
+}
+
 
 /**
  * Loop method must be called periodically,
