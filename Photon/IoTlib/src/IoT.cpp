@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-03-16: Add MQTT support
 2017-10-22: Convert to scene-like behavior
 2017-10-12: Add control using device names
 2017-05-15: Make devices generic
@@ -138,17 +139,11 @@ void IoT::begin()
         log("Unable to expose publishName variable");
         return;
     }
-
-    // connect to MQTT broker
-    mqtt.connect(publishNameVariable);  // argument ignored?
-    if (mqtt.isConnected()) {
-//        mqtt.publish("outTopic/message","hello world");
-        mqtt.subscribe(publishNameVariable);
-    }
 }
 
 void IoT::connectMQTT(char *brokerIP)
 {
+    // Do we need to disconnect if previously connected?
     _mqtt = MQTT(brokerIP, 1883, callback);
     _mqtt.connect(publishNameVariable);  // argument ignored?
     if (_mqtt.isConnected()) {
