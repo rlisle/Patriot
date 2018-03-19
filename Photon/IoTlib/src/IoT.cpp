@@ -26,8 +26,6 @@ Changelog:
 ******************************************************************/
 #include "IoT.h"
 
-void mqttHandler(char* topic, byte* payload, unsigned int length);
-
 /**
  * Global subscribe handler
  * Called by particle.io when events are published.
@@ -38,6 +36,18 @@ void mqttHandler(char* topic, byte* payload, unsigned int length);
 void globalSubscribeHandler(const char *eventName, const char *rawData) {
     IoT* iot = IoT::getInstance();
     iot->subscribeHandler(eventName,rawData);
+}
+
+/**
+ * Global MQTT subscribe handler
+ * Called by MQTT when events are published.
+ *
+ * @param eventName
+ * @param rawData
+ */
+void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
+    IoT* iot = IoT::getInstance();
+    iot->mqttHandler(topic, payload, length);
 }
 
 /**
@@ -141,13 +151,13 @@ void IoT::begin()
     }
 }
 
-void IoT::connectMQTT(char *brokerIP)
+void IoT::connectMQTT(byte *brokerIP)
 {
     // Do we need to disconnect if previously connected?
-    _mqtt = MQTT(brokerIP, 1883, callback);
-    _mqtt.connect(publishNameVariable);  // argument ignored?
-    if (_mqtt.isConnected()) {
-        _mqtt.subscribe(publishNameVariable);
+    _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
+    _mqtt->connect("PatriotIoT");                // This is NOT topic. Do we need something specific here?
+    if (_mqtt->isConnected()) {
+        _mqtt->subscribe(publishNameVariable);   // Topic name
     }
 }
 
@@ -249,10 +259,10 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 /*** MQTT Subscribe Handler ***/
 /******************************/
 void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
-//    char p[length + 1];
-//    memcpy(p, payload, length);
-//    p[length] = NULL;
-    String data(payload);
+    char p[length + 1];
+    memcpy(p, payload, length);
+    p[length] = NULL;
+    String data(p);
     String event(topic);
     Serial.println("MQTT handler event: " + event + ", data: " + data);
     int colonPosition = data.indexOf(':');

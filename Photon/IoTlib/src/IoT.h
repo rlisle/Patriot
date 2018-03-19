@@ -39,7 +39,7 @@ Changelog:
 class IoT {
 
     friend void globalSubscribeHandler(const char *eventName, const char *rawData);
-//    friend void globalDhtHandler();
+    friend void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 
 public:
 
@@ -63,6 +63,12 @@ public:
      * This is done here instead of the constructor to improve debugging.
      */
     void begin();
+
+    /**
+     * connectMQTT(byte * brokerIP)
+     * Connect to an MQTT broker with specified IP
+     **/
+    void connectMQTT(byte *brokerIP);
 
     /**
      * Loop needs to be called periodically
@@ -105,5 +111,7 @@ private:
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
     void performActivities();   //TODO: To be deprecated
+
+    void mqttHandler(char* topic, byte* payload, unsigned int length);
 
 };
