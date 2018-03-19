@@ -11,6 +11,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-18: Add name and type properties
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2017-02-04: Convert from on/off to percent
@@ -19,17 +20,19 @@ Changelog:
 #include "application.h"
 #include "presence.h"
 #include "proximity.h"
+#include "../IoTlib/src/device.h"
 
 #define kDefaultShutOffDelay 5000    // 5 seconds
 
-Presence::Presence(int min, int max, String event, long interval)
+Presence::Presence(String name, int min, int max, String event, long interval)
+         : Device(name, DeviceType::Presence),
+           _minInches(min),
+           _maxInches(max),
+           _event(event),
+           _interval(interval)
 {
   _isPresent        = false;
   _lastPingTime     = 0;
-  _minInches        = min;
-  _maxInches        = max;
-  _event            = event;
-  _interval         = interval;
   _shutOffDelay     = kDefaultShutOffDelay;
   _lastPresentTime  = 0;
 }

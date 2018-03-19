@@ -4,6 +4,8 @@
 example=starter
 if [ $# -gt 0 ]; then
     example=$1
+else
+    example="starter"
 fi
 echo "particle compile photon examples/$example"
 particle compile photon examples/$example

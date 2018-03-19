@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-17: Add function for device type
 2017-10-27: V2.0.0
 2017-05-20: Provide default implementations for everything,
             so this class is not abstract anymore.
@@ -23,17 +24,32 @@ Changelog:
 ******************************************************************/
 #pragma once
 
+enum class DeviceType {
+    Unknown,
+    Fan,
+    Light,
+    Motor,
+    NCD8Relay,
+    Presence,
+    Relay,
+    Switch,
+    TempHumidity,
+    Ultrasonic
+};
+
 class Device {
  protected:
-    String  _name;
-    int     _percent;
+    String     _name;
+    DeviceType _type;
+    int        _percent;
 
  public:
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
-    Device(String name = "") : _name(name) { };
+    Device(String name = "", DeviceType type = DeviceType::Unknown) : _name(name), _type(type) { }
 
     virtual String name() { return _name; };
+    virtual DeviceType type() { return _type; };
 
     // This method can either read the device directly, or use a value
     // set in the loop() if continuous or asynchronous polling is used.

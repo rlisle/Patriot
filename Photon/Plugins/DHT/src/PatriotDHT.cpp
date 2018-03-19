@@ -16,6 +16,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-01-18: Add name and type properties
 2017-05-20: Convert to plugin
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
@@ -40,7 +41,8 @@ extern String publishNameVariable;
 /**
  * Constructor.
  */
-DHT::DHT(int pin, int type)
+DHT::DHT(int pin, String name, int type)
+    : Device(name, DeviceType::TempHumidity)
 {
     lastLoopTime = 0;
     interval = kDefaultInterval;
