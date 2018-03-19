@@ -282,7 +282,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
     char p[length + 1];
     memcpy(p, payload, length);
-    p[length] = NULL;
+    p[length] = 0;
     String data(p);
     String event(topic);
     Serial.println("MQTT handler event: " + event + ", data: " + data);
@@ -304,6 +304,7 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
     int value = state.toInt();
     log("   performing activity " + name + " = " + String(value));
     _behaviors->performActivity(name, value);
+}
 
 /**
  * Program Handler
