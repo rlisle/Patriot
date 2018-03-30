@@ -28,7 +28,7 @@ Changelog:
 #include "IoT.h"
 
 /**
- * Global subscribe handler
+ * Global Particle.io subscribe handler
  * Called by particle.io when events are published.
  *
  * @param eventName
@@ -178,7 +178,9 @@ void IoT::connectMQTT(byte *brokerIP)
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
     _mqtt->connect("PatriotIoT");                // This is NOT topic. Do we need something specific here?
     if (_mqtt->isConnected()) {
-        _mqtt->subscribe(publishNameVariable);   // Topic name
+        if(!_mqtt->subscribe(publishNameVariable)) {   // Topic name
+            log("Unable to subscribe to MQTT");
+        }
     }
 }
 
@@ -192,6 +194,9 @@ void IoT::loop()
     if(!_hasBegun) return;
 
     _devices->loop();
+    if (_mqtt != NULL && _mqtt->isConnected()) {
+        _mqtt->loop();
+    }
 }
 
 
@@ -240,7 +245,6 @@ void IoT::buildSupportedActivitiesVariable()
     }
     if(newVariable.length() < kMaxVariableStringLength) {
         if(newVariable != supportedActivitiesVariable) {
-            log("Supported activities = "+newVariable);
             supportedActivitiesVariable = newVariable;
         }
     } else {
@@ -272,7 +276,6 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
-    log("   performing activity " + name + " = " + String(value));
     _behaviors->performActivity(name, value);
 }
 
@@ -285,7 +288,6 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
     p[length] = 0;
     String data(p);
     String event(topic);
-    Serial.println("MQTT handler event: " + event + ", data: " + data);
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
@@ -295,14 +297,12 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
     if(device)
     {
         int percent = state.toInt();
-        Serial.println(" percent = "+String(percent));
         device->setPercent(percent);
         return;
     }
 
     // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
-    log("   performing activity " + name + " = " + String(value));
     _behaviors->performActivity(name, value);
 }
 
@@ -359,8 +359,6 @@ int IoT::programHandler(String command) {
  * @returns int response indicating value (0-100) or -1 if invalid device or error.
  */
 int IoT::valueHandler(String deviceName) {
-    log("valueHandler called with device name: " + deviceName);
-
     Device *device = _devices->getDeviceWithName(deviceName);
     if(device==NULL) {
         return -1;
@@ -378,8 +376,6 @@ int IoT::valueHandler(String deviceName) {
  * @returns int indicating DeviceType of device
  */
 int IoT::typeHandler(String deviceName) {
-    log("typeHandler called with device name: " + deviceName);
-
     Device *device = _devices->getDeviceWithName(deviceName);
     if(device==NULL) {
         return -1;

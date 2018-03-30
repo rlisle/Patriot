@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-03-27: Add MQTT reconnect
 2018-01-17: Add functions for device state and type
 2017-10-22: Convert to scene-like behavior
 2017-05-15: Make devices generic
