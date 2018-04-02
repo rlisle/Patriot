@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Compile only
 # The specific example is specified as the 1st argument, or defaults to "everything"
-example=everything
+example=starter
 if [ $# -gt 0 ]; then
     example=$1
 else

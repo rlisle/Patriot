@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-03-16: Add MQTT support
 2018-01-17: Add functions for device state and type
 2017-10-22: Convert to scene-like behavior
 2017-10-12: Add control using device names
@@ -27,7 +28,7 @@ Changelog:
 #include "IoT.h"
 
 /**
- * Global subscribe handler
+ * Global Particle.io subscribe handler
  * Called by particle.io when events are published.
  *
  * @param eventName
@@ -38,6 +39,17 @@ void globalSubscribeHandler(const char *eventName, const char *rawData) {
     iot->subscribeHandler(eventName,rawData);
 }
 
+/**
+ * Global MQTT subscribe handler
+ * Called by MQTT when events are published.
+ *
+ * @param eventName
+ * @param rawData
+ */
+void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
+    IoT* iot = IoT::getInstance();
+    iot->mqttHandler(topic, payload, length);
+}
 
 /**
  * Supported Activities variable
@@ -160,6 +172,18 @@ void IoT::begin()
     }
 }
 
+void IoT::connectMQTT(byte *brokerIP)
+{
+    // Do we need to disconnect if previously connected?
+    _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
+    _mqtt->connect("PatriotIoT");                // This is NOT topic. Do we need something specific here?
+    if (_mqtt->isConnected()) {
+        if(!_mqtt->subscribe(publishNameVariable)) {   // Topic name
+            log("Unable to subscribe to MQTT");
+        }
+    }
+}
+
 
 /**
  * Loop method must be called periodically,
@@ -170,6 +194,9 @@ void IoT::loop()
     if(!_hasBegun) return;
 
     _devices->loop();
+    if (_mqtt != NULL && _mqtt->isConnected()) {
+        _mqtt->loop();
+    }
 }
 
 
@@ -218,7 +245,6 @@ void IoT::buildSupportedActivitiesVariable()
     }
     if(newVariable.length() < kMaxVariableStringLength) {
         if(newVariable != supportedActivitiesVariable) {
-            log("Supported activities = "+newVariable);
             supportedActivitiesVariable = newVariable;
         }
     } else {
@@ -226,9 +252,9 @@ void IoT::buildSupportedActivitiesVariable()
     }
 }
 
-/*************************/
-/*** Subscribe Handler ***/
-/*************************/
+/*************************************/
+/*** Particle.io Subscribe Handler ***/
+/*************************************/
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
     String data(rawData);
@@ -250,10 +276,35 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
-    log("   performing activity " + name + " = " + String(value));
     _behaviors->performActivity(name, value);
 }
 
+/******************************/
+/*** MQTT Subscribe Handler ***/
+/******************************/
+void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
+    char p[length + 1];
+    memcpy(p, payload, length);
+    p[length] = 0;
+    String data(p);
+    String event(topic);
+    int colonPosition = data.indexOf(':');
+    String name = data.substring(0,colonPosition);
+    String state = data.substring(colonPosition+1);
+
+    // See if this is a device name. If so, update it.
+    Device* device = _devices->getDeviceWithName(name);
+    if(device)
+    {
+        int percent = state.toInt();
+        device->setPercent(percent);
+        return;
+    }
+
+    // If it wasn't a device name, it must be an activity.
+    int value = state.toInt();
+    _behaviors->performActivity(name, value);
+}
 
 /**
  * Program Handler
@@ -308,8 +359,6 @@ int IoT::programHandler(String command) {
  * @returns int response indicating value (0-100) or -1 if invalid device or error.
  */
 int IoT::valueHandler(String deviceName) {
-    log("valueHandler called with device name: " + deviceName);
-
     Device *device = _devices->getDeviceWithName(deviceName);
     if(device==NULL) {
         return -1;
@@ -327,8 +376,6 @@ int IoT::valueHandler(String deviceName) {
  * @returns int indicating DeviceType of device
  */
 int IoT::typeHandler(String deviceName) {
-    log("typeHandler called with device name: " + deviceName);
-
     Device *device = _devices->getDeviceWithName(deviceName);
     if(device==NULL) {
         return -1;
