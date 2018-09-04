@@ -97,7 +97,14 @@ IoT* IoT::_instance = NULL;
 void IoT::log(String msg)
 {
     Serial.println(msg);
-    Particle.publish("LOG", msg, 60, PRIVATE);
+    // Write to MQTT if connected
+    if (_mqtt != NULL && _mqtt->isConnected()) {
+        _mqtt->publish("patriot/debug", msg);
+
+    // Otherwise write to particle (limit # writes available)
+    } else {
+      Particle.publish("LOG", msg, 60, PRIVATE);
+    }
 }
 
 /**
@@ -174,7 +181,7 @@ void IoT::begin()
     }
 }
 
-void IoT::connectMQTT(byte *brokerIP, bool isBridge)
+void IoT::connectMQTT(byte *brokerIP, bool isBridge = false)
 {
     _isBridge = isBridge
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
@@ -256,6 +263,7 @@ void IoT::buildSupportedActivitiesVariable()
 
 /*************************************/
 /*** Particle.io Subscribe Handler ***/
+/*** t:patriot m:<device>:<value>  ***/
 /*************************************/
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
@@ -267,9 +275,14 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String state = data.substring(colonPosition+1);
 
     // Bridge events to MQTT if this is a Bridge
+    // to t:particle/<eventName> m:<msg>
+    // eg. patriot DeskLamp:100 -> particle/patriot DeskLamp:100
     if(_isBridge)
     {
-        //TODO: copy to MQTT
+      if (_mqtt != NULL && _mqtt->isConnected()) {
+          _mqtt->publish("particle/"+eventName, data);
+      }
+      //TODO: do we want to return at the point?
     }
 
     // See if this is a device name. If so, update it.
@@ -303,7 +316,8 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
     // Bridge events to Particle if this is a Bridge
     if(_isBridge)
     {
-        //TODO: copy to Particle
+        //TODO: Do we want to copy from MQTT to Particle?
+        //      Probably not.
     }
 
     // See if this is a device name. If so, update it.
