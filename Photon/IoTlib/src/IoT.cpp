@@ -16,6 +16,8 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-09-04: Bridge Particle to MQTT
+2018-07-07: Convert MQTT format to match SmartThings
 2018-03-16: Add MQTT support
 2018-01-17: Add functions for device state and type
 2017-10-22: Convert to scene-like behavior
@@ -95,7 +97,15 @@ IoT* IoT::_instance = NULL;
 void IoT::log(String msg)
 {
     Serial.println(msg);
-    Particle.publish("LOG", msg, 60, PRIVATE);
+    // Write to MQTT if connected
+    IoT* iot = IoT::getInstance();
+    if (iot->_mqtt != NULL && iot->_mqtt->isConnected()) {
+        iot->_mqtt->publish("patriot/debug", msg);
+
+    // Otherwise write to particle (limit # writes available)
+    } else {
+      Particle.publish("LOG", msg, 60, PRIVATE);
+    }
 }
 
 /**
@@ -172,11 +182,11 @@ void IoT::begin()
     }
 }
 
-void IoT::connectMQTT(byte *brokerIP)
+void IoT::connectMQTT(byte *brokerIP, bool isBridge)
 {
-    // Do we need to disconnect if previously connected?
+    _isBridge = isBridge;
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
-    _mqtt->connect("PatriotIoT");                // This is NOT topic. Do we need something specific here?
+    _mqtt->connect("PatriotIoT");                // Unique connection ID
     if (_mqtt->isConnected()) {
         if(!_mqtt->subscribe(publishNameVariable)) {   // Topic name
             log("Unable to subscribe to MQTT");
@@ -254,6 +264,7 @@ void IoT::buildSupportedActivitiesVariable()
 
 /*************************************/
 /*** Particle.io Subscribe Handler ***/
+/*** t:patriot m:<device>:<value>  ***/
 /*************************************/
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
@@ -263,6 +274,17 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
+
+    // Bridge events to MQTT if this is a Bridge
+    // to t:particle/<eventName> m:<msg>
+    // eg. patriot DeskLamp:100 -> particle/patriot DeskLamp:100
+    if(_isBridge)
+    {
+      if (_mqtt != NULL && _mqtt->isConnected()) {
+          _mqtt->publish(String("particle/")+eventName, data);
+      }
+      //TODO: do we want to return at the point?
+    }
 
     // See if this is a device name. If so, update it.
      Device* device = _devices->getDeviceWithName(name);
@@ -291,6 +313,13 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
+
+    // Bridge events to Particle if this is a Bridge
+    if(_isBridge)
+    {
+        //TODO: Do we want to copy from MQTT to Particle?
+        //      Probably not.
+    }
 
     // See if this is a device name. If so, update it.
     Device* device = _devices->getDeviceWithName(name);
