@@ -89,6 +89,7 @@ public:
 private:
     static IoT* _instance;
     bool    _hasBegun;
+    bool    _isBridge;
     String  _publishName;
     String  _proximityEvent;
     String  _supportedActivities[kMaxNumberActivities];

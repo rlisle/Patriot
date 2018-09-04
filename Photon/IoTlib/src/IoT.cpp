@@ -16,6 +16,8 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-09-04: Bridge Particle to MQTT
+2018-07-07: Convert MQTT format to match SmartThings
 2018-03-16: Add MQTT support
 2018-01-17: Add functions for device state and type
 2017-10-22: Convert to scene-like behavior
@@ -172,11 +174,11 @@ void IoT::begin()
     }
 }
 
-void IoT::connectMQTT(byte *brokerIP)
+void IoT::connectMQTT(byte *brokerIP, bool isBridge)
 {
-    // Do we need to disconnect if previously connected?
+    _isBridge = isBridge
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
-    _mqtt->connect("PatriotIoT");                // This is NOT topic. Do we need something specific here?
+    _mqtt->connect("PatriotIoT");                // Unique connection ID
     if (_mqtt->isConnected()) {
         if(!_mqtt->subscribe(publishNameVariable)) {   // Topic name
             log("Unable to subscribe to MQTT");
@@ -264,6 +266,12 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
 
+    // Bridge events to MQTT if this is a Bridge
+    if(_isBridge)
+    {
+        //TODO: copy to MQTT
+    }
+
     // See if this is a device name. If so, update it.
      Device* device = _devices->getDeviceWithName(name);
      if(device)
@@ -291,6 +299,12 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
+
+    // Bridge events to Particle if this is a Bridge
+    if(_isBridge)
+    {
+        //TODO: copy to Particle
+    }
 
     // See if this is a device name. If so, update it.
     Device* device = _devices->getDeviceWithName(name);
