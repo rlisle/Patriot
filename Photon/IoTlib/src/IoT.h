@@ -70,7 +70,7 @@ public:
      * connectMQTT(byte * brokerIP)
      * Connect to an MQTT broker with specified IP
      **/
-    void connectMQTT(byte *brokerIP);
+    void connectMQTT(byte *brokerIP, bool isBridge = false);
 
     /**
      * Loop needs to be called periodically

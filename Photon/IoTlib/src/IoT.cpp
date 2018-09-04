@@ -98,8 +98,9 @@ void IoT::log(String msg)
 {
     Serial.println(msg);
     // Write to MQTT if connected
-    if (_mqtt != NULL && _mqtt->isConnected()) {
-        _mqtt->publish("patriot/debug", msg);
+    IoT* iot = IoT::getInstance();
+    if (iot->_mqtt != NULL && iot->_mqtt->isConnected()) {
+        iot->_mqtt->publish("patriot/debug", msg);
 
     // Otherwise write to particle (limit # writes available)
     } else {
@@ -181,9 +182,9 @@ void IoT::begin()
     }
 }
 
-void IoT::connectMQTT(byte *brokerIP, bool isBridge = false)
+void IoT::connectMQTT(byte *brokerIP, bool isBridge)
 {
-    _isBridge = isBridge
+    _isBridge = isBridge;
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
     _mqtt->connect("PatriotIoT");                // Unique connection ID
     if (_mqtt->isConnected()) {
@@ -280,7 +281,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     if(_isBridge)
     {
       if (_mqtt != NULL && _mqtt->isConnected()) {
-          _mqtt->publish("particle/"+eventName, data);
+          _mqtt->publish(String("particle/")+eventName, data);
       }
       //TODO: do we want to return at the point?
     }
