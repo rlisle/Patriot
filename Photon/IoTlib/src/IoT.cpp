@@ -182,7 +182,7 @@ void IoT::begin()
     }
 }
 
-void IoT::connectMQTT(byte *brokerIP, bool isBridge, String connectID)
+void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
 {
     _isBridge = isBridge;
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
