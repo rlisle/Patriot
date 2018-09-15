@@ -182,11 +182,11 @@ void IoT::begin()
     }
 }
 
-void IoT::connectMQTT(byte *brokerIP, bool isBridge)
+void IoT::connectMQTT(byte *brokerIP, bool isBridge, String connectID)
 {
     _isBridge = isBridge;
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
-    _mqtt->connect("PatriotIoT");                // Unique connection ID
+    _mqtt->connect(connectID);                          // Unique connection ID
     if (_mqtt->isConnected()) {
         if(!_mqtt->subscribe(publishNameVariable)) {   // Topic name
             log("Unable to subscribe to MQTT");
