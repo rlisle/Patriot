@@ -318,7 +318,7 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
             //      https://docs.particle.io/reference/firmware/photon/#get-device-name
             _mqtt->publish("TestPong", "FrontPanel");
         }
-        return
+        return;
     }
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
