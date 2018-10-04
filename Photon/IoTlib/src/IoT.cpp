@@ -310,6 +310,16 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
     p[length] = 0;
     String data(p);
     String event(topic);
+
+    if(event.equalsIgnoreCase("TestPing")) {
+        if (_mqtt != NULL && _mqtt->isConnected()) {
+            //TODO: get and use Photon name
+            //      requires subscribing to particle.io particle/device/name
+            //      https://docs.particle.io/reference/firmware/photon/#get-device-name
+            _mqtt->publish("TestPong", "FrontPanel");
+        }
+        return
+    }
     int colonPosition = data.indexOf(':');
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
@@ -321,6 +331,7 @@ void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
         //      Probably not.
     }
 
+    // Is this a TestPing message?
     // See if this is a device name. If so, update it.
     Device* device = _devices->getDeviceWithName(name);
     if(device)
