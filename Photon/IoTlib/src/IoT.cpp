@@ -116,6 +116,7 @@ IoT::IoT()
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
+    _controllerName         = kDefaultControllerName;
     _numSupportedActivities = 0;
 }
 
@@ -131,6 +132,16 @@ IoT::IoT()
 void IoT::setPublishName(String publishName)
 {
     publishNameVariable = publishName;
+}
+
+/**
+ * Specify the controller's name
+ * 
+ * @param controllerName
+ */
+void IoT::setControllerName(String name)
+{
+    _controllerName = name;
 }
 
 /**
@@ -304,19 +315,16 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 /******************************/
 /*** MQTT Subscribe Handler ***/
 /******************************/
-void IoT::mqttHandler(char* topic, byte* payload, unsigned int length) {
+void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
     char p[length + 1];
     memcpy(p, payload, length);
     p[length] = 0;
     String data(p);
-    String event(topic);
+    String topic(rawTopic);
 
-    if(event.equalsIgnoreCase("TestPing")) {
+    if(topic.equalsIgnoreCase("TestPing") && data.equalsIgnoreCase(_controllerName)) {
         if (_mqtt != NULL && _mqtt->isConnected()) {
-            //TODO: get and use Photon name
-            //      requires subscribing to particle.io particle/device/name
-            //      https://docs.particle.io/reference/firmware/photon/#get-device-name
-            _mqtt->publish("TestPong", "FrontPanel");
+            _mqtt->publish("TestPong", _controllerName);
         }
         return;
     }

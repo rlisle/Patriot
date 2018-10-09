@@ -59,6 +59,8 @@ public:
      */
     void setPublishName(String publishName);
 
+    void setControllerName(String controllerName);
+
     /**
      * begin
      * Call begin to initialize the object.
@@ -91,6 +93,7 @@ private:
     bool    _hasBegun;
     bool    _isBridge;
     String  _publishName;
+    String  _controllerName;
     String  _proximityEvent;
     String  _supportedActivities[kMaxNumberActivities];
     int     _numSupportedActivities;
