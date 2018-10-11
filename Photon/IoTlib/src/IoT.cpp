@@ -324,12 +324,12 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
     String data(p);
     String topic(rawTopic);
 
-    int publishNameLength = publishNameVariable.length
+    uint publishNameLength = publishNameVariable.length();
 
     log("MQTT received: " + topic + ", " + data);
 
     if(topic.startsWith(publishNameVariable)) { // patriot
-        if(topic.length == publishNameLength) { //legacy
+        if(topic.length() == publishNameLength) { //legacy
             int colonPosition = data.indexOf(':');
             String name = data.substring(0,colonPosition);
             String state = data.substring(colonPosition+1);
@@ -352,28 +352,26 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
                 log("MQTT message does not contain 2 slashes");
                 return;
             }
-            midTopic = topic.substring(firstSlash+1,lastSlash);
-            rightTopic = topic.substring(lastSlash+1);
+            String midTopic = topic.substring(firstSlash+1,lastSlash);
+            String rightTopic = topic.substring(lastSlash+1);
             // Handle various topic messages
             // DEVICE
             if(midTopic.equalsIgnoreCase("device")) {
-                Device* device = _devices->getDeviceWithName(name);
+                Device* device = _devices->getDeviceWithName(rightTopic);
                 if(device)
                 {
-                    int percent = state.toInt();
+                    int percent = data.toInt();
                     device->setPercent(percent);
-                    return;
                 }
 
             // ACTIVITY
             } else if(midTopic.equalsIgnoreCase("activity")) {
-                int value = state.toInt();
-                _behaviors->performActivity(name, value);
+                int value = data.toInt();
+                _behaviors->performActivity(rightTopic, value);
 
             // PING
             } else if(midTopic.equalsIgnoreCase("ping")) {
                 _mqtt->publish(publishNameVariable + "/pong/" + _controllerName, data);
-                return;
 
             // PONG
             } else if(midTopic.equalsIgnoreCase("pong")) {
