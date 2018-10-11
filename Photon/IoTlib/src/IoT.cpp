@@ -94,13 +94,14 @@ IoT* IoT::_instance = NULL;
  * a spot to add more extensive logging or analytics
  * @param msg
  */
-void IoT::log(String msg)
+void IoT::log(String msg)   //TODO: add log type "info", "debug", "warning", "error", etc.
 {
     Serial.println(msg);
+
     // Write to MQTT if connected
     IoT* iot = IoT::getInstance();
     if (iot->_mqtt != NULL && iot->_mqtt->isConnected()) {
-        iot->_mqtt->publish("patriot/debug", msg);
+        iot->_mqtt->publish("patriot/log/info", msg);
 
     // Otherwise write to particle (limit # writes available)
     } else {
@@ -196,6 +197,7 @@ void IoT::begin()
 void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
 {
     _isBridge = isBridge;
+    log("Connecting to MQTT patriot");
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
     _mqtt->connect(connectID);                          // Unique connection ID
     if (_mqtt->isConnected()) {
@@ -322,36 +324,75 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
     String data(p);
     String topic(rawTopic);
 
-    if(topic.equalsIgnoreCase("TestPing") && data.equalsIgnoreCase(_controllerName)) {
-        if (_mqtt != NULL && _mqtt->isConnected()) {
-            _mqtt->publish("TestPong", _controllerName);
+    int publishNameLength = publishNameVariable.length
+
+    log("MQTT received: " + topic + ", " + data);
+
+    if(topic.startsWith(publishNameVariable)) { // patriot
+        if(topic.length == publishNameLength) { //legacy
+            int colonPosition = data.indexOf(':');
+            String name = data.substring(0,colonPosition);
+            String state = data.substring(colonPosition+1);
+            // See if this is a device name. If so, update it.
+            Device* device = _devices->getDeviceWithName(name);
+            if(device)
+            {
+                int percent = state.toInt();
+                device->setPercent(percent);
+                return;
+            }
+            // If it wasn't a device name, it must be an activity.
+            int value = state.toInt();
+            _behaviors->performActivity(name, value);
+
+        } else {
+            int firstSlash = topic.indexOf('/');
+            int lastSlash = topic.lastIndexOf('/');
+            if(firstSlash == -1 || lastSlash == -1 || firstSlash == lastSlash) {
+                log("MQTT message does not contain 2 slashes");
+                return;
+            }
+            midTopic = topic.substring(firstSlash+1,lastSlash);
+            rightTopic = topic.substring(lastSlash+1);
+            // Handle various topic messages
+            // DEVICE
+            if(midTopic.equalsIgnoreCase("device")) {
+                Device* device = _devices->getDeviceWithName(name);
+                if(device)
+                {
+                    int percent = state.toInt();
+                    device->setPercent(percent);
+                    return;
+                }
+
+            // ACTIVITY
+            } else if(midTopic.equalsIgnoreCase("activity")) {
+                int value = state.toInt();
+                _behaviors->performActivity(name, value);
+
+            // PING
+            } else if(midTopic.equalsIgnoreCase("ping")) {
+                _mqtt->publish(publishNameVariable + "/pong/" + _controllerName, data);
+                return;
+
+            // PONG
+            } else if(midTopic.equalsIgnoreCase("pong")) {
+                // Ignore it.
+
+            // LOG
+            } else if(midTopic.equalsIgnoreCase("log")) {
+                // Ignore it.
+
+            // UNKNOWN
+            } else {
+                log("MQTT topic unknown");
+            }
         }
-        return;
-    }
-    int colonPosition = data.indexOf(':');
-    String name = data.substring(0,colonPosition);
-    String state = data.substring(colonPosition+1);
 
-    // Bridge events to Particle if this is a Bridge
-    if(_isBridge)
-    {
-        //TODO: Do we want to copy from MQTT to Particle?
-        //      Probably not.
-    }
+    } else if(topic.startsWith("smartthings")) {
+        // Bridge may need to do something with this.
 
-    // Is this a TestPing message?
-    // See if this is a device name. If so, update it.
-    Device* device = _devices->getDeviceWithName(name);
-    if(device)
-    {
-        int percent = state.toInt();
-        device->setPercent(percent);
-        return;
     }
-
-    // If it wasn't a device name, it must be an activity.
-    int value = state.toInt();
-    _behaviors->performActivity(name, value);
 }
 
 /**
