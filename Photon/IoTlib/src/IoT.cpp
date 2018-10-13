@@ -197,13 +197,17 @@ void IoT::begin()
 void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
 {
     _isBridge = isBridge;
-    log("Connecting to MQTT patriot");
+    log("Connecting to MQTT patriot...");
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
     _mqtt->connect(connectID);                          // Unique connection ID
     if (_mqtt->isConnected()) {
+        log("MQTT is connected");
         if(!_mqtt->subscribe(publishNameVariable)) {   // Topic name
             log("Unable to subscribe to MQTT");
         }
+        _mqtt->publish("patriot/log/info", "MQTT connected");
+    } else {
+        log("MQTT is NOT connected!");
     }
 }
 
