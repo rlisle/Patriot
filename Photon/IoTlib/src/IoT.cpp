@@ -101,7 +101,7 @@ void IoT::log(String msg)   //TODO: add log type "info", "debug", "warning", "er
     // Write to MQTT if connected
     IoT* iot = IoT::getInstance();
     if (iot->_mqtt != NULL && iot->_mqtt->isConnected()) {
-        iot->_mqtt->publish("patriot/log/info", msg);
+        iot->_mqtt->publish("debug/" + _controllerName + ": ", msg);
 
     // Otherwise write to particle (limit # writes available)
     } else {
@@ -201,13 +201,14 @@ void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
     _mqtt->connect(connectID);                          // Unique connection ID
     if (_mqtt->isConnected()) {
-        log("MQTT is connected");
-        if(!_mqtt->subscribe(publishNameVariable)) {   // Topic name
+        log("MQTT is connected. Subscribe to debug/" + _controllerName + " for logging.");
+        if(_mqtt->subscribe(publishNameVariable+"/#")) {   // Topic name
+            log("MQTT subscribed to " + publishNameVariable + "/#");
+        } else {
             log("Unable to subscribe to MQTT");
         }
-        _mqtt->publish("patriot/log/info", "MQTT connected");
     } else {
-        log("MQTT is NOT connected!");
+        log("MQTT is NOT connected! Check MQTT IP address");
     }
 }
 
@@ -353,7 +354,7 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
             int firstSlash = topic.indexOf('/');
             int lastSlash = topic.lastIndexOf('/');
             if(firstSlash == -1 || lastSlash == -1 || firstSlash == lastSlash) {
-                log("MQTT message does not contain 2 slashes");
+                log("MQTT message does not contain 2 slashes, so ignoring");
                 return;
             }
             String midTopic = topic.substring(firstSlash+1,lastSlash);
@@ -375,7 +376,11 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
             // PING
             } else if(midTopic.equalsIgnoreCase("ping")) {
-                _mqtt->publish(publishNameVariable + "/pong/" + _controllerName, data);
+                // Respond if ping is addressed to us
+                if(rightTopic.equalsIgnoreCase(_controllerName)) {
+                    log("Ping addressed to us: "+_controllerName);
+                    _mqtt->publish(publishNameVariable + "/pong/" + _controllerName, data);
+                }
 
             // PONG
             } else if(midTopic.equalsIgnoreCase("pong")) {
@@ -391,6 +396,7 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
             }
         }
 
+    // Note: currently subscribing to _controllerName, so this will never happen
     } else if(topic.startsWith("smartthings")) {
         // Bridge may need to do something with this.
 
