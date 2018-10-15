@@ -215,7 +215,8 @@ void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
 
 void IoT::mqttPublish(String topic, String message)
 {
-    _mqtt->publish(topic, message);
+    String prefixedTopic = publishNameVariable + "/" + topic;
+    _mqtt->publish(prefixedTopic, message);
 }
 
 

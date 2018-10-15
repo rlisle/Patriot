@@ -75,7 +75,7 @@ void Light::changePercent(int percent) {
     _targetPercent = percent;
     if(_dimmingDuration == 0.0 || isDimmingSupported() == false) {
         _currentPercent = percent;
-        outputPWM();
+        outputPercent();
 
     } else {
         startSmoothDimming();
@@ -201,11 +201,18 @@ void Light::loop()
  * Set the output percent value (0-100)
  */
 void Light::outputPercent() {
+    IoT *iot = IoT::getInstance();
+    String topic = stname;
     if(isDimmingSupported()) {
-        //TODO: Write _currentPercent to MQTT
+        //TODO: Write switch on/off first time only
+
+        topic += "/level";
+        iot->mqttPublish(topic, message);
     } else {
         bool isOn = _currentPercent > 49;
-        //TODO: Write isOn to MQTT
+        topic += "/switch";
+        String message = isOn ? "on" : "off";
+        iot->mqttPublish(topic, message);
     }
 }
 
