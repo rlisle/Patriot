@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-10-15: Expose MQTT publish.
 2018-09-04: Bridge Particle to MQTT
 2018-07-07: Convert MQTT format to match SmartThings
 2018-03-16: Add MQTT support
@@ -210,6 +211,11 @@ void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
     } else {
         log("MQTT is NOT connected! Check MQTT IP address");
     }
+}
+
+void IoT::mqttPublish(String topic, String message)
+{
+    _mqtt->publish(topic, message);
 }
 
 
