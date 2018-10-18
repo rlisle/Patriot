@@ -40,6 +40,8 @@ class STLight : public Device
     bool      isAlreadyOff();
     void      changePercent(int percent);
     void      startSmoothDimming();
+    bool      isDimmingSupported();
+    void      outputPercent();
 
  public:
     STLight(String stname, String name, bool forceDigital=false);

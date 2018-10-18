@@ -18,6 +18,7 @@
  2018-10-15: Initial version
  ******************************************************************/
 
+#include <IoT.h>
 #include "PatriotSTLight.h"
 
 /**
@@ -27,8 +28,8 @@
  * @param forceDigital True if output On/Off only
  */
 STLight::STLight(String stname, String name, bool forceDigital)
-        : _stname(stname),
-          Device(name, DeviceType::Light),
+        : Device(name, DeviceType::Light),
+          _stname(stname),
           _forceDigital(forceDigital)
 {
     _dimmingPercent           = 100;                                // On full
@@ -41,10 +42,20 @@ STLight::STLight(String stname, String name, bool forceDigital)
 }
 
 /**
+ * Is Dimming supported?
+ * @return bool device supports dimming
+ */
+bool STLight::isDimmingSupported()
+{
+    //TODO: query device
+    return false;
+}
+
+/**
  * Set percent
  * @param percent Int 0 to 100
  */
-void Light::setPercent(int percent) {
+void STLight::setPercent(int percent) {
     _commandPercent = percent;
     changePercent(percent);
 }
@@ -53,14 +64,14 @@ void Light::setPercent(int percent) {
  * Get percent
  * @return Int current 0-100 percent value
  */
-int Light::getPercent() {
+int STLight::getPercent() {
     return _currentPercent;
 }
 
 /**
  * Set On
  */
-void Light::setOn() {
+void STLight::setOn() {
     if(isAlreadyOn()) return;
     changePercent(_dimmingPercent);
 }
@@ -69,7 +80,7 @@ void Light::setOn() {
  * Change percent
  * @param percent Int new percent value
  */
-void Light::changePercent(int percent) {
+void STLight::changePercent(int percent) {
     if(_targetPercent == percent) return;
 
     _targetPercent = percent;
@@ -86,7 +97,7 @@ void Light::changePercent(int percent) {
  * Is already on?
  * @return bool true if light is on
  */
-bool Light::isAlreadyOn() {
+bool STLight::isAlreadyOn() {
     return _targetPercent == _dimmingPercent;
 }
 
@@ -94,14 +105,14 @@ bool Light::isAlreadyOn() {
  * Is already off?
  * @return bool true if light is off
  */
-bool Light::isAlreadyOff() {
+bool STLight::isAlreadyOff() {
     return _targetPercent == 0;
 }
 
 /**
  * Start smooth dimming
  */
-void Light::startSmoothDimming() {
+void STLight::startSmoothDimming() {
     if((int)_currentPercent != _targetPercent){
         _lastUpdateTime = millis();
         float delta = _targetPercent - _currentPercent;
@@ -112,7 +123,7 @@ void Light::startSmoothDimming() {
 /**
  * Set light off
  */
-void Light::setOff() {
+void STLight::setOff() {
     if(isAlreadyOff()) return;
     setPercent(0);
 }
@@ -121,7 +132,7 @@ void Light::setOff() {
  * Is light on?
  * @return bool true if light is on
  */
-bool Light::isOn() {
+bool STLight::isOn() {
     return !isOff();
 }
 
@@ -129,7 +140,7 @@ bool Light::isOn() {
  * Is light off?
  * @return bool true if light is off
  */
-bool Light::isOff() {
+bool STLight::isOff() {
     return _targetPercent == 0;
 }
 
@@ -137,7 +148,7 @@ bool Light::isOff() {
  * Set dimming percent
  * @param percent Int new percent value
  */
-void Light::setDimmingPercent(int percent) {
+void STLight::setDimmingPercent(int percent) {
     if(_dimmingPercent != percent){
         _dimmingPercent = percent;
         changePercent(percent);
@@ -148,7 +159,7 @@ void Light::setDimmingPercent(int percent) {
  * Get dimming percent
  * @return Int current dimming percent value
  */
-int Light::getDimmingPercent() {
+int STLight::getDimmingPercent() {
     return _dimmingPercent;
 }
 
@@ -156,7 +167,7 @@ int Light::getDimmingPercent() {
  * Set dimming duration
  * @param duration float number of seconds
  */
-void Light::setDimmingDuration(float duration) {
+void STLight::setDimmingDuration(float duration) {
     _dimmingDuration = duration;
 }
 
@@ -164,7 +175,7 @@ void Light::setDimmingDuration(float duration) {
  * Get dimming duration
  * @return float number of dimming duration seconds
  */
-float Light::getDimmingDuration() {
+float STLight::getDimmingDuration() {
     return _dimmingDuration;
 }
 
@@ -175,7 +186,7 @@ float Light::getDimmingDuration() {
 /**
  * loop()
  */
-void Light::loop()
+void STLight::loop()
 {
     if(_currentPercent == _targetPercent) {
         return;
@@ -200,28 +211,20 @@ void Light::loop()
 /**
  * Set the output percent value (0-100)
  */
-void Light::outputPercent() {
+void STLight::outputPercent() {
     IoT *iot = IoT::getInstance();
-    String topic = stname;
+    String topic = _stname;
+    String message;
     if(isDimmingSupported()) {
         //TODO: Write switch on/off first time only
 
+        message = String::format("%d",_currentPercent);
         topic += "/level";
         iot->mqttPublish(topic, message);
     } else {
         bool isOn = _currentPercent > 49;
         topic += "/switch";
-        String message = isOn ? "on" : "off";
+        message = isOn ? "on" : "off";
         iot->mqttPublish(topic, message);
     }
-}
-
-/**
- * Is Dimming supported?
- * @return bool device supports dimming
- */
-bool Light::isDimmingSupported()
-{
-    //TODO: query device
-    return true;
 }
