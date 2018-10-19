@@ -213,7 +213,7 @@ void STLight::loop()
  */
 void STLight::outputPercent() {
     IoT *iot = IoT::getInstance();
-    String topic = _stname;
+    String topic = "smartthings/"+_stname;
     String message;
     if(isDimmingSupported()) {
         //TODO: Write switch on/off first time only

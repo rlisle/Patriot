@@ -213,12 +213,16 @@ void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
     }
 }
 
-void IoT::mqttPublish(String topic, String message)
+void IoT::mqttRawPublish(String topic, String message)
+{
+    _mqtt->publish(topic, message);
+}
+
+void IoT::mqttPrefixedPublish(String topic, String message)
 {
     String prefixedTopic = publishNameVariable + "/" + topic;
     _mqtt->publish(prefixedTopic, message);
 }
-
 
 /**
  * Loop method must be called periodically,

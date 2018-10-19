@@ -74,7 +74,8 @@ public:
      * Connect to an MQTT broker with specified IP
      **/
     void connectMQTT(byte *brokerIP, String connectID, bool isBridge = false);
-    void mqttPublish(String topic, String message);
+    void mqttRawPublish(String topic, String message);
+    void mqttPrefixedPublish(String topic, String message);
     
     /**
      * Loop needs to be called periodically
