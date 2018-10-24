@@ -397,6 +397,14 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
             } else if(midTopic.equalsIgnoreCase("pong")) {
                 // Ignore it.
 
+            // RESET
+            } else if(midTopic.equalsIgnoreCase("reset")) {
+                // Respond if reset is addressed to us
+                if(rightTopic.equalsIgnoreCase(_controllerName)) {
+                    log("Reset addressed to us: "+_controllerName);
+                    reset();
+                }
+
             // LOG
             } else if(midTopic.equalsIgnoreCase("log")) {
                 // Ignore it.
