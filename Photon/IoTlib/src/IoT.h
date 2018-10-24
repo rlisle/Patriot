@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-10-15: Expose MQTT publish.
 2018-03-27: Add MQTT reconnect
 2018-01-17: Add functions for device state and type
 2017-10-22: Convert to scene-like behavior
@@ -73,7 +74,9 @@ public:
      * Connect to an MQTT broker with specified IP
      **/
     void connectMQTT(byte *brokerIP, String connectID, bool isBridge = false);
-
+    void mqttRawPublish(String topic, String message);
+    void mqttPrefixedPublish(String topic, String message);
+    
     /**
      * Loop needs to be called periodically
      */

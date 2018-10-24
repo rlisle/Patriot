@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-10-15: Expose MQTT publish.
 2018-09-04: Bridge Particle to MQTT
 2018-07-07: Convert MQTT format to match SmartThings
 2018-03-16: Add MQTT support
@@ -212,6 +213,16 @@ void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
     }
 }
 
+void IoT::mqttRawPublish(String topic, String message)
+{
+    _mqtt->publish(topic, message);
+}
+
+void IoT::mqttPrefixedPublish(String topic, String message)
+{
+    String prefixedTopic = publishNameVariable + "/" + topic;
+    _mqtt->publish(prefixedTopic, message);
+}
 
 /**
  * Loop method must be called periodically,
@@ -385,6 +396,14 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
             // PONG
             } else if(midTopic.equalsIgnoreCase("pong")) {
                 // Ignore it.
+
+            // RESET
+            } else if(midTopic.equalsIgnoreCase("reset")) {
+                // Respond if reset is addressed to us
+                if(rightTopic.equalsIgnoreCase(_controllerName)) {
+                    log("Reset addressed to us: "+_controllerName);
+                    reset();
+                }
 
             // LOG
             } else if(midTopic.equalsIgnoreCase("log")) {
