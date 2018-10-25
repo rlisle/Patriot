@@ -402,8 +402,15 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
                 // Respond if reset is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
                     log("Reset addressed to us: "+_controllerName);
-                    log("Free memory:"+System.freeMemory());
                     System.reset();
+                }
+
+            // MEMORY
+            } else if(midTopic.equalsIgnoreCase("memory")) {
+                // Respond if memory is addressed to us
+                if(rightTopic.equalsIgnoreCase(_controllerName)) {
+                    log("Memory addressed to us: "+_controllerName);
+                    log("Free memory:"+System.freeMemory());
                 }
 
             // LOG
