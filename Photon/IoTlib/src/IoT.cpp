@@ -306,6 +306,7 @@ void IoT::buildSupportedActivitiesVariable()
 /*************************************/
 /*** Particle.io Subscribe Handler ***/
 /*** t:patriot m:<device>:<value>  ***/
+/*** t:patriot m:mqtt-ip:<domain>  ***/
 /*************************************/
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
@@ -317,8 +318,8 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String state = data.substring(colonPosition+1);
 
     // Handle Set MQTT Broker IP message
-    if(event.equalsIgnoreCase("mqtt/ip")) {
-        setMQTTip(data);
+    if(name.equalsIgnoreCase("mqtt-ip")) {
+        setMQTTip(state);
         return;
     }
 
