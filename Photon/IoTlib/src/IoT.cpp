@@ -195,12 +195,22 @@ void IoT::begin()
     }
 }
 
-void IoT::connectMQTT(byte *brokerIP, String connectID, bool isBridge)
+//TODO: refactor to another class.
+// MQTT 
+void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
+    log("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    log("Connecting to MQTT patriot...");
+    _connectID = connectID;
+    setMQTTip(brokerIP);
+}
+
+void IoT::setMQTTip(String brokerIP) {
+    if(_mqtt != NULL) {
+        delete _mqtt;
+    }
     _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
-    _mqtt->connect(connectID);                          // Unique connection ID
+    _mqtt->connect(_connectID);                          // Unique connection ID
     if (_mqtt->isConnected()) {
         log("MQTT is connected. Subscribe to debug/" + _controllerName + " for logging.");
         if(_mqtt->subscribe(publishNameVariable+"/#")) {   // Topic name
@@ -304,6 +314,12 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
 
+    // Handle Set MQTT Broker IP message
+    if(event.equalsIgnoreCase("mqtt/ip")) {
+        setMQTTip(data);
+        return;
+    }
+
     // Bridge events to MQTT if this is a Bridge
     // to t:particle/<eventName> m:<msg>
     // eg. patriot DeskLamp:100 -> particle/patriot DeskLamp:100
@@ -312,7 +328,6 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
       if (_mqtt != NULL && _mqtt->isConnected()) {
           _mqtt->publish(String("particle/")+eventName, data);
       }
-      //TODO: do we want to return at the point?
     }
 
     // See if this is a device name. If so, update it.
@@ -410,7 +425,7 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
                 // Respond if memory is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
                     log("Memory addressed to us: "+_controllerName);
-                    log("Free memory:"+System.freeMemory());
+                    log( String::format("Free memory = %d", System.freeMemory()));
                 }
 
             // LOG

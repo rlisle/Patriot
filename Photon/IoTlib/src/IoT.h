@@ -73,7 +73,8 @@ public:
      * connectMQTT(byte * brokerIP)
      * Connect to an MQTT broker with specified IP
      **/
-    void connectMQTT(byte *brokerIP, String connectID, bool isBridge = false);
+    void connectMQTT(String brokerIP, String connectID, bool isBridge = false);
+    void setMQTTip(String brokerIP);
     void mqttRawPublish(String topic, String message);
     void mqttPrefixedPublish(String topic, String message);
     
@@ -95,6 +96,7 @@ private:
     static IoT* _instance;
     bool    _hasBegun;
     bool    _isBridge;
+    String  _connectID;
     String  _publishName;
     String  _controllerName;
     String  _proximityEvent;
