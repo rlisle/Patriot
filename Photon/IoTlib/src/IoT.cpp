@@ -209,7 +209,9 @@ void IoT::setMQTTip(String brokerIP) {
     if(_mqtt != NULL) {
         delete _mqtt;
     }
-    _mqtt =  new MQTT(brokerIP, 1883, globalMQTTHandler);
+
+    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
+
     _mqtt->connect(_connectID);                          // Unique connection ID
     if (_mqtt->isConnected()) {
         log("MQTT is connected. Subscribe to debug/" + _controllerName + " for logging.");
