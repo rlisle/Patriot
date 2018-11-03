@@ -318,18 +318,18 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String state = data.substring(colonPosition+1);
 
     // Handle Set MQTT Broker IP message
-    if(name.equalsIgnoreCase("mqtt-ip")) {
+    if(name.equalsIgnoreCase("mqtt")) {
         setMQTTip(state);
         return;
     }
 
     // Bridge events to MQTT if this is a Bridge
-    // to t:particle/<eventName> m:<msg>
-    // eg. patriot DeskLamp:100 -> particle/patriot DeskLamp:100
+    // to t:patriot m:<eventName>:<msg>
+    // eg. t:patriot m:DeskLamp:100 -> t:patriot m:DeskLamp:100
     if(_isBridge)
     {
       if (_mqtt != NULL && _mqtt->isConnected()) {
-          _mqtt->publish(String("particle/")+eventName, data);
+          _mqtt->publish(event, data);
       }
     }
 
