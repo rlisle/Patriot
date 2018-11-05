@@ -120,6 +120,7 @@ IoT::IoT()
     publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
     _numSupportedActivities = 0;
+    _mqttManager            = NULL;
 }
 
 /**
@@ -202,6 +203,7 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
     log("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
     _connectID = connectID;
+    _mqttManager = new MQTTManager();
     setMQTTip(brokerIP);
 }
 
