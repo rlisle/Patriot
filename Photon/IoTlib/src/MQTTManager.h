@@ -16,16 +16,22 @@ Changelog:
 #pragma once
 
 #include "Particle.h"
+#include "MQTT.h"
 
 class MQTTManager
 {
 public:
 
-  MQTTManager();
+  MQTTManager(String publishName);
 
   void        loop();
 
+  void mqttHandler(char* topic, byte* payload, unsigned int length);
+
 private:
-//    MQTT      *_mqtt;
+    MQTT      *_mqtt;
+    String    _publishName;
+    String    _connectID;
+
 
 };

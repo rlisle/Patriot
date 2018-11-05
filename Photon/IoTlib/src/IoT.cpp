@@ -203,7 +203,7 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
     log("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
     _connectID = connectID;
-    _mqttManager = new MQTTManager();
+    _mqttManager = new MQTTManager(publishNameVariable);
     setMQTTip(brokerIP);
 }
 
@@ -249,6 +249,10 @@ void IoT::loop()
     _devices->loop();
     if (_mqtt != NULL && _mqtt->isConnected()) {
         _mqtt->loop();
+    }
+
+    if (_mqttManager != NULL) {
+        _mqttManager->loop();
     }
 }
 
@@ -354,6 +358,11 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 /*** MQTT Subscribe Handler ***/
 /******************************/
 void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
+
+    if(_mqttManager != NULL) {
+        _mqttManager->mqttHandler(rawTopic, payload, length);
+    }
+
     char p[length + 1];
     memcpy(p, payload, length);
     p[length] = 0;
