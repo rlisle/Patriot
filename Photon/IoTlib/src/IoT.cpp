@@ -202,41 +202,41 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
     log("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    _connectID = connectID;
-    _mqttManager = new MQTTManager(publishNameVariable);
-    setMQTTip(brokerIP);
+//    _connectID = connectID;
+    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, globalMQTTHandler);
+    //setMQTTip(brokerIP);
 }
 
-void IoT::setMQTTip(String brokerIP) {
-    if(_mqtt != NULL) {
-        delete _mqtt;
-    }
+// void IoT::setMQTTip(String brokerIP) {
+//     if(_mqtt != NULL) {
+//         delete _mqtt;
+//     }
 
-    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
+//     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
 
-    _mqtt->connect(_connectID);                          // Unique connection ID
-    if (_mqtt->isConnected()) {
-        log("MQTT is connected. Subscribe to debug/" + _controllerName + " for logging.");
-        if(_mqtt->subscribe(publishNameVariable+"/#")) {   // Topic name
-            log("MQTT subscribed to " + publishNameVariable + "/#");
-        } else {
-            log("Unable to subscribe to MQTT");
-        }
-    } else {
-        log("MQTT is NOT connected! Check MQTT IP address");
-    }
-}
+//     _mqtt->connect(_connectID);                          // Unique connection ID
+//     if (_mqtt->isConnected()) {
+//         log("MQTT is connected. Subscribe to debug/" + _controllerName + " for logging.");
+//         if(_mqtt->subscribe(publishNameVariable+"/#")) {   // Topic name
+//             log("MQTT subscribed to " + publishNameVariable + "/#");
+//         } else {
+//             log("Unable to subscribe to MQTT");
+//         }
+//     } else {
+//         log("MQTT is NOT connected! Check MQTT IP address");
+//     }
+// }
 
-void IoT::mqttRawPublish(String topic, String message)
+void IoT::mqttPublish(String topic, String message)
 {
-    _mqtt->publish(topic, message);
+    _mqttManager->publish(topic, message);
 }
 
-void IoT::mqttPrefixedPublish(String topic, String message)
-{
-    String prefixedTopic = publishNameVariable + "/" + topic;
-    _mqtt->publish(prefixedTopic, message);
-}
+// void IoT::mqttPrefixedPublish(String topic, String message)
+// {
+//     String prefixedTopic = publishNameVariable + "/" + topic;
+//     _mqtt->publish(prefixedTopic, message);
+// }
 
 /**
  * Loop method must be called periodically,
@@ -323,11 +323,11 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
 
-    // Handle Set MQTT Broker IP message
-    if(name.equalsIgnoreCase("mqtt")) {
-        setMQTTip(state);
-        return;
-    }
+    // Handle Set MQTT Broker IP message (TODO: if needed)
+    // if(name.equalsIgnoreCase("mqtt")) {
+    //     setMQTTip(state);
+    //     return;
+    // }
 
     // Bridge events to MQTT if this is a Bridge
     // to t:patriot m:<eventName>:<msg>
@@ -360,103 +360,104 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
     if(_mqttManager != NULL) {
-        _mqttManager->mqttHandler(rawTopic, payload, length);
+        Serial.println("Forwarding MQTT message to mqttManager");
+        _mqttManager->mqttHandler(rawTopic, payload, length, _devices, _behaviors);
     }
 
-    char p[length + 1];
-    memcpy(p, payload, length);
-    p[length] = 0;
-    String data(p);
-    String topic(rawTopic);
+    // char p[length + 1];
+    // memcpy(p, payload, length);
+    // p[length] = 0;
+    // String data(p);
+    // String topic(rawTopic);
 
-    uint publishNameLength = publishNameVariable.length();
+    // uint publishNameLength = publishNameVariable.length();
 
-    log("MQTT received: " + topic + ", " + data);
+    // log("MQTT received: " + topic + ", " + data);
 
-    if(topic.startsWith(publishNameVariable)) { // patriot
-        if(topic.length() == publishNameLength) { //legacy
-            int colonPosition = data.indexOf(':');
-            String name = data.substring(0,colonPosition);
-            String state = data.substring(colonPosition+1);
-            // See if this is a device name. If so, update it.
-            Device* device = _devices->getDeviceWithName(name);
-            if(device)
-            {
-                int percent = state.toInt();
-                device->setPercent(percent);
-                return;
-            }
-            // If it wasn't a device name, it must be an activity.
-            int value = state.toInt();
-            _behaviors->performActivity(name, value);
+    // if(topic.startsWith(publishNameVariable)) { // patriot
+    //     if(topic.length() == publishNameLength) { //legacy
+    //         int colonPosition = data.indexOf(':');
+    //         String name = data.substring(0,colonPosition);
+    //         String state = data.substring(colonPosition+1);
+    //         // See if this is a device name. If so, update it.
+    //         Device* device = _devices->getDeviceWithName(name);
+    //         if(device)
+    //         {
+    //             int percent = state.toInt();
+    //             device->setPercent(percent);
+    //             return;
+    //         }
+    //         // If it wasn't a device name, it must be an activity.
+    //         int value = state.toInt();
+    //         _behaviors->performActivity(name, value);
 
-        } else {
-            int firstSlash = topic.indexOf('/');
-            int lastSlash = topic.lastIndexOf('/');
-            if(firstSlash == -1 || lastSlash == -1 || firstSlash == lastSlash) {
-                log("MQTT message does not contain 2 slashes, so ignoring");
-                return;
-            }
-            String midTopic = topic.substring(firstSlash+1,lastSlash);
-            String rightTopic = topic.substring(lastSlash+1);
-            // Handle various topic messages
-            // DEVICE
-            if(midTopic.equalsIgnoreCase("device")) {
-                Device* device = _devices->getDeviceWithName(rightTopic);
-                if(device)
-                {
-                    int percent = data.toInt();
-                    device->setPercent(percent);
-                }
+    //     } else {
+    //         int firstSlash = topic.indexOf('/');
+    //         int lastSlash = topic.lastIndexOf('/');
+    //         if(firstSlash == -1 || lastSlash == -1 || firstSlash == lastSlash) {
+    //             log("MQTT message does not contain 2 slashes, so ignoring");
+    //             return;
+    //         }
+    //         String midTopic = topic.substring(firstSlash+1,lastSlash);
+    //         String rightTopic = topic.substring(lastSlash+1);
+    //         // Handle various topic messages
+    //         // DEVICE
+    //         if(midTopic.equalsIgnoreCase("device")) {
+    //             Device* device = _devices->getDeviceWithName(rightTopic);
+    //             if(device)
+    //             {
+    //                 int percent = data.toInt();
+    //                 device->setPercent(percent);
+    //             }
 
-            // ACTIVITY
-            } else if(midTopic.equalsIgnoreCase("activity")) {
-                int value = data.toInt();
-                _behaviors->performActivity(rightTopic, value);
+    //         // ACTIVITY
+    //         } else if(midTopic.equalsIgnoreCase("activity")) {
+    //             int value = data.toInt();
+    //             _behaviors->performActivity(rightTopic, value);
 
-            // PING
-            } else if(midTopic.equalsIgnoreCase("ping")) {
-                // Respond if ping is addressed to us
-                if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    log("Ping addressed to us: "+_controllerName);
-                    _mqtt->publish(publishNameVariable + "/pong/" + _controllerName, data);
-                }
+    //         // PING
+    //         } else if(midTopic.equalsIgnoreCase("ping")) {
+    //             // Respond if ping is addressed to us
+    //             if(rightTopic.equalsIgnoreCase(_controllerName)) {
+    //                 log("Ping addressed to us: "+_controllerName);
+    //                 _mqtt->publish(publishNameVariable + "/pong/" + _controllerName, data);
+    //             }
 
-            // PONG
-            } else if(midTopic.equalsIgnoreCase("pong")) {
-                // Ignore it.
+    //         // PONG
+    //         } else if(midTopic.equalsIgnoreCase("pong")) {
+    //             // Ignore it.
 
-            // RESET
-            } else if(midTopic.equalsIgnoreCase("reset")) {
-                // Respond if reset is addressed to us
-                if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    log("Reset addressed to us: "+_controllerName);
-                    System.reset();
-                }
+    //         // RESET
+    //         } else if(midTopic.equalsIgnoreCase("reset")) {
+    //             // Respond if reset is addressed to us
+    //             if(rightTopic.equalsIgnoreCase(_controllerName)) {
+    //                 log("Reset addressed to us: "+_controllerName);
+    //                 System.reset();
+    //             }
 
-            // MEMORY
-            } else if(midTopic.equalsIgnoreCase("memory")) {
-                // Respond if memory is addressed to us
-                if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    log("Memory addressed to us: "+_controllerName);
-                    log( String::format("Free memory = %d", System.freeMemory()));
-                }
+    //         // MEMORY
+    //         } else if(midTopic.equalsIgnoreCase("memory")) {
+    //             // Respond if memory is addressed to us
+    //             if(rightTopic.equalsIgnoreCase(_controllerName)) {
+    //                 log("Memory addressed to us: "+_controllerName);
+    //                 log( String::format("Free memory = %d", System.freeMemory()));
+    //             }
 
-            // LOG
-            } else if(midTopic.equalsIgnoreCase("log")) {
-                // Ignore it.
+    //         // LOG
+    //         } else if(midTopic.equalsIgnoreCase("log")) {
+    //             // Ignore it.
 
-            // UNKNOWN
-            } else {
-                log("MQTT topic unknown");
-            }
-        }
+    //         // UNKNOWN
+    //         } else {
+    //             log("MQTT topic unknown");
+    //         }
+    //     }
 
-    // Note: currently subscribing to _controllerName, so this will never happen
-    } else if(topic.startsWith("smartthings")) {
-        // Bridge may need to do something with this.
+    // // Note: currently subscribing to _controllerName, so this will never happen
+    // } else if(topic.startsWith("smartthings")) {
+    //     // Bridge may need to do something with this.
 
-    }
+    // }
 }
 
 /**

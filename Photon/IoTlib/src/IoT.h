@@ -71,13 +71,12 @@ public:
     void begin();
 
     /**
-     * connectMQTT(byte * brokerIP)
+     * connectMQTT(byte * brokerIP, String connectID, bool isBridge = false)
      * Connect to an MQTT broker with specified IP
      **/
     void connectMQTT(String brokerIP, String connectID, bool isBridge = false);
-    void setMQTTip(String brokerIP);
-    void mqttRawPublish(String topic, String message);
-    void mqttPrefixedPublish(String topic, String message);
+    
+    void mqttPublish(String topic, String message);
     
     /**
      * Loop needs to be called periodically
@@ -97,7 +96,7 @@ private:
     static IoT* _instance;
     bool    _hasBegun;
     bool    _isBridge;
-    String  _connectID;
+//    String  _connectID;
     String  _controllerName;
     String  _proximityEvent;
     String  _supportedActivities[kMaxNumberActivities];
