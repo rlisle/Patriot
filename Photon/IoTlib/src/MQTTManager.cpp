@@ -43,7 +43,9 @@ MQTTManager::MQTTManager(String publishName, String brokerIP, String connectID, 
 
 void MQTTManager::log(String message)
 {
-    Serial.println(message);
+    if(_mqtt != NULL && _mqtt->isConnected()) {
+        publish("debug/" + _controllerName, message);
+    }
 }
 
 void MQTTManager::publish(String topic, String message)

@@ -100,15 +100,8 @@ void IoT::log(String msg)   //TODO: add log type "info", "debug", "warning", "er
 {
     Serial.println(msg);
 
-    // Write to MQTT if connected
     IoT* iot = IoT::getInstance();
-    if (iot->_mqtt != NULL && iot->_mqtt->isConnected()) {
-        iot->_mqtt->publish("debug/" + iot->_controllerName + ": ", msg);
-
-    // Otherwise write to particle (limit # writes available)
-    } else {
-      Particle.publish("LOG", msg, 60, PRIVATE);
-    }
+    iot->log(message);
 }
 
 /**

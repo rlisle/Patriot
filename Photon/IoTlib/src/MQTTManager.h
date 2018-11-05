@@ -33,6 +33,8 @@ public:
   void        loop();
   void        mqttHandler(char* topic, byte* payload, unsigned int length, Devices *devices, Behaviors *behaviors);
 
+  void      log(String message);
+
 private:
     MQTT      *_mqtt;
     String    _publishName;
@@ -40,6 +42,4 @@ private:
     String    _brokerIP;
     String    _controllerName;
     void      (*_callback)(char*,uint8_t*,unsigned int);
-
-    void      log(String message);
 };
