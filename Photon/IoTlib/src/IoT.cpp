@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-11-05: Refactor to MQTTmanager.
 2018-10-15: Expose MQTT publish.
 2018-09-04: Bridge Particle to MQTT
 2018-07-07: Convert MQTT format to match SmartThings
@@ -99,14 +100,9 @@ void IoT::log(String msg)   //TODO: add log type "info", "debug", "warning", "er
 {
     Serial.println(msg);
 
-    // Write to MQTT if connected
     IoT* iot = IoT::getInstance();
-    if (iot->_mqtt != NULL && iot->_mqtt->isConnected()) {
-        iot->_mqtt->publish("debug/" + iot->_controllerName + ": ", msg);
-
-    // Otherwise write to particle (limit # writes available)
-    } else {
-      Particle.publish("LOG", msg, 60, PRIVATE);
+    if(iot->_mqttManager) {
+        iot->_mqttManager->log(msg);
     }
 }
 
@@ -120,6 +116,7 @@ IoT::IoT()
     publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
     _numSupportedActivities = 0;
+    _mqttManager            = NULL;
 }
 
 /**
@@ -195,45 +192,17 @@ void IoT::begin()
     }
 }
 
-//TODO: refactor to another class.
 // MQTT 
 void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
     log("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    _connectID = connectID;
-    setMQTTip(brokerIP);
+    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, globalMQTTHandler);
 }
 
-void IoT::setMQTTip(String brokerIP) {
-    if(_mqtt != NULL) {
-        delete _mqtt;
-    }
-
-    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
-
-    _mqtt->connect(_connectID);                          // Unique connection ID
-    if (_mqtt->isConnected()) {
-        log("MQTT is connected. Subscribe to debug/" + _controllerName + " for logging.");
-        if(_mqtt->subscribe(publishNameVariable+"/#")) {   // Topic name
-            log("MQTT subscribed to " + publishNameVariable + "/#");
-        } else {
-            log("Unable to subscribe to MQTT");
-        }
-    } else {
-        log("MQTT is NOT connected! Check MQTT IP address");
-    }
-}
-
-void IoT::mqttRawPublish(String topic, String message)
+void IoT::mqttPublish(String topic, String message)
 {
-    _mqtt->publish(topic, message);
-}
-
-void IoT::mqttPrefixedPublish(String topic, String message)
-{
-    String prefixedTopic = publishNameVariable + "/" + topic;
-    _mqtt->publish(prefixedTopic, message);
+    _mqttManager->publish(topic, message);
 }
 
 /**
@@ -245,8 +214,8 @@ void IoT::loop()
     if(!_hasBegun) return;
 
     _devices->loop();
-    if (_mqtt != NULL && _mqtt->isConnected()) {
-        _mqtt->loop();
+    if (_mqttManager != NULL) {
+        _mqttManager->loop();
     }
 }
 
@@ -317,19 +286,13 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String name = data.substring(0,colonPosition);
     String state = data.substring(colonPosition+1);
 
-    // Handle Set MQTT Broker IP message
-    if(name.equalsIgnoreCase("mqtt")) {
-        setMQTTip(state);
-        return;
-    }
-
     // Bridge events to MQTT if this is a Bridge
     // to t:patriot m:<eventName>:<msg>
     // eg. t:patriot m:DeskLamp:100 -> t:patriot m:DeskLamp:100
     if(_isBridge)
     {
-      if (_mqtt != NULL && _mqtt->isConnected()) {
-          _mqtt->publish(event, data);
+      if (_mqttManager != NULL) {
+          _mqttManager->publish(event, data);
       }
     }
 
@@ -352,104 +315,15 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 /*** MQTT Subscribe Handler ***/
 /******************************/
 void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
-    char p[length + 1];
-    memcpy(p, payload, length);
-    p[length] = 0;
-    String data(p);
-    String topic(rawTopic);
 
-    uint publishNameLength = publishNameVariable.length();
-
-    log("MQTT received: " + topic + ", " + data);
-
-    if(topic.startsWith(publishNameVariable)) { // patriot
-        if(topic.length() == publishNameLength) { //legacy
-            int colonPosition = data.indexOf(':');
-            String name = data.substring(0,colonPosition);
-            String state = data.substring(colonPosition+1);
-            // See if this is a device name. If so, update it.
-            Device* device = _devices->getDeviceWithName(name);
-            if(device)
-            {
-                int percent = state.toInt();
-                device->setPercent(percent);
-                return;
-            }
-            // If it wasn't a device name, it must be an activity.
-            int value = state.toInt();
-            _behaviors->performActivity(name, value);
-
-        } else {
-            int firstSlash = topic.indexOf('/');
-            int lastSlash = topic.lastIndexOf('/');
-            if(firstSlash == -1 || lastSlash == -1 || firstSlash == lastSlash) {
-                log("MQTT message does not contain 2 slashes, so ignoring");
-                return;
-            }
-            String midTopic = topic.substring(firstSlash+1,lastSlash);
-            String rightTopic = topic.substring(lastSlash+1);
-            // Handle various topic messages
-            // DEVICE
-            if(midTopic.equalsIgnoreCase("device")) {
-                Device* device = _devices->getDeviceWithName(rightTopic);
-                if(device)
-                {
-                    int percent = data.toInt();
-                    device->setPercent(percent);
-                }
-
-            // ACTIVITY
-            } else if(midTopic.equalsIgnoreCase("activity")) {
-                int value = data.toInt();
-                _behaviors->performActivity(rightTopic, value);
-
-            // PING
-            } else if(midTopic.equalsIgnoreCase("ping")) {
-                // Respond if ping is addressed to us
-                if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    log("Ping addressed to us: "+_controllerName);
-                    _mqtt->publish(publishNameVariable + "/pong/" + _controllerName, data);
-                }
-
-            // PONG
-            } else if(midTopic.equalsIgnoreCase("pong")) {
-                // Ignore it.
-
-            // RESET
-            } else if(midTopic.equalsIgnoreCase("reset")) {
-                // Respond if reset is addressed to us
-                if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    log("Reset addressed to us: "+_controllerName);
-                    System.reset();
-                }
-
-            // MEMORY
-            } else if(midTopic.equalsIgnoreCase("memory")) {
-                // Respond if memory is addressed to us
-                if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    log("Memory addressed to us: "+_controllerName);
-                    log( String::format("Free memory = %d", System.freeMemory()));
-                }
-
-            // LOG
-            } else if(midTopic.equalsIgnoreCase("log")) {
-                // Ignore it.
-
-            // UNKNOWN
-            } else {
-                log("MQTT topic unknown");
-            }
-        }
-
-    // Note: currently subscribing to _controllerName, so this will never happen
-    } else if(topic.startsWith("smartthings")) {
-        // Bridge may need to do something with this.
-
+    if(_mqttManager != NULL) {
+        _mqttManager->mqttHandler(rawTopic, payload, length, _devices, _behaviors);
     }
 }
 
 /**
  * Program Handler
+ * !!!CURRENTLY NOT USED NOR TESTED!!!
  * Called by particle.io to update behaviors.
  * It will define a new behavior for an activity for the specified device,
  * and return an int indicating if the activity is new or changed.

@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2018-11-05: Refactor to MQTTmanager.
 2018-10-15: Expose MQTT publish.
 2018-03-27: Add MQTT reconnect
 2018-01-17: Add functions for device state and type
@@ -33,7 +34,7 @@ Changelog:
 #include "behaviors.h"
 #include "devices.h"
 #include "devicenames.h"
-#include "MQTT.h"
+#include "MQTTManager.h"
 
 /**
  * Main IoT object.
@@ -70,13 +71,12 @@ public:
     void begin();
 
     /**
-     * connectMQTT(byte * brokerIP)
+     * connectMQTT(byte * brokerIP, String connectID, bool isBridge = false)
      * Connect to an MQTT broker with specified IP
      **/
     void connectMQTT(String brokerIP, String connectID, bool isBridge = false);
-    void setMQTTip(String brokerIP);
-    void mqttRawPublish(String topic, String message);
-    void mqttPrefixedPublish(String topic, String message);
+
+    void mqttPublish(String topic, String message);
     
     /**
      * Loop needs to be called periodically
@@ -96,8 +96,6 @@ private:
     static IoT* _instance;
     bool    _hasBegun;
     bool    _isBridge;
-    String  _connectID;
-    String  _publishName;
     String  _controllerName;
     String  _proximityEvent;
     String  _supportedActivities[kMaxNumberActivities];
@@ -116,7 +114,7 @@ private:
     Behaviors   *_behaviors;
     Devices     *_devices;
     DeviceNames *_deviceNames;
-    MQTT        *_mqtt;
+    MQTTManager *_mqttManager;
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);

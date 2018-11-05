@@ -220,11 +220,11 @@ void STLight::outputPercent() {
 
         message = String::format("%d",_currentPercent);
         topic += "/level";
-        iot->mqttRawPublish(topic, message);
+        iot->mqttPublish(topic, message);
     } else {
         bool isOn = _currentPercent > 49;
         topic += "/switch";
         message = isOn ? "on" : "off";
-        iot->mqttRawPublish(topic, message);
+        iot->mqttPublish(topic, message);
     }
 }
