@@ -101,7 +101,9 @@ void IoT::log(String msg)   //TODO: add log type "info", "debug", "warning", "er
     Serial.println(msg);
 
     IoT* iot = IoT::getInstance();
-    iot->log(message);
+    if(iot->_mqttManager) {
+        iot->_mqttManager->log(msg);
+    }
 }
 
 /**
@@ -212,10 +214,6 @@ void IoT::loop()
     if(!_hasBegun) return;
 
     _devices->loop();
-    if (_mqtt != NULL && _mqtt->isConnected()) {
-        _mqtt->loop();
-    }
-
     if (_mqttManager != NULL) {
         _mqttManager->loop();
     }
@@ -293,8 +291,8 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     // eg. t:patriot m:DeskLamp:100 -> t:patriot m:DeskLamp:100
     if(_isBridge)
     {
-      if (_mqtt != NULL && _mqtt->isConnected()) {
-          _mqtt->publish(event, data);
+      if (_mqttManager != NULL) {
+          _mqttManager->publish(event, data);
       }
     }
 

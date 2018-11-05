@@ -34,7 +34,6 @@ Changelog:
 #include "behaviors.h"
 #include "devices.h"
 #include "devicenames.h"
-#include "MQTT.h"
 #include "MQTTManager.h"
 
 /**
@@ -115,7 +114,6 @@ private:
     Behaviors   *_behaviors;
     Devices     *_devices;
     DeviceNames *_deviceNames;
-    MQTT        *_mqtt;
     MQTTManager *_mqttManager;
 
     void subscribeHandler(const char *eventName, const char *rawData);
