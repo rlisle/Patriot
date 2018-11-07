@@ -44,6 +44,7 @@ class IoT {
 
     friend void globalSubscribeHandler(const char *eventName, const char *rawData);
     friend void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
+    friend void globalQOScallback(unsigned int data);
 
 public:
 
@@ -122,6 +123,7 @@ private:
     void performActivities();   //TODO: To be deprecated
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);
+    void mqttQOSHandler(unsigned int data);
 
     int  programHandler(String command);
     int  valueHandler(String deviceName);

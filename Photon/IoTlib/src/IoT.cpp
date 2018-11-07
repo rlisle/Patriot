@@ -55,6 +55,11 @@ void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
     iot->mqttHandler(topic, payload, length);
 }
 
+void globalQOScallback(unsigned int data) {
+    IoT* iot = IoT::getInstance();
+    iot->mqttQOSHandler(data);
+}
+
 /**
  * Supported Activities variable
  * This variable is updated to contain a comma separated list of
@@ -197,7 +202,7 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
     log("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, globalMQTTHandler);
+    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName);
 }
 
 void IoT::mqttPublish(String topic, String message)
@@ -318,6 +323,12 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
     if(_mqttManager != NULL) {
         _mqttManager->mqttHandler(rawTopic, payload, length, _devices, _behaviors);
+    }
+}
+
+void IoT::mqttQOSHandler(unsigned int data) {
+    if(_mqttManager != NULL) {
+        _mqttManager->mqttQOSHandler(data);
     }
 }
 

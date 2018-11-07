@@ -27,11 +27,12 @@ class MQTTManager
 {
 public:
 
-  MQTTManager(String publishName, String brokerIP, String connectID, String controllerName, void (*callback)(char*,uint8_t*,unsigned int));
+  MQTTManager(String publishName, String brokerIP, String connectID, String controllerName);
 
   void        publish(String topic, String message);
   void        loop();
   void        mqttHandler(char* topic, byte* payload, unsigned int length, Devices *devices, Behaviors *behaviors);
+  void        mqttQOSHandler(unsigned int data);
 
   void      log(String message);
 

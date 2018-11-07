@@ -4,7 +4,7 @@ MQTTManager.h
 This class handles all MQTT interactions.
 
 Note: to avoid making this a singleton, 
-the caller must provide the callback handler and forward it to us.
+the caller must provide global callback handlers (see externs).
 
 http://www.github.com/rlisle/Patriot
 
@@ -18,18 +18,23 @@ Changelog:
 ******************************************************************/
 #include "MQTTManager.h"
 
-MQTTManager::MQTTManager(String publishName, String brokerIP, String connectID, String controllerName, void (*callback)(char*,uint8_t*,unsigned int))
+extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
+extern void globalQOScallback(unsigned int);
+
+MQTTManager::MQTTManager(String publishName, String brokerIP, String connectID, String controllerName)
 {
     _publishName = publishName;
     _brokerIP = brokerIP;       // delete?
     _connectID = connectID;     // delete?
     _controllerName = controllerName;
-    _callback = callback;       // delete
 
-    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, callback);
+    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
 
     _mqtt->connect(_connectID);  
     if (_mqtt->isConnected()) {
+        log("MQTT setting QOS callback");
+        _mqtt->addQosCallback(globalQOScallback);
+
         log("MQTT is connected.");
         if(_mqtt->subscribe(publishName+"/#")) {
             log("MQTT subscribed to " + publishName + "/#");
@@ -157,4 +162,9 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
         log("MQTT smartthings received. Nothing to do.");
 
     }
+}
+
+void MQTTManager::mqttQOSHandler(unsigned int data) {
+
+    log("MQTT QOS callback: " + String(data));
 }
