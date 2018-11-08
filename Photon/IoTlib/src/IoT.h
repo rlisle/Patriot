@@ -36,6 +36,7 @@ Changelog:
 #include "devicenames.h"
 #include "MQTTManager.h"
 #include "MQTTParser.h"
+#include "factory.h"
 
 /**
  * Main IoT object.
@@ -112,6 +113,7 @@ private:
     /**
      * Include other needed objects
      */
+    Factory     *_factory;
     Activities  *_activities;
     Behaviors   *_behaviors;
     Devices     *_devices;

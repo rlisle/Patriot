@@ -117,6 +117,7 @@ void IoT::log(String msg)   //TODO: add log type "info", "debug", "warning", "er
 IoT::IoT()
 {
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
+    _factory                = new Factory();
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
