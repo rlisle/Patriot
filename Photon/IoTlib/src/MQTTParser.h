@@ -15,14 +15,19 @@ Changelog:
 ******************************************************************/
 #pragma once
 #include "MQTTManager.h"
+#include "behaviors.h"
+#include "devices.h"
 
 class MQTTParser
 {
 public:
 
-  MQTTParser();
+  MQTTParser(String publishName, Devices *devices, Behaviors *behaviors);
 
+  parseMessage(String topic, String message);
 
 private:
-    MQTTManager   *_mqtt;
+  String _publishName;
+  Devices _devices;
+  Behaviors _behaviors;
 };
