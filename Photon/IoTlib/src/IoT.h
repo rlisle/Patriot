@@ -35,6 +35,7 @@ Changelog:
 #include "devices.h"
 #include "devicenames.h"
 #include "MQTTManager.h"
+#include "MQTTParser.h"
 
 /**
  * Main IoT object.
@@ -116,6 +117,7 @@ private:
     Devices     *_devices;
     DeviceNames *_deviceNames;
     MQTTManager *_mqttManager;
+    MQTTParser  *_mqttParser;
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);

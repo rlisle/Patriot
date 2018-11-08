@@ -122,6 +122,7 @@ IoT::IoT()
     _controllerName         = kDefaultControllerName;
     _numSupportedActivities = 0;
     _mqttManager            = NULL;
+    _mqttParser             = NULL;
 }
 
 /**
@@ -202,7 +203,8 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
     log("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName);
+    _mqttParser = new MQTTParser(_controllerName, publishNameVariable, _devices, _behaviors);
+    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, _mqttParser);
 }
 
 void IoT::mqttPublish(String topic, String message)
@@ -322,7 +324,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
     if(_mqttManager != NULL) {
-        _mqttManager->mqttHandler(rawTopic, payload, length, _devices, _behaviors);
+        _mqttManager->mqttHandler(rawTopic, payload, length);
     }
 }
 

@@ -14,20 +14,21 @@ Changelog:
 2018-11-07: Created by refactoring from IoT
 ******************************************************************/
 #pragma once
-#include "MQTTManager.h"
 #include "behaviors.h"
 #include "devices.h"
+#include "MQTT.h"
 
 class MQTTParser
 {
 public:
 
-  MQTTParser(String publishName, Devices *devices, Behaviors *behaviors);
+  MQTTParser(String controllerName, String publishName, Devices *devices, Behaviors *behaviors);
 
-  parseMessage(String topic, String message);
+  void parseMessage(String topic, String message, MQTT *mqtt);
 
 private:
-  String _publishName;
-  Devices _devices;
-  Behaviors _behaviors;
+  String    _controllerName;
+  String    _publishName;
+  Devices   *_devices;
+  Behaviors *_behaviors;
 };

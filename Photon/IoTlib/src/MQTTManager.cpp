@@ -21,12 +21,13 @@ Changelog:
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 extern void globalQOScallback(unsigned int);
 
-MQTTManager::MQTTManager(String publishName, String brokerIP, String connectID, String controllerName)
+MQTTManager::MQTTManager(String publishName, String brokerIP, String connectID, String controllerName, MQTTParser *parser)
 {
     _publishName = publishName;
     _brokerIP = brokerIP;       // delete?
     _connectID = connectID;     // delete?
     _controllerName = controllerName;
+    _parser = parser;
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
 
@@ -73,7 +74,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     String message(p);
     String topic(rawTopic);
 
-    _parser->parseMessage(topic,message);
+    _parser->parseMessage(topic, message, _mqtt);
 }
 
 void MQTTManager::mqttQOSHandler(unsigned int data) {
