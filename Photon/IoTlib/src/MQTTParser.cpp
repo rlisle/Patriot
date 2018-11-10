@@ -27,7 +27,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 {
     uint publishNameLength = _publishName.length();
 
-    Serial.println("MQTT received: " + topic + ", " + message);
+    Serial.println("MQTTParser received: " + topic + ", " + message);
 
     if(topic.startsWith(_publishName)) {
         if(topic.length() == publishNameLength) {   // legacy

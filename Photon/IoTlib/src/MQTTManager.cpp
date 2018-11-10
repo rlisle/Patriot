@@ -66,13 +66,14 @@ void MQTTManager::loop()
     }
 }
 
-// TODO: Refactor to an MQTTParser
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
+
     char p[length + 1];
     memcpy(p, payload, length);
     p[length] = 0;
     String message(p);
     String topic(rawTopic);
+    Serial.println("MQTTManager received topic: " + topic + ", message: " + message)
 
     _parser->parseMessage(topic, message, _mqtt);
 }
