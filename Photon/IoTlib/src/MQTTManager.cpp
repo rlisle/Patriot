@@ -30,6 +30,20 @@ MQTTManager::MQTTManager(String publishName, String brokerIP, String connectID, 
     _parser = parser;
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
+    connect();
+}
+
+void MQTTManager::connect() {
+
+    _lastMQTTtime = Time.now();
+
+    if(_mqtt == NULL) {
+        log("ERROR! MQTTManager: connect called but object null");
+    }
+
+    if(_mqtt->isConnected()) {
+        _mqtt->disconnect();
+    }
 
     _mqtt->connect(_connectID);  
     if (_mqtt->isConnected()) {
@@ -63,8 +77,18 @@ void MQTTManager::publish(String topic, String message)
 
 void MQTTManager::loop()
 {
+    reconnectCheck();
+    
     if(_mqtt != NULL && _mqtt->isConnected()) {
         _mqtt->loop();
+    }
+}
+
+void MQTTManager::reconnectCheck() {
+    system_time_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
+    if(secondsSinceLastMessage > 5 * 60) {
+        log("WARNING: connection lost, reconnecting");
+        connect();
     }
 }
 
@@ -76,6 +100,8 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     String message(p);
     String topic(rawTopic);
     Serial.println("MQTTManager received topic: " + topic + ", message: " + message);
+
+    _lastMQTTtime = Time.now();
 
     _parser->parseMessage(topic, message, _mqtt);
 }

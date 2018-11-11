@@ -42,5 +42,8 @@ private:
     String    _connectID;
     String    _brokerIP;
     String    _controllerName;
+    system_time_t _lastMQTTtime;
+    
     void      (*_callback)(char*,uint8_t*,unsigned int);
+    void      connect();
 };
