@@ -4,7 +4,7 @@ MQTTManager.h
 This class handles all MQTT interactions.
 
 Note: to avoid making this a singleton, 
-the caller must provide the callback handler and forward it to us.
+the caller must provide global callback handlers (see externs).
 
 http://www.github.com/rlisle/Patriot
 
@@ -17,29 +17,34 @@ Changelog:
 2018-11-05: Created by refactoring from IoT
 ******************************************************************/
 #pragma once
-
 #include "Particle.h"
+#include "MQTTParser.h"
 #include "MQTT.h"
-#include "behaviors.h"
-#include "devices.h"
+
 
 class MQTTManager
 {
 public:
 
-  MQTTManager(String publishName, String brokerIP, String connectID, String controllerName, void (*callback)(char*,uint8_t*,unsigned int));
+  MQTTManager(String publishName, String brokerIP, String connectID, String controllerName, MQTTParser *parser);
 
   void        publish(String topic, String message);
   void        loop();
-  void        mqttHandler(char* topic, byte* payload, unsigned int length, Devices *devices, Behaviors *behaviors);
+  void        mqttHandler(char* topic, byte* payload, unsigned int length);
+  void        mqttQOSHandler(unsigned int data);
 
-  void      log(String message);
+  void        log(String message);
 
 private:
     MQTT      *_mqtt;
+    MQTTParser *_parser;
     String    _publishName;
     String    _connectID;
     String    _brokerIP;
     String    _controllerName;
+    system_tick_t _lastMQTTtime;
+
     void      (*_callback)(char*,uint8_t*,unsigned int);
+    void      connect();
+    void      reconnectCheck();
 };

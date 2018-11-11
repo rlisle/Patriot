@@ -35,6 +35,8 @@ Changelog:
 #include "devices.h"
 #include "devicenames.h"
 #include "MQTTManager.h"
+#include "MQTTParser.h"
+#include "factory.h"
 
 /**
  * Main IoT object.
@@ -44,6 +46,7 @@ class IoT {
 
     friend void globalSubscribeHandler(const char *eventName, const char *rawData);
     friend void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
+    friend void globalQOScallback(unsigned int data);
 
 public:
 
@@ -100,6 +103,9 @@ private:
     String  _proximityEvent;
     String  _supportedActivities[kMaxNumberActivities];
     int     _numSupportedActivities;
+    system_tick_t _startTime;
+    system_tick_t _currentTime;
+
 
     /**
      * Constructor
@@ -110,18 +116,22 @@ private:
     /**
      * Include other needed objects
      */
+    Factory     *_factory;
     Activities  *_activities;
     Behaviors   *_behaviors;
     Devices     *_devices;
     DeviceNames *_deviceNames;
     MQTTManager *_mqttManager;
+    MQTTParser  *_mqttParser;
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
     void performActivities();   //TODO: To be deprecated
+    void periodicReset();
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);
+    void mqttQOSHandler(unsigned int data);
 
     int  programHandler(String command);
     int  valueHandler(String deviceName);

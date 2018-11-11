@@ -55,6 +55,11 @@ void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
     iot->mqttHandler(topic, payload, length);
 }
 
+void globalQOScallback(unsigned int data) {
+    IoT* iot = IoT::getInstance();
+    iot->mqttQOSHandler(data);
+}
+
 /**
  * Supported Activities variable
  * This variable is updated to contain a comma separated list of
@@ -112,11 +117,15 @@ void IoT::log(String msg)   //TODO: add log type "info", "debug", "warning", "er
 IoT::IoT()
 {
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
+    _factory                = new Factory();
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
     _numSupportedActivities = 0;
     _mqttManager            = NULL;
+    _mqttParser             = NULL;
+    _startTime              = Time.now();
+    _currentTime            = _startTime;
 }
 
 /**
@@ -197,7 +206,8 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
     log("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, globalMQTTHandler);
+    _mqttParser = new MQTTParser(_controllerName, publishNameVariable, _devices, _behaviors);
+    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, _mqttParser);
 }
 
 void IoT::mqttPublish(String topic, String message)
@@ -210,15 +220,31 @@ void IoT::mqttPublish(String topic, String message)
  * typically from the sketch loop() method.
  */
 void IoT::loop()
-{
-    if(!_hasBegun) return;
+{    
+    _currentTime = Time.now();
 
-    _devices->loop();
+    if(_devices != NULL) {
+        _devices->loop();
+    }
+
     if (_mqttManager != NULL) {
         _mqttManager->loop();
     }
+
+    periodicReset();
+
 }
 
+
+// Temporary hack to reset Photon periodically
+// For now, do so at 2am everyday if running more than 2 hours
+void IoT::periodicReset() {
+    if(_currentTime - _startTime > 60 * 60 * 2) {
+        if(Time.hour() == 2) {
+            System.reset();
+        }
+    }
+}
 
 // Add a Device
 void IoT::addDevice(Device *device)
@@ -317,7 +343,13 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
     if(_mqttManager != NULL) {
-        _mqttManager->mqttHandler(rawTopic, payload, length, _devices, _behaviors);
+        _mqttManager->mqttHandler(rawTopic, payload, length);
+    }
+}
+
+void IoT::mqttQOSHandler(unsigned int data) {
+    if(_mqttManager != NULL) {
+        _mqttManager->mqttQOSHandler(data);
     }
 }
 
