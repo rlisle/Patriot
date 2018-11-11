@@ -51,8 +51,8 @@ void MQTTManager::connect() {
         _mqtt->addQosCallback(globalQOScallback);
 
         log("MQTT is connected.");
-        if(_mqtt->subscribe(publishName+"/#")) {
-            log("MQTT subscribed to " + publishName + "/#");
+        if(_mqtt->subscribe(_publishName+"/#")) {
+            log("MQTT subscribed to " + _publishName + "/#");
         } else {
             log("Unable to subscribe to MQTT");
         }
@@ -85,7 +85,7 @@ void MQTTManager::loop()
 }
 
 void MQTTManager::reconnectCheck() {
-    system_time_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
+    system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > 5 * 60) {
         log("WARNING: connection lost, reconnecting");
         connect();
