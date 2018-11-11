@@ -51,6 +51,8 @@ void MQTTManager::log(String message)
 {
     if(_mqtt != NULL && _mqtt->isConnected()) {
         publish("debug/" + _controllerName, message);
+    } else {
+        Serial.println(message);
     }
 }
 
@@ -73,7 +75,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     p[length] = 0;
     String message(p);
     String topic(rawTopic);
-    Serial.println("MQTTManager received topic: " + topic + ", message: " + message)
+    Serial.println("MQTTManager received topic: " + topic + ", message: " + message);
 
     _parser->parseMessage(topic, message, _mqtt);
 }

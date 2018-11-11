@@ -103,6 +103,9 @@ private:
     String  _proximityEvent;
     String  _supportedActivities[kMaxNumberActivities];
     int     _numSupportedActivities;
+    system_tick_t _startTime;
+    system_tick_t _currentTime;
+
 
     /**
      * Constructor
@@ -125,6 +128,7 @@ private:
     void addToListOfSupportedActivities(String activity);
     void buildSupportedActivitiesVariable();
     void performActivities();   //TODO: To be deprecated
+    void periodicReset();
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);
     void mqttQOSHandler(unsigned int data);

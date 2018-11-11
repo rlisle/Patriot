@@ -124,6 +124,8 @@ IoT::IoT()
     _numSupportedActivities = 0;
     _mqttManager            = NULL;
     _mqttParser             = NULL;
+    _startTime              = Time.now();
+    _currentTime            = _startTime;
 }
 
 /**
@@ -218,15 +220,31 @@ void IoT::mqttPublish(String topic, String message)
  * typically from the sketch loop() method.
  */
 void IoT::loop()
-{
-    if(!_hasBegun) return;
+{    
+    _currentTime = Time.now();
 
-    _devices->loop();
+    if(_devices != NULL) {
+        _devices->loop();
+    }
+
     if (_mqttManager != NULL) {
         _mqttManager->loop();
     }
+
+    periodicReset();
+
 }
 
+
+// Temporary hack to reset Photon periodically
+// For now, do so at 2am everyday if running more than 2 hours
+void IoT::periodicReset() {
+    if(_currentTime - _startTime > 60 * 60 * 2) {
+        if(Time.hour() == 2) {
+            System.reset();
+        }
+    }
+}
 
 // Add a Device
 void IoT::addDevice(Device *device)
