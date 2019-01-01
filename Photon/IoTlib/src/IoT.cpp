@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2019-01-01: Add hardware watchdog timer.
 2018-11-05: Refactor to MQTTmanager.
 2018-10-15: Expose MQTT publish.
 2018-09-04: Bridge Particle to MQTT
@@ -199,6 +200,9 @@ void IoT::begin()
     {
         log("Unable to register type handler");
     }
+
+    // Start hardware watchdog timer
+    PhotonWdgs::begin(true,true,10000,TIMER7);
 }
 
 // MQTT 
@@ -231,19 +235,8 @@ void IoT::loop()
         _mqttManager->loop();
     }
 
-    periodicReset();
-
-}
-
-
-// Temporary hack to reset Photon periodically
-// For now, do so at 2am everyday if running more than 2 hours
-void IoT::periodicReset() {
-    if(_currentTime - _startTime > 60 * 60 * 2) {
-        if(Time.hour() == 2) {
-            System.reset();
-        }
-    }
+    // Call tickle regularly to ensure the watchdogs do not reset
+    PhotonWdgs::tickle();  
 }
 
 // Add a Device

@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2019-01-01: Replace 2am reset with hardware watchdog timer.
 2018-11-05: Refactor to MQTTmanager.
 2018-10-15: Expose MQTT publish.
 2018-03-27: Add MQTT reconnect
@@ -37,6 +38,8 @@ Changelog:
 #include "MQTTManager.h"
 #include "MQTTParser.h"
 #include "factory.h"
+#include "SparkIntervalTimer.h"
+#include "photon-wdgs.h"
 
 /**
  * Main IoT object.
