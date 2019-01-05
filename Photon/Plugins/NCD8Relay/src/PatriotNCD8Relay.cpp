@@ -2,7 +2,7 @@
  NCD 8 Relay board control
 
  Up to 8 relay boards can reside on a single I2C bus.
-
+ 
  Features:
  - On/Off control
  - Supports multiple boards
@@ -19,6 +19,7 @@
  Datasheets:
 
  Changelog:
+ 2019-01-03: v3 Assume retained storage so percent retained.
  2018-01-18: Add type property
  2017-12-03: Add retry.
  2017-10-03: Initial creation
@@ -44,7 +45,7 @@ NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String n
     : Device(name, DeviceType::NCD8Relay)
 {
     _relayNum   = relayNum;
-    _percent    = 0;
+    // _percent is left uninitialized to pickup state from SRAM
     _duration   = duration;
     _stopMillis = 0;
 
@@ -109,16 +110,17 @@ int8_t NCD8Relay::boardIndex(int8_t address) {
 }
 
 int8_t NCD8Relay::addAddressToArray(int8_t address) {
-    _currentStates[_numControllers] = 0x00;
+    //_currentStates[_numControllers] = 0x00; Leave as set in SRAM
     _addresses[_numControllers] = address;
 
-    Wire.write(_registerAddress);
-    Wire.write(0x00);                      // Turn off all relays
-    byte status = Wire.endTransmission();
-    if(status != 0) {
-        //TODO: handle any errors, retry, etc.
-        Serial.println("Error turning off relays");
-    }
+    // // This looks wrong. Probably delete remainder of code here.
+    // Wire.write(_registerAddress);
+    // Wire.write(0x00);                      // Turn off all relays
+    // byte status = Wire.endTransmission();
+    // if(status != 0) {
+    //     //TODO: handle any errors, retry, etc.
+    //     Serial.println("Error turning off relays");
+    // }
     return _numControllers++;
 }
 
