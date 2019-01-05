@@ -16,6 +16,7 @@
  Datasheets:
 
  Changelog:
+ 2018-01-05: v3 Assume use of Backup SRAM
  2017-10-03: Initial creation
  ******************************************************************/
 

@@ -15,6 +15,7 @@
  Datasheets:
 
  Changelog:
+ 2019-01-03: v3.0.0 Assume use of Backup SRAM to persist percent across resets.
  2017-10-28: Convert to v2.
  2017-09-20: Add support for inverted and non-analog outputs
  2017-05-19: Extract to separate plugin library

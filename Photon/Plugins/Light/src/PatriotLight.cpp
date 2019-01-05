@@ -15,6 +15,7 @@
  Datasheets:
 
  Changelog:
+ 2019-01-03: v3.0.0 Assume use of Backup SRAM to persist percent across resets.
  2017-10-28: Convert to v2.
  2017-05-19: Extract to separate plugin library
  2017-05-15: Make devices generic
@@ -40,13 +41,13 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
 {
     _dimmingPercent           = 100;                                // On full
     _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
-    _currentPercent           = 0.0;
-    _targetPercent            = 0;
+//    _currentPercent           = 0.0;
+//    _targetPercent            = 0;
     _incrementPerMillisecond  = 0.0;
     _lastUpdateTime           = 0;
-    _commandPercent            = 0;
+//    _commandPercent            = 0;
     pinMode(pinNum, OUTPUT);
-    outputPWM();                        // Set initial off state
+    outputPWM();                        // Set initial state
 }
 
 /**
@@ -187,6 +188,7 @@ float Light::getDimmingDuration() {
 void Light::loop()
 {
     if(_currentPercent == _targetPercent) {
+        // Nothing to do.
         return;
     }
 
