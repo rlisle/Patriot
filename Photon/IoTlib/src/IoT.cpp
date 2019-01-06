@@ -209,7 +209,7 @@ void IoT::begin()
 // MQTT 
 void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
-    log("Connecting to MQTT patriot on IP " + brokerIP);
+    Serial.println("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
     _mqttParser = new MQTTParser(_controllerName, publishNameVariable, _devices, _behaviors);
     _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, _mqttParser);
