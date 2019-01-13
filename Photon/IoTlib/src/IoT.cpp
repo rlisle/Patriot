@@ -302,13 +302,8 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String data(rawData);
     String event(eventName);
     Serial.println("Subscribe handler event: " + event + ", data: " + data);
-    int colonPosition = data.indexOf(':');
-    String name = data.substring(0,colonPosition);
-    String state = data.substring(colonPosition+1);
 
     // Bridge events to MQTT if this is a Bridge
-    // to t:patriot m:<eventName>:<msg>
-    // eg. t:patriot m:DeskLamp:100 -> t:patriot m:DeskLamp:100
     if(_isBridge)
     {
       if (_mqttManager != NULL) {
@@ -316,15 +311,24 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
       }
     }
 
+    // Legacy commands will include a colon
+    // t:patriot m:<eventName>:<msg>
+    // eg. t:patriot m:DeskLamp:100 -> t:patriot m:DeskLamp:100
+    int colonPosition = data.indexOf(':');
+    if(colonPosition == -1) return;
+
+    String name = data.substring(0,colonPosition);
+    String state = data.substring(colonPosition+1);
+
     // See if this is a device name. If so, update it.
-     Device* device = _devices->getDeviceWithName(name);
-     if(device)
-     {
-       int percent = state.toInt();
-       Serial.println(" percent = "+String(percent));
-       device->setPercent(percent);
-       return;
-     }
+    Device* device = _devices->getDeviceWithName(name);
+    if(device)
+    {
+        int percent = state.toInt();
+        Serial.println(" percent = "+String(percent));
+        device->setPercent(percent);
+        return;
+    }
 
     // If it wasn't a device name, it must be an activity.
     int value = state.toInt();
