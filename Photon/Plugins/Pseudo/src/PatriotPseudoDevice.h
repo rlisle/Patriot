@@ -17,6 +17,7 @@ Changelog:
 #pragma once
 
 // This will load the definition for common Particle variable types
+#include "Particle.h"
 #include "device.h"
 
 class PseudoDevice : public Device
