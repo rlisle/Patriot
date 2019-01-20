@@ -1,5 +1,5 @@
 /******************************************************************
-PatriotPseudo plugin
+Patriot PseudoDevice plugin
 
 Features:
 - Allows Alexa to control a 'name' without hardware.
@@ -19,13 +19,13 @@ Changelog:
 // This will load the definition for common Particle variable types
 #include "device.h"
 
-class Pseudo : public Device
+class PseudoDevice : public Device
 {
 public:
     /**
      * Constructor
      */
-    Pseudo(String name);
+    PseudoDevice(String name);
     String name();
     int getPercent();
     bool isOn();

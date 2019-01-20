@@ -20,7 +20,7 @@ Changelog:
 /**
  * Constructor
  */
-Switch::Switch(String name)
+PseudoDevice::PseudoDevice(String name)
 {
     _name = name;
     _isOn = false;
@@ -31,7 +31,7 @@ Switch::Switch(String name)
  * name()
  * @return string name of switch
  */
-String Switch::name()
+String PseudoDevice::name()
 {
     return _name;
 }
@@ -40,7 +40,7 @@ String Switch::name()
  * isOn
  * @return bool true if switch is on
  */
-bool Switch::isOn()
+bool PseudoDevice::isOn()
 {
     return _isOn;
 }
@@ -50,7 +50,7 @@ bool Switch::isOn()
  * getPercent()
  * @return
  */
-int Switch::getPercent()
+int PseudoDevice::getPercent()
 {
     return _isOn ? 100 : 0;
 }
@@ -60,7 +60,7 @@ int Switch::getPercent()
  * loop()
  * This is called repeatedly to allow device to do its work.
  */
-void Switch::loop()
+void PseudoDevice::loop()
 {
     // Nothing to do
 }
