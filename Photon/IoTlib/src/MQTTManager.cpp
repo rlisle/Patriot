@@ -42,23 +42,25 @@ void MQTTManager::connect() {
     }
 
     if(_mqtt->isConnected()) {
+        log("MQTT is connected, so reconnecting...");
         _mqtt->disconnect();
     }
 
     _mqtt->connect(_connectID);  
     if (_mqtt->isConnected()) {
-        log("MQTT setting QOS callback");
+        // log("MQTT setting QOS callback");
         _mqtt->addQosCallback(globalQOScallback);
 
-        log("MQTT is connected.");
-        if(_mqtt->subscribe(_publishName+"/#")) {
-            log("MQTT subscribed to " + _publishName + "/#");
-        } else {
-            log("Unable to subscribe to MQTT");
+        // log("MQTT is connected.");
+        if(_mqtt->subscribe(_publishName+"/#") == false) {
+            // log("MQTT subscribed to " + _publishName + "/#");
+        // } else {
+            log("Unable to subscribe to MQTT " + _publishName + "/#");
         }
     } else {
         log("MQTT is NOT connected! Check MQTT IP address");
     }
+    log("Connected at " + String(_lastMQTTtime));
 }
 
 void MQTTManager::log(String message)
@@ -77,17 +79,19 @@ void MQTTManager::publish(String topic, String message)
 
 void MQTTManager::loop()
 {
-    reconnectCheck();
-    
     if(_mqtt != NULL && _mqtt->isConnected()) {
         _mqtt->loop();
     }
+
+    reconnectCheck();
 }
 
 void MQTTManager::reconnectCheck() {
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > 5 * 60) {
         log("WARNING: connection lost, reconnecting");
+        log("  _lastMQTTtime = " + String(_lastMQTTtime));
+        log("  Time.now() = " + String(Time.now()));
         connect();
     }
 }
