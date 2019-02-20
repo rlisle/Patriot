@@ -19,7 +19,15 @@ Changelog:
 #include <IoT.h>
 #include <PatriotRelay.h>
 
+#define DEV_PTR (Device *)&
+
 IoT *iot;
+
+// Define our "relay" device on pin D0
+// Since duration is 0, no automatic turn off.
+// "retained" means use Backup SRAM to persist state between resets
+retained Relay relay(D0, "relay", 0);
+
 
 void setup() {
     iot = IoT::getInstance();
@@ -28,7 +36,6 @@ void setup() {
     // Define our "relay" device on pin D7
     // Since no duration is specified, it is set to a
     // default value of 0 meaning no automatic turn off.
-    Relay *relay = new Relay(D7, "relay");
     iot->addDevice(relay);
 }
 
