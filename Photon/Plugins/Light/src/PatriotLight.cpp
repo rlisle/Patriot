@@ -15,6 +15,7 @@
  Datasheets:
 
  Changelog:
+ 2019-11-09: v3.1.0 Add local pin
  2019-01-03: v3.0.0 Assume use of Backup SRAM to persist percent across resets.
  2017-10-28: Convert to v2.
  2017-05-19: Extract to separate plugin library
@@ -39,6 +40,11 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
           _isInverted(isInverted),
           _forceDigital(forceDigital)
 {
+    _localPinNum              = 0;          // 0 = none
+    _localPinName             = "unnamed";
+    _localPinActiveHigh       = false;
+    _lastReadTime             = 0;
+
     _dimmingPercent           = 100;                                // On full
     _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
 //    _currentPercent           = 0.0;
@@ -48,6 +54,19 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
 //    _commandPercent            = 0;
     pinMode(pinNum, OUTPUT);
     outputPWM();                        // Set initial state
+}
+
+/**
+ * Set Local pin
+ * @param pinNum Int pin number
+ * @param pinName String name of pin
+ * @param activeHigh Bool set if high when On (normally low)
+ */
+void Light::setLocalPin(int pinNum, String pinName, bool activeHigh) {
+    _localPinNum = pinNum;
+    _localPinName = pinName;
+    _localPinActiveHigh = activeHigh;
+    pinMode(pinNum, INPUT_PULLUP);
 }
 
 /**
@@ -184,9 +203,27 @@ float Light::getDimmingDuration() {
 
 /**
  * loop()
+ * Called periodically to perform dimming, polling, etc.
  */
 void Light::loop()
 {
+    // Poll switch
+    if (isTimeToCheckSwitch())
+    {
+        if (didSwitchChange())
+        {
+            //TODO: Set light on/off as a result of using switch
+            //      This overrides stuck commands, etc.
+            //      May want to provide an optional override and/or dimming later
+            if(_switchState == _localPinActiveHigh) {   // Is turning ON?
+                changePercent(100);
+            } else {
+                changePercent(0);
+            }
+        }
+    }
+
+    // Is fading transition underway?
     if(_currentPercent == _targetPercent) {
         // Nothing to do.
         return;
@@ -207,6 +244,36 @@ void Light::loop()
     _lastUpdateTime = loopTime;
     outputPWM();
 };
+
+/**
+ * isTimeToCheckSwitch()
+ * @return bool if enough time has elapsed to sample switch again
+ */
+bool PHLight::isTimeToCheckSwitch()
+{
+    long currentTime = millis();
+    if (currentTime < _lastReadTime + kDebounceDelay)
+    {
+        return false;
+    }
+    _lastReadTime = currentTime;
+    return true;
+}
+
+/**
+ * didSwitchChange()
+ * @return bool if switch has changed since last reading
+ */
+bool PHLight::didSwitchChange()
+{
+    bool newState = digitalRead(_localPinNum) == 0;
+    if (newState == _switchState)
+    {
+        return false;
+    }
+    _switchState = newState;
+    return true;
+}
 
 /**
  * Set the output PWM value (0-255) based on 0-100 percent value

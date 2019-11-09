@@ -61,12 +61,14 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 Device* device = _devices->getDeviceWithName(rightTopic);
                 if(device)
                 {
+                    Serial.println("Device " + rightTopic + " found, setting to " + message);
                     int percent = message.toInt();
                     device->setPercent(percent);
                 }
 
             // ACTIVITY
             } else if(midTopic.equalsIgnoreCase("activity")) {
+                Serial.println("Setting activity " + rightTopic + " to " + message);
                 int value = message.toInt();
                 _behaviors->performActivity(rightTopic, value);
 
@@ -115,4 +117,3 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 
     }
 }
-

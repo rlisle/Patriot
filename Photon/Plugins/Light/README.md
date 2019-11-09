@@ -8,14 +8,16 @@ or simple on/off lights if connected to a non-PWM pin.
 ## Usage
 
 Include this library in any Photon sketch that needs to support a light.
-Refer to the included example sketch, or to the more complex examples 
+Refer to the included example sketch, or to the more complex examples
 in the main Patriot IoT examples directory.
 
-This example creates a single LED device connected to pin D7 named "blue".
+The example below creates a single LED device connected to pin D7 named "blue".
 This is the pin used by the onboard blue LED, so no additional
 hardware is needed.
 
 An additional behavior is setup to control this LED with an event named "Photon".
+
+Also, a switch connected to the D0 pin is used to control the LED locally.
 
 Since Patriot supports automatic detection by the iOS app and Alexa,
 either of these can be used to control the LED once this sketch is
@@ -35,6 +37,7 @@ void setup() {
     iot->begin();
 
     Light *light1 = new Light(kLed1Pin, "blue", false, true);
+    light1->setLocalPin(D0, "Switch");
     iot->addDevice(light1);
 
     iot->addBehavior(light1, new Behavior("Photon", '>', 0, 100));
@@ -70,6 +73,6 @@ At this point, you can create a [GitHub pull request](https://help.github.com/ar
 If you wish to make your library public, use `particle library publish` or `Publish` command.
 
 ## LICENSE
-Copyright 2017 Ron Lisle
+Copyright 2017-2019 Ron Lisle
 
 Refer to the included LICENSE file.

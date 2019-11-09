@@ -17,6 +17,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2019-11-09: Update for v3.1.0. Add local pin
 2017-10-25: Update for IoT v1.2.0. Add OFF behaviors.
 2017-05-19: Convert to plugin library
 2017-03-28: Use fixed 'patriot' event name.
@@ -42,6 +43,12 @@ void setup() {
     Light *reading = new Light(TX, "Reading");
     Light *sink = new Light(WKP, "Sink");
 
+    // Add local control switch pins D0 - D3
+    // These are simply tied to ground, normally open
+    porch->setLocalPin(D0, "Porch Switch");
+    porch->setLocalPin(D1, "Table Switch");
+    porch->setLocalPin(D2, "Reading Switch");
+    porch->setLocalPin(D3, "Sink Switch");
 
     // Add them
     iot->addDevice(porch);
