@@ -37,9 +37,9 @@ class Light : public Device
     int       _pin;
     int       _dimmingPercent;
     float     _dimmingDuration;
-//    float     _currentPercent;  // Why are these commented out?
-//    int       _targetPercent;
-//    int       _commandPercent;
+    float     _currentPercent;
+    int       _targetPercent;
+    int       _commandPercent;
     float     _incrementPerMillisecond;
     long      _lastUpdateTime;
     bool      _isInverted;              // On state = LOW instead of default HIGH
@@ -57,6 +57,8 @@ class Light : public Device
     void      startSmoothDimming();
     void      outputPWM();
     bool      isPwmSupported();
+    bool      isTimeToCheckSwitch();
+    bool      didSwitchChange();
 
  public:
     Light(int pin, String name, bool isInverted=false, bool forceDigital=false);

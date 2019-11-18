@@ -27,6 +27,8 @@
 
 #include "PatriotLight.h"
 
+#define kDebounceDelay 50
+
 /**
  * Constructor
  * @param pinNum is the pin number that is connected to the light.
@@ -47,11 +49,11 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
 
     _dimmingPercent           = 100;                                // On full
     _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
-//    _currentPercent           = 0.0;
-//    _targetPercent            = 0;
+    _currentPercent           = 0.0;
+    _targetPercent            = 0;
     _incrementPerMillisecond  = 0.0;
     _lastUpdateTime           = 0;
-//    _commandPercent            = 0;
+    _commandPercent           = 0;      // Doesn't appear to be used or needed
     pinMode(pinNum, OUTPUT);
     outputPWM();                        // Set initial state
 }
@@ -249,7 +251,7 @@ void Light::loop()
  * isTimeToCheckSwitch()
  * @return bool if enough time has elapsed to sample switch again
  */
-bool PHLight::isTimeToCheckSwitch()
+bool Light::isTimeToCheckSwitch()
 {
     long currentTime = millis();
     if (currentTime < _lastReadTime + kDebounceDelay)
@@ -264,7 +266,7 @@ bool PHLight::isTimeToCheckSwitch()
  * didSwitchChange()
  * @return bool if switch has changed since last reading
  */
-bool PHLight::didSwitchChange()
+bool Light::didSwitchChange()
 {
     bool newState = digitalRead(_localPinNum) == 0;
     if (newState == _switchState)
