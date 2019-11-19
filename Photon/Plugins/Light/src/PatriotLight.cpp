@@ -104,6 +104,25 @@ void Light::setBrightness(int percent) {
      return _brightness;
  }
 
+ /**
+  * Set switch
+  * @param percent Int 0 == off, >0 = on
+  */
+ void Light::setSwitch(int percent) {
+     if(percent > 0) setOn();
+     else changePercent(0);
+ }
+
+ /**
+  * Get switch
+  * @return Int 0 == off, 100 == on
+  */
+ int Light::getPercent() {
+     if(percent > 0) return 100;
+     return 0;
+ }
+
+
 /**
  * Set On
  */
