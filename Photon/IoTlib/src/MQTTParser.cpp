@@ -141,7 +141,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
     }
 }
 
-Int MQTTParser::parseValue(String message)
+int MQTTParser::parseValue(String message)
 {
     int value = 0;
     if(message.equalsIgnoreCase("on")) {

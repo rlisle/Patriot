@@ -32,5 +32,5 @@ private:
   Devices   *_devices;
   Behaviors *_behaviors;
 
-  Int parseValue(String message);
+  int parseValue(String message);
 };
