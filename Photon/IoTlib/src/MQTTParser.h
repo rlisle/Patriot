@@ -31,4 +31,6 @@ private:
   String    _publishName;
   Devices   *_devices;
   Behaviors *_behaviors;
+
+  Int parseValue(String message);
 };
