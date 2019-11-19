@@ -37,9 +37,7 @@ class Light : public Device
     int       _pin;
     int       _dimmingPercent;
     float     _dimmingDuration;
-    float     _currentPercent;
     int       _targetPercent;
-    int       _commandPercent;
     float     _incrementPerMillisecond;
     long      _lastUpdateTime;
     bool      _isInverted;              // On state = LOW instead of default HIGH
@@ -65,6 +63,10 @@ class Light : public Device
     void      setLocalPin(int pinNum, String pinName, bool activeHigh = false);
     void      setPercent(int percent);
     int       getPercent();
+    void      setBrightness(int percent);
+    int       getBrightness();
+    void      setSwitch(int percent);
+    int       getSwitch();
     void      setOn();
     void      setOff();
     bool      isOn();

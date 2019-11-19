@@ -49,11 +49,9 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
 
     _dimmingPercent           = 100;                                // On full
     _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
-    _currentPercent           = 0.0;
     _targetPercent            = 0;
     _incrementPerMillisecond  = 0.0;
     _lastUpdateTime           = 0;
-    _commandPercent           = 0;      // Doesn't appear to be used or needed
     pinMode(pinNum, OUTPUT);
     outputPWM();                        // Set initial state
 }
@@ -76,7 +74,6 @@ void Light::setLocalPin(int pinNum, String pinName, bool activeHigh) {
  * @param percent Int 0 to 100
  */
 void Light::setPercent(int percent) {
-    _commandPercent = percent;
     changePercent(percent);
 }
 
@@ -85,8 +82,27 @@ void Light::setPercent(int percent) {
  * @return Int current 0-100 percent value
  */
 int Light::getPercent() {
-    return _currentPercent;
+    return _percent;
 }
+
+/**
+ * Set brightness
+ * @param percent Int 0 to 100
+ */
+void Light::setBrightness(int percent) {
+    _brightness = percent;
+    if(_percent == 0) return;
+    if(_percent != _brightness) {
+        changePercent(_brightness);
+    }
+}
+
+/**
+ * Get brightness - leave default Device implementation
+ */
+ int Light::getBrightness() {
+     return _brightness;
+ }
 
 /**
  * Set On
@@ -105,7 +121,7 @@ void Light::changePercent(int percent) {
 
     _targetPercent = percent;
     if(_dimmingDuration == 0.0 || isPwmSupported() == false) {
-        _currentPercent = percent;
+        _percent = percent;
         outputPWM();
 
     } else {
@@ -133,9 +149,9 @@ bool Light::isAlreadyOff() {
  * Start smooth dimming
  */
 void Light::startSmoothDimming() {
-    if((int)_currentPercent != _targetPercent){
+    if((int)_percent != _targetPercent){
         _lastUpdateTime = millis();
-        float delta = _targetPercent - _currentPercent;
+        float delta = _targetPercent - _percent;
         _incrementPerMillisecond = delta / (_dimmingDuration * 1000);
     }
 }
@@ -226,21 +242,21 @@ void Light::loop()
     }
 
     // Is fading transition underway?
-    if(_currentPercent == _targetPercent) {
+    if(_percent == _targetPercent) {
         // Nothing to do.
         return;
     }
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
-    _currentPercent += _incrementPerMillisecond * millisSinceLastUpdate;
+    _percent += _incrementPerMillisecond * millisSinceLastUpdate;
     if(_incrementPerMillisecond > 0) {
-        if(_currentPercent > _targetPercent) {
-            _currentPercent = _targetPercent;
+        if(_percent > _targetPercent) {
+            _percent = _targetPercent;
         }
     } else {
-        if(_currentPercent < _targetPercent) {
-            _currentPercent = _targetPercent;
+        if(_percent < _targetPercent) {
+            _percent = _targetPercent;
         }
     }
     _lastUpdateTime = loopTime;
@@ -282,12 +298,12 @@ bool Light::didSwitchChange()
  */
 void Light::outputPWM() {
     if(isPwmSupported()) {
-        float pwm = _currentPercent;
+        float pwm = _percent;
         pwm *= 255.0;
         pwm /= 100.0;
         analogWrite(_pin, (int) pwm);
     } else {
-        bool isOn = _currentPercent > 49;
+        bool isOn = _percent > 49;
         bool isHigh = (isOn && !_isInverted) || (!isOn && _isInverted);
         digitalWrite(_pin, isHigh ? HIGH : LOW);
     }
