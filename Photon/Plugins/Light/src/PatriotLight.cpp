@@ -5,6 +5,15 @@
  - On/Off control
  - Smooth dimming with duration
 
+ - Brightness changes the "on" level
+   If a light is already on, it's brightness is changed.
+ - Switch turns a light off, or on to the currently set brightness level
+ - setPercent immediately sets the light level without affecting saved brightness setting
+ - When localPin changes,
+   - If local mode, light is toggled between 0 and 100 percent
+   - In automatic mode, MQTT event is sent for switch name
+ - Currently, local mode is set always
+
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
@@ -42,18 +51,20 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
           _isInverted(isInverted),
           _forceDigital(forceDigital)
 {
+    _localMode                = true;
     _localPinNum              = 0;          // 0 = none
     _localPinName             = "unnamed";
     _localPinActiveHigh       = false;
     _lastReadTime             = 0;
 
-    _dimmingPercent           = 100;                                // On full
+    _brightness               = 100;    // Brightness defaults to 100
     _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
     _targetPercent            = 0;
+    _currentPercent           = 0.0;
     _incrementPerMillisecond  = 0.0;
     _lastUpdateTime           = 0;
     pinMode(pinNum, OUTPUT);
-    outputPWM();                        // Set initial state
+    outputPWM();                        // Set initial state to persisted value
 }
 
 /**
@@ -91,8 +102,8 @@ int Light::getPercent() {
  */
 void Light::setBrightness(int percent) {
     _brightness = percent;
-    if(_percent == 0) return;
-    if(_percent != _brightness) {
+    if(_percent == 0) return;       // All done if light is off
+    if(_percent != _brightness) {   // If on and brightness changed, do it
         changePercent(_brightness);
     }
 }
@@ -108,7 +119,7 @@ void Light::setBrightness(int percent) {
   * Set switch
   * @param percent Int 0 == off, >0 = on
   */
- void Light::setSwitch(int percent) {
+ void Light::setSwitch(int percent) {       //TODO: change to bool
      if(percent > 0) setOn();
      else changePercent(0);
  }
@@ -117,8 +128,8 @@ void Light::setBrightness(int percent) {
   * Get switch
   * @return Int 0 == off, 100 == on
   */
- int Light::getPercent() {
-     if(percent > 0) return 100;
+ int Light::getSwitch() {
+     if(_targetPercent > 0) return 100;
      return 0;
  }
 
@@ -128,7 +139,7 @@ void Light::setBrightness(int percent) {
  */
 void Light::setOn() {
     if(isAlreadyOn()) return;
-    changePercent(_dimmingPercent);
+    changePercent(_brightness);
 }
 
 /**
@@ -153,7 +164,7 @@ void Light::changePercent(int percent) {
  * @return bool true if light is on
  */
 bool Light::isAlreadyOn() {
-    return _targetPercent == _dimmingPercent;
+    return _targetPercent > 0;
 }
 
 /**
@@ -166,9 +177,12 @@ bool Light::isAlreadyOff() {
 
 /**
  * Start smooth dimming
+ * Use float _currentPercent value to smoothly transition
+ * An alternative approach would be to calculate # msecs per step
  */
 void Light::startSmoothDimming() {
     if((int)_percent != _targetPercent){
+        _currentPercent = _percent;
         _lastUpdateTime = millis();
         float delta = _targetPercent - _percent;
         _incrementPerMillisecond = delta / (_dimmingDuration * 1000);
@@ -200,26 +214,8 @@ bool Light::isOff() {
 }
 
 /**
- * Set dimming percent
- * @param percent Int new percent value
- */
-void Light::setDimmingPercent(int percent) {
-    if(_dimmingPercent != percent){
-        _dimmingPercent = percent;
-        changePercent(percent);
-    }
-}
-
-/**
- * Get dimming percent
- * @return Int current dimming percent value
- */
-int Light::getDimmingPercent() {
-    return _dimmingPercent;
-}
-
-/**
  * Set dimming duration
+ * This will only affect any future transitions
  * @param duration float number of seconds
  */
 void Light::setDimmingDuration(float duration) {
@@ -253,9 +249,9 @@ void Light::loop()
             //      This overrides stuck commands, etc.
             //      May want to provide an optional override and/or dimming later
             if(_switchState == _localPinActiveHigh) {   // Is turning ON?
-                changePercent(100);
-            } else {
                 changePercent(0);
+            } else {
+                changePercent(100);
             }
         }
     }
@@ -268,13 +264,14 @@ void Light::loop()
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
-    _percent += _incrementPerMillisecond * millisSinceLastUpdate;
+    _currentPercent += _incrementPerMillisecond * millisSinceLastUpdate;
+    _percent = _currentPercent;
     if(_incrementPerMillisecond > 0) {
-        if(_percent > _targetPercent) {
+        if(_currentPercent > _targetPercent) {
             _percent = _targetPercent;
         }
     } else {
-        if(_percent < _targetPercent) {
+        if(_currentPercent < _targetPercent) {
             _percent = _targetPercent;
         }
     }
