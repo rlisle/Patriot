@@ -42,6 +42,7 @@ class Device {
     String     _name;
     DeviceType _type;
     int        _percent;
+    int        _brightness;
 
  public:
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
@@ -58,6 +59,14 @@ class Device {
     // You will need to override this if you are creating an output device
     // This is the method that should control it.
     virtual void setPercent(int percent) { _percent = percent; };
+
+    // Brightness is used to set the percent value when switch is called.
+    virtual int getBrightness() { return _brightness; }
+    virtual void setBrightness(int percent) { _brightness = percent; };
+
+    // Turn a device on or off, using brightness for the on value
+    virtual int getSwitch() { return _percent > 0; }
+    virtual void setSwitch(int percent) { _percent = _brightness; };
 
     // These are just convenience methods
     virtual bool isOn() { return _percent > 0; };

@@ -30,7 +30,8 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
     Serial.println("MQTTParser received: " + topic + ", " + message);
 
     if(topic.startsWith(_publishName)) {
-        if(topic.length() == publishNameLength) {   // legacy
+        // LEGACY
+        if(topic.length() == publishNameLength) {
             int colonPosition = message.indexOf(':');
             String name = message.substring(0,colonPosition);
             String state = message.substring(colonPosition+1);
@@ -38,7 +39,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             Device* device = _devices->getDeviceWithName(name);
             if(device)
             {
-                int percent = state.toInt();
+                int percent = parseValue(state);
                 device->setPercent(percent);
                 return;
             }
@@ -55,22 +56,44 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             }
             String midTopic = topic.substring(firstSlash+1,lastSlash);
             String rightTopic = topic.substring(lastSlash+1);
-            // Handle various topic messages
-            // DEVICE
-            if(midTopic.equalsIgnoreCase("device")) {
-                Device* device = _devices->getDeviceWithName(rightTopic);
-                if(device)
-                {
-                    Serial.println("Device " + rightTopic + " found, setting to " + message);
-                    int percent = message.toInt();
-                    device->setPercent(percent);
-                }
 
             // ACTIVITY
-            } else if(midTopic.equalsIgnoreCase("activity")) {
+            if(midTopic.equalsIgnoreCase("activity")) {
                 Serial.println("Setting activity " + rightTopic + " to " + message);
                 int value = message.toInt();
                 _behaviors->performActivity(rightTopic, value);
+
+            // BRIGHTNESS
+            } else if(midTopic.equalsIgnoreCase("brightness")) {
+                Device* device = _devices->getDeviceWithName(rightTopic);
+                if(device)
+                {
+                    Serial.println("Brightness " + rightTopic + " found, setting to " + message);
+                    int percent = message.toInt();
+                    device->setBrightness(percent);
+                }
+
+              // DEVICE (LEGACY)
+              } else if(midTopic.equalsIgnoreCase("device")) {
+                  Device* device = _devices->getDeviceWithName(rightTopic);
+                  if(device)
+                  {
+                      Serial.println("Device " + rightTopic + " found, setting to " + message);
+                      // Check for on/off and call set?
+                      int percent = message.toInt();
+                      device->setPercent(percent);
+                  }
+
+              // SWITCH
+            } else if(midTopic.equalsIgnoreCase("switch")) {
+                  Device* device = _devices->getDeviceWithName(rightTopic);
+                  if(device)
+                  {
+                      Serial.println("Switch " + rightTopic + " found, setting to " + message);
+                      // check for on/off
+                      int percent = parseValue(message);
+                      device->setSwitch(percent);
+                  }
 
             // PING
             } else if(midTopic.equalsIgnoreCase("ping")) {
@@ -116,4 +139,15 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
         Serial.println("MQTT smartthings received. Nothing to do.");
 
     }
+}
+
+int MQTTParser::parseValue(String message)
+{
+    int value = 0;
+    if(message.equalsIgnoreCase("on")) {
+        return 100;
+    } else if(message.equalsIgnoreCase("off")) {
+        return 0;
+    }
+    return message.toInt();
 }
