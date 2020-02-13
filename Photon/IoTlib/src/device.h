@@ -34,7 +34,8 @@ enum class DeviceType {
     Relay,
     Switch,
     TempHumidity,
-    Ultrasonic
+    Ultrasonic,
+    NCD8Light
 };
 
 class Device {
