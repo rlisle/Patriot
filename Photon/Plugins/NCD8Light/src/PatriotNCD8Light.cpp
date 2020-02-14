@@ -71,9 +71,8 @@ int8_t NCD8Light::initializeBoard(int8_t address) {
         Wire.write(0);
         Wire.write(161);
         Wire.endTransmission();
-    }
 
-    if(status != 0) {
+    } else {
         Serial.println("initializeBoard failed");
     }
 
@@ -87,7 +86,7 @@ int8_t NCD8Light::initializeBoard(int8_t address) {
 void NCD8Light::setPercent(int percent) {
     /* TODO: implement smooth transitions  */
     /*       Refer to Light plugin example */
-    int val = 4095 * percent / 100; // We'll need 32 bit ints
+    int val = 409 * percent; // 4095 * percent / 100
     int reg = (_lightNum*4)+2;
     wire.beginTransmission(_address);
 	Wire.write(reg);
@@ -111,8 +110,9 @@ void NCD8Light::setPercent(int percent) {
 /**
  * loop()
  */
-void NCD8Relay::loop()
+void NCD8Light::loop()
 {
     //TODO: Implement smooth transitions
-    
+    //      Nothing to do until then
+
 };
