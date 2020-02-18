@@ -25,7 +25,6 @@
 
 #define MILLIS_PER_SECOND 1000
 
-int8_t NCD8Light::_currentStates[8];    // Cached light states (initially off)
 int8_t NCD8Light::_address;             // Addresses of board
 
 /**
@@ -42,7 +41,7 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     _lightNum   = lightNum;
     // _percent is left uninitialized to pickup state from SRAM
     _duration   = duration;
-    _address = address + 64
+    _address = address + 64;
     initializeBoard(_address);
 }
 
@@ -88,7 +87,7 @@ void NCD8Light::setPercent(int percent) {
     /*       Refer to Light plugin example */
     int val = 409 * percent; // 4095 * percent / 100
     int reg = (_lightNum*4)+2;
-    wire.beginTransmission(_address);
+    Wire.beginTransmission(_address);
 	Wire.write(reg);
 	Wire.write(0);
 	Wire.write(0);
