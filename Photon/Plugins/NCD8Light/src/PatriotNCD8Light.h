@@ -30,9 +30,9 @@ class NCD8Light : public Device
     int8_t  _duration;                 // # seconds to transition. 0 = immediate
 
     static int8_t _currentState;       // up to 8 lights currently supported
-    static int8_t _address;            // Address of board
+    static int8_t _address;            // Address of board (eg. 0x41)
 
-    int8_t  initializeBoard(int8_t address);
+    int8_t  initializeBoard();
 
  public:
     NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration = 0);

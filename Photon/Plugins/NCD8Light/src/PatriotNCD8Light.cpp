@@ -1,5 +1,5 @@
 /******************************************************************
- NCD 8 PWM board control
+ NCD PCA9634 8-channel PWM board control
 
  Up to 8 I2C boards can reside on a single I2C bus.
  
@@ -29,8 +29,8 @@ int8_t NCD8Light::_address;             // Addresses of board
 
 /**
  * Constructor
- * @param address is the board address set by jumpers (0-7)
- * @param lightNum is the channel number on the NCD 8 Light board (1-8)
+ * @param address is the board address set by jumpers (0-7) 0x01 if low switch set
+ * @param lightNum is the channel number on the NCD 8 Light board (0-7)
  * @param name String name used to address the light.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
@@ -41,11 +41,11 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     _lightNum   = lightNum;
     // _percent is left uninitialized to pickup state from SRAM
     _duration   = duration;
-    _address = address + 64;
-    initializeBoard(_address);
+    _address = address + 0x40;  // Expected values = 0 thru ?
+    initializeBoard();
 }
 
-int8_t NCD8Light::initializeBoard(int8_t address) {
+int8_t NCD8Light::initializeBoard() {
     int retries;
     byte status;
 
@@ -56,19 +56,19 @@ int8_t NCD8Light::initializeBoard(int8_t address) {
 
     retries = 0;
     do {
-        Wire.beginTransmission(address);
+        Wire.beginTransmission(_address);
         status = Wire.endTransmission();
     } while( status != 0 && retries++ < 3); // Seems redundant
 
     if(status == 0) {
-        Wire.beginTransmission(address);
-        Wire.write(254);
-        Wire.write(5);
+        Wire.beginTransmission(_address);
+        Wire.write(0);          // Mode1 register
+        Wire.write(0);          // Osc on, disable AI, subaddrs, allcall
         Wire.endTransmission();
 
-        Wire.beginTransmission(address);
-        Wire.write(0);
-        Wire.write(161);
+        Wire.beginTransmission(_address);
+        Wire.write(1);          // Mode2 register
+        Wire.write(0x16);       // Invert, Outdrv
         Wire.endTransmission();
 
     } else {
@@ -85,14 +85,11 @@ int8_t NCD8Light::initializeBoard(int8_t address) {
 void NCD8Light::setPercent(int percent) {
     /* TODO: implement smooth transitions  */
     /*       Refer to Light plugin example */
-    int val = 409 * percent; // 4095 * percent / 100
-    int reg = (_lightNum*4)+2;
+    //int val = 255 * percent / 100;      // Convert 0-100 to 0-255    
+    int reg = 2 + _lightNum;
     Wire.beginTransmission(_address);
 	Wire.write(reg);
-	Wire.write(0);
-	Wire.write(0);
-	Wire.write(val);
-	Wire.write(val>>8);
+	Wire.write(percent);
 	byte status = Wire.endTransmission();
 	if(status != 0){
 		Serial.println("Write failed");
