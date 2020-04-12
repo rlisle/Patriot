@@ -48,13 +48,9 @@ void MQTTManager::connect() {
 
     _mqtt->connect(_connectID);  
     if (_mqtt->isConnected()) {
-        // log("MQTT setting QOS callback");
         _mqtt->addQosCallback(globalQOScallback);
 
-        // log("MQTT is connected.");
         if(_mqtt->subscribe(_publishName+"/#") == false) {
-            // log("MQTT subscribed to " + _publishName + "/#");
-        // } else {
             log("Unable to subscribe to MQTT " + _publishName + "/#");
         }
     } else {
@@ -66,15 +62,8 @@ void MQTTManager::connect() {
 void MQTTManager::log(String message)
 {
     if(_mqtt != NULL && _mqtt->isConnected()) {
-        publish("debug/" + _controllerName, message);
-    } else {
-        Serial.println(message);
+        _mqtt->publish("debug/" + _controllerName, message);
     }
-}
-
-void MQTTManager::publish(String topic, String message)
-{
-    _mqtt->publish(topic, message);
 }
 
 void MQTTManager::loop()
@@ -89,9 +78,7 @@ void MQTTManager::loop()
 void MQTTManager::reconnectCheck() {
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > 5 * 60) {
-        log("WARNING: connection lost, reconnecting");
-        log("  _lastMQTTtime = " + String(_lastMQTTtime));
-        log("  Time.now() = " + String(Time.now()));
+        log("WARNING: connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
         connect();
     }
 }
@@ -103,7 +90,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     p[length] = 0;
     String message(p);
     String topic(rawTopic);
-    Serial.println("MQTTManager received topic: " + topic + ", message: " + message);
+    log("received t: " + topic + ", m: " + message);
 
     _lastMQTTtime = Time.now();
 
@@ -112,5 +99,5 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
 void MQTTManager::mqttQOSHandler(unsigned int data) {
 
-    log("MQTT QOS callback: " + String(data));
+    log("QOS callback: " + String(data));
 }

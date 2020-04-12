@@ -151,12 +151,13 @@ void Light::outputPWM() {
     float pwm = _percent;
     pwm *= 255.0;
     pwm /= 100.0;
+    int val = (int) pwm;
     int reg = 2 + _lightNum;
     Wire.beginTransmission(_address);
 	Wire.write(reg);
-	Wire.write( (int) pwm);
+	Wire.write(val);
 	byte status = Wire.endTransmission();
 	if(status != 0){
-		Serial.println("Write failed");
+		Serial.println("Write failed setting %d = %d, status: %d",reg,val,status);
 	}
 }

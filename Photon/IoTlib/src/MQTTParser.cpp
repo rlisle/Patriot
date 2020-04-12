@@ -27,7 +27,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 {
     uint publishNameLength = _publishName.length();
 
-    Serial.println("MQTTParser received: " + topic + ", " + message);
+    log("received: " + topic + ", " + message);
 
     if(topic.startsWith(_publishName)) {
         // LEGACY
@@ -51,7 +51,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             int firstSlash = topic.indexOf('/');
             int lastSlash = topic.lastIndexOf('/');
             if(firstSlash == -1 || lastSlash == -1 || firstSlash == lastSlash) {
-                Serial.println("MQTT message does not contain 2 slashes, so ignoring");
+                log("Message does not contain 2 slashes, so ignoring");
                 return;
             }
             String midTopic = topic.substring(firstSlash+1,lastSlash);
@@ -59,7 +59,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 
             // ACTIVITY
             if(midTopic.equalsIgnoreCase("activity")) {
-                Serial.println("Setting activity " + rightTopic + " to " + message);
+                log("Setting activity " + rightTopic + " to " + message);
                 int value = message.toInt();
                 _behaviors->performActivity(rightTopic, value);
 
@@ -68,7 +68,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 Device* device = _devices->getDeviceWithName(rightTopic);
                 if(device)
                 {
-                    Serial.println("Brightness " + rightTopic + " found, setting to " + message);
+                    log("Brightness " + rightTopic + " found, setting to " + message);
                     int percent = message.toInt();
                     device->setBrightness(percent);
                 }
@@ -78,7 +78,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                   Device* device = _devices->getDeviceWithName(rightTopic);
                   if(device)
                   {
-                      Serial.println("Device " + rightTopic + " found, setting to " + message);
+                      log("Device " + rightTopic + " found, setting to " + message);
                       // Check for on/off and call set?
                       int percent = message.toInt();
                       device->setPercent(percent);
@@ -89,7 +89,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                   Device* device = _devices->getDeviceWithName(rightTopic);
                   if(device)
                   {
-                      Serial.println("Switch " + rightTopic + " found, setting to " + message);
+                      log("Switch " + rightTopic + " found, setting to " + message);
                       // check for on/off
                       int percent = parseValue(message);
                       device->setSwitch(percent);
@@ -99,7 +99,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             } else if(midTopic.equalsIgnoreCase("ping")) {
                 // Respond if ping is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    //Serial.println("Ping addressed to us: "+_controllerName);
+                    log("Ping addressed to us");
                     mqtt->publish(_publishName + "/pong/" + _controllerName, message);
                 }
 
@@ -111,7 +111,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             } else if(midTopic.equalsIgnoreCase("reset")) {
                 // Respond if reset is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    Serial.println("Reset addressed to us: "+_controllerName);
+                    log("Reset addressed to us");
                     System.reset();
                 }
 
@@ -119,25 +119,23 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             } else if(midTopic.equalsIgnoreCase("memory")) {
                 // Respond if memory is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
-                    //Serial.println("Memory addressed to us: "+_controllerName);
-                    //Serial.println( String::format("Free memory = %d", System.freeMemory()));
+                    log("Memory addressed to us");
+                    log( String::format("Free memory = %d", System.freeMemory()));
                 }
 
-            // LOG
             } else if(midTopic.equalsIgnoreCase("log")) {
                 // Ignore it.
 
             // UNKNOWN
             } else {
-                //Serial.println("MQTT topic unknown");
+                log("Ttopic unknown");
             }
         }
 
     // Note: currently subscribing to _controllerName, so this will never happen
     } else if(topic.startsWith("smartthings")) {
         // Bridge may need to do something with this.
-        Serial.println("MQTT smartthings received. Nothing to do.");
-
+        log("Smartthings received. Nothing to do.");
     }
 }
 
@@ -150,4 +148,9 @@ int MQTTParser::parseValue(String message)
         return 0;
     }
     return message.toInt();
+}
+
+void MQTTParser::log(String message)
+{
+    IoT::log("MQTTParser: " + message);
 }
