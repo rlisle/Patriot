@@ -348,3 +348,8 @@ bool Light::isPwmSupported()
     };
     return FALSE;
 }
+
+void Light::log(String message)
+{
+    IoT::log("Light: " + message);
+}

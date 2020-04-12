@@ -60,6 +60,7 @@ class Light : public Device
     bool      isPwmSupported();
     bool      isTimeToCheckSwitch();
     bool      didSwitchChange();
+    void      log(String message);
 
  public:
     Light(int pin, String name, bool isInverted=false, bool forceDigital=false);
