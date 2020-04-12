@@ -25,8 +25,6 @@
 
 #define MILLIS_PER_SECOND 1000
 
-int8_t NCD8Light::_address;             // Addresses of board
-
 /**
  * Constructor
  * @param address is the board address set by jumpers (0-7) 0x01 if low switch set
@@ -45,7 +43,7 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     _dimmingDuration = 2.0; // Default to 2 seconds
     _targetPercent = _percent;
     _incrementPerMillisecond = 0.0;
-    _lastUpdatetime = 0;
+    _lastUpdateTime = 0;
     _duration   = duration;
     _address = address;
     initializeBoard();
@@ -87,7 +85,7 @@ int8_t NCD8Light::initializeBoard() {
  * Set percent
  * @param percent Int 0 to 100.
  */
-void NCD8Light::changePercent(int percent) {
+void NCD8Light::setPercent(int percent) {
     _targetPercent = percent;
     if(_dimmingDuration == 0.0) {
         _percent = percent;
@@ -103,7 +101,7 @@ void NCD8Light::changePercent(int percent) {
  * Use float _currentPercent value to smoothly transition
  * An alternative approach would be to calculate # msecs per step
  */
-void Light::startSmoothDimming() {
+void NCD8Light::startSmoothDimming() {
     if((int)_percent != _targetPercent){
         _currentPercent = _percent;
         _lastUpdateTime = millis();
@@ -147,7 +145,7 @@ void NCD8Light::loop()
 /**
  * Set the output PWM value (0-255) based on 0-100 percent value
  */
-void Light::outputPWM() {
+void NCD8Light::outputPWM() {
     float pwm = _percent;
     pwm *= 255.0;
     pwm /= 100.0;

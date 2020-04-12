@@ -39,6 +39,8 @@ class NCD8Light : public Device
     long     _lastUpdateTime;
 
     int8_t  initializeBoard();
+    void    outputPWM();
+    void    startSmoothDimming();
 
  public:
     NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration = 0);
