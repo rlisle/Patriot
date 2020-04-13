@@ -351,5 +351,6 @@ bool Light::isPwmSupported()
 
 void Light::log(String message)
 {
-    IoT::log("Light: " + message);
+    //TODO:
+//    IoT::log("Light: " + message);
 }

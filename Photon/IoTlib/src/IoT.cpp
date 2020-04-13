@@ -241,6 +241,7 @@ void IoT::loop()
 }
 
 // Add a Device
+// 
 void IoT::addDevice(Device *device)
 {
     _devices->addDevice(device);
