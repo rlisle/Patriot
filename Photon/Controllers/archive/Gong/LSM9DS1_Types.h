@@ -1,0 +1,1 @@
+../libraries/LSM9DS1_Types.h
