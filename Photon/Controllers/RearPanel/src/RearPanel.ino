@@ -45,7 +45,8 @@
    - watching
  *
  * History
- * 8/29/20 Rename devices to remove spaces
+ * 09/04/20 Change MQTT IP to 192.168.10.184
+ * 08/29/20 Rename devices to remove spaces
  * 1/13/20 Add common activities
  * 5/4/19 Remove virtual devices. Using Home Assistant instead.
  * 03/30/19 Add virtual devices
@@ -68,7 +69,7 @@
 #define ADDRESS2 1   // I2C PWM board switches low switch on
 #define NUMRELAYS 8
 
-String mqttServer = "192.168.1.10";
+String mqttServer = "192.168.10.184";
 
 IoT *iot;
 

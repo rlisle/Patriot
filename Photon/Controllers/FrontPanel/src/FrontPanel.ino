@@ -46,6 +46,7 @@
    - watching
 
  * History
+ * 09/04/20 Change MQTT IP to 192.168.10.184
  * 08/29/20 Remove spaces in device names
  * 01/05/19 v3.0.0 Save device state in Backup SRAM
  * 12/9/18  Remove behaviors except 'everything'
@@ -69,7 +70,7 @@
 IoT *iot;
 
 //String mqttServer = "rons-mac-mini";
-String mqttServer = "192.168.1.10";
+String mqttServer = "192.168.10.184";
 
 #define ADDRESS1 0x20
 #define ADDRESS2 0x21
