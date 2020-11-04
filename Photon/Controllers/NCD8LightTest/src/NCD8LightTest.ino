@@ -124,6 +124,7 @@ void setup() {
 // From TravisE_NCD_Technica
 unsigned long scanInterval = 10000;
 unsigned long lastScan;
+byte dimming = 0;
 
 void loop() {
     byte status;
@@ -167,10 +168,10 @@ void loop() {
     Serial.println("Setting LEDs 4-7 = 255");
     Wire.beginTransmission(ADDRESS);
 	  Wire.write(0x86); // AI + 2 + led # 4
-	  Wire.write(255);  // Full brightness
-	  Wire.write(255);  // Full brightness
-	  Wire.write(255);  // Full brightness
-	  Wire.write(255);  // Full brightness
+	  Wire.write(dimming);  // Full brightness
+	  Wire.write(dimming);  // Full brightness
+	  Wire.write(dimming);  // Full brightness
+	  Wire.write(dimming);  // Full brightness
 	  status = Wire.endTransmission();
     if(status != 0){
       Serial.println("Write failed");
@@ -179,6 +180,7 @@ void loop() {
     }    
 
     delay(1000);
+    dimming += 16;
 
     Serial.println("Turning OFF LEDS 0-3");
     Wire.beginTransmission(ADDRESS);
@@ -195,10 +197,10 @@ void loop() {
     Serial.println("Setting LEDs 4-7 = 0");
     Wire.beginTransmission(ADDRESS);
 	  Wire.write(0x86);    // 2 + led # 4
-	  Wire.write(0);
-	  Wire.write(0);
-	  Wire.write(0);
-	  Wire.write(0);
+	  Wire.write(dimming);
+	  Wire.write(dimming);
+	  Wire.write(dimming);
+	  Wire.write(dimming);
 	  status = Wire.endTransmission();
     if(status != 0){
       Serial.println("Write failed");
@@ -207,5 +209,6 @@ void loop() {
     }    
 
     delay(1000);
+    dimming += 16;
 
 }
