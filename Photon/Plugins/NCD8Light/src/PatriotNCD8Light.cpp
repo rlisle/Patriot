@@ -19,6 +19,7 @@
 
  Changelog:
  2020-02-11: Initial creation based on PatriotNCD8Relay and PatriotLight
+ 2020-11-05: Update based on testing with NCD8LightTest
  ******************************************************************/
 
 #include "PatriotNCD8Light.h"
@@ -27,7 +28,7 @@
 
 /**
  * Constructor
- * @param address is the board address set by jumpers (0-7) 0x01 if low switch set
+ * @param address is the board address set by jumpers (0-7) 0x01 if low switch set, 0x40 if high
  * @param lightNum is the channel number on the NCD 8 Light board (0-7)
  * @param name String name used to address the light.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
@@ -65,13 +66,19 @@ int8_t NCD8Light::initializeBoard() {
 
     if(status == 0) {
         Wire.beginTransmission(_address);
-        Wire.write(0);          // Mode1 register
-        Wire.write(0);          // Osc on, disable AI, subaddrs, allcall
+        Wire.write(0);          // Control register - No AI, point to reg0 Mode1
+        Wire.write(0);          // Mode1 reg. Osc on, disable AI, subaddrs, allcall
         Wire.endTransmission();
 
         Wire.beginTransmission(_address);
         Wire.write(1);          // Mode2 register
         Wire.write(0x04);       // Dimming, Not inverted, totem-pole
+        Wire.endTransmission();
+
+        Wire.beginTransmission(_address);
+	    Wire.write(0x8c);       // AI + LEDOUT0
+	    Wire.write(0xaa);       // LEDOUT0 LEDs 0-3 dimming 
+	    Wire.write(0xaa);       // LEDOUT1 LEDS 4-7 dimming
         Wire.endTransmission();
 
     } else {
