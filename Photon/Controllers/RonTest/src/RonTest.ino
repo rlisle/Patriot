@@ -13,6 +13,7 @@
  * - 4 LEDs on D0-D3
  *
  * History
+ * 11/5/20  Testing NCD8Light plugin
  * 11/20/19 Testing Light brightness
  * 01/05/19 Remove watchdog timer due to OTA issues.
  * 01/03/19 Save device state in Backup SRAM
@@ -26,9 +27,7 @@
  */
 
 #include <IoT.h>
-#include <PatriotLight.h>
-//#include <photon-wdgs.h>
-//#include <PatriotRelay.h>
+#include <PatriotNCD8Light.h>
 
 #define DEV_PTR (Device *)&
 
@@ -37,11 +36,15 @@ String mqttServerIP = "192.168.10.184";
 IoT     *iot;
 
 // Use Backup SRAM to persist led state between resets
-retained Light led(D7, "led", false, true);
-retained Light test1(D0, "test1");
-retained Light test2(D1, "test2");
-retained Light test3(D2, "test3");
-retained Light test4(D3, "test4");
+//retained Light led(D7, "led", false, true);
+retained NCD8Light test1(1, 0, "test1", 0); // immediate
+retained NCD8Light test2(1, 1, "test2", 1); // 1 second transition
+retained NCD8Light test3(1, 2, "test3", 2); // 2 " "
+retained NCD8Light test4(1, 3, "test4", 3);
+retained NCD8Light test5(1, 0, "test5", 4);
+retained NCD8Light test6(1, 1, "test6", 5);
+retained NCD8Light test7(1, 2, "test7", 6);
+retained NCD8Light test8(1, 3, "test8", 7);
 
 void setup() {
   iot = IoT::getInstance();
@@ -49,17 +52,21 @@ void setup() {
   iot->begin();
   iot->connectMQTT(mqttServerIP, "patriotRonTest1");
 
-  test1.setLocalPin(A0, "Switch1");
-  test2.setLocalPin(A1, "Switch2");
-  test3.setLocalPin(A2, "Switch3");
-  test4.setLocalPin(A3, "Switch4");
+  // test1.setLocalPin(A0, "Switch1");
+  // test2.setLocalPin(A1, "Switch2");
+  // test3.setLocalPin(A2, "Switch3");
+  // test4.setLocalPin(A3, "Switch4");
 
   // Devices
-  iot->addDevice(DEV_PTR led);
+//  iot->addDevice(DEV_PTR led);
   iot->addDevice(DEV_PTR test1);
   iot->addDevice(DEV_PTR test2);
   iot->addDevice(DEV_PTR test3);
   iot->addDevice(DEV_PTR test4);
+  iot->addDevice(DEV_PTR test5);
+  iot->addDevice(DEV_PTR test6);
+  iot->addDevice(DEV_PTR test7);
+  iot->addDevice(DEV_PTR test8);
 
   // Behaviors/Activities
   // iot->addBehavior(new Behavior(DEV_PTR light, "demo", '>', 0, 100));
