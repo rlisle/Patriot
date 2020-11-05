@@ -163,6 +163,6 @@ void NCD8Light::outputPWM() {
 	Wire.write(val);
 	byte status = Wire.endTransmission();
 	if(status != 0){
-		Serial.println("Write failed setting %d = %d, status: %d",reg,val,status);
+		Serial.println("outputPWM write failed");
 	}
 }
