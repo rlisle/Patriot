@@ -62,7 +62,7 @@
  */
 #include <IoT.h>
 #include <PatriotNCD8Relay.h>
-//#include <PatriotNCD8Light.h>
+#include <PatriotNCD8Light.h>
 
 #define DEV_PTR (Device *)&
 #define ADDRESS1 0x20
@@ -80,7 +80,7 @@ retained NCD8Relay rampPorch(ADDRESS1, NUMRELAYS, 3, "RampPorch");
 retained NCD8Relay rearAwning(ADDRESS1, NUMRELAYS, 0, "RearAwning");
 retained NCD8Relay rearPorch(ADDRESS1, NUMRELAYS, 1, "RearPorch");
 
-//retained NCD8Light piano(ADDRESS2, 0, "Piano");
+retained NCD8Light piano(ADDRESS2, 0, "Piano", 2);
 
 void setup() {
     iot = IoT::getInstance();
@@ -95,7 +95,7 @@ void setup() {
     iot->addDevice(DEV_PTR rearAwning);
     iot->addDevice(DEV_PTR rearPorch);
 
-//    iot->addDevice(DEV_PTR piano);
+    iot->addDevice(DEV_PTR piano);
 
     
     // BEHAVIORS
