@@ -11,21 +11,15 @@
  * Hardware
  * 1. Photon
  * 2. ControlEverything.com NCD8Relay Photon Controller
- * 3. 2 x MOSFET LED drivers
  * Photon board relay n/o connections 0x20 (D0, D1)
    - Rear Awning          (1)
    - Rear Porch           (2)
    - Ramp Awning          (3)
    - Ramp Porch           (4)
    - Loft                 (5)
-   - Office               (6)
-   - Rear Awning Extend
-   - Rear Awning Retract
-   - Ramp Awning Extend
-   - Ramp Awning Retract
- * MOSFET LED Driver Boards
-   - Office Ceiling        (TODO: D3)
-   - Loft                  (TODO: D4)
+   - ?                    (6)
+ * 3. NCD PWM OC 8x board
+
  * Other
    - built-in blue LED     D7
  *
@@ -74,13 +68,13 @@ String mqttServer = "192.168.10.184";
 IoT *iot;
 
 retained NCD8Relay loft(ADDRESS1, NUMRELAYS, 4, "Loft");
-retained NCD8Relay office(ADDRESS1, NUMRELAYS, 5, "OfficeCeiling");
 retained NCD8Relay rampAwning(ADDRESS1, NUMRELAYS, 2, "RampAwning");
 retained NCD8Relay rampPorch(ADDRESS1, NUMRELAYS, 3, "RampPorch");
 retained NCD8Relay rearAwning(ADDRESS1, NUMRELAYS, 0, "RearAwning");
 retained NCD8Relay rearPorch(ADDRESS1, NUMRELAYS, 1, "RearPorch");
 
 retained NCD8Light piano(ADDRESS2, 0, "Piano", 2);
+retained NCD8Light office(ADDRESS2, 1, "OfficeCeiling", 2);
 
 void setup() {
     iot = IoT::getInstance();
@@ -89,13 +83,13 @@ void setup() {
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
     iot->addDevice(DEV_PTR loft);
-    iot->addDevice(DEV_PTR office);
     iot->addDevice(DEV_PTR rampAwning);
     iot->addDevice(DEV_PTR rampPorch);
     iot->addDevice(DEV_PTR rearAwning);
     iot->addDevice(DEV_PTR rearPorch);
 
     iot->addDevice(DEV_PTR piano);
+    iot->addDevice(DEV_PTR office);
 
     
     // BEHAVIORS
