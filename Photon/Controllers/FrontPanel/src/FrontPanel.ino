@@ -83,10 +83,10 @@ retained NCD8Relay dsFloods(ADDRESS1, NUMRELAYS, 5, "DoorSide");
 retained NCD8Relay osFloods(ADDRESS1, NUMRELAYS, 6, "OtherSide");
 retained NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
 
-retained NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2)
-retained NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2)
-retained NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2)
-retained NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2)
+retained NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
+retained NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2);
+retained NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
+retained NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
 
 void setup() {
     iot = IoT::getInstance();
