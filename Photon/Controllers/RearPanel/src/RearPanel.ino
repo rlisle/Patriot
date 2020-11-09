@@ -39,6 +39,7 @@
    - watching
  *
  * History
+ * 09/11/07 Add dimmer board support
  * 09/04/20 Change MQTT IP to 192.168.10.184
  * 08/29/20 Rename devices to remove spaces
  * 1/13/20 Add common activities

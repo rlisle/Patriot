@@ -20,17 +20,17 @@
    - Door Side Floods     (6)
    - Other Side Floods    (7)
    - Porch                (8)
-   - ?Vent Open            (4)
-   - ?Vent Close           (5)
+   - ?
+   - ?
  * I2C 8x dimmer board connections 0x21
-   - Ceiling              (5)
-   - Sink                 (1)
-   - High Kitchen         (1)
-   - Kitchen Ceiling      (2)
-   - ?Vent Fan             (3)
-   - Top step
-   - Bottom step
-   - Hall ceiling
+   - Ceiling
+   - Kitchen Ceiling
+   - Sink
+   - Cabinets
+   - ?
+   - ? 
+   - ?
+   - ?
  * Activities
    - arriving
    - cleaning
@@ -46,6 +46,7 @@
    - watching
 
  * History
+ * 11/09/20 Add dimmer board support
  * 09/04/20 Change MQTT IP to 192.168.10.184
  * 08/29/20 Remove spaces in device names
  * 01/05/19 v3.0.0 Save device state in Backup SRAM
@@ -62,41 +63,30 @@
  */
 #include <IoT.h>
 #include <PatriotNCD8Relay.h>
-//#include <PatriotFan.h>
-//#include <PatriotMotorized.h>
+#include <PatriotNCD8Light.h>
 
 #define DEV_PTR (Device *)&
+#define ADDRESS1 0x20
+#define ADDRESS2 1    // I2C PWM board switches low switch on
+#define NUMRELAYS 8
+
+String mqttServer = "192.168.10.184";
 
 IoT *iot;
 
-//String mqttServer = "rons-mac-mini";
-String mqttServer = "192.168.10.184";
-
-#define ADDRESS1 0x20
-#define ADDRESS2 0x21
-#define NUMRELAYS 8
-
-retained NCD8Relay kitchenSink(ADDRESS1, NUMRELAYS, 0, "Sink");
+//retained NCD8Relay kitchenSink(ADDRESS1, NUMRELAYS, 0, "Sink");
 retained NCD8Relay frontAwning(ADDRESS1, NUMRELAYS, 1, "FrontAwning");
 retained NCD8Relay rightTrim(ADDRESS1, NUMRELAYS, 2, "RightTrim");
 retained NCD8Relay leftTrim(ADDRESS1, NUMRELAYS, 3, "LeftTrim");
-retained NCD8Relay ceiling(ADDRESS1, NUMRELAYS, 4, "Ceiling");
+//retained NCD8Relay ceiling(ADDRESS1, NUMRELAYS, 4, "Ceiling");
 retained NCD8Relay dsFloods(ADDRESS1, NUMRELAYS, 5, "DoorSide");
 retained NCD8Relay osFloods(ADDRESS1, NUMRELAYS, 6, "OtherSide");
 retained NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
 
-//    NCD8Relay *highKitchen          = new NCD8Relay(ADDRESS2, numRelays2, 0, "HighKitchen");
-//    NCD8Relay *kitchenCeiling       = new NCD8Relay(ADDRESS2, numRelays2, 1, "KitchenCeiling");
-//    NCD8Relay *ventFan              = new NCD8Relay(ADDRESS2, numRelays2, 2, "VentFan");
-//    NCD8Relay *ventOpen             = new NCD8Relay(ADDRESS2, numRelays2, 3, "VentOpen", 5);
-//    NCD8Relay *ventClose            = new NCD8Relay(ADDRESS2, numRelays2, 4, "VentClose", 5);
-
-    // TODO: Fan
-//    Fan *ventFan = new Fan(D4, "ventFan");
-
-    // TODO: motorized vent & awning
-//    Motorized *vent = new Motorized(D5, D6, 30000, "vent");         //TODO: set actual duration
-//    Motorized *frontAwning = new Motorized(RX, TX, 60000, "vent");  //TODO: set actual duration
+retained NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2)
+retained NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2)
+retained NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2)
+retained NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2)
 
 void setup() {
     iot = IoT::getInstance();
@@ -106,20 +96,17 @@ void setup() {
 
     // DEVICES
 
-    iot->addDevice(DEV_PTR ceiling);
     iot->addDevice(DEV_PTR dsFloods);
     iot->addDevice(DEV_PTR frontAwning);
     iot->addDevice(DEV_PTR frontPorch);
-    iot->addDevice(DEV_PTR kitchenSink);
     iot->addDevice(DEV_PTR leftTrim);
     iot->addDevice(DEV_PTR osFloods);
     iot->addDevice(DEV_PTR rightTrim);
 
-//    iot->addDevice(DEV_PTR highKitchen);
-//    iot->addDevice(DEV_PTR kitchenCeiling);
-//    iot->addDevice(DEV_PTR ventFan);            // TODO: convert to Fan device
-//    iot->addDevice(DEV_PTR ventOpen);           // TODO: convert to motorized vent
-//    iot->addDevice(DEV_PTR ventClose);          // TODO: "
+    iot->addDevice(DEV_PTR ceiling);
+    iot->addDevice(DEV_PTR kitchenCeiling);
+    iot->addDevice(DEV_PTR kitchenSink);
+    iot->addDevice(DEV_PTR kitchenCabinets);
 
     // BEHAVIORS
     // Note that ON is required, but OFF is optional
