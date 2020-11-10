@@ -141,7 +141,6 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 
 int MQTTParser::parseValue(String message)
 {
-    int value = 0;
     if(message.equalsIgnoreCase("on")) {
         return 100;
     } else if(message.equalsIgnoreCase("off")) {
@@ -152,5 +151,5 @@ int MQTTParser::parseValue(String message)
 
 void MQTTParser::log(String message)
 {
-    IoT::log("MQTTParser: " + message);
+    Serial.println("MQTTParser: " + message);
 }
