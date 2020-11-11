@@ -62,6 +62,16 @@ void globalQOScallback(unsigned int data) {
     iot->mqttQOSHandler(data);
 }
 
+void globalLog(String message) {
+    IoT* iot = IoT::getInstance();
+    iot->log(message);
+}
+
+void globalPublish(String topic, String message) {
+    IoT* iot = IoT::getInstance();
+    iot->publish(topic, message);
+}
+
 /**
  * Supported Activities variable
  * This variable is updated to contain a comma separated list of
@@ -247,6 +257,8 @@ void IoT::addDevice(Device *device)
     _devices->addDevice(device);
     if(device->name() != "") {
         Serial.println("IoT adding device: "+device->name()+".");
+        device->log = globalLog;
+        device->publish = globalPublish;
         _deviceNames->addDevice(device->name());
     }
     else
