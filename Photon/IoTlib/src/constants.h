@@ -31,7 +31,7 @@ static const String kDefaultPublishName     = "patriot";
 
 /**
  * Default particle.io controller name
- * Each IoT controller must be uniquelly named
+ * Each IoT controller must be uniquely named
  * This can be changed by IoT::controllerName()
  */
 static const String kDefaultControllerName  = "iotController";

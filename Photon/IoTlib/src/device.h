@@ -46,6 +46,10 @@ class Device {
     int        _brightness;
 
  public:
+    // Pointer to methods in IoT. These are set in IoT->addDevice()
+    void (*log)(String message);
+    void (*publish)(String topic, String message);
+
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
     Device(String name = "", DeviceType type = DeviceType::Unknown) : _name(name), _type(type) { }
