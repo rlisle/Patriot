@@ -24,9 +24,11 @@ Changelog:
 #pragma once
 
 #include "activities.h"
+#include "state.h"
 #include "device.h"
 
 class Activities;
+class State;
 
 class Behavior
 {

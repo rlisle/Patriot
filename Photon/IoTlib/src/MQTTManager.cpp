@@ -66,6 +66,12 @@ void MQTTManager::log(String message)
     }
 }
 
+void MQTTManager::publish(String topic, String message) {
+    if(_mqtt != NULL && _mqtt->isConnected()) {
+        _mqtt->publish(topic,message);
+    }
+}
+
 void MQTTManager::loop()
 {
     if(_mqtt != NULL && _mqtt->isConnected()) {
