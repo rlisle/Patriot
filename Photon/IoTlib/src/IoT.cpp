@@ -69,7 +69,7 @@ void globalLog(String message) {
 
 void globalPublish(String topic, String message) {
     IoT* iot = IoT::getInstance();
-    iot->publish(topic, message);
+    iot->mqttPublish(topic, message);
 }
 
 /**
