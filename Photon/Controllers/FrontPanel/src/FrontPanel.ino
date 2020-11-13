@@ -74,19 +74,20 @@ String mqttServer = "192.168.10.184";
 
 IoT *iot;
 
-//retained NCD8Relay kitchenSink(ADDRESS1, NUMRELAYS, 0, "Sink");
-retained NCD8Relay frontAwning(ADDRESS1, NUMRELAYS, 1, "FrontAwning");
-retained NCD8Relay rightTrim(ADDRESS1, NUMRELAYS, 2, "RightTrim");
-retained NCD8Relay leftTrim(ADDRESS1, NUMRELAYS, 3, "LeftTrim");
-//retained NCD8Relay ceiling(ADDRESS1, NUMRELAYS, 4, "Ceiling");
-retained NCD8Relay dsFloods(ADDRESS1, NUMRELAYS, 5, "DoorSide");
-retained NCD8Relay osFloods(ADDRESS1, NUMRELAYS, 6, "OtherSide");
-retained NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
+// To use persistent storage, insert "retained" before NCD8Relay
+//NCD8Relay kitchenSink(ADDRESS1, NUMRELAYS, 0, "Sink");
+NCD8Relay frontAwning(ADDRESS1, NUMRELAYS, 1, "FrontAwning");
+NCD8Relay rightTrim(ADDRESS1, NUMRELAYS, 2, "RightTrim");
+NCD8Relay leftTrim(ADDRESS1, NUMRELAYS, 3, "LeftTrim");
+//NCD8Relay ceiling(ADDRESS1, NUMRELAYS, 4, "Ceiling");
+NCD8Relay dsFloods(ADDRESS1, NUMRELAYS, 5, "DoorSide");
+NCD8Relay osFloods(ADDRESS1, NUMRELAYS, 6, "OtherSide");
+NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
 
-retained NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
-retained NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2);
-retained NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
-retained NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
+NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
+NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2);
+NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
+NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
 
 void setup() {
     iot = IoT::getInstance();

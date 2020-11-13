@@ -42,8 +42,9 @@ IoT *iot;
 String mqttServer = "192.168.1.10";
 
 // Use Backup SRAM to persist led state between resets
-retained Light couch(TX, "Couch");
-retained Light vertical(RX, "LeftVertical");
+// To use persistent storage, insert "retained" before Light
+Light couch(TX, "Couch");
+Light vertical(RX, "LeftVertical");
 
 void setup() {
   iot = IoT::getInstance();

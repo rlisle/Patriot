@@ -69,14 +69,15 @@ String mqttServer = "192.168.10.184";
 
 IoT *iot;
 
-retained NCD8Relay loft(ADDRESS1, NUMRELAYS, 4, "Loft");
-retained NCD8Relay rampAwning(ADDRESS1, NUMRELAYS, 2, "RampAwning");
-retained NCD8Relay rampPorch(ADDRESS1, NUMRELAYS, 3, "RampPorch");
-retained NCD8Relay rearAwning(ADDRESS1, NUMRELAYS, 0, "RearAwning");
-retained NCD8Relay rearPorch(ADDRESS1, NUMRELAYS, 1, "RearPorch");
+// To use persistent storage, insert "retained" before NCD8Relay
+NCD8Relay loft(ADDRESS1, NUMRELAYS, 4, "Loft");
+NCD8Relay rampAwning(ADDRESS1, NUMRELAYS, 2, "RampAwning");
+NCD8Relay rampPorch(ADDRESS1, NUMRELAYS, 3, "RampPorch");
+NCD8Relay rearAwning(ADDRESS1, NUMRELAYS, 0, "RearAwning");
+NCD8Relay rearPorch(ADDRESS1, NUMRELAYS, 1, "RearPorch");
 
-retained NCD8Light piano(ADDRESS2, 0, "Piano", 2);
-retained NCD8Light office(ADDRESS2, 1, "OfficeCeiling", 2);
+NCD8Light piano(ADDRESS2, 0, "Piano", 2);
+NCD8Light office(ADDRESS2, 1, "OfficeCeiling", 2);
 
 void setup() {
     iot = IoT::getInstance();
