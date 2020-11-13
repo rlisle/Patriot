@@ -38,7 +38,8 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     : Device(name, DeviceType::NCD8Light)
 {
     _lightNum   = lightNum;
-    // _percent is left uninitialized to pickup state from SRAM
+    // _percent is left uninitialized if retained storage is used to pickup state from SRAM
+    _percent = 0;
     _currentPercent = _percent;
     _brightness = 100;      // Default to 100
     _dimmingDuration = 2.0; // Default to 2 seconds

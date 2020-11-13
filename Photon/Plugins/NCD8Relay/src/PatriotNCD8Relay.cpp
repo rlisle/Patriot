@@ -45,7 +45,8 @@ NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String n
     : Device(name, DeviceType::NCD8Relay)
 {
     _relayNum   = relayNum;
-    // _percent is left uninitialized to pickup state from SRAM
+    // _percent is left uninitialized if retained storage is used to pickup state from SRAM
+    _percent = 0;
     _duration   = duration;
     _stopMillis = 0;
 
