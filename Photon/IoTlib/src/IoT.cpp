@@ -6,7 +6,7 @@ a common API for adding and configuring devices.
 
 This class coordinates realtime events.
 It subscribes to Particle.io notifications, and
-        distributes them to devices and activities.
+        distributes them to devices and states.
 
 http://www.github.com/rlisle/Patriot
 
@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-14: Rename activities to states
 2019-01-05: v3.0.0 Removed watchdog timer due to OTA issues.
 2019-01-01: Replace 2am reset with hardware watchdog timer.
 2018-11-05: Refactor to MQTTmanager.
@@ -73,12 +74,12 @@ void globalPublish(String topic, String message) {
 }
 
 /**
- * Supported Activities variable
+ * Supported States variable
  * This variable is updated to contain a comma separated list of
- * the activity names supported by this controller.
- * This allows applications to automatically determine activity names
+ * the state names supported by this controller.
+ * This allows applications to automatically determine state names
  */
-String supportedActivitiesVariable;
+String supportedStatesVariable;
 
 /**
  * Publish Name variable
@@ -133,7 +134,7 @@ IoT::IoT()
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
-    _numSupportedActivities = 0;
+    _numSupportedStates     = 0;
     _mqttManager            = NULL;
     _mqttParser             = NULL;
     _startTime              = Time.now();
@@ -175,7 +176,7 @@ void IoT::begin()
 
     Serial.begin(57600);
 
-    _activities = new Activities();
+    _states = new States();
     _behaviors = new Behaviors();
     _devices = new Devices();
     _deviceNames = new DeviceNames();
@@ -185,9 +186,9 @@ void IoT::begin()
 
     // Register cloud variables. Up to 20 may be registered. Name length max 12.
     // There does not appear to be any time limit/throttle on variable reads.
-    if(!Particle.variable(kSupportedActivitiesVariableName, supportedActivitiesVariable))
+    if(!Particle.variable(kSupportedStatesVariableName, supportedStatesVariable))
     {
-        log("Unable to expose "+String(kSupportedActivitiesVariableName)+" variable");
+        log("Unable to expose "+String(kSupportedStatesVariableName)+" variable");
         return;
     }
     if(!Particle.variable(kPublishVariableName, publishNameVariable))
@@ -268,40 +269,40 @@ void IoT::addDevice(Device *device)
 }
 
 
-// Activities
+// States
 void IoT::addBehavior(Behavior *behavior)
 {
     _behaviors->addBehavior(behavior);
-    addToListOfSupportedActivities(behavior->activityName);
+    addToListOfSupportedStates(behavior->stateName);
 }
 
-void IoT::addToListOfSupportedActivities(String activity)
+void IoT::addToListOfSupportedStates(String state)
 {
-    for(int i=0; i<_numSupportedActivities; i++) {
-        if(activity.equalsIgnoreCase(_supportedActivities[i])) return;
+    for(int i=0; i<_numSupportedStates; i++) {
+        if(state.equalsIgnoreCase(_supportedStates[i])) return;
     }
-    if(_numSupportedActivities < kMaxNumberActivities-1) {
-        _supportedActivities[_numSupportedActivities++] = activity;
+    if(_numSupportedStates < kMaxNumberStates-1) {
+        _supportedStates[_numSupportedStates++] = state;
     }
-    buildSupportedActivitiesVariable();
+    buildSupportedStatesVariable();
 }
 
-void IoT::buildSupportedActivitiesVariable()
+void IoT::buildSupportedStatesVariable()
 {
     String newVariable = "";
-    for(int i=0; i<_numSupportedActivities; i++)
+    for(int i=0; i<_numSupportedStates; i++)
     {
-        newVariable += _supportedActivities[i];
-        if (i < _numSupportedActivities-1) {
+        newVariable += _supportedStates[i];
+        if (i < _numSupportedStates-1) {
             newVariable += ",";
         }
     }
     if(newVariable.length() < kMaxVariableStringLength) {
-        if(newVariable != supportedActivitiesVariable) {
-            supportedActivitiesVariable = newVariable;
+        if(newVariable != supportedStatesVariable) {
+            supportedStatesVariable = newVariable;
         }
     } else {
-        log("Supported activities variable is too long. Need to extend to a 2nd variable");
+        log("Supported states variable is too long. Need to extend to a 2nd variable");
     }
 }
 
@@ -343,9 +344,9 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
         return;
     }
 
-    // If it wasn't a device name, it must be an activity.
+    // If it wasn't a device name, it must be a state.
     int value = state.toInt();
-    _behaviors->performActivity(name, value);
+    _behaviors->performState(name, value);
 }
 
 /******************************/
@@ -368,11 +369,11 @@ void IoT::mqttQOSHandler(unsigned int data) {
  * Program Handler
  * !!!CURRENTLY NOT USED NOR TESTED!!!
  * Called by particle.io to update behaviors.
- * It will define a new behavior for an activity for the specified device,
- * and return an int indicating if the activity is new or changed.
+ * It will define a new behavior for a state for the specified device,
+ * and return an int indicating if the state is new or changed.
  *
- * @param command "device:activity:compare:value:level"
- * @returns int response indicating if activity already existed (1) or error (-1)
+ * @param command "device:state:compare:value:level"
+ * @returns int response indicating if state already existed (1) or error (-1)
  */
 int IoT::programHandler(String command) {
     log("programHandler called with command: " + command);
@@ -393,19 +394,19 @@ int IoT::programHandler(String command) {
 
     // Parse out each item into the correct type
     Device *device = _devices->getDeviceWithName(components[0]);
-    String activity = components[1];
+    String state = components[1];
     char compare = components[2].charAt(0);
     int value = components[3].toInt();
     int level = components[4].toInt();
 
     //TODO: see if behavior already exists. If so, then change it.
-    //      Is there already a behavior for the same device and activity?
+    //      Is there already a behavior for the same device and state?
 
 
     //TODO: Otherwise just add a new behavior.
     log("programHandler: new behavior("+components[0]+", "+components[1]+", "+components[2]+", "+components[3]+", "+components[4]+")");
-    addBehavior(new Behavior(device, activity, compare, value, level));
-    addBehavior(new Behavior(device, activity, '=', 0, 0));         // Add 'Off' state also
+    addBehavior(new Behavior(device, state, compare, value, level));
+    addBehavior(new Behavior(device, state, '=', 0, 0));         // Add 'Off' state also
     return 0;
 }
 

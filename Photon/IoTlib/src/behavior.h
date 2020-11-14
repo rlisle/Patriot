@@ -15,6 +15,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-14: Rename activities to states
 2017-10-22: Convert to "scenes" approach
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
@@ -23,11 +24,11 @@ Changelog:
 ******************************************************************/
 #pragma once
 
-#include "activities.h"
+#include "states.h"
 #include "state.h"
 #include "device.h"
 
-class Activities;
+class States;
 class State;
 
 class Behavior
@@ -38,12 +39,12 @@ private:
     int _value;
 
 public:
-    String activityName;
+    String stateName;
     Device *device;
     int level;       // level to set if event <comparison> value is true
     bool matchesCondition(String name, int value);
 
-    Behavior(Device *device, String activityName, char comparison, int value, int level);
+    Behavior(Device *device, String stateName, char comparison, int value, int level);
 
-    void performActivity(String name, int value);
+    void performState(String name, int value);
 };
