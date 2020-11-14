@@ -3,8 +3,8 @@ Behaviors collection
 
 This object manages a collection of Behavior objects.
 A Behavior object describes the response of a device
-to received "activity notifications".
-Activities are received via Particle.io Pub/Sub.
+to received "state notifications".
+States are received via Particle.io Pub/Sub or MQTT.
 
 http://www.github.com/rlisle/Patriot
 
@@ -13,6 +13,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-14: Rename activities to states.
 2017-10-22: Convert to scenes-like behavior.
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
@@ -48,11 +49,11 @@ int Behaviors::addBehavior(Behavior *behavior)
 }
 
 
-void Behaviors::performActivity(String name, int value)
+void Behaviors::performState(String name, int value)
 {
     for (int i = 0; i < _numBehaviors; i++)
     {
         Behavior *behavior = _behaviors[i];
-        behavior->performActivity(name, value);
+        behavior->performState(name, value);
     }
 }

@@ -11,6 +11,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-14: Rename activites to states.
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle library
 2016-03-05: Initial version
@@ -36,10 +37,10 @@ static const String kDefaultPublishName     = "patriot";
  */
 static const String kDefaultControllerName  = "iotController";
 
-static const String kSupportedActivitiesVariableName = "Supported";
-static const String kActivitiesVariableName          = "Activities";
+static const String kSupportedStatesVariableName     = "Supported";
+static const String kStatesVariableName              = "States";
 static const String kControllersVariableName         = "Controllers";
 static const int    kMaxVariableStringLength         = 266;
 static const String kDevicesVariableName             = "Devices";
-static const int    kMaxNumberActivities             = 32;
+static const int    kMaxNumberStates                 = 32;
 static const String kPublishVariableName             = "PublishName";

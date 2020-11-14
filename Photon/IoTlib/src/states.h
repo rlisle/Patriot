@@ -1,7 +1,7 @@
 /******************************************************************
-Activities
+States
 
-This class represents a collection of Activity objects.
+This class represents a collection of State objects.
 
 http://www.github.com/rlisle/Patriot
 
@@ -18,28 +18,28 @@ Changelog:
 ******************************************************************/
 #pragma once
 
-#include "activity.h"
+#include "state.h"
 
-#define MAX_NUM_ACTIVITIES 64
+#define MAX_NUM_STATES 64
 
-class Activities
+class States
 {
 public:
 
-  Activities();
+  States();
 
-  Activity*  addActivity(String name, int value);
-  Activity*  getActivityByNum(int activityNum);
-  Activity*  getActivityWithName(String name);
+  State*     addState(String name, int value);
+  State*     getStateByNum(int stateNum);
+  State*     getStateWithName(String name);
   int        count();
 
   bool       expose();
 
 private:
-  uint8_t     _numActivities;
-  Activity*   _activities[MAX_NUM_ACTIVITIES];
-  bool        _isVariableExposed;
-  String      *_ptrToVariable;
+  uint8_t    _numStates;
+  State*     _states[MAX_NUM_STATES];
+  bool       _isVariableExposed;
+  String     *_ptrToVariable;
 
-  void buildActivityVariable();
+  void buildStateVariable();
 };

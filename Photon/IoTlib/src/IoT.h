@@ -6,7 +6,7 @@ a common API for adding and configuring devices.
 
 This class coordinates realtime events.
 It subscribes to Particle.io notifications, and
-        distributes them to devices and activities.
+        distributes them to devices and states.
 
 http://www.github.com/rlisle/Patriot
 
@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-14: Rename activities to states
 2019-01-05: Removed watchdog timer due to OTA issues.
 2019-01-01: Replace 2am reset with hardware watchdog timer.
 2018-11-05: Refactor to MQTTmanager.
@@ -32,15 +33,13 @@ Changelog:
 
 #include "Particle.h"
 #include "constants.h"
-#include "activities.h"
+#include "states.h"
 #include "behaviors.h"
 #include "devices.h"
 #include "devicenames.h"
 #include "MQTTManager.h"
 #include "MQTTParser.h"
 #include "factory.h"
-//#include "SparkIntervalTimer.h"
-//#include "photon-wdgs.h"
 
 /**
  * Main IoT object.
@@ -105,8 +104,8 @@ private:
     bool    _isBridge;
     String  _controllerName;
     String  _proximityEvent;
-    String  _supportedActivities[kMaxNumberActivities];
-    int     _numSupportedActivities;
+    String  _supportedStates[kMaxNumberStates];
+    int     _numSupportedStates;
     system_tick_t _startTime;
     system_tick_t _currentTime;
 
@@ -121,7 +120,7 @@ private:
      * Include other needed objects
      */
     Factory     *_factory;
-    Activities  *_activities;
+    States      *_states;
     Behaviors   *_behaviors;
     Devices     *_devices;
     DeviceNames *_deviceNames;
@@ -129,9 +128,9 @@ private:
     MQTTParser  *_mqttParser;
 
     void subscribeHandler(const char *eventName, const char *rawData);
-    void addToListOfSupportedActivities(String activity);
-    void buildSupportedActivitiesVariable();
-    void performActivities();   //TODO: To be deprecated
+    void addToListOfSupportedStates(String state);
+    void buildSupportedStatesVariable();
+    void performStates();   //TODO: To be deprecated
     void periodicReset();
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);

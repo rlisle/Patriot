@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-14: Rename activites to states.
 2017-10-22: Changed to perform like "scenes".
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
@@ -31,7 +32,7 @@ public:
     Behaviors();
 
     int addBehavior(Behavior *behavior); // Returns # behaviors (index+1)
-    void performActivity(String name, int value);
+    void performState(String name, int value);
 
 private:
     uint8_t _numBehaviors = 0;
