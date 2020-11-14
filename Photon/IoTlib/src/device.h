@@ -44,6 +44,7 @@ class Device {
     DeviceType _type;
     int        _percent;
     int        _brightness;
+    Behaviors   *_behaviors;
 
  public:
     // Pointer to methods in IoT. These are set in IoT->addDevice()
@@ -52,7 +53,18 @@ class Device {
 
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
-    Device(String name = "", DeviceType type = DeviceType::Unknown) : _name(name), _type(type) { }
+    Device(String name = "", DeviceType type = DeviceType::Unknown) : _name(name), _type(type) { 
+        _behaviors = Behaviors();
+    }
+
+    void addBehavior(Behavior *behavior) { 
+        _behaviors->addBehavior(behavior); 
+        //addToListOfSupportedStates(behavior->stateName);
+    };
+
+    void perform State(String name, int value) {
+        _behaviors->performState(name, value, this);
+    }
 
     virtual String name() { return _name; };
     virtual DeviceType type() { return _type; };

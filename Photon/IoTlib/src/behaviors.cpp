@@ -48,8 +48,17 @@ int Behaviors::addBehavior(Behavior *behavior)
     return _numBehaviors - 1;
 }
 
+Behavior *getBehavior(String name) {
+    for (int i = 0; i < _numBehaviors; i++) 
+    {
+        if (behaviors[i]->name.equalsIgnoreCase(stateName)){
+            return behaviors[i];
+        }
+    }
+    return NULL;
+}
 
-void Behaviors::performState(String name, int value)
+void Behaviors::setState(String name, int value, Device *device)
 {
     for (int i = 0; i < _numBehaviors; i++)
     {

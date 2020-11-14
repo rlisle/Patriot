@@ -37,6 +37,14 @@ int Devices::addDevice(Device *device)
     return 0;
 }
 
+// Called whenever "state" changes.
+void Devices::performState(String name, int value) {
+    for (int i = 0; i < _numDevices; i++)
+    {
+        _devices[i]->performState(name, value);
+    }
+}
+
 void Devices::loop()
 {
     for (int x = 0; x < _numDevices; x++)

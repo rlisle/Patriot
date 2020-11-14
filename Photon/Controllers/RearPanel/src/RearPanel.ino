@@ -115,12 +115,6 @@ void setup() {
     // iot->addBehavior(new Behavior(DEV_PTR rampAwning, "everything", '>', 0, 100));
     // iot->addBehavior(new Behavior(DEV_PTR rearPorch,  "everything", '>', 0, 100));
     // iot->addBehavior(new Behavior(DEV_PTR rearAwning, "everything", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR office, "everything", '=', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR loft,   "everything", '=', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rampPorch,  "everything", '=', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rampAwning, "everything", '=', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rearPorch,  "everything", '=', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rearAwning, "everything", '=', 0, 0));
 
     // Hosting
 

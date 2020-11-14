@@ -36,7 +36,9 @@ public:
   Device*     getDeviceWithName(String name);
   int         numDevices();
 
-  bool       expose(String variableName);
+  void        performState(String name, int value);
+
+  bool        expose(String variableName);
 
 private:
   uint8_t     _numDevices;

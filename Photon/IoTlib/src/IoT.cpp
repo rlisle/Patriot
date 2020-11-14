@@ -177,7 +177,6 @@ void IoT::begin()
     Serial.begin(57600);
 
     _states = new States();
-    _behaviors = new Behaviors();
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
@@ -266,16 +265,12 @@ void IoT::addDevice(Device *device)
     {
         Serial.println("IoT adding unnamed device. (Probably an input only device)");
     }
+    //TODO: we could call buildSupportedStatesVariable here instead of requiring controllers to do it.
 }
 
 
 // States
-void IoT::addBehavior(Behavior *behavior)
-{
-    _behaviors->addBehavior(behavior);
-    addToListOfSupportedStates(behavior->stateName);
-}
-
+//TODO: Update this to work with device based behaviors
 void IoT::addToListOfSupportedStates(String state)
 {
     for(int i=0; i<_numSupportedStates; i++) {
@@ -346,7 +341,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     // If it wasn't a device name, it must be a state.
     int value = state.toInt();
-    _behaviors->performState(name, value);
+    _devices->performState(name, value);
 }
 
 /******************************/

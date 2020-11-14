@@ -32,7 +32,7 @@ public:
     Behaviors();
 
     int addBehavior(Behavior *behavior); // Returns # behaviors (index+1)
-    void performState(String name, int value);
+    void setState(String name, int value, Device *device);
 
 private:
     uint8_t _numBehaviors = 0;

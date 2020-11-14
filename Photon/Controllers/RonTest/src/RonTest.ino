@@ -71,7 +71,6 @@ void setup() {
 
   // Behaviors/Activities
   // iot->addBehavior(new Behavior(DEV_PTR light, "demo", '>', 0, 100));
-  // iot->addBehavior(new Behavior(DEV_PTR light, "demo", '=', 0, 0));
 
   // Watchdog Timer
 //  PhotonWdgs::begin(true,true,10000,TIMER7);

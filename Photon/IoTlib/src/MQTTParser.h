@@ -22,7 +22,7 @@ class MQTTParser
 {
 public:
 
-  MQTTParser(String controllerName, String publishName, Devices *devices, Behaviors *behaviors);
+  MQTTParser(String controllerName, String publishName, Devices *devices);
 
   void parseMessage(String topic, String message, MQTT *mqtt);
 
@@ -30,7 +30,6 @@ private:
   String    _controllerName;
   String    _publishName;
   Devices   *_devices;
-  Behaviors *_behaviors;
 
   int parseValue(String message);
   void log(String message);

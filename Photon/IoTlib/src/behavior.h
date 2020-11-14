@@ -38,13 +38,13 @@ private:
     char _comparison;  // '<', '=', or '>'
     int _value;
 
-public:
-    String stateName;
-    Device *device;
-    int level;       // level to set if event <comparison> value is true
     bool matchesCondition(String name, int value);
 
-    Behavior(Device *device, String stateName, char comparison, int value, int level);
+public:
+    String stateName;
+    int level;       // level to set if event <comparison> value is true
 
-    void performState(String name, int value);
+    Behavior(String stateName, char comparison, int value, int level);
+
+    int evaluateCondition(String name, int value);
 };

@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-14: Convert scene-like behaviors back to per-device summing
 2020-11-14: Rename activities to states
 2019-01-05: Removed watchdog timer due to OTA issues.
 2019-01-01: Replace 2am reset with hardware watchdog timer.
@@ -34,7 +35,6 @@ Changelog:
 #include "Particle.h"
 #include "constants.h"
 #include "states.h"
-#include "behaviors.h"
 #include "devices.h"
 #include "devicenames.h"
 #include "MQTTManager.h"
@@ -90,7 +90,6 @@ public:
     void loop();
 
     void addDevice(Device *device);
-    void addBehavior(Behavior *behavior);
 
     /**
      * Helper methods
@@ -121,7 +120,6 @@ private:
      */
     Factory     *_factory;
     States      *_states;
-    Behaviors   *_behaviors;
     Devices     *_devices;
     DeviceNames *_deviceNames;
     MQTTManager *_mqttManager;
@@ -130,7 +128,6 @@ private:
     void subscribeHandler(const char *eventName, const char *rawData);
     void addToListOfSupportedStates(String state);
     void buildSupportedStatesVariable();
-    void performStates();   //TODO: To be deprecated
     void periodicReset();
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);

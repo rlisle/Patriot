@@ -15,12 +15,11 @@ Changelog:
 ******************************************************************/
 #include "MQTTParser.h"
 
-MQTTParser::MQTTParser(String controllerName, String publishName, Devices *devices, Behaviors *behaviors)
+MQTTParser::MQTTParser(String controllerName, String publishName, Devices *devices)
 {
     _controllerName = controllerName;
     _publishName = publishName;
     _devices = devices;
-    _behaviors = behaviors;
 }
 
 void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
@@ -43,9 +42,9 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 device->setPercent(percent);
                 return;
             }
-            // If it wasn't a device name, it must be an activity.
+            // If it wasn't a device name, it must be a state.
             int value = state.toInt();
-            _behaviors->performActivity(name, value);
+            _devices->performState(name, value);
 
         } else {
             int firstSlash = topic.indexOf('/');
@@ -57,11 +56,11 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             String midTopic = topic.substring(firstSlash+1,lastSlash);
             String rightTopic = topic.substring(lastSlash+1);
 
-            // ACTIVITY
-            if(midTopic.equalsIgnoreCase("activity")) {
-                log("Setting activity " + rightTopic + " to " + message);
+            // STATE
+            if(midTopic.equalsIgnoreCase("state")) {
+                log("Setting state " + rightTopic + " to " + message);
                 int value = message.toInt();
-                _behaviors->performActivity(rightTopic, value);
+                _devices->performState(rightTopic, value);
 
             // BRIGHTNESS
             } else if(midTopic.equalsIgnoreCase("brightness")) {
@@ -128,14 +127,9 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 
             // UNKNOWN
             } else {
-                log("Ttopic unknown");
+                log("Topic unknown");
             }
         }
-
-    // Note: currently subscribing to _controllerName, so this will never happen
-    } else if(topic.startsWith("smartthings")) {
-        // Bridge may need to do something with this.
-        log("Smartthings received. Nothing to do.");
     }
 }
 

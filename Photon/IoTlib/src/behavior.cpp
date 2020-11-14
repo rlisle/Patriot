@@ -22,9 +22,8 @@ Changelog:
 ******************************************************************/
 #include "behavior.h"
 
-Behavior::Behavior(Device *device, String stateName, char comparison, int value, int level)
+Behavior::Behavior(String stateName, char comparison, int value, int level)
 {
-    this->device = device;
     this->stateName = stateName;
     _comparison = comparison;     // '<', '=', '>', '!'
     _value = value;
@@ -68,12 +67,11 @@ bool Behavior::matchesCondition(String name, int value)
     return false;
 }
 
-void Behavior::performState(String name, int value)
-{
+int Behavior::evaluateCondition(String name, int value) {
+
     if (matchesCondition(name, value))
     {
-        //IoT* iot = IoT::getInstance();
-        //iot->log("Behavior "+String(stateName)+" setting level "+String(level));
-        device->setPercent(level);
+        return level;
     }
+    return 0;
 }

@@ -67,7 +67,6 @@ void setup() {
 
   // Cleaning (On/Off)
   // iot->addBehavior(new Behavior(DEV_PTR couch, "cleaning", '>', 0, 100));
-  // iot->addBehavior(new Behavior(DEV_PTR couch, "cleaning", '=', 0, 0));
 
   // Cooking (On/Off)
 
@@ -76,9 +75,7 @@ void setup() {
 
   // Everything (on/off)
   // iot->addBehavior(new Behavior(DEV_PTR couch, "everything", '>', 0, 100));     // On
-  // iot->addBehavior(new Behavior(DEV_PTR couch, "everything", '=', 0, 0));       // Off
   // iot->addBehavior(new Behavior(DEV_PTR vertical, "everything", '>', 0, 100));    // On
-  // iot->addBehavior(new Behavior(DEV_PTR vertical, "everything", '=', 0, 0));      // Off
 
   // Hosting (was guest mode)
 
@@ -92,7 +89,6 @@ void setup() {
 
   // Reading (on/off)
   iot->addBehavior(new Behavior(DEV_PTR couch,  "reading", '>', 0, 100));
-  iot->addBehavior(new Behavior(DEV_PTR couch,  "reading", '=', 0, 0));
 
   // Retiring - everything except bedroom off and trim
   // iot->addBehavior(new Behavior(DEV_PTR couch,  "retiring", '>', 0, 0));
