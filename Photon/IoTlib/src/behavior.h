@@ -25,11 +25,6 @@ Changelog:
 #pragma once
 
 #include "states.h"
-#include "device.h"
-
-class States;
-class State;
-class Device;
 
 class Behavior
 {

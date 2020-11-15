@@ -342,8 +342,8 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     // If it wasn't a device name, it must be an activity state.
     int value = state.toInt();
-    _mqttParser->states.addState(name,value);
-    _devices->stateDidChange(&(_mqttParser->states));
+    _mqttParser->_states.addState(name,value);
+    _devices->stateDidChange(&(_mqttParser->_states));
 }
 
 /******************************/

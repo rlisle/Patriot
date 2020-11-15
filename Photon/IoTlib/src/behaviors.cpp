@@ -19,7 +19,6 @@ Changelog:
 2017-03-05: Convert to v2 particle lib
 2016-06-24: Initial version
 ******************************************************************/
-#include "IoT.h"
 #include "behaviors.h"
 
 Behaviors::Behaviors()
@@ -37,11 +36,11 @@ int Behaviors::addBehavior(Behavior *behavior)
 {
     if (_numBehaviors < MAX_NUM_BEHAVIORS - 1)
     {
-        IoT::log("Adding behavior");
+        //IoT::log("Adding behavior");
         _behaviors[_numBehaviors++] = behavior;
     } else
     {
-        IoT::log("Max # behaviors exceeded");
+        //IoT::log("Max # behaviors exceeded");
         return -1;
     }
 

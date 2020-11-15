@@ -17,13 +17,14 @@ Changelog:
 #include "behaviors.h"
 #include "devices.h"
 #include "MQTT.h"
+#include "states.h"
 
 class Devices;
 
 class MQTTParser
 {
 public:
-  States    states;
+  States    _states;
 
   MQTTParser(String controllerName, String publishName, Devices *devices);
 

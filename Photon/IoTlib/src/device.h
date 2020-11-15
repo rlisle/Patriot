@@ -24,7 +24,6 @@ Changelog:
 ******************************************************************/
 #pragma once
 
-#include <IoT.h>
 #include "behaviors.h"
 
 enum class DeviceType {

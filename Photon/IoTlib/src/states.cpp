@@ -46,7 +46,7 @@ State *States::addState(String name, int value) {
     State *state = getStateWithName(name);
     if (state == NULL) {
         Serial.println(": added");
-        if (_numStates < MAX_NUM_ACTIVITIES - 1) {
+        if (_numStates < MAX_NUM_STATES - 1) {
             state = new State(name, value);
             _states[_numStates++] = state;
         }
