@@ -16,7 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
-2020-11-14: Rename activities to states
+2020-11-14: Rename activities to states. Delete supportedStates.
 2019-01-05: v3.0.0 Removed watchdog timer due to OTA issues.
 2019-01-01: Replace 2am reset with hardware watchdog timer.
 2018-11-05: Refactor to MQTTmanager.
@@ -79,7 +79,7 @@ void globalPublish(String topic, String message) {
  * the state names supported by this controller.
  * This allows applications to automatically determine state names
  */
-String supportedStatesVariable;
+//String supportedStatesVariable;
 
 /**
  * Publish Name variable
@@ -134,7 +134,7 @@ IoT::IoT()
     _hasBegun               = false;
     publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
-    _numSupportedStates     = 0;
+//    _numSupportedStates     = 0;
     _mqttManager            = NULL;
     _mqttParser             = NULL;
     _startTime              = Time.now();
@@ -176,7 +176,7 @@ void IoT::begin()
 
     Serial.begin(57600);
 
-    _states = new States();
+//    _states = new States(); // Moved to parser
     _devices = new Devices();
     _deviceNames = new DeviceNames();
 
@@ -185,11 +185,11 @@ void IoT::begin()
 
     // Register cloud variables. Up to 20 may be registered. Name length max 12.
     // There does not appear to be any time limit/throttle on variable reads.
-    if(!Particle.variable(kSupportedStatesVariableName, supportedStatesVariable))
-    {
-        log("Unable to expose "+String(kSupportedStatesVariableName)+" variable");
-        return;
-    }
+    // if(!Particle.variable(kSupportedStatesVariableName, supportedStatesVariable))
+    // {
+    //     log("Unable to expose "+String(kSupportedStatesVariableName)+" variable");
+    //     return;
+    // }
     if(!Particle.variable(kPublishVariableName, publishNameVariable))
     {
         log("Unable to expose publishName variable");
@@ -199,18 +199,18 @@ void IoT::begin()
     // Register cloud functions. Up to 15 may be registered. Name length max 12.
     // Allows 1 string argument up to 63 chars long.
     // There does not appear to be any time limit/throttle on function calls.
-    if(!Particle.function("program", &IoT::programHandler, this))
-    {
-        log("Unable to register program handler");
-    }
-    if(!Particle.function("value", &IoT::valueHandler, this))
-    {
-        log("Unable to register value handler");
-    }
-    if(!Particle.function("type", &IoT::typeHandler, this))
-    {
-        log("Unable to register type handler");
-    }
+    // if(!Particle.function("program", &IoT::programHandler, this))
+    // {
+    //     log("Unable to register program handler");
+    // }
+    // if(!Particle.function("value", &IoT::valueHandler, this))
+    // {
+    //     log("Unable to register value handler");
+    // }
+    // if(!Particle.function("type", &IoT::typeHandler, this))
+    // {
+    //     log("Unable to register type handler");
+    // }
 
     // Start hardware watchdog timer
     //PhotonWdgs::begin(true,true,10000,TIMER7);
@@ -271,35 +271,35 @@ void IoT::addDevice(Device *device)
 
 // States
 //TODO: Update this to work with device based behaviors
-void IoT::addToListOfSupportedStates(String state)
-{
-    for(int i=0; i<_numSupportedStates; i++) {
-        if(state.equalsIgnoreCase(_supportedStates[i])) return;
-    }
-    if(_numSupportedStates < kMaxNumberStates-1) {
-        _supportedStates[_numSupportedStates++] = state;
-    }
-    buildSupportedStatesVariable();
-}
+// void IoT::addToListOfSupportedStates(String state)
+// {
+//     for(int i=0; i<_numSupportedStates; i++) {
+//         if(state.equalsIgnoreCase(_supportedStates[i])) return;
+//     }
+//     if(_numSupportedStates < kMaxNumberStates-1) {
+//         _supportedStates[_numSupportedStates++] = state;
+//     }
+//     buildSupportedStatesVariable();
+// }
 
-void IoT::buildSupportedStatesVariable()
-{
-    String newVariable = "";
-    for(int i=0; i<_numSupportedStates; i++)
-    {
-        newVariable += _supportedStates[i];
-        if (i < _numSupportedStates-1) {
-            newVariable += ",";
-        }
-    }
-    if(newVariable.length() < kMaxVariableStringLength) {
-        if(newVariable != supportedStatesVariable) {
-            supportedStatesVariable = newVariable;
-        }
-    } else {
-        log("Supported states variable is too long. Need to extend to a 2nd variable");
-    }
-}
+// void IoT::buildSupportedStatesVariable()
+// {
+//     String newVariable = "";
+//     for(int i=0; i<_numSupportedStates; i++)
+//     {
+//         newVariable += _supportedStates[i];
+//         if (i < _numSupportedStates-1) {
+//             newVariable += ",";
+//         }
+//     }
+//     if(newVariable.length() < kMaxVariableStringLength) {
+//         if(newVariable != supportedStatesVariable) {
+//             supportedStatesVariable = newVariable;
+//         }
+//     } else {
+//         log("Supported states variable is too long. Need to extend to a 2nd variable");
+//     }
+// }
 
 /*************************************/
 /*** Particle.io Subscribe Handler ***/
@@ -335,12 +335,14 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     {
         int percent = state.toInt();
         Serial.println(" percent = "+String(percent));
+        //TODO: Instead, we need a behavior for this. Else lost on next state change.
         device->setPercent(percent);
         return;
     }
 
-    // If it wasn't a device name, it must be a state.
+    // If it wasn't a device name, it must be an activity state.
     int value = state.toInt();
+    _states->addState(name,value);
     _devices->performState(name, value);
 }
 
@@ -370,40 +372,40 @@ void IoT::mqttQOSHandler(unsigned int data) {
  * @param command "device:state:compare:value:level"
  * @returns int response indicating if state already existed (1) or error (-1)
  */
-int IoT::programHandler(String command) {
-    log("programHandler called with command: " + command);
-    String components[5];
+// int IoT::programHandler(String command) {
+//     log("programHandler called with command: " + command);
+//     String components[5];
 
-    int lastColonPosition = -1;
-    for(int i = 0; i < 4; i++)
-    {
-        int colonPosition = command.indexOf(':', lastColonPosition+1);
-        if(colonPosition == -1)
-        {
-            return -1 - i;
-        }
-        components[i] = command.substring(lastColonPosition+1, colonPosition);
-        lastColonPosition = colonPosition;
-    }
-    components[4] = command.substring(lastColonPosition+1);
+//     int lastColonPosition = -1;
+//     for(int i = 0; i < 4; i++)
+//     {
+//         int colonPosition = command.indexOf(':', lastColonPosition+1);
+//         if(colonPosition == -1)
+//         {
+//             return -1 - i;
+//         }
+//         components[i] = command.substring(lastColonPosition+1, colonPosition);
+//         lastColonPosition = colonPosition;
+//     }
+//     components[4] = command.substring(lastColonPosition+1);
 
-    // Parse out each item into the correct type
-    Device *device = _devices->getDeviceWithName(components[0]);
-    String state = components[1];
-    char compare = components[2].charAt(0);
-    int value = components[3].toInt();
-    int level = components[4].toInt();
+//     // Parse out each item into the correct type
+//     Device *device = _devices->getDeviceWithName(components[0]);
+//     String state = components[1];
+//     char compare = components[2].charAt(0);
+//     int value = components[3].toInt();
+//     int level = components[4].toInt();
 
-    //TODO: see if behavior already exists. If so, then change it.
-    //      Is there already a behavior for the same device and state?
+//     //TODO: see if behavior already exists. If so, then change it.
+//     //      Is there already a behavior for the same device and state?
 
 
-    //TODO: Otherwise just add a new behavior.
-    log("programHandler: new behavior("+components[0]+", "+components[1]+", "+components[2]+", "+components[3]+", "+components[4]+")");
-    addBehavior(new Behavior(device, state, compare, value, level));
-    addBehavior(new Behavior(device, state, '=', 0, 0));         // Add 'Off' state also
-    return 0;
-}
+//     //TODO: Otherwise just add a new behavior.
+//     log("programHandler: new behavior("+components[0]+", "+components[1]+", "+components[2]+", "+components[3]+", "+components[4]+")");
+//     addBehavior(new Behavior(device, state, compare, value, level));
+//     addBehavior(new Behavior(device, state, '=', 0, 0));         // Add 'Off' state also
+//     return 0;
+// }
 
 /**
  * Value Handler
@@ -413,13 +415,13 @@ int IoT::programHandler(String command) {
  * @param deviceName String name of device
  * @returns int response indicating value (0-100) or -1 if invalid device or error.
  */
-int IoT::valueHandler(String deviceName) {
-    Device *device = _devices->getDeviceWithName(deviceName);
-    if(device==NULL) {
-        return -1;
-    }
-    return device->getPercent();
-}
+// int IoT::valueHandler(String deviceName) {
+//     Device *device = _devices->getDeviceWithName(deviceName);
+//     if(device==NULL) {
+//         return -1;
+//     }
+//     return device->getPercent();
+// }
 
 /**
  * Type Handler
@@ -430,10 +432,10 @@ int IoT::valueHandler(String deviceName) {
  * @param deviceName String name of device
  * @returns int indicating DeviceType of device
  */
-int IoT::typeHandler(String deviceName) {
-    Device *device = _devices->getDeviceWithName(deviceName);
-    if(device==NULL) {
-        return -1;
-    }
-    return static_cast<int>(device->type());
-}
+// int IoT::typeHandler(String deviceName) {
+//     Device *device = _devices->getDeviceWithName(deviceName);
+//     if(device==NULL) {
+//         return -1;
+//     }
+//     return static_cast<int>(device->type());
+// }

@@ -103,8 +103,8 @@ private:
     bool    _isBridge;
     String  _controllerName;
     String  _proximityEvent;
-    String  _supportedStates[kMaxNumberStates];
-    int     _numSupportedStates;
+    // String  _supportedStates[kMaxNumberStates];
+    // int     _numSupportedStates;
     system_tick_t _startTime;
     system_tick_t _currentTime;
 
@@ -119,21 +119,21 @@ private:
      * Include other needed objects
      */
     Factory     *_factory;
-    States      *_states;
-    Devices     *_devices;
+//    States      *_states;     // moved to MQTTParser
+    Devices     *_devices;    // "
     DeviceNames *_deviceNames;
     MQTTManager *_mqttManager;
     MQTTParser  *_mqttParser;
 
     void subscribeHandler(const char *eventName, const char *rawData);
-    void addToListOfSupportedStates(String state);
-    void buildSupportedStatesVariable();
+//    void addToListOfSupportedStates(String state);
+//    void buildSupportedStatesVariable();
     void periodicReset();
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);
     void mqttQOSHandler(unsigned int data);
 
-    int  programHandler(String command);
-    int  valueHandler(String deviceName);
-    int  typeHandler(String deviceName);
+    // int  programHandler(String command);
+    // int  valueHandler(String deviceName);
+    // int  typeHandler(String deviceName);
 };

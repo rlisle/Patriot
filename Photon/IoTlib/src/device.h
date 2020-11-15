@@ -62,8 +62,8 @@ class Device {
         //addToListOfSupportedStates(behavior->stateName);
     };
 
-    void perform State(String name, int value) {
-        _behaviors->performState(name, value, this);
+    void stateDidChange(String name,States *states) {
+        _behaviors->stateDidChange(name,states);
     }
 
     virtual String name() { return _name; };

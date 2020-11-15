@@ -27,7 +27,8 @@
  */
 
 #include <IoT.h>
-#include <PatriotNCD8Light.h>
+//#include <PatriotNCD8Light.h>
+#include <PatriotLight.h>
 
 #define DEV_PTR (Device *)&
 
@@ -38,14 +39,15 @@ IoT     *iot;
 // Use Backup SRAM to persist led state between resets
 // To use persistent storage, insert "retained" before NCD8Relay
 //Light led(D7, "led", false, true);
-NCD8Light test1(1, 0, "test1", 0); // immediate
-NCD8Light test2(1, 1, "test2", 1); // 1 second transition
-NCD8Light test3(1, 2, "test3", 2); // 2 " "
-NCD8Light test4(1, 3, "test4", 3);
-NCD8Light test5(1, 4, "test5", 4);
-NCD8Light test6(1, 5, "test6", 5);
-NCD8Light test7(1, 6, "test7", 6);
-NCD8Light test8(1, 7, "test8", 7);
+// NCD8Light test1(1, 0, "test1", 0); // immediate
+// NCD8Light test2(1, 1, "test2", 1); // 1 second transition
+// NCD8Light test3(1, 2, "test3", 2); // 2 " "
+// NCD8Light test4(1, 3, "test4", 3);
+// NCD8Light test5(1, 4, "test5", 4);
+// NCD8Light test6(1, 5, "test6", 5);
+// NCD8Light test7(1, 6, "test7", 6);
+// NCD8Light test8(1, 7, "test8", 7);
+Light test(int 7, "test", false, true);
 
 void setup() {
   iot = IoT::getInstance();
@@ -60,14 +62,7 @@ void setup() {
 
   // Devices
 //  iot->addDevice(DEV_PTR led);
-  iot->addDevice(DEV_PTR test1);
-  iot->addDevice(DEV_PTR test2);
-  iot->addDevice(DEV_PTR test3);
-  iot->addDevice(DEV_PTR test4);
-  iot->addDevice(DEV_PTR test5);
-  iot->addDevice(DEV_PTR test6);
-  iot->addDevice(DEV_PTR test7);
-  iot->addDevice(DEV_PTR test8);
+  iot->addDevice(DEV_PTR test);
 
   // Behaviors/Activities
   // iot->addBehavior(new Behavior(DEV_PTR light, "demo", '>', 0, 100));

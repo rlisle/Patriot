@@ -4,7 +4,7 @@ States collection
 This object manages a collection of State objects.
 
 Multiple states can be active at the same time, so it is
-important to combine their effects, in addition to stopping an
+important to combine their effects, in addition to stopping a
 state in a manner that doesn't break states that continue
 to be in effect.
 
@@ -38,33 +38,36 @@ States::States() {
     _isVariableExposed = false;
 }
 
+// States are added only once
+// TODO: change to setState?
 State *States::addState(String name, int value) {
     Serial.print("addState " + name + "=" + String(value));
     // Update existing state if it exists
     State *state = getStateWithName(name);
-    if (state != NULL) {
-        Serial.println(": updated");
-        state->_value = value;
-
-        // If not, create a new state
-    } else {
+    if (state == NULL) {
         Serial.println(": added");
         if (_numStates < MAX_NUM_ACTIVITIES - 1) {
             state = new State(name, value);
             _states[_numStates++] = state;
         }
+    } else {    // State already exists
+        Serial.println(": updated");
+        state->_value = value;
     }
-    buildStateVariable();
+
+    // If not, create a new state
+//    buildStateVariable(); // Only if this is 
     return state;
 }
 
-State *States::getStateByNum(int stateNum) {
-    State *state = NULL;
-    if (stateNum < _numStates) {
-        state = _states[stateNum];
-    }
-    return state;
-}
+
+// State *States::getStateByNum(int stateNum) {
+//     State *state = NULL;
+//     if (stateNum < _numStates) {
+//         state = _states[stateNum];
+//     }
+//     return state;
+// }
 
 State *States::getStateWithName(String name) {
     for (int i = 0; i < _numStates; i++) {

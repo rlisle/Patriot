@@ -20,6 +20,7 @@ MQTTParser::MQTTParser(String controllerName, String publishName, Devices *devic
     _controllerName = controllerName;
     _publishName = publishName;
     _devices = devices;
+    _states = States();
 }
 
 void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
@@ -44,7 +45,8 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             }
             // If it wasn't a device name, it must be a state.
             int value = state.toInt();
-            _devices->performState(name, value);
+            _states->addState(name,value);
+            _devices->stateDidChange(name,_states);
 
         } else {
             int firstSlash = topic.indexOf('/');
@@ -53,17 +55,19 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 log("Message does not contain 2 slashes, so ignoring");
                 return;
             }
-            String midTopic = topic.substring(firstSlash+1,lastSlash);
-            String rightTopic = topic.substring(lastSlash+1);
+            String midTopic = topic.substring(firstSlash+1,lastSlash).toLowerCase();
+            String rightTopic = topic.substring(lastSlash+1).toLowerCase();
 
             // STATE
-            if(midTopic.equalsIgnoreCase("state")) {
+            if(midTopic.equals("state")) {
                 log("Setting state " + rightTopic + " to " + message);
+                String name = rightTopic;
                 int value = message.toInt();
-                _devices->performState(rightTopic, value);
+                _states->addState(name,value);
+                _devices->stateDidChange(name,states);
 
             // BRIGHTNESS
-            } else if(midTopic.equalsIgnoreCase("brightness")) {
+            } else if(midTopic.equals("brightness")) {
                 Device* device = _devices->getDeviceWithName(rightTopic);
                 if(device)
                 {
@@ -73,7 +77,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 }
 
               // DEVICE (LEGACY)
-              } else if(midTopic.equalsIgnoreCase("device")) {
+              } else if(midTopic.equals("device")) {
                   Device* device = _devices->getDeviceWithName(rightTopic);
                   if(device)
                   {
@@ -84,7 +88,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                   }
 
               // SWITCH
-            } else if(midTopic.equalsIgnoreCase("switch")) {
+            } else if(midTopic.equals("switch")) {
                   Device* device = _devices->getDeviceWithName(rightTopic);
                   if(device)
                   {
@@ -95,7 +99,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                   }
 
             // PING
-            } else if(midTopic.equalsIgnoreCase("ping")) {
+            } else if(midTopic.equals("ping")) {
                 // Respond if ping is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
                     log("Ping addressed to us");
@@ -103,11 +107,11 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 }
 
             // PONG
-            } else if(midTopic.equalsIgnoreCase("pong")) {
+            } else if(midTopic.equals("pong")) {
                 // Ignore it.
 
             // RESET
-            } else if(midTopic.equalsIgnoreCase("reset")) {
+            } else if(midTopic.equals("reset")) {
                 // Respond if reset is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
                     log("Reset addressed to us");
@@ -115,14 +119,14 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 }
 
             // MEMORY
-            } else if(midTopic.equalsIgnoreCase("memory")) {
+            } else if(midTopic.equals("memory")) {
                 // Respond if memory is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
                     log("Memory addressed to us");
                     log( String::format("Free memory = %d", System.freeMemory()));
                 }
 
-            } else if(midTopic.equalsIgnoreCase("log")) {
+            } else if(midTopic.equals("log")) {
                 // Ignore it.
 
             // UNKNOWN

@@ -30,6 +30,7 @@ private:
   String    _controllerName;
   String    _publishName;
   Devices   *_devices;
+  States    *_states;
 
   int parseValue(String message);
   void log(String message);

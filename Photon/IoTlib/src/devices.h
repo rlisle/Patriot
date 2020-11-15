@@ -36,7 +36,7 @@ public:
   Device*     getDeviceWithName(String name);
   int         numDevices();
 
-  void        performState(String name, int value);
+  void        stateDidChange(String name, States *states);
 
   bool        expose(String variableName);
 
