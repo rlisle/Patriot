@@ -30,7 +30,7 @@
 //#include <PatriotNCD8Light.h>
 #include <PatriotLight.h>
 
-#define DEV_PTR (Device *)&
+//#define DEV_PTR (Device *)&
 
 String mqttServerIP = "192.168.10.184";
 
@@ -47,7 +47,7 @@ IoT     *iot;
 // NCD8Light test6(1, 5, "test6", 5);
 // NCD8Light test7(1, 6, "test7", 6);
 // NCD8Light test8(1, 7, "test8", 7);
-Light test(int 7, "test", false, true);
+Light test(7, "test", false, true);
 
 void setup() {
   iot = IoT::getInstance();
@@ -60,12 +60,12 @@ void setup() {
   // test3.setLocalPin(A2, "Switch3");
   // test4.setLocalPin(A3, "Switch4");
 
+  // Behaviors/Activities
+  test.addBehavior(new Behavior("demo", '>', 0, 100));
+
   // Devices
 //  iot->addDevice(DEV_PTR led);
-  iot->addDevice(DEV_PTR test);
-
-  // Behaviors/Activities
-  // iot->addBehavior(new Behavior(DEV_PTR light, "demo", '>', 0, 100));
+  iot->addDevice(&test);
 
   // Watchdog Timer
 //  PhotonWdgs::begin(true,true,10000,TIMER7);

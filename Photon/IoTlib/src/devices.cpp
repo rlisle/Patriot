@@ -40,10 +40,10 @@ int Devices::addDevice(Device *device)
 // Called whenever "state" changes.
 // The state that changed is passed to optimize handling.
 // Devices can ignore the state change if they don't use it.
-void Devices::stateDidChange(String name, States *states) {
+void Devices::stateDidChange(States *states) {
     for (int i = 0; i < _numDevices; i++)
     {
-        _devices[i]->stateDidChange(name,states);
+        _devices[i]->stateDidChange(states);
     }
 }
 

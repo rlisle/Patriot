@@ -24,6 +24,8 @@ Changelog:
 
 #define MAX_NUM_DEVICES 64
 
+class Device;
+
 class Devices
 {
 public:
@@ -36,7 +38,7 @@ public:
   Device*     getDeviceWithName(String name);
   int         numDevices();
 
-  void        stateDidChange(String name, States *states);
+  void        stateDidChange(States *states);
 
   bool        expose(String variableName);
 

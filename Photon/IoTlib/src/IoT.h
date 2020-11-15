@@ -119,7 +119,6 @@ private:
      * Include other needed objects
      */
     Factory     *_factory;
-//    States      *_states;     // moved to MQTTParser
     Devices     *_devices;    // "
     DeviceNames *_deviceNames;
     MQTTManager *_mqttManager;

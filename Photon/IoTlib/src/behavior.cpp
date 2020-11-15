@@ -30,48 +30,49 @@ Behavior::Behavior(String stateName, char comparison, int value, int level)
     this->level = level;
 }
 
-bool Behavior::matchesCondition(String name, int value)
+bool Behavior::matchesCondition(int value)
 {
-    if (name.equalsIgnoreCase(stateName))
+    switch (_comparison)
     {
-        switch (_comparison)
-        {
-            case '<':
-                if (value < _value)
-                {
-                    return true;
-                }
-                break;
-            case '=':
-                if (value == _value)
-                {
-                    return true;
-                }
-                break;
-            case '>':
-                if (value > _value)
-                {
-                    return true;
-                }
-                break;
-            case '!':
-                if (value != _value)
-                {
-                    return true;
-                }
-                break;
-            default:
-                break;
-        }
+        case '<':
+            if (value < _value)
+            {
+                return true;
+            }
+            break;
+        case '=':
+            if (value == _value)
+            {
+                return true;
+            }
+            break;
+        case '>':
+            if (value > _value)
+            {
+                return true;
+            }
+            break;
+        case '!':
+            if (value != _value)
+            {
+                return true;
+            }
+            break;
+        default:
+            break;
     }
     return false;
 }
 
-int Behavior::evaluateCondition(String name, int value) {
+int Behavior::evaluateStates(States *states) {
+    level = 0;
 
-    if (matchesCondition(name, value))
-    {
-        return level;
+    State *state = states->getStateWithName(stateName);
+    if(state != NULL) {
+        if (matchesCondition(state->_value))
+        {
+            return level;
+        }
     }
     return 0;
 }

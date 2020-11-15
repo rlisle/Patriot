@@ -221,7 +221,7 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
     Serial.println("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    _mqttParser = new MQTTParser(_controllerName, publishNameVariable, _devices, _behaviors);
+    _mqttParser = new MQTTParser(_controllerName, publishNameVariable, _devices);
     _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, _mqttParser);
 }
 
@@ -342,8 +342,8 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     // If it wasn't a device name, it must be an activity state.
     int value = state.toInt();
-    _states->addState(name,value);
-    _devices->performState(name, value);
+    _mqttParser->states.addState(name,value);
+    _devices->stateDidChange(&(_mqttParser->states));
 }
 
 /******************************/

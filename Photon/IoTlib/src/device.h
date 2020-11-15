@@ -24,6 +24,9 @@ Changelog:
 ******************************************************************/
 #pragma once
 
+#include <IoT.h>
+#include "behaviors.h"
+
 enum class DeviceType {
     Unknown,
     Fan,
@@ -44,7 +47,7 @@ class Device {
     DeviceType _type;
     int        _percent;
     int        _brightness;
-    Behaviors   *_behaviors;
+    Behaviors  _behaviors;
 
  public:
     // Pointer to methods in IoT. These are set in IoT->addDevice()
@@ -58,12 +61,13 @@ class Device {
     }
 
     void addBehavior(Behavior *behavior) { 
-        _behaviors->addBehavior(behavior); 
+        _behaviors.addBehavior(behavior); 
         //addToListOfSupportedStates(behavior->stateName);
     };
 
-    void stateDidChange(String name,States *states) {
-        _behaviors->stateDidChange(name,states);
+    void stateDidChange(States *states) {
+        int newLevel = _behaviors.stateDidChange(states);
+        setPercent(newLevel);
     }
 
     virtual String name() { return _name; };

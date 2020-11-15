@@ -25,16 +25,19 @@ Changelog:
 //TODO: change to dynamic array or linked list
 #define MAX_NUM_BEHAVIORS 64
 
+class Behavior;
+
 class Behaviors
 {
 public:
 
     Behaviors();
 
-    int addBehavior(Behavior *behavior); // Returns # behaviors (index+1)
-    void setState(String name, int value, Device *device);
+    int       addBehavior(Behavior *behavior); // Returns # behaviors (index+1)
+    Behavior* getBehavior(String name);
+    int       stateDidChange(States *states);  // Returns calculated value
 
 private:
-    uint8_t _numBehaviors = 0;
-    Behavior *_behaviors[MAX_NUM_BEHAVIORS];
+    uint8_t  _numBehaviors = 0;
+    Behavior* _behaviors[MAX_NUM_BEHAVIORS];
 };

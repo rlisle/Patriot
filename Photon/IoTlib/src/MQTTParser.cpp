@@ -20,7 +20,7 @@ MQTTParser::MQTTParser(String controllerName, String publishName, Devices *devic
     _controllerName = controllerName;
     _publishName = publishName;
     _devices = devices;
-    _states = States();
+    states = States();
 }
 
 void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)

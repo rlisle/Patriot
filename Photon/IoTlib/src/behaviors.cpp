@@ -48,21 +48,24 @@ int Behaviors::addBehavior(Behavior *behavior)
     return _numBehaviors - 1;
 }
 
-Behavior *getBehavior(String name) {
+Behavior* Behaviors::getBehavior(String name) {
     for (int i = 0; i < _numBehaviors; i++) 
     {
-        if (behaviors[i]->name.equalsIgnoreCase(stateName)){
-            return behaviors[i];
+        if (_behaviors[i]->stateName.equalsIgnoreCase(name)){
+            return _behaviors[i];
         }
     }
     return NULL;
 }
 
-void Behaviors::setState(String name, int value, Device *device)
+int Behaviors::stateDidChange(States *states)
 {
+    int level = 0;
     for (int i = 0; i < _numBehaviors; i++)
     {
         Behavior *behavior = _behaviors[i];
-        behavior->performState(name, value);
+        int newLevel = behavior->evaluateStates(states);
+        level = max(level,newLevel);
     }
+    return level;
 }

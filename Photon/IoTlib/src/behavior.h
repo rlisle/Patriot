@@ -25,11 +25,11 @@ Changelog:
 #pragma once
 
 #include "states.h"
-#include "state.h"
 #include "device.h"
 
 class States;
 class State;
+class Device;
 
 class Behavior
 {
@@ -38,7 +38,7 @@ private:
     char _comparison;  // '<', '=', or '>'
     int _value;
 
-    bool matchesCondition(String name, int value);
+    bool matchesCondition(int value);
 
 public:
     String stateName;
@@ -46,5 +46,5 @@ public:
 
     Behavior(String stateName, char comparison, int value, int level);
 
-    int evaluateCondition(String name, int value);
+    int evaluateStates(States *states);
 };

@@ -18,9 +18,12 @@ Changelog:
 #include "devices.h"
 #include "MQTT.h"
 
+class Devices;
+
 class MQTTParser
 {
 public:
+  States    states;
 
   MQTTParser(String controllerName, String publishName, Devices *devices);
 
@@ -30,7 +33,6 @@ private:
   String    _controllerName;
   String    _publishName;
   Devices   *_devices;
-  States    *_states;
 
   int parseValue(String message);
   void log(String message);
