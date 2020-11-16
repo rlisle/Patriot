@@ -65,14 +65,18 @@ bool Behavior::matchesCondition(int value)
 }
 
 int Behavior::evaluateStates(States *states) {
-    level = 0;
+
+    Serial.print("evaluateStates: " + stateName + " ");
 
     State *state = states->getStateWithName(stateName);
     if(state != NULL) {
+        Serial.print("found: ");
         if (matchesCondition(state->_value))
         {
+            Serial.println(String(level));
             return level;
         }
     }
+    Serial.println("0");
     return 0;
 }
