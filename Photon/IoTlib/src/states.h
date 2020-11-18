@@ -30,7 +30,7 @@ public:
   States();
 
   State*     addState(String name, int value);  // TODO: convert to bool - true if added?
-//  State*     getStateByNum(int stateNum);
+//  State*     getStateByNum(int stateNum);   // Used for iterating through states
   State*     getStateWithName(String name);
   int        count();
 
@@ -38,9 +38,9 @@ public:
 
 private:
   uint8_t    _numStates;
-  State*     _states[MAX_NUM_STATES];   // TODO: 
+  State*     _states[MAX_NUM_STATES];   // TODO: convert to linked list.
   bool       _isVariableExposed;        // Is this needed?
-  String     *_ptrToVariable;
+  String     *_ptrToVariable;           // Is this needed?
 
-  void buildStateVariable();
+  void buildStateVariable();            // Should this be here?
 };
