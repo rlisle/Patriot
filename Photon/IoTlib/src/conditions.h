@@ -25,8 +25,9 @@ public:
 
     Conditions();
 
-    int       addCondition(Condition *condition);
-    Condition* geCondition(int index);
+    int        addCondition(Condition *condition);
+    Condition* getCondition(int index);
+    int        count();
 
 private:
     Condition* _conditions; // Head of singly linked list

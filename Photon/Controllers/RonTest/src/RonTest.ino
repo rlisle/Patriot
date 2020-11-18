@@ -61,7 +61,8 @@ void setup() {
   // test4.setLocalPin(A3, "Switch4");
 
   // Behaviors/Activities
-  Behavior *demo = new Behavior("demo", '>', 0, 100);
+  Behavior *demo = new Behavior(100);
+  demo->addCondition(new Condition("demo", '>', 0));
   test.addBehavior(demo);
 
   // Devices

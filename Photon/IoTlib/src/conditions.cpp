@@ -40,3 +40,13 @@ Condition* Conditions::getCondition(int index) {
     }
     return ptr;
 }
+
+int Conditions::count() {
+    Condition *ptr = _conditions;
+    int count=0;
+    while(ptr != NULL){
+        count++;
+        ptr=ptr->_next);
+    }
+    return count;
+}

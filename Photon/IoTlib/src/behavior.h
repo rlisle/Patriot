@@ -25,21 +25,17 @@ Changelog:
 #pragma once
 
 #include "states.h"
+#include "conditions.h"
 
 class Behavior
 {
 private:
-    //TODO: convert these fields to a Trigger class
-    char _comparison;  // '<', '=', or '>'
-    int _value;
-
-    bool matchesCondition(int value);
+    Conditions _conditions;
+    int _level;       // level to set if event <comparison> value is true
 
 public:
-    String stateName;
-    int level;       // level to set if event <comparison> value is true
+    Behavior(int level);
 
-    Behavior(String stateName, char comparison, int value, int level);
-
+    int addCondition(Condition *condition);
     int evaluateStates(States *states);
 };

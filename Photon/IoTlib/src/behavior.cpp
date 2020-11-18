@@ -1,10 +1,8 @@
 /******************************************************************
 Behavior
 
-This class represents a behavior, which is a response to a state
-such as "tv" or "night". Multiple states can be specified, but
-currently absent states (eg. this but not that) are not supported.
-These may be easily added in the future.
+This class represents a behavior, which is a response to one or
+more states such as "tv" or "night".
 
 http://www.github.com/rlisle/Patriot
 
@@ -14,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-18: Add conditions
 2020-11-14: Rename activities to states
 2017-10-22: Convert to scenes-like behavior
 2017-03-24: Rename Patriot
@@ -22,61 +21,18 @@ Changelog:
 ******************************************************************/
 #include "behavior.h"
 
-Behavior::Behavior(String stateName, char comparison, int value, int level)
+Behavior::Behavior(int level)
 {
-    this->stateName = stateName;
-    _comparison = comparison;     // '<', '=', '>', '!'
-    _value = value;
-    this->level = level;
+    this->_level = level;
 }
 
-bool Behavior::matchesCondition(int value)
+int Behavior::evaluateStates(States *states) 
 {
-    switch (_comparison)
-    {
-        case '<':
-            if (value < _value)
-            {
-                return true;
-            }
-            break;
-        case '=':
-            if (value == _value)
-            {
-                return true;
-            }
-            break;
-        case '>':
-            if (value > _value)
-            {
-                return true;
-            }
-            break;
-        case '!':
-            if (value != _value)
-            {
-                return true;
-            }
-            break;
-        default:
-            break;
-    }
-    return false;
-}
-
-int Behavior::evaluateStates(States *states) {
-
-    Serial.print("evaluateStates: " + stateName + " ");
-
-    State *state = states->getStateWithName(stateName);
-    if(state != NULL) {
-        Serial.print("found: ");
-        if (matchesCondition(state->_value))
-        {
-            Serial.println(String(level));
-            return level;
+    for(int x=0; x<_conditions->count(); x++){
+        Condition* condition = _conditions->getCondition(x);
+        if(condition->isTrue(states) == false) {
+            return 0;
         }
     }
-    Serial.println("0");
-    return 0;
+    return _level;
 }

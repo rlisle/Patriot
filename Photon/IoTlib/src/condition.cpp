@@ -49,6 +49,6 @@ bool Condition::isTrue(States *states) {
         Serial.print("State found: ");
         return matchesCondition(state->_value);
     }
-    Serial.println("false");
+    Serial.println("State not found");
     return false;
 }
