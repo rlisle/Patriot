@@ -22,8 +22,6 @@ Changelog:
 #include "Particle.h"
 #include "device.h"
 
-#define MAX_NUM_DEVICES 64
-
 class Device;
 
 class Devices
@@ -43,8 +41,7 @@ public:
   bool        expose(String variableName);
 
 private:
-  uint8_t     _numDevices;
-  Device**    _devices;
+  Device*     _devices;     // Linked list of device objects
 
   bool        _isVariableExposed;
   String      *_ptrToVariable;

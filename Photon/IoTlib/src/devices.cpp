@@ -10,6 +10,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-18: Convert to linked list
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-09-11: Initial version
@@ -19,31 +20,34 @@ Changelog:
 Devices::Devices()
 {
     // Without this method, strange error is reported and build fails
-    _numDevices = 0;
     //TODO: dynamically allocate array space
-    _devices = new Device *[MAX_NUM_DEVICES];
+    _devices = NULL;
 }
 
-// Returns non-zero if # devices exceeded
 int Devices::addDevice(Device *device)
 {
-    if (_numDevices < MAX_NUM_DEVICES - 1)
-    {
-        _devices[_numDevices++] = device;
-    } else
-    {
-        return -1;
+    Serial.println("addDevice name: "+String(device->name()));
+    if(_devices == NULL) {
+        Serial.println("  first device");
+        _devices = device;
+    } else {
+        Serial.println("  add device");
+        Device *ptr = _devices;
+        while(ptr->_next != NULL) {
+            Serial.println("  advance to next");
+            ptr = ptr->_next;
+        }
+        ptr->_next = device;
     }
-    return 0;
 }
 
 // Called whenever "state" changes.
 // The state that changed is passed to optimize handling.
 // Devices can ignore the state change if they don't use it.
 void Devices::stateDidChange(States *states) {
-    for (int i = 0; i < _numDevices; i++)
+    for (int i = 0; i < numDevices(); i++)
     {
-        _devices[i]->stateDidChange(states);
+        getDeviceByNum(i)->stateDidChange(states);
     }
 }
 
@@ -57,26 +61,36 @@ void Devices::loop()
 
 Device *Devices::getDeviceByNum(int deviceNum)
 {
-    if (deviceNum < _numDevices)
+    Device *ptr = _devices;
+    for (int i = deviceNum; i > 0 && ptr != NULL; i--) 
     {
-        return _devices[deviceNum];
+        Serial.println("  getting next, current = "+ptr->name());
+        ptr = ptr->_next;
     }
-    return NULL;
+    Serial.println("Returning ptr to "+ptr->name());
+    return ptr;
 }
 
 Device *Devices::getDeviceWithName(String name)
 {
-    for (int i = 0; i < _numDevices; i++)
+    Device *ptr = _devices;
+    for (int i = 0; i < numDevices() && ptr != NULL; i++) 
     {
-        if (_devices[i]->name().equalsIgnoreCase(name))
-        {
-            return _devices[i];
+        if (ptr->name().equalsIgnoreCase(name)) {
+            Serial.println("Returning ptr to "+ptr->name());
+            return ptr;
         }
+        Serial.println("  getting next, current = "+ptr->name());
+        ptr = ptr->_next;
     }
+    Serial.println("Not found, returning NULL");
     return NULL;
 }
 
 int Devices::numDevices()
 {
-    return _numDevices;
+    Device *ptr = _devices;
+    for (int i = 0; ptr != NULL; i++) {
+        ptr = ptr->_next;
+    }
 }

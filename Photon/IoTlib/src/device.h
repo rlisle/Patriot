@@ -48,6 +48,8 @@ class Device {
     int        _brightness;
     Behaviors  _behaviors;
 
+    Device*    _next;       // Linked list
+
  public:
     // Pointer to methods in IoT. These are set in IoT->addDevice()
     void (*log)(String message);
