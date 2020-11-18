@@ -21,6 +21,7 @@ Changelog:
 class Condition
 {
 private:
+    Condition *next;    // Linked list of conditions
     String _stateName;
     char _comparison;  // '<', '=', or '>'
     int _value;

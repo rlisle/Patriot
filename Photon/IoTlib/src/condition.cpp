@@ -21,6 +21,7 @@ Condition::Condition(String stateName, char comparison, int value)
     _stateName = stateName;
     _comparison = comparison;     // '<', '=', '>', '!'
     _value = value;
+    _next = NULL;
 }
 
 bool Condition::matchesCondition(int stateValue)
