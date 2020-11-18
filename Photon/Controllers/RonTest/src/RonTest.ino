@@ -61,7 +61,8 @@ void setup() {
   // test4.setLocalPin(A3, "Switch4");
 
   // Behaviors/Activities
-  test.addBehavior(new Behavior("demo", '>', 0, 100));
+  Behavior *demo = new Behavior("demo", '>', 0, 100);
+  test.addBehavior(demo);
 
   // Devices
 //  iot->addDevice(DEV_PTR led);
