@@ -42,8 +42,9 @@ bool Condition::matchesCondition(int stateValue)
     return false;
 }
 
-bool Condition::isTrue(States *states) {
-
+bool Condition::isTrue(States *states) 
+{
+    Serial.println("isTrue for state: "+String(_stateName));
     State *state = states->getStateWithName(_stateName);
     if(state != NULL) {
         Serial.print("State found: ");

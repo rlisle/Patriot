@@ -25,6 +25,7 @@ class Condition
     friend Conditions;
 
 private:
+public:
     Condition *_next;    // Linked list of conditions
     String    _stateName;
     char      _comparison;  // '<', '=', or '>'

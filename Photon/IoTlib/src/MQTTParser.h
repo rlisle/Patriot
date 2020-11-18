@@ -24,7 +24,7 @@ class Devices;
 class MQTTParser
 {
 public:
-  States    _states;
+  States    *_states;
 
   MQTTParser(String controllerName, String publishName, Devices *devices);
 

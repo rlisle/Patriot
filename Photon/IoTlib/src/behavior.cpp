@@ -33,11 +33,15 @@ void Behavior::addCondition(Condition *condition) {
 
 int Behavior::evaluateStates(States *states) 
 {
+    Serial.println("Evaluating states: ("+String(_conditions->count())+" conditions)");
     for(int x=0; x<_conditions->count(); x++){
         Condition* condition = _conditions->getCondition(x);
+        Serial.println("  Condition state: " + condition->_stateName);
         if(condition->isTrue(states) == false) {
+            Serial.println("  False, returning 0");
             return 0;
         }
     }
+    Serial.println("  True, returning level "+String(_level));
     return _level;
 }

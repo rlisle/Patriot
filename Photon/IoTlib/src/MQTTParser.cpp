@@ -20,7 +20,7 @@ MQTTParser::MQTTParser(String controllerName, String publishName, Devices *devic
     _controllerName = controllerName;
     _publishName = publishName;
     _devices = devices;
-    _states = States();
+    _states = new States();
 }
 
 void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
@@ -45,8 +45,8 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             }
             // If it wasn't a device name, it must be a state.
             int value = state.toInt();
-            _states.addState(name,value);
-            _devices->stateDidChange(&_states);
+            _states->addState(name,value);
+            _devices->stateDidChange(_states);
 
         } else {
             int firstSlash = topic.indexOf('/');
@@ -63,8 +63,8 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 log("Setting state " + rightTopic + " to " + message);
                 String name = rightTopic;
                 int value = message.toInt();
-                _states.addState(name,value);
-                _devices->stateDidChange(&_states);
+                _states->addState(name,value);
+                _devices->stateDidChange(_states);
 
             // BRIGHTNESS
             } else if(midTopic.equals("brightness")) {

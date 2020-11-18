@@ -60,15 +60,6 @@ State *States::addState(String name, int value) {
     return state;
 }
 
-
-// State *States::getStateByNum(int stateNum) {
-//     State *state = NULL;
-//     if (stateNum < _numStates) {
-//         state = _states[stateNum];
-//     }
-//     return state;
-// }
-
 State *States::getStateWithName(String name) {
     for (int i = 0; i < _numStates; i++) {
         if (_states[i]->_name.equalsIgnoreCase(name)) {
