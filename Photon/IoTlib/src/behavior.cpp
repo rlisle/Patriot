@@ -23,7 +23,12 @@ Changelog:
 
 Behavior::Behavior(int level)
 {
-    this->_level = level;
+    _level = level;
+    _conditions = new Conditions();
+}
+
+void Behavior::addCondition(Condition *condition) {
+    _conditions->addCondition(condition);
 }
 
 int Behavior::evaluateStates(States *states) 

@@ -46,7 +46,7 @@ int Conditions::count() {
     int count=0;
     while(ptr != NULL){
         count++;
-        ptr=ptr->_next);
+        ptr=ptr->_next;
     }
     return count;
 }

@@ -30,12 +30,12 @@ Changelog:
 class Behavior
 {
 private:
-    Conditions _conditions;
+    Conditions* _conditions;
     int _level;       // level to set if event <comparison> value is true
 
 public:
     Behavior(int level);
 
-    int addCondition(Condition *condition);
-    int evaluateStates(States *states);
+    void addCondition(Condition *condition);
+    int  evaluateStates(States *states);
 };

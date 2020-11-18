@@ -34,6 +34,7 @@ Changelog:
 
 #include "Particle.h"
 #include "constants.h"
+#include "behavior.h"
 #include "states.h"
 #include "devices.h"
 #include "devicenames.h"

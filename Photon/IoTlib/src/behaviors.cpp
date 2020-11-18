@@ -31,30 +31,13 @@ Behaviors::Behaviors()
 }
 
 
-// Returns # behaviors (index+1 of added behavior, or -1 if array already full)
-int Behaviors::addBehavior(Behavior *behavior)
+//TODO: convert to linked list
+void Behaviors::addBehavior(Behavior *behavior)
 {
     if (_numBehaviors < MAX_NUM_BEHAVIORS - 1)
     {
-        //IoT::log("Adding behavior");
         _behaviors[_numBehaviors++] = behavior;
-    } else
-    {
-        //IoT::log("Max # behaviors exceeded");
-        return -1;
     }
-
-    return _numBehaviors - 1;
-}
-
-Behavior* Behaviors::getBehavior(String name) {
-    for (int i = 0; i < _numBehaviors; i++) 
-    {
-        if (_behaviors[i]->stateName.equalsIgnoreCase(name)){
-            return _behaviors[i];
-        }
-    }
-    return NULL;
 }
 
 int Behaviors::stateDidChange(States *states)

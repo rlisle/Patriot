@@ -33,7 +33,7 @@ public:
 
     Behaviors();
 
-    int       addBehavior(Behavior *behavior); // Returns # behaviors (index+1)
+    void      addBehavior(Behavior *behavior);
     Behavior* getBehavior(String name);
     int       stateDidChange(States *states);  // Returns calculated value
 

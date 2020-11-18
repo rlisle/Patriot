@@ -18,13 +18,19 @@ Changelog:
 
 #include "states.h"
 
+class Conditions;
+
 class Condition
 {
+    friend Conditions;
+
 private:
-    Condition *next;    // Linked list of conditions
-    String _stateName;
-    char _comparison;  // '<', '=', or '>'
-    int _value;
+    Condition *_next;    // Linked list of conditions
+    String    _stateName;
+    char      _comparison;  // '<', '=', or '>'
+    int       _value;
+
+    bool matchesCondition(int stateValue);
 
 public:
     Condition(String stateName, char comparison, int value);

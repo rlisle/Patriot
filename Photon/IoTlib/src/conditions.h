@@ -25,7 +25,7 @@ public:
 
     Conditions();
 
-    int        addCondition(Condition *condition);
+    void       addCondition(Condition *condition);
     Condition* getCondition(int index);
     int        count();
 
