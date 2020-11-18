@@ -31,7 +31,7 @@ public:
   Devices();
 
   void        loop();
-  int         addDevice(Device *device);
+  void        addDevice(Device *device);
   Device*     getDeviceByNum(int deviceNum);
   Device*     getDeviceWithName(String name);
   int         numDevices();

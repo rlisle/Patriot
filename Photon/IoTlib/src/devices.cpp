@@ -24,7 +24,7 @@ Devices::Devices()
     _devices = NULL;
 }
 
-int Devices::addDevice(Device *device)
+void Devices::addDevice(Device *device)
 {
     Serial.println("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
@@ -53,9 +53,9 @@ void Devices::stateDidChange(States *states) {
 
 void Devices::loop()
 {
-    for (int x = 0; x < _numDevices; x++)
+    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
-        _devices[x]->loop();
+        ptr->loop();
     }
 }
 
@@ -89,8 +89,10 @@ Device *Devices::getDeviceWithName(String name)
 
 int Devices::numDevices()
 {
+    int i;
     Device *ptr = _devices;
-    for (int i = 0; ptr != NULL; i++) {
+    for (i = 0; ptr != NULL; i++) {
         ptr = ptr->_next;
     }
+    return i;
 }

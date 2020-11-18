@@ -40,7 +40,11 @@ enum class DeviceType {
     NCD8Light
 };
 
+class Devices;
+
 class Device {
+    friend Devices;
+
  protected:
     String     _name;
     DeviceType _type;
