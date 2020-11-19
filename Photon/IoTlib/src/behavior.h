@@ -27,11 +27,16 @@ Changelog:
 #include "states.h"
 #include "conditions.h"
 
+class Behaviors;
+
 class Behavior
 {
+    friend Behaviors;
+    
 private:
+    Behavior*   _next;
     Conditions* _conditions;
-    int _level;       // level to set if event <comparison> value is true
+    int         _level;       // level to set if event <comparison> value is true
 
 public:
     Behavior(int level);

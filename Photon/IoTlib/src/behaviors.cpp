@@ -13,6 +13,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-19: Convert to linked list
 2020-11-14: Rename activities to states.
 2017-10-22: Convert to scenes-like behavior.
 2017-03-24: Rename Patriot
@@ -23,30 +24,32 @@ Changelog:
 
 Behaviors::Behaviors()
 {
-    // Without this method, strange error is reported and build fails
-    //TODO: Restore activities from EEPROM
-    //size_t len = EEPROM.length();
-    //Particle.publish("behaviors","EEPROM length is: "+String(len), 60, PRIVATE);
-//    char numActivities = EEPROM[0];
+    _behaviors = NULL;
 }
 
-
-//TODO: convert to linked list
 void Behaviors::addBehavior(Behavior *behavior)
 {
-    if (_numBehaviors < MAX_NUM_BEHAVIORS - 1)
-    {
-        _behaviors[_numBehaviors++] = behavior;
+    Serial.println("Adding behavior");
+    if(_behaviors == NULL) {
+        Serial.println("  first behavior");
+        _behaviors = behavior;
+    } else {
+        Serial.println("  add behavior");
+        Behavior *ptr = _behaviors;
+        while(ptr->_next != NULL) {
+            Serial.println("  advance to next");
+            ptr = ptr->_next;
+        }
+        ptr->_next = behavior;
     }
 }
 
 int Behaviors::stateDidChange(States *states)
 {
     int level = 0;
-    for (int i = 0; i < _numBehaviors; i++)
+    for (Behavior *ptr = _behaviors; ptr != NULL; ptr = ptr->_next)
     {
-        Behavior *behavior = _behaviors[i];
-        int newLevel = behavior->evaluateStates(states);
+        int newLevel = ptr->evaluateStates(states);
         level = max(level,newLevel);
     }
     return level;

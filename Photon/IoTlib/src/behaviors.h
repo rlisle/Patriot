@@ -22,9 +22,6 @@ Changelog:
 
 #include "behavior.h"
 
-//TODO: change to dynamic array or linked list
-#define MAX_NUM_BEHAVIORS 64
-
 class Behavior;
 
 class Behaviors
@@ -38,6 +35,5 @@ public:
     int       stateDidChange(States *states);  // Returns calculated value
 
 private:
-    uint8_t  _numBehaviors = 0;
-    Behavior* _behaviors[MAX_NUM_BEHAVIORS];
+    Behavior* _behaviors;
 };

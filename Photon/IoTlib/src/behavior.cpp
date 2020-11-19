@@ -25,6 +25,7 @@ Behavior::Behavior(int level)
 {
     _level = level;
     _conditions = new Conditions();
+    _next = NULL;
 }
 
 void Behavior::addCondition(Condition *condition) {
