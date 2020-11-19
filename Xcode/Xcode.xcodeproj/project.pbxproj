@@ -37,6 +37,10 @@
 		E4849C6D2566ABFD00A39734 /* RonTest.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; name = RonTest.ino; path = ../Photon/Controllers/RonTest/src/RonTest.ino; sourceTree = "<group>"; };
 		E4849C722566B2AF00A39734 /* RearPanel.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; name = RearPanel.ino; path = ../Photon/Controllers/RearPanel/src/RearPanel.ino; sourceTree = "<group>"; };
 		E4849C732566B2E600A39734 /* FrontPanel.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; name = FrontPanel.ino; path = ../Photon/Controllers/FrontPanel/src/FrontPanel.ino; sourceTree = "<group>"; };
+		E4849C79256724DC00A39734 /* PatriotNCD8Switch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD8Switch.cpp; path = ../Photon/Plugins/NCD8Switch/src/PatriotNCD8Switch.cpp; sourceTree = "<group>"; };
+		E4849C7A256724DC00A39734 /* PatriotNCD8Switch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotNCD8Switch.h; path = ../Photon/Plugins/NCD8Switch/src/PatriotNCD8Switch.h; sourceTree = "<group>"; };
+		E4849C7B256724F500A39734 /* switch.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = switch.ino; path = ../Photon/Plugins/NCD8Switch/examples/switch/switch.ino; sourceTree = "<group>"; };
+		E4849C7C2567250A00A39734 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD8Switch/library.properties; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -120,6 +124,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				E4849C78256724B400A39734 /* NCD8Switch */,
 				E4849C772566B4BB00A39734 /* Light */,
 				E4849C762566B4B300A39734 /* NCD8Light */,
 				E4849C752566B4A400A39734 /* NCD8Relay */,
@@ -146,6 +151,17 @@
 			children = (
 			);
 			name = Light;
+			sourceTree = "<group>";
+		};
+		E4849C78256724B400A39734 /* NCD8Switch */ = {
+			isa = PBXGroup;
+			children = (
+				E4849C7C2567250A00A39734 /* library.properties */,
+				E4849C7B256724F500A39734 /* switch.ino */,
+				E4849C79256724DC00A39734 /* PatriotNCD8Switch.cpp */,
+				E4849C7A256724DC00A39734 /* PatriotNCD8Switch.h */,
+			);
+			name = NCD8Switch;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
