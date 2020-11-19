@@ -50,32 +50,38 @@ IoT     *iot;
 Light test(7, "test", false, true);
 
 void setup() {
-  iot = IoT::getInstance();
-  iot->setControllerName("RonTest");
-  iot->begin();
-  iot->connectMQTT(mqttServerIP, "patriotRonTest1");
+    iot = IoT::getInstance();
+    iot->setControllerName("RonTest");
+    iot->begin();
+    iot->connectMQTT(mqttServerIP, "patriotRonTest1");
+    
+    // test1.setLocalPin(A0, "Switch1");
+    // test2.setLocalPin(A1, "Switch2");
+    // test3.setLocalPin(A2, "Switch3");
+    // test4.setLocalPin(A3, "Switch4");
+    
+    // Behaviors/Activities
+    Behavior *demo1and2 = new Behavior(100);
+    demo1and2->addCondition(new Condition("demo1", '>', 0));
+    demo1and2->addCondition(new Condition("demo2", '>', 0));
+    test.addBehavior(demo1and2);
 
-  // test1.setLocalPin(A0, "Switch1");
-  // test2.setLocalPin(A1, "Switch2");
-  // test3.setLocalPin(A2, "Switch3");
-  // test4.setLocalPin(A3, "Switch4");
+    Behavior *demo2not3 = new Behavior(100);
+    demo2not3->addCondition(new Condition("demo2", '>', 0));
+    demo2not3->addCondition(new Condition("demo3", '=', 0));
+    test.addBehavior(demo2not3);
 
-  // Behaviors/Activities
-  Behavior *demo = new Behavior(100);
-  demo->addCondition(new Condition("demo", '>', 0));
-  test.addBehavior(demo);
-
-  // Devices
-//  iot->addDevice(DEV_PTR led);
-  iot->addDevice(&test);
-
-  // Watchdog Timer
-//  PhotonWdgs::begin(true,true,10000,TIMER7);
+    // Devices
+    //  iot->addDevice(DEV_PTR led);
+    iot->addDevice(&test);
+    
+    // Watchdog Timer
+    //  PhotonWdgs::begin(true,true,10000,TIMER7);
 }
 
 void loop() {
-  // call tickle regularly from your code, to ensure the watchdogs do not reset
-//  PhotonWdgs::tickle();
-
-  iot->loop();
+    // call tickle regularly from your code, to ensure the watchdogs do not reset
+    //  PhotonWdgs::tickle();
+    
+    iot->loop();
 }
