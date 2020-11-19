@@ -24,6 +24,8 @@ Changelog:
 ******************************************************************/
 #pragma once
 
+#include "behaviors.h"
+
 enum class DeviceType {
     Unknown,
     Fan,
@@ -38,12 +40,19 @@ enum class DeviceType {
     NCD8Light
 };
 
+class Devices;
+
 class Device {
+    friend Devices;
+
  protected:
     String     _name;
     DeviceType _type;
     int        _percent;
     int        _brightness;
+    Behaviors  _behaviors;
+
+    Device*    _next;       // Linked list
 
  public:
     // Pointer to methods in IoT. These are set in IoT->addDevice()
@@ -52,7 +61,24 @@ class Device {
 
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
-    Device(String name = "", DeviceType type = DeviceType::Unknown) : _name(name), _type(type) { }
+    Device(String name = "", DeviceType type = DeviceType::Unknown) 
+            : _name(name), _type(type), _next(NULL)
+    { 
+        _behaviors = Behaviors();
+    }
+
+    void addBehavior(Behavior *behavior) { 
+        _behaviors.addBehavior(behavior); 
+        //addToListOfSupportedStates(behavior->stateName);
+    };
+
+    void stateDidChange(States *states) {
+        int newLevel = _behaviors.stateDidChange(states);
+        if(log != NULL) {
+            log("Setting new level " + String(newLevel));
+        }
+        setPercent(newLevel);
+    }
 
     virtual String name() { return _name; };
     virtual DeviceType type() { return _type; };

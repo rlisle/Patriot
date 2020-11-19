@@ -13,47 +13,44 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-19: Convert to linked list
 2020-11-14: Rename activities to states.
 2017-10-22: Convert to scenes-like behavior.
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-06-24: Initial version
 ******************************************************************/
-#include "IoT.h"
 #include "behaviors.h"
 
 Behaviors::Behaviors()
 {
-    // Without this method, strange error is reported and build fails
-    //TODO: Restore activities from EEPROM
-    //size_t len = EEPROM.length();
-    //Particle.publish("behaviors","EEPROM length is: "+String(len), 60, PRIVATE);
-//    char numActivities = EEPROM[0];
+    _behaviors = NULL;
 }
 
-
-// Returns # behaviors (index+1 of added behavior, or -1 if array already full)
-int Behaviors::addBehavior(Behavior *behavior)
+void Behaviors::addBehavior(Behavior *behavior)
 {
-    if (_numBehaviors < MAX_NUM_BEHAVIORS - 1)
-    {
-        IoT::log("Adding behavior");
-        _behaviors[_numBehaviors++] = behavior;
-    } else
-    {
-        IoT::log("Max # behaviors exceeded");
-        return -1;
+    Serial.println("Adding behavior");
+    if(_behaviors == NULL) {
+        Serial.println("  first behavior");
+        _behaviors = behavior;
+    } else {
+        Serial.println("  add behavior");
+        Behavior *ptr = _behaviors;
+        while(ptr->_next != NULL) {
+            Serial.println("  advance to next");
+            ptr = ptr->_next;
+        }
+        ptr->_next = behavior;
     }
-
-    return _numBehaviors - 1;
 }
 
-
-void Behaviors::performState(String name, int value)
+int Behaviors::stateDidChange(States *states)
 {
-    for (int i = 0; i < _numBehaviors; i++)
+    int level = 0;
+    for (Behavior *ptr = _behaviors; ptr != NULL; ptr = ptr->_next)
     {
-        Behavior *behavior = _behaviors[i];
-        behavior->performState(name, value);
+        int newLevel = ptr->evaluateStates(states);
+        level = max(level,newLevel);
     }
+    return level;
 }

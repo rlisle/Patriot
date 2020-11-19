@@ -21,6 +21,8 @@ Changelog:
 #include "MQTTParser.h"
 #include "MQTT.h"
 
+class MQTTParser;
+
 
 class MQTTManager
 {

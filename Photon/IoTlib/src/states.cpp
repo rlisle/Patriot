@@ -4,7 +4,7 @@ States collection
 This object manages a collection of State objects.
 
 Multiple states can be active at the same time, so it is
-important to combine their effects, in addition to stopping an
+important to combine their effects, in addition to stopping a
 state in a manner that doesn't break states that continue
 to be in effect.
 
@@ -33,50 +33,50 @@ Changelog:
 String globalStatesVariable;
 
 States::States() {
-    // Without this method, strange error is reported and build fails
-    _numStates = 0;
+    _states = NULL;
     _isVariableExposed = false;
 }
 
+// States are added only once
 State *States::addState(String name, int value) {
     Serial.print("addState " + name + "=" + String(value));
     // Update existing state if it exists
     State *state = getStateWithName(name);
-    if (state != NULL) {
+    if (state == NULL) {
+        Serial.println(": adding");
+        State *state = new State(name,value);
+        if(_states == NULL) {
+            _states = state;
+        } else {
+            State* ptr = _states;
+            while(ptr->_next != NULL) ptr = ptr->_next;
+            ptr->_next = state;
+        }
+    } else {    // State already exists
         Serial.println(": updated");
         state->_value = value;
-
-        // If not, create a new state
-    } else {
-        Serial.println(": added");
-        if (_numStates < MAX_NUM_ACTIVITIES - 1) {
-            state = new State(name, value);
-            _states[_numStates++] = state;
-        }
     }
-    buildStateVariable();
-    return state;
-}
 
-State *States::getStateByNum(int stateNum) {
-    State *state = NULL;
-    if (stateNum < _numStates) {
-        state = _states[stateNum];
-    }
+    // If not, create a new state
+//    buildStateVariable(); // Only if this is 
     return state;
 }
 
 State *States::getStateWithName(String name) {
-    for (int i = 0; i < _numStates; i++) {
-        if (_states[i]->_name.equalsIgnoreCase(name)) {
-            return _states[i];
+    State *ptr = _states;
+    while(ptr != NULL) {
+        if (ptr->_name.equalsIgnoreCase(name)) {
+            return ptr;
         }
+        ptr = ptr->_next;
     }
     return NULL;
 }
 
 int States::count() {
-    return _numStates;
+    int i = 0;
+    for(State* ptr = _states; ptr != NULL; ptr = ptr->_next) i++;
+    return i;
 }
 
 bool States::expose() {
@@ -90,15 +90,16 @@ bool States::expose() {
 
 void States::buildStateVariable() {
     String newVariable = "";
-    for (int i = 0; i < _numStates; i++) {
+    State *ptr = _states;
+    while (ptr != NULL) {
         Serial.print("state=");
-        Serial.println(_states[i]->_name);
-        newVariable += _states[i]->_name;
+        Serial.println(ptr->_name);
+        newVariable += ptr->_name;
         newVariable += ":";
         Serial.print("value=");
-        Serial.println(_states[i]->_value);
-        newVariable += String(_states[i]->_value);
-        if (i < _numStates - 1) {
+        Serial.println(ptr->_value);
+        newVariable += String(ptr->_value);
+        if (ptr->_next != NULL) {
             newVariable += ",";
         }
     }
@@ -109,7 +110,5 @@ void States::buildStateVariable() {
     } else {
         Serial.println("Variable is too long. Need to extend to a 2nd variable");
         Serial.println(newVariable);
-        //WakeUp,WatchTV,Cook,Sleep
     }
-
 }

@@ -20,26 +20,22 @@ Changelog:
 
 #include "state.h"
 
-#define MAX_NUM_STATES 64
-
 class States
 {
 public:
-
-  States();
-
-  State*     addState(String name, int value);
-  State*     getStateByNum(int stateNum);
-  State*     getStateWithName(String name);
-  int        count();
-
-  bool       expose();
-
+    
+    States();
+    
+    State*     addState(String name, int value);
+    State*     getStateWithName(String name);
+    int        count();
+    
+    bool       expose();    // Huh?
+    
 private:
-  uint8_t    _numStates;
-  State*     _states[MAX_NUM_STATES];
-  bool       _isVariableExposed;
-  String     *_ptrToVariable;
-
-  void buildStateVariable();
+    State*     _states;                 // Linked list
+    bool       _isVariableExposed;      // Is this needed?
+    String     *_ptrToVariable;         // Is this needed?
+    
+    void buildStateVariable();          // Should this be here?
 };

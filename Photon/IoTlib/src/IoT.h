@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-14: Convert scene-like behaviors back to per-device summing
 2020-11-14: Rename activities to states
 2019-01-05: Removed watchdog timer due to OTA issues.
 2019-01-01: Replace 2am reset with hardware watchdog timer.
@@ -33,8 +34,8 @@ Changelog:
 
 #include "Particle.h"
 #include "constants.h"
+#include "behavior.h"
 #include "states.h"
-#include "behaviors.h"
 #include "devices.h"
 #include "devicenames.h"
 #include "MQTTManager.h"
@@ -90,7 +91,6 @@ public:
     void loop();
 
     void addDevice(Device *device);
-    void addBehavior(Behavior *behavior);
 
     /**
      * Helper methods
@@ -104,8 +104,8 @@ private:
     bool    _isBridge;
     String  _controllerName;
     String  _proximityEvent;
-    String  _supportedStates[kMaxNumberStates];
-    int     _numSupportedStates;
+    // String  _supportedStates[kMaxNumberStates];
+    // int     _numSupportedStates;
     system_tick_t _startTime;
     system_tick_t _currentTime;
 
@@ -120,23 +120,20 @@ private:
      * Include other needed objects
      */
     Factory     *_factory;
-    States      *_states;
-    Behaviors   *_behaviors;
-    Devices     *_devices;
+    Devices     *_devices;    // "
     DeviceNames *_deviceNames;
     MQTTManager *_mqttManager;
     MQTTParser  *_mqttParser;
 
     void subscribeHandler(const char *eventName, const char *rawData);
-    void addToListOfSupportedStates(String state);
-    void buildSupportedStatesVariable();
-    void performStates();   //TODO: To be deprecated
+//    void addToListOfSupportedStates(String state);
+//    void buildSupportedStatesVariable();
     void periodicReset();
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);
     void mqttQOSHandler(unsigned int data);
 
-    int  programHandler(String command);
-    int  valueHandler(String deviceName);
-    int  typeHandler(String deviceName);
+    // int  programHandler(String command);
+    // int  valueHandler(String deviceName);
+    // int  typeHandler(String deviceName);
 };

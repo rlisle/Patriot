@@ -22,7 +22,7 @@ Changelog:
 #include "Particle.h"
 #include "device.h"
 
-#define MAX_NUM_DEVICES 64
+class Device;
 
 class Devices
 {
@@ -31,16 +31,17 @@ public:
   Devices();
 
   void        loop();
-  int         addDevice(Device *device);
+  void        addDevice(Device *device);
   Device*     getDeviceByNum(int deviceNum);
   Device*     getDeviceWithName(String name);
   int         numDevices();
 
-  bool       expose(String variableName);
+  void        stateDidChange(States *states);
+
+  bool        expose(String variableName);
 
 private:
-  uint8_t     _numDevices;
-  Device**    _devices;
+  Device*     _devices;     // Linked list of device objects
 
   bool        _isVariableExposed;
   String      *_ptrToVariable;

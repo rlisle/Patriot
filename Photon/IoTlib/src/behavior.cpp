@@ -1,10 +1,8 @@
 /******************************************************************
 Behavior
 
-This class represents a behavior, which is a response to a state
-such as "tv" or "night". Multiple states can be specified, but
-currently absent states (eg. this but not that) are not supported.
-These may be easily added in the future.
+This class represents a behavior, which is a response to one or
+more states such as "tv" or "night".
 
 http://www.github.com/rlisle/Patriot
 
@@ -14,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-18: Add conditions
 2020-11-14: Rename activities to states
 2017-10-22: Convert to scenes-like behavior
 2017-03-24: Rename Patriot
@@ -22,58 +21,28 @@ Changelog:
 ******************************************************************/
 #include "behavior.h"
 
-Behavior::Behavior(Device *device, String stateName, char comparison, int value, int level)
+Behavior::Behavior(int level)
 {
-    this->device = device;
-    this->stateName = stateName;
-    _comparison = comparison;     // '<', '=', '>', '!'
-    _value = value;
-    this->level = level;
+    _level = level;
+    _conditions = new Conditions();
+    _next = NULL;
 }
 
-bool Behavior::matchesCondition(String name, int value)
+void Behavior::addCondition(Condition *condition) {
+    _conditions->addCondition(condition);
+}
+
+int Behavior::evaluateStates(States *states) 
 {
-    if (name.equalsIgnoreCase(stateName))
-    {
-        switch (_comparison)
-        {
-            case '<':
-                if (value < _value)
-                {
-                    return true;
-                }
-                break;
-            case '=':
-                if (value == _value)
-                {
-                    return true;
-                }
-                break;
-            case '>':
-                if (value > _value)
-                {
-                    return true;
-                }
-                break;
-            case '!':
-                if (value != _value)
-                {
-                    return true;
-                }
-                break;
-            default:
-                break;
+    Serial.println("Evaluating states: ("+String(_conditions->count())+" conditions)");
+    for(int x=0; x<_conditions->count(); x++){
+        Condition* condition = _conditions->getCondition(x);
+        Serial.println("  Condition state: " + condition->_stateName);
+        if(condition->isTrue(states) == false) {
+            Serial.println("  False, returning 0");
+            return 0;
         }
     }
-    return false;
-}
-
-void Behavior::performState(String name, int value)
-{
-    if (matchesCondition(name, value))
-    {
-        //IoT* iot = IoT::getInstance();
-        //iot->log("Behavior "+String(stateName)+" setting level "+String(level));
-        device->setPercent(level);
-    }
+    Serial.println("  True, returning level "+String(_level));
+    return _level;
 }

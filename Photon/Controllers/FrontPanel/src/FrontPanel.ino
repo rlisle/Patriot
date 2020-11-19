@@ -31,7 +31,7 @@
    - ? 
    - ?
    - ?
- * Activities
+ * States
    - arriving
    - cleaning
    - cooking
@@ -119,13 +119,10 @@ void setup() {
 
     // Cleaning  (on/off)
     // iot->addBehavior(new Behavior(DEV_PTR ceiling, "cleaning", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR ceiling, "cleaning", '=', 0, 0));
     // iot->addBehavior(new Behavior(DEV_PTR kitchenSink,   "cleaning", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink,   "cleaning", '=', 0, 0));
 
     // Cooking (On/Off)
     // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "cooking", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "cooking", '=', 0, 0));
 
     // Evening - Porch lights on (awnings once we can detect if extended)
     // iot->addBehavior(new Behavior(DEV_PTR frontPorch,  "evening", '>', 0, 100));
@@ -134,21 +131,13 @@ void setup() {
 
     // Everything (on/off)
     // iot->addBehavior(new Behavior(DEV_PTR ceiling, "everything", '>', 0, 100));     // On
-    // iot->addBehavior(new Behavior(DEV_PTR ceiling, "everything", '=', 0, 0));       // Off
     // iot->addBehavior(new Behavior(DEV_PTR dsFloods, "everything", '>', 0, 100));    // On
-    // iot->addBehavior(new Behavior(DEV_PTR dsFloods, "everything", '=', 0, 0));      // Off
     // iot->addBehavior(new Behavior(DEV_PTR frontAwning, "everything", '>', 0, 100)); // On
-    // iot->addBehavior(new Behavior(DEV_PTR frontAwning, "everything", '=', 0, 0));   // Off
     // iot->addBehavior(new Behavior(DEV_PTR frontPorch, "everything", '>', 0, 100)); // On
-    // iot->addBehavior(new Behavior(DEV_PTR frontPorch, "everything", '=', 0, 0));   // Off
     // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "everything", '>', 0, 100));       // on
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "everything", '=', 0, 0));         // Off
     // iot->addBehavior(new Behavior(DEV_PTR leftTrim, "everything", '>', 0, 100));    // On
-    // iot->addBehavior(new Behavior(DEV_PTR leftTrim, "everything", '=', 0, 0));      // Off
     // iot->addBehavior(new Behavior(DEV_PTR osFloods, "everything", '>', 0, 100));    // On
-    // iot->addBehavior(new Behavior(DEV_PTR osFloods, "everything", '=', 0, 0));      // Off
     // iot->addBehavior(new Behavior(DEV_PTR rightTrim, "everything", '>', 0, 100));   // On
-    // iot->addBehavior(new Behavior(DEV_PTR rightTrim, "everything", '=', 0, 0));     // Off
 
     // Hosting (on/off - was guest mode)
 

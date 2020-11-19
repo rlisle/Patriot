@@ -27,9 +27,10 @@
  */
 
 #include <IoT.h>
-#include <PatriotNCD8Light.h>
+//#include <PatriotNCD8Light.h>
+#include <PatriotLight.h>
 
-#define DEV_PTR (Device *)&
+//#define DEV_PTR (Device *)&
 
 String mqttServerIP = "192.168.10.184";
 
@@ -38,48 +39,49 @@ IoT     *iot;
 // Use Backup SRAM to persist led state between resets
 // To use persistent storage, insert "retained" before NCD8Relay
 //Light led(D7, "led", false, true);
-NCD8Light test1(1, 0, "test1", 0); // immediate
-NCD8Light test2(1, 1, "test2", 1); // 1 second transition
-NCD8Light test3(1, 2, "test3", 2); // 2 " "
-NCD8Light test4(1, 3, "test4", 3);
-NCD8Light test5(1, 4, "test5", 4);
-NCD8Light test6(1, 5, "test6", 5);
-NCD8Light test7(1, 6, "test7", 6);
-NCD8Light test8(1, 7, "test8", 7);
+// NCD8Light test1(1, 0, "test1", 0); // immediate
+// NCD8Light test2(1, 1, "test2", 1); // 1 second transition
+// NCD8Light test3(1, 2, "test3", 2); // 2 " "
+// NCD8Light test4(1, 3, "test4", 3);
+// NCD8Light test5(1, 4, "test5", 4);
+// NCD8Light test6(1, 5, "test6", 5);
+// NCD8Light test7(1, 6, "test7", 6);
+// NCD8Light test8(1, 7, "test8", 7);
+Light test(7, "test", false, true);
 
 void setup() {
-  iot = IoT::getInstance();
-  iot->setControllerName("RonTest");
-  iot->begin();
-  iot->connectMQTT(mqttServerIP, "patriotRonTest1");
+    iot = IoT::getInstance();
+    iot->setControllerName("RonTest");
+    iot->begin();
+    iot->connectMQTT(mqttServerIP, "patriotRonTest1");
+    
+    // test1.setLocalPin(A0, "Switch1");
+    // test2.setLocalPin(A1, "Switch2");
+    // test3.setLocalPin(A2, "Switch3");
+    // test4.setLocalPin(A3, "Switch4");
+    
+    // Behaviors/Activities
+    Behavior *demo1and2 = new Behavior(100);
+    demo1and2->addCondition(new Condition("demo1", '>', 0));
+    demo1and2->addCondition(new Condition("demo2", '>', 0));
+    test.addBehavior(demo1and2);
 
-  // test1.setLocalPin(A0, "Switch1");
-  // test2.setLocalPin(A1, "Switch2");
-  // test3.setLocalPin(A2, "Switch3");
-  // test4.setLocalPin(A3, "Switch4");
+    Behavior *demo2not3 = new Behavior(100);
+    demo2not3->addCondition(new Condition("demo2", '>', 0));
+    demo2not3->addCondition(new Condition("demo3", '=', 0));
+    test.addBehavior(demo2not3);
 
-  // Devices
-//  iot->addDevice(DEV_PTR led);
-  iot->addDevice(DEV_PTR test1);
-  iot->addDevice(DEV_PTR test2);
-  iot->addDevice(DEV_PTR test3);
-  iot->addDevice(DEV_PTR test4);
-  iot->addDevice(DEV_PTR test5);
-  iot->addDevice(DEV_PTR test6);
-  iot->addDevice(DEV_PTR test7);
-  iot->addDevice(DEV_PTR test8);
-
-  // Behaviors/Activities
-  // iot->addBehavior(new Behavior(DEV_PTR light, "demo", '>', 0, 100));
-  // iot->addBehavior(new Behavior(DEV_PTR light, "demo", '=', 0, 0));
-
-  // Watchdog Timer
-//  PhotonWdgs::begin(true,true,10000,TIMER7);
+    // Devices
+    //  iot->addDevice(DEV_PTR led);
+    iot->addDevice(&test);
+    
+    // Watchdog Timer
+    //  PhotonWdgs::begin(true,true,10000,TIMER7);
 }
 
 void loop() {
-  // call tickle regularly from your code, to ensure the watchdogs do not reset
-//  PhotonWdgs::tickle();
-
-  iot->loop();
+    // call tickle regularly from your code, to ensure the watchdogs do not reset
+    //  PhotonWdgs::tickle();
+    
+    iot->loop();
 }

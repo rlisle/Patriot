@@ -25,26 +25,22 @@ Changelog:
 #pragma once
 
 #include "states.h"
-#include "state.h"
-#include "device.h"
+#include "conditions.h"
 
-class States;
-class State;
+class Behaviors;
 
 class Behavior
 {
+    friend Behaviors;
+    
 private:
-    //TODO: convert these fields to a Trigger class
-    char _comparison;  // '<', '=', or '>'
-    int _value;
+    Behavior*   _next;
+    Conditions* _conditions;
+    int         _level;       // level to set if event <comparison> value is true
 
 public:
-    String stateName;
-    Device *device;
-    int level;       // level to set if event <comparison> value is true
-    bool matchesCondition(String name, int value);
+    Behavior(int level);
 
-    Behavior(Device *device, String stateName, char comparison, int value, int level);
-
-    void performState(String name, int value);
+    void addCondition(Condition *condition);
+    int  evaluateStates(States *states);
 };
