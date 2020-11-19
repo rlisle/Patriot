@@ -34,10 +34,11 @@ Changelog:
 class State
 {
 private:
-
+    State*    _next;
+    
 public:
-  String    _name;
-  int       _value; // Depends on what it is: temperature or 0 = off, 100 = 0n, etc.
-
-  State(String name, int value);
+    String    _name;
+    int       _value;
+    
+    State(String name, int value);
 };
