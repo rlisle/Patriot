@@ -74,7 +74,8 @@ State *States::getStateWithName(String name) {
 }
 
 int States::count() {
-    for(int i=0, State *ptr = _states; ptr != NULL; ptr = ptr->_next, i++);
+    int i = 0;
+    for(State* ptr = _states; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
 

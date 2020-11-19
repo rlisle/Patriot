@@ -31,8 +31,12 @@ Changelog:
 
 #include "application.h"  // Defines String
 
+class States;
+
 class State
 {
+    friend    States;
+    
 private:
     State*    _next;
     
