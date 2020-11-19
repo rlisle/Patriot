@@ -16,7 +16,7 @@ Changelog:
 
 Conditions::Conditions()
 {
-    // Without this method, strange error is reported and build fails
+    _conditions = NULL;
 }
 
 void Conditions::addCondition(Condition *condition)

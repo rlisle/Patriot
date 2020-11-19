@@ -61,7 +61,9 @@ class Device {
 
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
-    Device(String name = "", DeviceType type = DeviceType::Unknown) : _name(name), _type(type) { 
+    Device(String name = "", DeviceType type = DeviceType::Unknown) 
+            : _name(name), _type(type), _next(NULL)
+    { 
         _behaviors = Behaviors();
     }
 
