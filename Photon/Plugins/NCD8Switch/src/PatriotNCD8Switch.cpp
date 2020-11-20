@@ -21,6 +21,7 @@
 #include "PatriotNCD8Switch.h"
 
 #define MILLIS_PER_SECOND 1000
+#define POLL_INTERVAL_MILLIS 250
 
 /**
  * Constructor
@@ -29,8 +30,10 @@
  * @param name String name used in MQTT messages
  */
 NCD8Switch::NCD8Switch(int address, int switchNum, String name)
-                : Device(name, DeviceType::NCD8Switch), _address(address)
+                : Device(name, DeviceType::NCD8Switch)
 {
+    _address = address;
+    _lastPollTime = 0;
     if(switchNum > 0 && switchNum <= 8) {
         _switchBitmap = 0x01 << (switchNum-1);
         initializeBoard();
@@ -107,5 +110,16 @@ void NCD8Switch::loop()
 {
     //TODO: Poll switch periodically (.25 seconds?),
     //      and publish MQTT message if it changes
-    
+    long millis = millis();
+    if(millis > _lastPollTime + POLL_INTERVAL_MILLIS)
+    {
+        _lastPollTime = millis;
+        //TODO: if switch changed, send MQTT message
+        if(isOn != _isOn) {
+            _isOn = !_isOn;
+            if(publish != NULL) {
+                publish("patriot/" + _name, _isOn ? "100" : "0" );
+            }
+        }
+    }
 };

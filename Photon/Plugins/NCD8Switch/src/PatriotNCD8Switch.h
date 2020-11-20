@@ -32,9 +32,11 @@ private:
     int     _address;
     int     _switchBitmap;
     int     _lastState;     // Bitmap of 8 switches
+    long    _lastPollTime;
+    bool    _isOn;          // current/last switch state
     
     int    initializeBoard(int address);
-    bool   isOn();
+    bool   isOn();          // Read the switch state
 
 public:
     NCD8Switch(int address, int switchNum, String name);

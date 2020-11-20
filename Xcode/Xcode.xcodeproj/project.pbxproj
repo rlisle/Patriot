@@ -144,10 +144,10 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				E4849C78256724B400A39734 /* NCD8Switch */,
 				E4849C772566B4BB00A39734 /* Light */,
 				E4849C762566B4B300A39734 /* NCD8Light */,
 				E4849C752566B4A400A39734 /* NCD8Relay */,
+				E4849C78256724B400A39734 /* NCD8Switch */,
 			);
 			name = Plugins;
 			sourceTree = "<group>";
