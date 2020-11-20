@@ -83,6 +83,7 @@ int NCD8Switch::initializeBoard() {
  */
 bool NCD8Switch::isOn() {
     int retries = 0;
+    int status;
     do {
         Wire.beginTransmission(_address);
         Wire.write(0x09);       // GPIO Register
@@ -110,12 +111,11 @@ void NCD8Switch::loop()
 {
     //TODO: Poll switch periodically (.25 seconds?),
     //      and publish MQTT message if it changes
-    long millis = millis();
-    if(millis > _lastPollTime + POLL_INTERVAL_MILLIS)
+    long current = millis();
+    if(current > _lastPollTime + POLL_INTERVAL_MILLIS)
     {
-        _lastPollTime = millis;
-        //TODO: if switch changed, send MQTT message
-        if(isOn != _isOn) {
+        _lastPollTime = current;
+        if(isOn() != _isOn) {
             _isOn = !_isOn;
             if(publish != NULL) {
                 publish("patriot/" + _name, _isOn ? "100" : "0" );

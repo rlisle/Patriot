@@ -35,7 +35,7 @@ private:
     long    _lastPollTime;
     bool    _isOn;          // current/last switch state
     
-    int    initializeBoard(int address);
+    int    initializeBoard();
     bool   isOn();          // Read the switch state
 
 public:
