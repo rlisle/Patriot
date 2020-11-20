@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
+		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
+		E41085872568628F00EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Light/library.properties; sourceTree = "<group>"; };
+		E4108588256862CA00EFBE84 /* light.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = light.ino; path = ../Photon/Plugins/Light/examples/light/light.ino; sourceTree = "<group>"; };
+		E4108589256862E100EFBE84 /* PatriotNCD8Light.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD8Light.cpp; path = ../Photon/Plugins/NCD8Light/src/PatriotNCD8Light.cpp; sourceTree = "<group>"; };
+		E410858A256862E200EFBE84 /* PatriotNCD8Light.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotNCD8Light.h; path = ../Photon/Plugins/NCD8Light/src/PatriotNCD8Light.h; sourceTree = "<group>"; };
+		E410858B256862F200EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD8Light/library.properties; sourceTree = "<group>"; };
+		E410858C2568630500EFBE84 /* light.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = light.ino; path = ../Photon/Plugins/NCD8Light/examples/light/light.ino; sourceTree = "<group>"; };
+		E410858D2568631C00EFBE84 /* PatriotNCD8Relay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotNCD8Relay.h; path = ../Photon/Plugins/NCD8Relay/src/PatriotNCD8Relay.h; sourceTree = "<group>"; };
+		E410858E2568631C00EFBE84 /* PatriotNCD8Relay.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD8Relay.cpp; path = ../Photon/Plugins/NCD8Relay/src/PatriotNCD8Relay.cpp; sourceTree = "<group>"; };
+		E410858F2568632A00EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD8Relay/library.properties; sourceTree = "<group>"; };
+		E41085902568633B00EFBE84 /* relay.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = relay.ino; path = ../Photon/Plugins/NCD8Relay/examples/relay/relay.ino; sourceTree = "<group>"; };
+		E41085912568636000EFBE84 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RonTest/project.properties; sourceTree = "<group>"; };
+		E41085922568637000EFBE84 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/FrontPanel/project.properties; sourceTree = "<group>"; };
+		E41085932568638200EFBE84 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RearPanel/project.properties; sourceTree = "<group>"; };
+		E41085942568639C00EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/IoTlib/library.properties; sourceTree = "<group>"; };
 		E4849C512566AB3C00A39734 /* condition.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = condition.cpp; path = ../Photon/IoTlib/src/condition.cpp; sourceTree = "<group>"; };
 		E4849C522566AB3C00A39734 /* devicenames.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = devicenames.cpp; path = ../Photon/IoTlib/src/devicenames.cpp; sourceTree = "<group>"; };
 		E4849C532566AB3C00A39734 /* states.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = states.h; path = ../Photon/IoTlib/src/states.h; sourceTree = "<group>"; };
@@ -56,6 +72,7 @@
 		E4849C502566A93E00A39734 /* IoTlib */ = {
 			isa = PBXGroup;
 			children = (
+				E41085942568639C00EFBE84 /* library.properties */,
 				E4849C652566AB3C00A39734 /* action.h */,
 				E4849C642566AB3C00A39734 /* behavior.cpp */,
 				E4849C562566AB3C00A39734 /* behavior.h */,
@@ -100,6 +117,7 @@
 		E4849C6F2566AD2A00A39734 /* RonTest */ = {
 			isa = PBXGroup;
 			children = (
+				E41085912568636000EFBE84 /* project.properties */,
 				E4849C6D2566ABFD00A39734 /* RonTest.ino */,
 			);
 			name = RonTest;
@@ -108,6 +126,7 @@
 		E4849C702566B27A00A39734 /* FrontPanel */ = {
 			isa = PBXGroup;
 			children = (
+				E41085922568637000EFBE84 /* project.properties */,
 				E4849C732566B2E600A39734 /* FrontPanel.ino */,
 			);
 			name = FrontPanel;
@@ -116,6 +135,7 @@
 		E4849C712566B28800A39734 /* RearPanel */ = {
 			isa = PBXGroup;
 			children = (
+				E41085932568638200EFBE84 /* project.properties */,
 				E4849C722566B2AF00A39734 /* RearPanel.ino */,
 			);
 			name = RearPanel;
@@ -135,6 +155,10 @@
 		E4849C752566B4A400A39734 /* NCD8Relay */ = {
 			isa = PBXGroup;
 			children = (
+				E41085902568633B00EFBE84 /* relay.ino */,
+				E410858F2568632A00EFBE84 /* library.properties */,
+				E410858E2568631C00EFBE84 /* PatriotNCD8Relay.cpp */,
+				E410858D2568631C00EFBE84 /* PatriotNCD8Relay.h */,
 			);
 			name = NCD8Relay;
 			sourceTree = "<group>";
@@ -142,6 +166,10 @@
 		E4849C762566B4B300A39734 /* NCD8Light */ = {
 			isa = PBXGroup;
 			children = (
+				E410858C2568630500EFBE84 /* light.ino */,
+				E410858B256862F200EFBE84 /* library.properties */,
+				E4108589256862E100EFBE84 /* PatriotNCD8Light.cpp */,
+				E410858A256862E200EFBE84 /* PatriotNCD8Light.h */,
 			);
 			name = NCD8Light;
 			sourceTree = "<group>";
@@ -149,6 +177,10 @@
 		E4849C772566B4BB00A39734 /* Light */ = {
 			isa = PBXGroup;
 			children = (
+				E4108588256862CA00EFBE84 /* light.ino */,
+				E41085872568628F00EFBE84 /* library.properties */,
+				E41085852568627000EFBE84 /* PatriotLight.cpp */,
+				E41085862568627000EFBE84 /* PatriotLight.h */,
 			);
 			name = Light;
 			sourceTree = "<group>";
