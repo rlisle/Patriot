@@ -99,7 +99,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                     return;
                 }
                 // If it wasn't a device name, it must be a state.
-                _states->addState(name,percent);
+                _states->addState(rightTopic,percent);
                 _devices->stateDidChange(_states);
                 
             }
