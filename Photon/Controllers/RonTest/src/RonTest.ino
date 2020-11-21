@@ -27,7 +27,7 @@
  */
 
 #include <IoT.h>
-//#include <PatriotNCD8Light.h>
+#include <PatriotNCD8Switch.h>
 #include <PatriotLight.h>
 
 //#define DEV_PTR (Device *)&
@@ -48,6 +48,8 @@ IoT     *iot;
 // NCD8Light test7(1, 6, "test7", 6);
 // NCD8Light test8(1, 7, "test8", 7);
 Light test(7, "test", false, true);
+
+NCD8Switch switch1(0x20, 1, "Switch1");
 
 void setup() {
     iot = IoT::getInstance();
@@ -74,6 +76,7 @@ void setup() {
     // Devices
     //  iot->addDevice(DEV_PTR led);
     iot->addDevice(&test);
+    iot->addDevice(&switch1);
     
     // Watchdog Timer
     //  PhotonWdgs::begin(true,true,10000,TIMER7);
