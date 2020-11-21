@@ -9,9 +9,6 @@ Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
-
-Changelog:
-2018-11-07: Created by refactoring from IoT
 ******************************************************************/
 #pragma once
 #include "behaviors.h"
