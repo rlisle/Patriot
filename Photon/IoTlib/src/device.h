@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+ 2020-11-20: Add NCD8Switch
 2018-01-17: Add function for device type
 2017-10-27: V2.0.0
 2017-05-20: Provide default implementations for everything,
@@ -70,7 +71,6 @@ class Device {
 
     void addBehavior(Behavior *behavior) { 
         _behaviors.addBehavior(behavior); 
-        //addToListOfSupportedStates(behavior->stateName);
     };
 
     void stateDidChange(States *states) {

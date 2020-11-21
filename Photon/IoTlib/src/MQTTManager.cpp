@@ -17,13 +17,13 @@ Changelog:
 2018-11-05: Created by refactoring from IoT
 ******************************************************************/
 #include "MQTTManager.h"
+#include "constants.h"
 
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 extern void globalQOScallback(unsigned int);
 
-MQTTManager::MQTTManager(String publishName, String brokerIP, String connectID, String controllerName, MQTTParser *parser)
+MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName, MQTTParser *parser)
 {
-    _publishName = publishName;
     _brokerIP = brokerIP;       // delete?
     _connectID = connectID;     // delete?
     _controllerName = controllerName;
@@ -50,8 +50,8 @@ void MQTTManager::connect() {
     if (_mqtt->isConnected()) {
         _mqtt->addQosCallback(globalQOScallback);
 
-        if(_mqtt->subscribe(_publishName+"/#") == false) {
-            log("Unable to subscribe to MQTT " + _publishName + "/#");
+        if(_mqtt->subscribe(kPublishName+"/#") == false) {
+            log("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
     } else {
         log("MQTT is NOT connected! Check MQTT IP address");
