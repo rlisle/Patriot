@@ -28,7 +28,6 @@
 class NCD8Switch : public Device
 {
 private:
-    String  _name;
     int     _address;
     int     _switchBitmap;
     int     _lastState;     // Bitmap of 8 switches
