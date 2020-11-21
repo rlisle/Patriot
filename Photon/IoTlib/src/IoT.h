@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+ 2020-11-21: Delete publishName, implement new MQTT protocol
 2020-11-14: Convert scene-like behaviors back to per-device summing
 2020-11-14: Rename activities to states
 2019-01-05: Removed watchdog timer due to OTA issues.
@@ -66,8 +67,6 @@ public:
      * These are used to provide names and change defaults.
      * Only these methods may be called before begin()
      */
-    void setPublishName(String publishName);
-
     void setControllerName(String controllerName);
 
     /**
@@ -104,8 +103,6 @@ private:
     bool    _isBridge;
     String  _controllerName;
     String  _proximityEvent;
-    // String  _supportedStates[kMaxNumberStates];
-    // int     _numSupportedStates;
     system_tick_t _startTime;
     system_tick_t _currentTime;
 
@@ -126,14 +123,8 @@ private:
     MQTTParser  *_mqttParser;
 
     void subscribeHandler(const char *eventName, const char *rawData);
-//    void addToListOfSupportedStates(String state);
-//    void buildSupportedStatesVariable();
     void periodicReset();
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);
     void mqttQOSHandler(unsigned int data);
-
-    // int  programHandler(String command);
-    // int  valueHandler(String deviceName);
-    // int  typeHandler(String deviceName);
 };

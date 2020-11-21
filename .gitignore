@@ -38,4 +38,4 @@ cmake-build-debug
 CMakeLists.txt
 
 # Xcode files
-Xcode/Xcode.xcodeproj/project.xcworkspace/xcuserdata/ron.xcuserdatad/UserInterfaceState.xcuserstate
+*.xcuserstate

@@ -43,4 +43,4 @@ static const String kControllersVariableName         = "Controllers";
 static const int    kMaxVariableStringLength         = 266;
 static const String kDevicesVariableName             = "Devices";
 static const int    kMaxNumberStates                 = 32;
-static const String kPublishVariableName             = "PublishName";
+static const String kPublishName                     = "patriot";

@@ -14,24 +14,22 @@ Changelog:
 2018-11-07: Created by refactoring from IoT
 ******************************************************************/
 #include "MQTTParser.h"
+#include "constants.h"
 
-MQTTParser::MQTTParser(String controllerName, String publishName, Devices *devices)
+MQTTParser::MQTTParser(String controllerName, Devices *devices)
 {
     _controllerName = controllerName;
-    _publishName = publishName;
     _devices = devices;
     _states = new States();
 }
 
 void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 {
-    uint publishNameLength = _publishName.length();
-
     log("received: " + topic + ", " + message);
 
-    if(topic.startsWith(_publishName)) {
+    if(topic.startsWith(kPublishName)) {
         // LEGACY
-        if(topic.length() == publishNameLength) {
+        if(topic.length() == kPublishName.length()) {
             int colonPosition = message.indexOf(':');
             String name = message.substring(0,colonPosition);
             String state = message.substring(colonPosition+1);
@@ -103,7 +101,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 // Respond if ping is addressed to us
                 if(rightTopic.equalsIgnoreCase(_controllerName)) {
                     log("Ping addressed to us");
-                    mqtt->publish(_publishName + "/pong/" + _controllerName, message);
+                    mqtt->publish(kPublishName + "/pong/" + _controllerName, message);
                 }
 
             // PONG

@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-21: Delete publishName, implement new MQTT protocol
 2020-11-14: Rename activities to states. Delete supportedStates.
 2019-01-05: v3.0.0 Removed watchdog timer due to OTA issues.
 2019-01-01: Replace 2am reset with hardware watchdog timer.
@@ -74,27 +75,6 @@ void globalPublish(String topic, String message) {
 }
 
 /**
- * Supported States variable
- * This variable is updated to contain a comma separated list of
- * the state names supported by this controller.
- * This allows applications to automatically determine state names
- */
-//String supportedStatesVariable;
-
-/**
- * Publish Name variable
- * This variable communicates the Particle.io publish event name.
- * This allows applications to automatically determine the event name
- * to use when publishing or subscribing to events to/from this device.
- *
- * It is also used by plugins when publishing events.
- *
- * Note: Do not change this or the Alexa and iOS apps my not work.
- *       This will be fixed in the future.
- */
-String publishNameVariable;
-
-/**
  * Singleton IoT instance
  * Use getInstance() instead of constructor
  */
@@ -114,7 +94,7 @@ IoT* IoT::_instance = NULL;
  * a spot to add more extensive logging or analytics
  * @param msg
  */
-void IoT::log(String msg)   //TODO: add log type "info", "debug", "warning", "error", etc.
+void IoT::log(String msg)
 {
     Serial.println(msg);
 
@@ -132,27 +112,11 @@ IoT::IoT()
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
     _factory                = new Factory();
     _hasBegun               = false;
-    publishNameVariable     = kDefaultPublishName;
     _controllerName         = kDefaultControllerName;
-//    _numSupportedStates     = 0;
     _mqttManager            = NULL;
     _mqttParser             = NULL;
     _startTime              = Time.now();
     _currentTime            = _startTime;
-}
-
-/**
- * This function is used to change the particle.io publish
- * event name. Currently the event name is hardcoded to
- * 'patriot' in the Alexa skills and iOS apps.
- * In the future they will determine this from the Photon.
- * Until then, do not use this function.
- *
- * @param publishName
- */
-void IoT::setPublishName(String publishName)
-{
-    publishNameVariable = publishName;
 }
 
 /**
@@ -180,39 +144,7 @@ void IoT::begin()
     _deviceNames = new DeviceNames();
 
     // Subscribe to events. There is a 1/second limit for events.
-    Particle.subscribe(publishNameVariable, globalSubscribeHandler, MY_DEVICES);
-
-    // Register cloud variables. Up to 20 may be registered. Name length max 12.
-    // There does not appear to be any time limit/throttle on variable reads.
-    // if(!Particle.variable(kSupportedStatesVariableName, supportedStatesVariable))
-    // {
-    //     log("Unable to expose "+String(kSupportedStatesVariableName)+" variable");
-    //     return;
-    // }
-    if(!Particle.variable(kPublishVariableName, publishNameVariable))
-    {
-        log("Unable to expose publishName variable");
-        return;
-    }
-
-    // Register cloud functions. Up to 15 may be registered. Name length max 12.
-    // Allows 1 string argument up to 63 chars long.
-    // There does not appear to be any time limit/throttle on function calls.
-    // if(!Particle.function("program", &IoT::programHandler, this))
-    // {
-    //     log("Unable to register program handler");
-    // }
-    // if(!Particle.function("value", &IoT::valueHandler, this))
-    // {
-    //     log("Unable to register value handler");
-    // }
-    // if(!Particle.function("type", &IoT::typeHandler, this))
-    // {
-    //     log("Unable to register type handler");
-    // }
-
-    // Start hardware watchdog timer
-    //PhotonWdgs::begin(true,true,10000,TIMER7);
+    Particle.subscribe(kPublishName, globalSubscribeHandler, MY_DEVICES);
 }
 
 // MQTT 
@@ -220,8 +152,8 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
     Serial.println("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    _mqttParser = new MQTTParser(_controllerName, publishNameVariable, _devices);
-    _mqttManager = new MQTTManager(publishNameVariable, brokerIP, connectID, _controllerName, _mqttParser);
+    _mqttParser = new MQTTParser(_controllerName, _devices);
+    _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName, _mqttParser);
 }
 
 void IoT::mqttPublish(String topic, String message)
