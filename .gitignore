@@ -39,3 +39,4 @@ CMakeLists.txt
 
 # Xcode files
 *.xcuserstate
+xcuserdata
