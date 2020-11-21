@@ -5,6 +5,11 @@
  - Switch inputs converted to patriot MQTT messages
  - Supports multiple boards
 
+ It is expected that the input will be connected to a switch
+ that is connected to ground. The pull-up resistor will be
+ enabled, making this a very simple circuit.
+ Therefore the logic is inverted: low = 100, high = 0
+ 
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
@@ -79,7 +84,7 @@ int NCD8Switch::initializeBoard() {
 
 /**
  * isOn
- * Return state of switch
+ * Return state of switch (inverted: low = 100, high = 0)
  */
 bool NCD8Switch::isOn() {
     int retries = 0;
@@ -98,7 +103,7 @@ bool NCD8Switch::isOn() {
     if (Wire.available() == 1)
     {
         int data = Wire.read();
-        return((data & _switchBitmap) != 0);
+        return((data & _switchBitmap) == 0);    // Inverted
     }
     Serial.println("Error reading switch");
     return false;
