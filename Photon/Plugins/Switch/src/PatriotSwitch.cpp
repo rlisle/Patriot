@@ -37,7 +37,7 @@ Changelog:
  */
 Switch::Switch(int pinNum, String name)
         : Device(name, DeviceType::Switch),
-        _pin(pinNum),
+        _pin(pinNum)
 {
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);

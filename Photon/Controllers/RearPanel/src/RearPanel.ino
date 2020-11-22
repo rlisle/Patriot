@@ -60,12 +60,12 @@ IoT *iot;
 
 // To use persistent storage, insert "retained" before NCD8Relay
 NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 2);
-NCD8Light loft(ADDRESS, 1, "Loft");
+NCD8Light loft(ADDRESS, 1, "Loft", 2);
 NCD8Light piano(ADDRESS, 2, "Piano", 2);
-NCD8Light rampPorch(ADDRESS, 3, "RampPorch");
-NCD8Light rampAwning(ADDRESS, 4, "RampAwning");
-NCD8Light rearPorch(ADDRESS, 5, "RearPorch");
-NCD8Light rearAwning(ADDRESS, 6, "RearAwning");
+NCD8Light rampPorch(ADDRESS, 3, "RampPorch", 2);
+NCD8Light rampAwning(ADDRESS, 4, "RampAwning", 2);
+NCD8Light rearPorch(ADDRESS, 5, "RearPorch", 2);
+NCD8Light rearAwning(ADDRESS, 6, "RearAwning", 2);
 
 
 void setup() {
