@@ -30,6 +30,7 @@ void Devices::addDevice(Device *device)
     if(_devices == NULL) {
 //        Serial.println("  first device");
         _devices = device;
+//        Serial.println("New device name: "+String(_devices->name()));
     } else {
 //        Serial.println("  add device");
         Device *ptr = _devices;
@@ -38,6 +39,7 @@ void Devices::addDevice(Device *device)
             ptr = ptr->_next;
         }
         ptr->_next = device;
+//        Serial.println("Added device name: "+String(ptr->_next->name()));
     }
 }
 

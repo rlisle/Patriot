@@ -31,7 +31,6 @@ Changelog:
 class Switch : public Device
 {
 private:
-    String     _name;
     int        _pin;
     long       _lastPollTime;
 

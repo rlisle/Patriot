@@ -67,6 +67,12 @@ NCD8Light rampAwning(ADDRESS, 4, "RampAwning", 2);
 NCD8Light rearPorch(ADDRESS, 5, "RearPorch", 2);
 NCD8Light rearAwning(ADDRESS, 6, "RearAwning", 2);
 
+Switch ceilingSwitch(A0, "OfficeCeilingSwitch");
+Switch loftSwitch(A1, "LoftSwitch");
+Switch rampPorchSwitch(A2, "RampPorchSwitch");
+Switch rampAwningSwitch(A3, "RampAwningSwitch");
+Switch rearPorchSwitch(A4, "RearPorchSwitch");
+Switch rearAwningSwitch(A5, "RearAwningSwitch");
 
 void setup() {
     iot = IoT::getInstance();
@@ -79,7 +85,6 @@ void setup() {
     wakeup->addCondition(new Condition("goodmorning", '>', 0));
     ceiling.addBehavior(wakeup);
 
-    
     iot->addDevice(&ceiling);
     iot->addDevice(&loft);
     iot->addDevice(&piano);
@@ -88,6 +93,13 @@ void setup() {
     iot->addDevice(&rearPorch);
     iot->addDevice(&rearAwning);
     
+    iot->addDevice(&ceilingSwitch);
+    iot->addDevice(&loftSwitch);
+    iot->addDevice(&rampPorchSwitch);
+    iot->addDevice(&rampAwningSwitch);
+    iot->addDevice(&rearPorchSwitch);
+    iot->addDevice(&rearAwningSwitch);
+
 }
 
 void loop() {

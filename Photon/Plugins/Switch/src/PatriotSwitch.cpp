@@ -85,8 +85,7 @@ bool Switch::isTimeToCheckSwitch()
 bool Switch::didSwitchChange()
 {
     bool newState = digitalRead(_pin) == 0; // Inverted intentionally
-    bool isOn = _percent > 0;
-    if (newState == isOn)
+    if (newState == isOn())
     {
         return false;
     }
@@ -102,8 +101,7 @@ bool Switch::didSwitchChange()
 void Switch::notify()
 {
     String topic = "patriot/" + _name;
-    String message = _percent > 0 ? "100" : "0";
-    Serial.println("Publishing t:" + topic + ", m:" + message);
+    String message = String(_percent);
     if(publish != NULL) {
         publish(topic,message);
     } else {
