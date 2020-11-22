@@ -49,6 +49,7 @@
  * 11/04/17 Initial files baseed on FrontPanel
  */
 #include <IoT.h>
+#include <PatriotLight.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 
@@ -67,6 +68,8 @@ NCD8Light rampAwning(ADDRESS, 4, "RampAwning", 2);
 NCD8Light rearPorch(ADDRESS, 5, "RearPorch", 2);
 NCD8Light rearAwning(ADDRESS, 6, "RearAwning", 2);
 
+Light blueLed(7, "blueLed", false, true);
+
 Switch ceilingSwitch(A0, "OfficeCeilingSwitch");
 Switch loftSwitch(A1, "LoftSwitch");
 Switch rampPorchSwitch(A2, "RampPorchSwitch");
@@ -80,11 +83,17 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
-    // Behaviors/Activities
+    // BEHAVIORS
+    // wakeup
     Behavior *wakeup = new Behavior(10);
     wakeup->addCondition(new Condition("goodmorning", '>', 0));
     ceiling.addBehavior(wakeup);
-
+    //LoftSwitch
+    Behavior *loftSwitchBlueLed = new Behavior(100);
+    loftSwitchBlueLed->addCondition(new Condition("loftSwitch", '>', 0));
+    blueLed.addBehavior(loftSwitchBlueLed);    
+    
+    // ADD ALL DEVICES
     iot->addDevice(&ceiling);
     iot->addDevice(&loft);
     iot->addDevice(&piano);
@@ -92,6 +101,7 @@ void setup() {
     iot->addDevice(&rampAwning);
     iot->addDevice(&rearPorch);
     iot->addDevice(&rearAwning);
+    iot->addDevice(&blueLed);
     
     iot->addDevice(&ceilingSwitch);
     iot->addDevice(&loftSwitch);
@@ -99,7 +109,6 @@ void setup() {
     iot->addDevice(&rampAwningSwitch);
     iot->addDevice(&rearPorchSwitch);
     iot->addDevice(&rearAwningSwitch);
-
 }
 
 void loop() {
