@@ -39,7 +39,7 @@ int Behavior::evaluateStates(States *states)
         Condition* condition = _conditions->getCondition(x);
 //        Serial.println("  Condition state: " + condition->_stateName);
         if(condition->isTrue(states) == false) {
-            Serial.println("  False, returning 0");
+//            Serial.println("  False, returning 0");
             return 0;
         }
     }
