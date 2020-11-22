@@ -29,13 +29,11 @@
 		E4530C15256A97C50021E5CB /* PatriotSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotSwitch.h; path = ../Photon/Plugins/Switch/src/PatriotSwitch.h; sourceTree = "<group>"; };
 		E4530C16256A97C50021E5CB /* PatriotSwitch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotSwitch.cpp; path = ../Photon/Plugins/Switch/src/PatriotSwitch.cpp; sourceTree = "<group>"; };
 		E4849C512566AB3C00A39734 /* condition.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = condition.cpp; path = ../Photon/IoTlib/src/condition.cpp; sourceTree = "<group>"; };
-		E4849C522566AB3C00A39734 /* devicenames.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = devicenames.cpp; path = ../Photon/IoTlib/src/devicenames.cpp; sourceTree = "<group>"; };
 		E4849C532566AB3C00A39734 /* states.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = states.h; path = ../Photon/IoTlib/src/states.h; sourceTree = "<group>"; };
 		E4849C542566AB3C00A39734 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = constants.h; path = ../Photon/IoTlib/src/constants.h; sourceTree = "<group>"; };
 		E4849C552566AB3C00A39734 /* IoT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IoT.h; path = ../Photon/IoTlib/src/IoT.h; sourceTree = "<group>"; };
 		E4849C562566AB3C00A39734 /* behavior.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = behavior.h; path = ../Photon/IoTlib/src/behavior.h; sourceTree = "<group>"; };
 		E4849C572566AB3C00A39734 /* factory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = factory.cpp; path = ../Photon/IoTlib/src/factory.cpp; sourceTree = "<group>"; };
-		E4849C582566AB3C00A39734 /* devicenames.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = devicenames.h; path = ../Photon/IoTlib/src/devicenames.h; sourceTree = "<group>"; };
 		E4849C592566AB3C00A39734 /* MQTTParser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MQTTParser.cpp; path = ../Photon/IoTlib/src/MQTTParser.cpp; sourceTree = "<group>"; };
 		E4849C5A2566AB3C00A39734 /* IoT.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = IoT.cpp; path = ../Photon/IoTlib/src/IoT.cpp; sourceTree = "<group>"; };
 		E4849C5B2566AB3C00A39734 /* condition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = condition.h; path = ../Photon/IoTlib/src/condition.h; sourceTree = "<group>"; };
@@ -108,8 +106,6 @@
 				E4849C602566AB3C00A39734 /* conditions.h */,
 				E4849C542566AB3C00A39734 /* constants.h */,
 				E4849C5C2566AB3C00A39734 /* device.h */,
-				E4849C522566AB3C00A39734 /* devicenames.cpp */,
-				E4849C582566AB3C00A39734 /* devicenames.h */,
 				E4849C5D2566AB3C00A39734 /* devices.cpp */,
 				E4849C6B2566AB3C00A39734 /* devices.h */,
 				E4849C572566AB3C00A39734 /* factory.cpp */,

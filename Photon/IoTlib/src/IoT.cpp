@@ -189,13 +189,6 @@ void IoT::addDevice(Device *device)
     _devices->addDevice(device);
     device->log = globalLog;
     device->publish = globalPublish;
-    if(device->name() != "") {
-        buildDevicesVariable(_devices);
-    }
-    else
-    {
-        Serial.println("IoT adding unnamed device. (Probably an input only device)");
-    }
     //TODO: we could call buildSupportedStatesVariable here instead of requiring controllers to do it.
 }
 
