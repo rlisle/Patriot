@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-22: Convert DeviceNames to linked list.
 2020-11-21: Delete publishName, implement new MQTT protocol
 2020-11-14: Rename activities to states. Delete supportedStates.
 2019-01-05: v3.0.0 Removed watchdog timer due to OTA issues.
@@ -186,11 +187,10 @@ void IoT::loop()
 void IoT::addDevice(Device *device)
 {
     _devices->addDevice(device);
+    device->log = globalLog;
+    device->publish = globalPublish;
     if(device->name() != "") {
-//        Serial.println("IoT adding device: "+device->name()+".");
-        device->log = globalLog;
-        device->publish = globalPublish;
-        _deviceNames->addDevice(device->name());
+        buildDevicesVariable(_devices);
     }
     else
     {

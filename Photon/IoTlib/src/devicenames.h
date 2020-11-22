@@ -17,6 +17,7 @@ All text above must be included in any redistribution.
 Datasheets:
 
 Changelog:
+2020-11-22: Simplify using devices object.
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2017-01-10: Initial version
@@ -25,21 +26,12 @@ Changelog:
 
 #include "application.h"  // Defines String
 
-#define MAX_NUM_DEVICENAMES 16
-
 class DeviceNames
 {
 public:
-
-  DeviceNames();
-
-  int       addDevice(String device);
-  bool      doesNameExist(String name);
-
-private:
-  uint8_t   _numDevices;
-  String    _devices[MAX_NUM_DEVICENAMES];
-
-  void      expose();
-  void      buildDevicesVariable();
+    
+    DeviceNames();
+    
+    void      expose();
+    void      buildDevicesVariable(Devices *devices);
 };

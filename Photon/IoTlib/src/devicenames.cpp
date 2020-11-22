@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-22: Simplify using Devices object.
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-12-20: Initial version
@@ -22,8 +23,6 @@ Changelog:
 String globalDevicesVariable;
 
 DeviceNames::DeviceNames() {
-    // Without this method, strange error is reported and build fails
-    _numDevices = 0;
     expose();
 }
 
@@ -31,48 +30,25 @@ void DeviceNames::expose()
 {
     if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
     {
-      Serial.println("Error: Unable to expose " + kDevicesVariableName + " variable");
+        Serial.println("Error: Unable to expose " + kDevicesVariableName + " variable");
     }
 }
 
-// Returns non-zero if # devices exceeded
-int DeviceNames::addDevice(String device)
+void DeviceNames::buildDevicesVariable(Devices *devices)
 {
-  if (_numDevices < MAX_NUM_DEVICENAMES-1)
-  {
-    _devices[_numDevices++] = device;
-    buildDevicesVariable();
-  } else {
-    return -1;
-  }
-  return 0;
-}
-
-bool DeviceNames::doesNameExist(String name)
-{
-  for(int i=0; i<_numDevices; i++)
-  {
-      if(_devices[i].equalsIgnoreCase(name)) {
-        return true;
-      }
-  }
-  return false;
-}
-
-void DeviceNames::buildDevicesVariable()
-{
-  String newVariable = "";
-  for(int i=0; i<_numDevices; i++)
-  {
-    newVariable += _devices[i];
-    if (i < _numDevices-1) {
-      newVariable += ",";
+    String newVariable = "";
+    
+    for(int i=0; i<devices->NumDevices();)
+    {
+        Device *device = newVariable += devices->getDeviceByNum(i);
+        newVariable += device->name();
+        if (i < _numDevices-1) {
+            newVariable += ", ";
+        }
     }
-  }
-  if(newVariable.length() < kMaxVariableStringLength) {
-    globalDevicesVariable = newVariable;
-  } else {
-    Serial.println("Devices variable is too long. Need to extend to a 2nd variable");
-  }
-
+    if(newVariable.length() < kMaxVariableStringLength) {
+        globalDevicesVariable = newVariable;
+    } else {
+        Serial.println("Devices variable is too long. Need to extend to a 2nd variable");
+    }
 }
