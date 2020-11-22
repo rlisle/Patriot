@@ -31,9 +31,7 @@ void DeviceNames::expose()
 {
     if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
     {
-      Serial.print("Error: Unable to expose ");
-      Serial.print(kDevicesVariableName);
-      Serial.println(" variable");
+      Serial.println("Error: Unable to expose " + kDevicesVariableName + " variable");
     }
 }
 

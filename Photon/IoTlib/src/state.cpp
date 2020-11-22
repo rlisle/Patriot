@@ -18,8 +18,8 @@ Changelog:
 
 State::State(String name, int value)
 {
-    Serial.print("New state: ");
-    Serial.println(name);
+//    Serial.print("New state: ");
+//    Serial.println(name);
     
     _next  = NULL;
     _value = value;

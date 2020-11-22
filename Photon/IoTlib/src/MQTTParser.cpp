@@ -94,14 +94,12 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 Device* device = _devices->getDeviceWithName(rightTopic);
                 if(device)
                 {
-                    log("Device " + rightTopic + " found, setting to " + message);
+//                    log("Device " + rightTopic + " found, setting to " + message);
                     device->setPercent(percent);
-                    return;
+                    // Fall thru to add to state table also, in case is used in a condition
                 }
-                // If it wasn't a device name, it must be a state.
                 _states->addState(rightTopic,percent);
                 _devices->stateDidChange(_states);
-                
             }
         }
     }

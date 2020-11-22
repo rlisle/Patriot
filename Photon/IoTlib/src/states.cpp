@@ -39,11 +39,11 @@ States::States() {
 
 // States are added only once
 State *States::addState(String name, int value) {
-    Serial.print("addState " + name + "=" + String(value));
+//    Serial.print("addState " + name + "=" + String(value));
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
-        Serial.println(": adding");
+//        Serial.println(": adding");
         State *state = new State(name,value);
         if(_states == NULL) {
             _states = state;
@@ -53,7 +53,7 @@ State *States::addState(String name, int value) {
             ptr->_next = state;
         }
     } else {    // State already exists
-        Serial.println(": updated");
+//        Serial.println(": updated");
         state->_value = value;
     }
 
@@ -92,12 +92,12 @@ void States::buildStateVariable() {
     String newVariable = "";
     State *ptr = _states;
     while (ptr != NULL) {
-        Serial.print("state=");
-        Serial.println(ptr->_name);
+//        Serial.print("state=");
+//        Serial.println(ptr->_name);
         newVariable += ptr->_name;
         newVariable += ":";
-        Serial.print("value=");
-        Serial.println(ptr->_value);
+//        Serial.print("value=");
+//        Serial.println(ptr->_value);
         newVariable += String(ptr->_value);
         if (ptr->_next != NULL) {
             newVariable += ",";

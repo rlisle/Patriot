@@ -29,15 +29,15 @@ Behaviors::Behaviors()
 
 void Behaviors::addBehavior(Behavior *behavior)
 {
-    Serial.println("Adding behavior");
+//    Serial.println("Adding behavior");
     if(_behaviors == NULL) {
-        Serial.println("  first behavior");
+//        Serial.println("  first behavior");
         _behaviors = behavior;
     } else {
-        Serial.println("  add behavior");
+//        Serial.println("  add behavior");
         Behavior *ptr = _behaviors;
         while(ptr->_next != NULL) {
-            Serial.println("  advance to next");
+//            Serial.println("  advance to next");
             ptr = ptr->_next;
         }
         ptr->_next = behavior;

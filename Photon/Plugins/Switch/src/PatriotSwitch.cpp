@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-22: Convert to v5 with MQTT support
 2018-01-18: Add type property
 2017-10-27: v2.0.0. Change name to command.
 2017-05-17: Move to separate library
@@ -26,23 +27,21 @@ Changelog:
 
 #include "PatriotSwitch.h"
 
-extern String publishNameVariable;
-
-#define kDebounceDelay 50
+#define MILLIS_PER_SECOND 1000
+#define POLL_INTERVAL_MILLIS 250
 
 /**
  * Constructor
  * @param pinNum int pin number that is connected to the switch
  * @param name  String name of the event to send when switch changes
  */
-Switch::Switch(int pinNum, String name, String command)
+Switch::Switch(int pinNum, String name)
         : Device(name, DeviceType::Switch),
-        _pin(pinNum),
-        _command(command)
+        _pin(pinNum)
 {
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);
-    _lastReadTime = millis();
+    _lastPollTime = millis();
 }
 
 
@@ -70,11 +69,11 @@ void Switch::loop()
 bool Switch::isTimeToCheckSwitch()
 {
     long currentTime = millis();
-    if (currentTime < _lastReadTime + kDebounceDelay)
+    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
     {
         return false;
     }
-    _lastReadTime = currentTime;
+    _lastPollTime = currentTime;
     return true;
 }
 
@@ -85,9 +84,8 @@ bool Switch::isTimeToCheckSwitch()
  */
 bool Switch::didSwitchChange()
 {
-    bool newState = digitalRead(_pin) == 0;
-    bool isOn = _percent > 0;
-    if (newState == isOn)
+    bool newState = digitalRead(_pin) == 0; // Inverted intentionally
+    if (newState == isOn())
     {
         return false;
     }
@@ -102,10 +100,11 @@ bool Switch::didSwitchChange()
  */
 void Switch::notify()
 {
-    String pubString = _command + ":" + (_percent > 0 ? "100" : "0");
-    Serial.println(pubString);
-    //TODO: get event name from IoT instead of hardcoded "patriot"
-    //Particle.publish("patriot", pubString, 60, PRIVATE);
-
-    Particle.publish(publishNameVariable, pubString, 60, PRIVATE);
+    String topic = "patriot/" + _name;
+    String message = String(_percent);
+    if(publish != NULL) {
+        publish(topic,message);
+    } else {
+        Serial.println("Error: publish ptr not set");
+    }
 }

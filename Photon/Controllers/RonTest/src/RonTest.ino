@@ -30,8 +30,6 @@
 #include <PatriotNCD8Switch.h>
 #include <PatriotLight.h>
 
-//#define DEV_PTR (Device *)&
-
 String mqttServerIP = "192.168.10.184";
 
 IoT     *iot;
@@ -83,8 +81,5 @@ void setup() {
 }
 
 void loop() {
-    // call tickle regularly from your code, to ensure the watchdogs do not reset
-    //  PhotonWdgs::tickle();
-    
     iot->loop();
 }

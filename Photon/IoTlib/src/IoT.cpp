@@ -150,7 +150,7 @@ void IoT::begin()
 // MQTT 
 void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
-    Serial.println("Connecting to MQTT patriot on IP " + brokerIP);
+//    Serial.println("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
     _mqttParser = new MQTTParser(_controllerName, _devices);
     _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName, _mqttParser);
@@ -187,7 +187,7 @@ void IoT::addDevice(Device *device)
 {
     _devices->addDevice(device);
     if(device->name() != "") {
-        Serial.println("IoT adding device: "+device->name()+".");
+//        Serial.println("IoT adding device: "+device->name()+".");
         device->log = globalLog;
         device->publish = globalPublish;
         _deviceNames->addDevice(device->name());
@@ -241,7 +241,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
     String data(rawData);
     String event(eventName);
-    Serial.println("Subscribe handler event: " + event + ", data: " + data);
+//    Serial.println("Subscribe handler event: " + event + ", data: " + data);
 
     // Bridge events to MQTT if this is a Bridge
     if(_isBridge)
@@ -265,7 +265,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     if(device)
     {
         int percent = state.toInt();
-        Serial.println(" percent = "+String(percent));
+//        Serial.println(" percent = "+String(percent));
         //TODO: Instead, we need a behavior for this. Else lost on next state change.
         device->setPercent(percent);
         return;
