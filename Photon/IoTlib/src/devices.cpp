@@ -16,12 +16,24 @@ Changelog:
 2016-09-11: Initial version
 ******************************************************************/
 #include "devices.h"
+#include "constants.h"
+
+String globalDevicesVariable;
 
 Devices::Devices()
 {
     // Without this method, strange error is reported and build fails
     //TODO: dynamically allocate array space
     _devices = NULL;
+    expose();
+}
+
+void Devices::expose()
+{
+    if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
+    {
+        Serial.println("Error: Unable to expose " + kDevicesVariableName + " variable");
+    }
 }
 
 void Devices::addDevice(Device *device)
@@ -41,6 +53,8 @@ void Devices::addDevice(Device *device)
         ptr->_next = device;
 //        Serial.println("Added device name: "+String(ptr->_next->name()));
     }
+    //TODO: combine with the above loop
+    buildDevicesVariable();
 }
 
 // Called whenever "state" changes.
@@ -98,3 +112,21 @@ int Devices::numDevices()
     }
     return i;
 }
+
+void Devices::buildDevicesVariable()
+{
+    String newVariable = "";
+    
+    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
+        newVariable += ptr->_name;
+        if (ptr->_next != NULL) {
+            newVariable += ", ";
+        }
+    }
+    if(newVariable.length() < kMaxVariableStringLength) {
+        globalDevicesVariable = newVariable;
+    } else {
+        Serial.println("Devices variable is too long. Need to extend to a 2nd variable");
+    }
+}
+

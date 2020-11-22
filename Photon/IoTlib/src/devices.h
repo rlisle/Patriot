@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-22: Integrate DeviceNames
 2017-03-24: Rename Patriot
 2017-03-05: Convert to v2 particle lib
 2016-07-24: Initial version
@@ -38,13 +39,12 @@ public:
 
   void        stateDidChange(States *states);
 
-  bool        expose(String variableName);
-
 private:
   Device*     _devices;     // Linked list of device objects
 
   bool        _isVariableExposed;
   String      *_ptrToVariable;
 
-  void buildDeviceVariable();
+  void buildDevicesVariable();
+    void expose();
 };

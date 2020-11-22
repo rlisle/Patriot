@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-22: Integrate DeviceNames into Devices
 2020-11-21: Delete publishName, implement new MQTT protocol
 2020-11-14: Rename activities to states. Delete supportedStates.
 2019-01-05: v3.0.0 Removed watchdog timer due to OTA issues.
@@ -141,7 +142,6 @@ void IoT::begin()
     Serial.begin(57600);
 
     _devices = new Devices();
-    _deviceNames = new DeviceNames();
 
     // Subscribe to events. There is a 1/second limit for events.
     Particle.subscribe(kPublishName, globalSubscribeHandler, MY_DEVICES);
@@ -186,16 +186,8 @@ void IoT::loop()
 void IoT::addDevice(Device *device)
 {
     _devices->addDevice(device);
-    if(device->name() != "") {
-//        Serial.println("IoT adding device: "+device->name()+".");
-        device->log = globalLog;
-        device->publish = globalPublish;
-        _deviceNames->addDevice(device->name());
-    }
-    else
-    {
-        Serial.println("IoT adding unnamed device. (Probably an input only device)");
-    }
+    device->log = globalLog;
+    device->publish = globalPublish;
     //TODO: we could call buildSupportedStatesVariable here instead of requiring controllers to do it.
 }
 
