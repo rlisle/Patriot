@@ -16,6 +16,7 @@ Changelog:
 2016-09-11: Initial version
 ******************************************************************/
 #include "devices.h"
+#include "constants.h"
 
 String globalDevicesVariable;
 
@@ -116,7 +117,7 @@ void Devices::buildDevicesVariable()
 {
     String newVariable = "";
     
-    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
+    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
         newVariable += ptr->_name;
         if (ptr->_next != NULL) {
             newVariable += ", ";

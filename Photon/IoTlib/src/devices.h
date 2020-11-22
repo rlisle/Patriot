@@ -39,13 +39,12 @@ public:
 
   void        stateDidChange(States *states);
 
-  bool        expose(String variableName);
-
 private:
   Device*     _devices;     // Linked list of device objects
 
   bool        _isVariableExposed;
   String      *_ptrToVariable;
 
-  void buildDeviceVariable();
+  void buildDevicesVariable();
+    void expose();
 };
