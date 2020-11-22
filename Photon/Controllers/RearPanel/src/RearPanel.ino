@@ -52,23 +52,21 @@
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 
-#define DEV_PTR (Device *)&
-#define ADDRESS1 0x20
-#define ADDRESS2 1   // I2C PWM board switches low switch on
+#define ADDRESS 1   // PWM board address A0 jumper set
 
 String mqttServer = "192.168.10.184";
 
 IoT *iot;
 
 // To use persistent storage, insert "retained" before NCD8Relay
-NCD8Relay loft(ADDRESS1, NUMRELAYS, 4, "Loft");
-NCD8Relay rampAwning(ADDRESS1, NUMRELAYS, 2, "RampAwning");
-NCD8Relay rampPorch(ADDRESS1, NUMRELAYS, 3, "RampPorch");
-NCD8Relay rearAwning(ADDRESS1, NUMRELAYS, 0, "RearAwning");
-NCD8Relay rearPorch(ADDRESS1, NUMRELAYS, 1, "RearPorch");
+NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 2);
+NCD8Light loft(ADDRESS, 1, "Loft");
+NCD8Light piano(ADDRESS, 2, "Piano", 2);
+NCD8Light rampPorch(ADDRESS, 3, "RampPorch");
+NCD8Light rampAwning(ADDRESS, 4, "RampAwning");
+NCD8Light rearPorch(ADDRESS, 5, "RearPorch");
+NCD8Light rearAwning(ADDRESS, 6, "RearAwning");
 
-NCD8Light piano(ADDRESS2, 0, "Piano", 2);
-NCD8Light office(ADDRESS2, 1, "OfficeCeiling", 2);
 
 void setup() {
     iot = IoT::getInstance();
@@ -76,74 +74,20 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
-    iot->addDevice(DEV_PTR loft);
-    iot->addDevice(DEV_PTR rampAwning);
-    iot->addDevice(DEV_PTR rampPorch);
-    iot->addDevice(DEV_PTR rearAwning);
-    iot->addDevice(DEV_PTR rearPorch);
-
-    iot->addDevice(DEV_PTR piano);
-    iot->addDevice(DEV_PTR office);
+    // Behaviors/Activities
+    Behavior *wakeup = new Behavior(10);
+    wakeup->addCondition(new Condition("goodmorning", '>', 0));
+    ceiling.addBehavior(wakeup);
 
     
-    // BEHAVIORS
-    // Arriving
-
-    // Cleaning
-    // iot->addBehavior(new Behavior(DEV_PTR office, "cleaning", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR loft,   "cleaning", '>', 0, 100));
-
-    // Cooking
-
-    // Evening - Porch lights on (awnings once we can detect if extended)
-    // iot->addBehavior(new Behavior(DEV_PTR rampPorch,  "evening", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR rearPorch,  "evening", '>', 0, 100));
-
-    // Everything (On/Off)
-    // iot->addBehavior(new Behavior(DEV_PTR office, "everything", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR loft,   "everything", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR rampPorch,  "everything", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR rampAwning, "everything", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR rearPorch,  "everything", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR rearAwning, "everything", '>', 0, 100));
-
-    // Hosting
-
-    // Leaving
-    // iot->addBehavior(new Behavior(DEV_PTR office, "leaving", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR loft,   "leaving", '>', 0, 0));
-
-    // Morning
-    // iot->addBehavior(new Behavior(DEV_PTR office, "morning", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR loft,   "morning", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rampPorch,  "morning", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rampAwning, "morning", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rearPorch,  "morning", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rearAwning, "morning", '>', 0, 0));
-
-    // Reading
-
-    // Retiring - everything off except bedroom and a few low lights
-    // iot->addBehavior(new Behavior(DEV_PTR office, "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR loft,   "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rampPorch,  "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rampAwning, "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rearPorch,  "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rearAwning, "bedtime", '>', 0, 0));
-
-    // Sleeping - Everything off
-    iot->addBehavior(new Behavior(DEV_PTR office, "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR loft,   "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR rampPorch,  "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR rampAwning, "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR rearPorch,  "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR rearAwning, "sleeping", '>', 0, 0));
-
-    // Waking
+    iot->addDevice(&ceiling);
+    iot->addDevice(&loft);
+    iot->addDevice(&piano);
+    iot->addDevice(&rampPorch);
+    iot->addDevice(&rampAwning);
+    iot->addDevice(&rearPorch);
+    iot->addDevice(&rearAwning);
     
-    // Watching
-
-
 }
 
 void loop() {
