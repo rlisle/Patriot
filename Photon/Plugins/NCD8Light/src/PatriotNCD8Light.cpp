@@ -94,6 +94,7 @@ int8_t NCD8Light::initializeBoard() {
  * @param percent Int 0 to 100.
  */
 void NCD8Light::setPercent(int percent) {
+    Serial.println("Dimmer " + String(_name) + " setPercent " + String(percent));
     _targetPercent = percent;
     if(_dimmingDuration == 0.0) {
         _percent = percent;
