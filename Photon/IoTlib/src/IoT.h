@@ -38,7 +38,6 @@ Changelog:
 #include "behavior.h"
 #include "states.h"
 #include "devices.h"
-#include "devicenames.h"
 #include "MQTTManager.h"
 #include "MQTTParser.h"
 #include "factory.h"
@@ -117,8 +116,7 @@ private:
      * Include other needed objects
      */
     Factory     *_factory;
-    Devices     *_devices;    // "
-    DeviceNames *_deviceNames;
+    Devices     *_devices;
     MQTTManager *_mqttManager;
     MQTTParser  *_mqttParser;
 
