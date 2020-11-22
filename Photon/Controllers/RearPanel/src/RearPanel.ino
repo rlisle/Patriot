@@ -9,36 +9,28 @@
  *   2. "particle flash RearPanel"
  *
  * Hardware
- * 1. Photon
- * 2. ControlEverything.com NCD8Relay Photon Controller
- * Photon board relay n/o connections 0x20 (D0, D1)
-   - Rear Awning          (1)
-   - Rear Porch           (2)
-   - Ramp Awning          (3)
-   - Ramp Porch           (4)
-   - Loft                 (5)
-   - ?                    (6)
- * 3. NCD PWM OC 8x board
+ * 1. NCD Photon Screw Terminal board
+ *    6 switch connections:
+ *      A0 Ceiling
+ *      A1 Loft
+ *      A2 Ramp Porch Floods
+ *      A3 Ramp Awning LEDs
+ *      A4 Rear Porch Flood
+ *      A5 Rear Awning LEDs
+ * 2. NCD 8 PWM OC 8W I2C Dimmer board
+ *      A0 Ceiling
+ *      A1 Loft
+ *      A2 Ramp Porch Floods
+ *      A3 Ramp Awning LEDs
+ *      A4 Rear Porch Flood
+ *      A5 Rear Awning LEDs
+ *      A6 Piano Spot
 
  * Other
    - built-in blue LED     D7
  *
- * Activities
-   - arriving
-   - cleaning
-   - cooking
-   - evening
-   - everything
-   - hosting
-   - leaving
-   - morning
-   - reading 
-   - retiring (bedtime)
-   - sleeping
-   - waking
-   - watching
- *
  * History
+ * 11/22/20 Convert from relay board to Photon and Dimmer boards
  * 11/12/20 Remove 'retained' storage
  * 09/11/20 Add dimmer board support
  * 09/04/20 Change MQTT IP to 192.168.10.184
@@ -57,13 +49,12 @@
  * 11/04/17 Initial files baseed on FrontPanel
  */
 #include <IoT.h>
-#include <PatriotNCD8Relay.h>
+#include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 
 #define DEV_PTR (Device *)&
 #define ADDRESS1 0x20
 #define ADDRESS2 1   // I2C PWM board switches low switch on
-#define NUMRELAYS 8
 
 String mqttServer = "192.168.10.184";
 

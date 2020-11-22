@@ -25,6 +25,9 @@
 		E41085942568639C00EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/IoTlib/library.properties; sourceTree = "<group>"; };
 		E410859625688C0200EFBE84 /* NCD8LightTest.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = NCD8LightTest.ino; path = ../Photon/Controllers/NCD8LightTest/src/NCD8LightTest.ino; sourceTree = "<group>"; };
 		E410859725688C1100EFBE84 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/NCD8LightTest/project.properties; sourceTree = "<group>"; };
+		E4530C14256A97B00021E5CB /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Switch/library.properties; sourceTree = "<group>"; };
+		E4530C15256A97C50021E5CB /* PatriotSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotSwitch.h; path = ../Photon/Plugins/Switch/src/PatriotSwitch.h; sourceTree = "<group>"; };
+		E4530C16256A97C50021E5CB /* PatriotSwitch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotSwitch.cpp; path = ../Photon/Plugins/Switch/src/PatriotSwitch.cpp; sourceTree = "<group>"; };
 		E4849C512566AB3C00A39734 /* condition.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = condition.cpp; path = ../Photon/IoTlib/src/condition.cpp; sourceTree = "<group>"; };
 		E4849C522566AB3C00A39734 /* devicenames.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = devicenames.cpp; path = ../Photon/IoTlib/src/devicenames.cpp; sourceTree = "<group>"; };
 		E4849C532566AB3C00A39734 /* states.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = states.h; path = ../Photon/IoTlib/src/states.h; sourceTree = "<group>"; };
@@ -69,6 +72,16 @@
 				E410859625688C0200EFBE84 /* NCD8LightTest.ino */,
 			);
 			name = NCD8LightTest;
+			sourceTree = "<group>";
+		};
+		E4530C13256A97960021E5CB /* Switch */ = {
+			isa = PBXGroup;
+			children = (
+				E4530C16256A97C50021E5CB /* PatriotSwitch.cpp */,
+				E4530C15256A97C50021E5CB /* PatriotSwitch.h */,
+				E4530C14256A97B00021E5CB /* library.properties */,
+			);
+			name = Switch;
 			sourceTree = "<group>";
 		};
 		E4849C492566A90700A39734 = {
@@ -156,6 +169,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				E4530C13256A97960021E5CB /* Switch */,
 				E4849C772566B4BB00A39734 /* Light */,
 				E4849C762566B4B300A39734 /* NCD8Light */,
 				E4849C752566B4A400A39734 /* NCD8Relay */,

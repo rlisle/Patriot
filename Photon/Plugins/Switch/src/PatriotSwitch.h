@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-22: Convertt to V5 with MQTT support
 2017-10-28: Convert to v2.
 2017-05-17: Move to separate library
 2017-05-15: Make devices generic
@@ -29,17 +30,17 @@ Changelog:
 
 class Switch : public Device
 {
-public:
-    Switch(int pinNum, String command);
-
-    void loop();
-
 private:
-    String     _command;
+    String     _name;
     int        _pin;
-    long       _lastReadTime;
+    long       _lastPollTime;
 
     bool      isTimeToCheckSwitch();
     bool      didSwitchChange();
     void      notify();
+    
+public:
+    Switch(int pinNum, String name);
+
+    void loop();
 };
