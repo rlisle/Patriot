@@ -44,12 +44,12 @@ bool Condition::matchesCondition(int stateValue)
 
 bool Condition::isTrue(States *states) 
 {
-    Serial.println("isTrue for state: "+String(_stateName));
+//    Serial.println("isTrue for state: "+String(_stateName));
     State *state = states->getStateWithName(_stateName);
     if(state != NULL) {
-        Serial.print("State found: ");
+//        Serial.print("State found: ");
         return matchesCondition(state->_value);
     }
-    Serial.println("State not found");
+//    Serial.println("State not found");
     return false;
 }
