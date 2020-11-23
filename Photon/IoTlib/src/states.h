@@ -30,12 +30,10 @@ public:
     State*     getStateWithName(String name);
     int        count();
     
-    bool       expose();    // Huh?
-    
 private:
     State*     _states;                 // Linked list
     
-    void buildStatesVariable();         // Should this be here?
+    void buildStatesVariable();
     void expose();
 
 };
