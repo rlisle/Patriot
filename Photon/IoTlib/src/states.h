@@ -34,8 +34,8 @@ public:
     
 private:
     State*     _states;                 // Linked list
-    bool       _isVariableExposed;      // Is this needed?
-    String     *_ptrToVariable;         // Is this needed?
     
-    void buildStateVariable();          // Should this be here?
+    void buildStatesVariable();         // Should this be here?
+    void expose();
+
 };

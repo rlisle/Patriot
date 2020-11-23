@@ -22,8 +22,6 @@ String globalDevicesVariable;
 
 Devices::Devices()
 {
-    // Without this method, strange error is reported and build fails
-    //TODO: dynamically allocate array space
     _devices = NULL;
     expose();
 }
