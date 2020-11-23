@@ -22,8 +22,6 @@ String globalDevicesVariable;
 
 Devices::Devices()
 {
-    // Without this method, strange error is reported and build fails
-    //TODO: dynamically allocate array space
     _devices = NULL;
     expose();
 }
@@ -38,20 +36,20 @@ void Devices::expose()
 
 void Devices::addDevice(Device *device)
 {
-//    Serial.println("addDevice name: "+String(device->name()));
+    //Serial.println("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
-//        Serial.println("  first device");
+        //Serial.println("  first device");
         _devices = device;
-//        Serial.println("New device name: "+String(_devices->name()));
+        //Serial.println("New device name: "+String(_devices->name()));
     } else {
-//        Serial.println("  add device");
+        //Serial.println("  add device");
         Device *ptr = _devices;
         while(ptr->_next != NULL) {
-//            Serial.println("  advance to next");
+            //Serial.println("  advance to next");
             ptr = ptr->_next;
         }
         ptr->_next = device;
-//        Serial.println("Added device name: "+String(ptr->_next->name()));
+        //Serial.println("Added device name: "+String(ptr->_next->name()));
     }
     //TODO: combine with the above loop
     buildDevicesVariable();
@@ -80,10 +78,10 @@ Device *Devices::getDeviceByNum(int deviceNum)
     Device *ptr = _devices;
     for (int i = deviceNum; i > 0 && ptr != NULL; i--) 
     {
-//        Serial.println("  getting next, current = "+ptr->name());
+        //Serial.println("  getting next, current = "+ptr->name());
         ptr = ptr->_next;
     }
-//    Serial.println("Returning ptr to "+ptr->name());
+    //Serial.println("Returning ptr to "+ptr->name());
     return ptr;
 }
 
@@ -93,13 +91,13 @@ Device *Devices::getDeviceWithName(String name)
     for (int i = 0; i < numDevices() && ptr != NULL; i++) 
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-//            Serial.println("Returning ptr to "+ptr->name());
+            //Serial.println("Returning ptr to "+ptr->name());
             return ptr;
         }
-//        Serial.println("  getting next, current = "+ptr->name());
+        //Serial.println("  getting next, current = "+ptr->name());
         ptr = ptr->_next;
     }
-//    Serial.println("Not found, returning NULL");
+    //Serial.println("Not found, returning NULL");
     return NULL;
 }
 

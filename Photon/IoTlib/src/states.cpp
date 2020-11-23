@@ -34,18 +34,26 @@ String globalStatesVariable;
 
 States::States() {
     _states = NULL;
-    _isVariableExposed = false;
+    expose();
+}
+
+void States::expose() {
+    globalStatesVariable = "Testing 1, 2, 3...";
+    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
+        Serial.println("Unable to expose " + String(kStatesVariableName) + " variable");
+    }
 }
 
 // States are added only once
 State *States::addState(String name, int value) {
-//    Serial.print("addState " + name + "=" + String(value));
+    //Serial.print("addState " + name + "=" + String(value));
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
-//        Serial.println(": adding");
-        State *state = new State(name,value);
+        //Serial.println(": adding");
+        state = new State(name,value);
         if(_states == NULL) {
+            //Serial.println("  first state");
             _states = state;
         } else {
             State* ptr = _states;
@@ -53,12 +61,11 @@ State *States::addState(String name, int value) {
             ptr->_next = state;
         }
     } else {    // State already exists
-//        Serial.println(": updated");
+        //Serial.println(": updating");
         state->_value = value;
     }
-
-    // If not, create a new state
-//    buildStateVariable(); // Only if this is 
+    //Serial.println("addState state was added. Count = " + String(count()));
+    buildStatesVariable();
     return state;
 }
 
@@ -66,10 +73,12 @@ State *States::getStateWithName(String name) {
     State *ptr = _states;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
+            //Serial.println("getStateWithName " + name + " found");
             return ptr;
         }
         ptr = ptr->_next;
     }
+    //Serial.println("getStateWithName " + name + " not found");
     return NULL;
 }
 
@@ -79,36 +88,25 @@ int States::count() {
     return i;
 }
 
-bool States::expose() {
-    _isVariableExposed = true;
-    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
-        Serial.println("Unable to expose " + String(kStatesVariableName) + " variable");
-        return false;
-    }
-    return true;
-}
-
-void States::buildStateVariable() {
+void States::buildStatesVariable() {
+    //Serial.println("buildStatesVariable");
     String newVariable = "";
     State *ptr = _states;
     while (ptr != NULL) {
-//        Serial.print("state=");
-//        Serial.println(ptr->_name);
         newVariable += ptr->_name;
         newVariable += ":";
-//        Serial.print("value=");
-//        Serial.println(ptr->_value);
         newVariable += String(ptr->_value);
         if (ptr->_next != NULL) {
             newVariable += ",";
         }
+        ptr = ptr->_next;
     }
     if (newVariable.length() < kMaxVariableStringLength) {
         if (newVariable != globalStatesVariable) {
             globalStatesVariable = newVariable;
         }
     } else {
-        Serial.println("Variable is too long. Need to extend to a 2nd variable");
+        Serial.println("States variable is too long. Need to extend to a 2nd variable");
         Serial.println(newVariable);
     }
 }

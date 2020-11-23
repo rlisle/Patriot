@@ -127,7 +127,7 @@ IoT::IoT()
  */
 void IoT::setControllerName(String name)
 {
-    _controllerName = name;
+    _controllerName = name.toLowerCase();
 }
 
 /**

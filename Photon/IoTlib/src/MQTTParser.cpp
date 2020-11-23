@@ -20,6 +20,7 @@ MQTTParser::MQTTParser(String controllerName, Devices *devices)
     _states = new States();
 }
 
+// topic and messages are already lowercase
 void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 {
     log("received: " + topic + ", " + message);
@@ -52,15 +53,15 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 log("Message does not contain 1 slash, so invalid. Ignoring");
                 return;
             }
-            String rightTopic = topic.substring(firstSlash+1).toLowerCase();
+            String rightTopic = topic.substring(firstSlash+1);
             
             // Look for reserved names
             // PING
             if(rightTopic.equals("ping")) {
                 // Respond if ping is addressed to us
-                if(message.equalsIgnoreCase(_controllerName)) {
+                if(message.equals(_controllerName)) {
                     log("Ping addressed to us");
-                    mqtt->publish(kPublishName + "/pong/" + _controllerName, message);
+                    mqtt->publish(kPublishName + "/pong", _controllerName);
                 }
                 
                 // PONG
@@ -70,7 +71,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 // RESET
             } else if(rightTopic.equals("reset")) {
                 // Respond if reset is addressed to us
-                if(message.equalsIgnoreCase(_controllerName)) {
+                if(message.equals(_controllerName)) {
                     log("Reset addressed to us");
                     System.reset();
                 }
@@ -78,7 +79,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 // MEMORY
             } else if(rightTopic.equals("memory")) {
                 // Respond if memory is addressed to us
-                if(message.equalsIgnoreCase(_controllerName)) {
+                if(message.equals(_controllerName)) {
                     log("Memory addressed to us");
                     log( String::format("Free memory = %d", System.freeMemory()));
                 }
@@ -94,10 +95,11 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 Device* device = _devices->getDeviceWithName(rightTopic);
                 if(device)
                 {
-//                    log("Device " + rightTopic + " found, setting to " + message);
+                    log("Device " + rightTopic + " found, setting to " + message);
                     device->setPercent(percent);
                     // Fall thru to add to state table also, in case is used in a condition
                 }
+                log("Parser setting state " + rightTopic + " to " + message);
                 _states->addState(rightTopic,percent);
                 _devices->stateDidChange(_states);
             }
@@ -107,9 +109,9 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 
 int MQTTParser::parseValue(String message)
 {
-    if(message.equalsIgnoreCase("on")) {
+    if(message.equals("on")) {
         return 100;
-    } else if(message.equalsIgnoreCase("off")) {
+    } else if(message.equals("off")) {
         return 0;
     }
     return message.toInt();

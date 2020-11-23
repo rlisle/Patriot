@@ -17,7 +17,7 @@ Changelog:
 2017-03-05: Convert to v2 particle lib
 2016-07-24: Initial version
 2016-09-09: Add behaviors
-******************************************************************/
+ ******************************************************************/
 #pragma once
 
 #include "Particle.h"
@@ -28,23 +28,20 @@ class Device;
 class Devices
 {
 public:
-
-  Devices();
-
-  void        loop();
-  void        addDevice(Device *device);
-  Device*     getDeviceByNum(int deviceNum);
-  Device*     getDeviceWithName(String name);
-  int         numDevices();
-
-  void        stateDidChange(States *states);
-
+    
+    Devices();
+    
+    void        loop();
+    void        addDevice(Device *device);
+    Device*     getDeviceByNum(int deviceNum);
+    Device*     getDeviceWithName(String name);
+    int         numDevices();
+    
+    void        stateDidChange(States *states);
+    
 private:
-  Device*     _devices;     // Linked list of device objects
-
-  bool        _isVariableExposed;
-  String      *_ptrToVariable;
-
-  void buildDevicesVariable();
+    Device*     _devices;     // Linked list of device objects
+    
+    void buildDevicesVariable();
     void expose();
 };

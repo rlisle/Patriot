@@ -30,12 +30,10 @@ public:
     State*     getStateWithName(String name);
     int        count();
     
-    bool       expose();    // Huh?
-    
 private:
     State*     _states;                 // Linked list
-    bool       _isVariableExposed;      // Is this needed?
-    String     *_ptrToVariable;         // Is this needed?
     
-    void buildStateVariable();          // Should this be here?
+    void buildStatesVariable();
+    void expose();
+
 };

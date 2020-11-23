@@ -100,7 +100,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
     _lastMQTTtime = Time.now();
 
-    _parser->parseMessage(topic, message, _mqtt);
+    _parser->parseMessage(topic.toLowerCase(), message.toLowerCase(), _mqtt);
 }
 
 void MQTTManager::mqttQOSHandler(unsigned int data) {

@@ -25,17 +25,11 @@ Changelog:
 static const long kDefaultAliveInterval     = 60000;
 
 /**
- * Default particle.io publish/subscribe event name
- * This can be changed by IoT::publishName()
- */
-static const String kDefaultPublishName     = "patriot";
-
-/**
  * Default particle.io controller name
  * Each IoT controller must be uniquely named
  * This can be changed by IoT::controllerName()
  */
-static const String kDefaultControllerName  = "iotController";
+static const String kDefaultControllerName  = "iotcontroller";
 
 static const String kSupportedStatesVariableName     = "Supported";
 static const String kStatesVariableName              = "States";
