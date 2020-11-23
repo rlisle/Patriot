@@ -94,13 +94,13 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     char p[length + 1];
     memcpy(p, payload, length);
     p[length] = 0;
-    String message(p).toLowerCase();
-    String topic(rawTopic).toLowerCase();
+    String message(p);
+    String topic(rawTopic);
     log("received t: " + topic + ", m: " + message);
 
     _lastMQTTtime = Time.now();
 
-    _parser->parseMessage(topic, message, _mqtt);
+    _parser->parseMessage(topic.toLowerCase(), message.toLowerCase(), _mqtt);
 }
 
 void MQTTManager::mqttQOSHandler(unsigned int data) {

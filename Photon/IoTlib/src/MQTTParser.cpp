@@ -59,9 +59,9 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
             // PING
             if(rightTopic.equals("ping")) {
                 // Respond if ping is addressed to us
-                if(message.equalsIgnoreCase(_controllerName)) {
+                if(message.equals(_controllerName)) {
                     log("Ping addressed to us");
-                    mqtt->publish(kPublishName + "/pong/" + _controllerName, message);
+                    mqtt->publish(kPublishName + "/pong/", _controllerName);
                 }
                 
                 // PONG
@@ -71,7 +71,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 // RESET
             } else if(rightTopic.equals("reset")) {
                 // Respond if reset is addressed to us
-                if(message.equalsIgnoreCase(_controllerName)) {
+                if(message.equals(_controllerName)) {
                     log("Reset addressed to us");
                     System.reset();
                 }
@@ -79,7 +79,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 // MEMORY
             } else if(rightTopic.equals("memory")) {
                 // Respond if memory is addressed to us
-                if(message.equalsIgnoreCase(_controllerName)) {
+                if(message.equals(_controllerName)) {
                     log("Memory addressed to us");
                     log( String::format("Free memory = %d", System.freeMemory()));
                 }
@@ -108,9 +108,9 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 
 int MQTTParser::parseValue(String message)
 {
-    if(message.equalsIgnoreCase("on")) {
+    if(message.equals("on")) {
         return 100;
-    } else if(message.equalsIgnoreCase("off")) {
+    } else if(message.equals("off")) {
         return 0;
     }
     return message.toInt();
