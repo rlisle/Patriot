@@ -46,7 +46,6 @@
 		E4849C622566AB3C00A39734 /* MQTTManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MQTTManager.cpp; path = ../Photon/IoTlib/src/MQTTManager.cpp; sourceTree = "<group>"; };
 		E4849C632566AB3C00A39734 /* state.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = state.h; path = ../Photon/IoTlib/src/state.h; sourceTree = "<group>"; };
 		E4849C642566AB3C00A39734 /* behavior.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = behavior.cpp; path = ../Photon/IoTlib/src/behavior.cpp; sourceTree = "<group>"; };
-		E4849C652566AB3C00A39734 /* action.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = action.h; path = ../Photon/IoTlib/src/action.h; sourceTree = "<group>"; };
 		E4849C662566AB3C00A39734 /* MQTTManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MQTTManager.h; path = ../Photon/IoTlib/src/MQTTManager.h; sourceTree = "<group>"; };
 		E4849C672566AB3C00A39734 /* state.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = state.cpp; path = ../Photon/IoTlib/src/state.cpp; sourceTree = "<group>"; };
 		E4849C682566AB3C00A39734 /* conditions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = conditions.cpp; path = ../Photon/IoTlib/src/conditions.cpp; sourceTree = "<group>"; };
@@ -95,7 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				E41085942568639C00EFBE84 /* library.properties */,
-				E4849C652566AB3C00A39734 /* action.h */,
 				E4849C642566AB3C00A39734 /* behavior.cpp */,
 				E4849C562566AB3C00A39734 /* behavior.h */,
 				E4849C6A2566AB3C00A39734 /* behaviors.cpp */,
