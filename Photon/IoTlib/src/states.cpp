@@ -37,15 +37,23 @@ States::States() {
     expose();
 }
 
+void States::expose() {
+    globalStatesVariable = "Testing 1, 2, 3...";
+    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
+        Serial.println("Unable to expose " + String(kStatesVariableName) + " variable");
+    }
+}
+
 // States are added only once
 State *States::addState(String name, int value) {
-//    Serial.print("addState " + name + "=" + String(value));
+    //Serial.print("addState " + name + "=" + String(value));
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
-//        Serial.println(": adding");
-        State *state = new State(name,value);
+        //Serial.println(": adding");
+        state = new State(name,value);
         if(_states == NULL) {
+            //Serial.println("  first state");
             _states = state;
         } else {
             State* ptr = _states;
@@ -53,10 +61,10 @@ State *States::addState(String name, int value) {
             ptr->_next = state;
         }
     } else {    // State already exists
-//        Serial.println(": updated");
+        //Serial.println(": updating");
         state->_value = value;
     }
-
+    //Serial.println("addState state was added. Count = " + String(count()));
     buildStatesVariable();
     return state;
 }
@@ -65,10 +73,12 @@ State *States::getStateWithName(String name) {
     State *ptr = _states;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
+            //Serial.println("getStateWithName " + name + " found");
             return ptr;
         }
         ptr = ptr->_next;
     }
+    //Serial.println("getStateWithName " + name + " not found");
     return NULL;
 }
 
@@ -78,13 +88,8 @@ int States::count() {
     return i;
 }
 
-void States::expose() {
-    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
-        Serial.println("Unable to expose " + String(kStatesVariableName) + " variable");
-    }
-}
-
 void States::buildStatesVariable() {
+    //Serial.println("buildStatesVariable");
     String newVariable = "";
     State *ptr = _states;
     while (ptr != NULL) {
@@ -94,6 +99,7 @@ void States::buildStatesVariable() {
         if (ptr->_next != NULL) {
             newVariable += ",";
         }
+        ptr = ptr->_next;
     }
     if (newVariable.length() < kMaxVariableStringLength) {
         if (newVariable != globalStatesVariable) {

@@ -61,7 +61,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 // Respond if ping is addressed to us
                 if(message.equals(_controllerName)) {
                     log("Ping addressed to us");
-                    mqtt->publish(kPublishName + "/pong/", _controllerName);
+                    mqtt->publish(kPublishName + "/pong", _controllerName);
                 }
                 
                 // PONG
@@ -95,10 +95,11 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 Device* device = _devices->getDeviceWithName(rightTopic);
                 if(device)
                 {
-//                    log("Device " + rightTopic + " found, setting to " + message);
+                    log("Device " + rightTopic + " found, setting to " + message);
                     device->setPercent(percent);
                     // Fall thru to add to state table also, in case is used in a condition
                 }
+                log("Parser setting state " + rightTopic + " to " + message);
                 _states->addState(rightTopic,percent);
                 _devices->stateDidChange(_states);
             }
