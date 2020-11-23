@@ -94,8 +94,8 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     char p[length + 1];
     memcpy(p, payload, length);
     p[length] = 0;
-    String message(p);
-    String topic(rawTopic);
+    String message(p).toLowerCase();
+    String topic(rawTopic).toLowerCase();
     log("received t: " + topic + ", m: " + message);
 
     _lastMQTTtime = Time.now();

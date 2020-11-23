@@ -20,6 +20,7 @@ MQTTParser::MQTTParser(String controllerName, Devices *devices)
     _states = new States();
 }
 
+// topic and messages are already lowercase
 void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
 {
     log("received: " + topic + ", " + message);
@@ -52,7 +53,7 @@ void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
                 log("Message does not contain 1 slash, so invalid. Ignoring");
                 return;
             }
-            String rightTopic = topic.substring(firstSlash+1).toLowerCase();
+            String rightTopic = topic.substring(firstSlash+1);
             
             // Look for reserved names
             // PING
