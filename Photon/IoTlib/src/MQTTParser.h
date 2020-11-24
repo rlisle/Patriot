@@ -13,10 +13,11 @@ All text above must be included in any redistribution.
 #pragma once
 #include "behaviors.h"
 #include "devices.h"
-#include "MQTT.h"
+#include "MQTTManager.h"
 #include "states.h"
 
 class Devices;
+class MQTTManager;
 
 class MQTTParser
 {
@@ -25,7 +26,7 @@ public:
 
   MQTTParser(String controllerName, Devices *devices);
 
-  void parseMessage(String topic, String message, MQTT *mqtt);
+  void parseMessage(String topic, String message, MQTTManager *mqtt);
 
 private:
   String    _controllerName;

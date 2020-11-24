@@ -21,7 +21,7 @@ MQTTParser::MQTTParser(String controllerName, Devices *devices)
 }
 
 // topic and messages are already lowercase
-void MQTTParser::parseMessage(String topic, String message, MQTT *mqtt)
+void MQTTParser::parseMessage(String topic, String message, MQTTManager *mqtt)
 {
     log("received: " + topic + ", " + message);
     

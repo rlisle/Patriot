@@ -212,7 +212,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     //TODO: Is this needed if _isBridge is set (handled below)?
     if(_mqttParser != NULL) {
-        _mqttParser->parseMessage(topic,level,_mqtt);
+        _mqttParser->parseMessage(topic,level,_mqttManager);
     }
     
     // Bridge events to MQTT if this is a Bridge
