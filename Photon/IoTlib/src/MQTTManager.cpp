@@ -29,7 +29,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _controllerName = controllerName;
     _devices = devices;
     
-    _states = States();
+    _states = new States();
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
     connect();
