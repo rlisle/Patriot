@@ -61,9 +61,8 @@ void MQTTManager::connect() {
 
 void MQTTManager::log(String message)
 {
-    if(_mqtt != NULL && _mqtt->isConnected()) {
-        _mqtt->publish("debug/" + _controllerName, message);
-    }
+    publish("debug/" + _controllerName, message);
+    Serial.println(_controllerName + " MQTT log: " + message);
 }
 
 void MQTTManager::publish(String topic, String message) {
@@ -82,11 +81,11 @@ void MQTTManager::loop()
 }
 
 void MQTTManager::reconnectCheck() {
-    system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
-    if(secondsSinceLastMessage > 5 * 60) {
-        log("WARNING: connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-        connect();
-    }
+//    system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
+//    if(secondsSinceLastMessage > 5 * 60) {
+//        log("WARNING: connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
+//        connect();
+//    }
 }
 
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
@@ -113,10 +112,11 @@ void MQTTManager::mqttQOSHandler(unsigned int data) {
 // topic and messages are already lowercase
 void MQTTManager::parseMessage(String topic, String message)
 {
-    log("received: " + topic + ", " + message);
+    //log("received: " + topic + ", " + message);
     
     // New Protocol: patriot/<name>  <value>
     if(topic.startsWith(kPublishName+"/")) {
+        log("parsing t:" + topic + ", m:" + message);
         String subtopic = topic.substring(kPublishName.length()+1);
         
         // Look for reserved names
@@ -159,6 +159,8 @@ void MQTTManager::parseMessage(String topic, String message)
             _states->addState(subtopic,percent);
             _devices->stateDidChange(_states);
         }
+    } else {
+        log("  Not our message");
     }
 }
 
