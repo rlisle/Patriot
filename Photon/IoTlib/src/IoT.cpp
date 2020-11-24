@@ -192,38 +192,6 @@ void IoT::addDevice(Device *device)
 }
 
 
-// States
-//TODO: Update this to work with device based behaviors
-// void IoT::addToListOfSupportedStates(String state)
-// {
-//     for(int i=0; i<_numSupportedStates; i++) {
-//         if(state.equalsIgnoreCase(_supportedStates[i])) return;
-//     }
-//     if(_numSupportedStates < kMaxNumberStates-1) {
-//         _supportedStates[_numSupportedStates++] = state;
-//     }
-//     buildSupportedStatesVariable();
-// }
-
-// void IoT::buildSupportedStatesVariable()
-// {
-//     String newVariable = "";
-//     for(int i=0; i<_numSupportedStates; i++)
-//     {
-//         newVariable += _supportedStates[i];
-//         if (i < _numSupportedStates-1) {
-//             newVariable += ",";
-//         }
-//     }
-//     if(newVariable.length() < kMaxVariableStringLength) {
-//         if(newVariable != supportedStatesVariable) {
-//             supportedStatesVariable = newVariable;
-//         }
-//     } else {
-//         log("Supported states variable is too long. Need to extend to a 2nd variable");
-//     }
-// }
-
 /*************************************/
 /*** Particle.io Subscribe Handler ***/
 /*** t:patriot m:<device>:<value>  ***/
