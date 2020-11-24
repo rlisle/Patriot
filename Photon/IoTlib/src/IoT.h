@@ -98,13 +98,8 @@ public:
 
 private:
     static IoT* _instance;
-    bool    _hasBegun;
     bool    _isBridge;
     String  _controllerName;
-    String  _proximityEvent;
-    system_tick_t _startTime;
-    system_tick_t _currentTime;
-
 
     /**
      * Constructor

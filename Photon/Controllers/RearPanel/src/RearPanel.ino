@@ -52,6 +52,7 @@
 #include <PatriotLight.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
+#include <PatriotActivity.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
@@ -76,6 +77,8 @@ Switch rampPorchSwitch(A2, "RampPorchSwitch");
 Switch rampAwningSwitch(A3, "RampAwningSwitch");
 Switch rearPorchSwitch(A4, "RearPorchSwitch");
 Switch rearAwningSwitch(A5, "RearAwningSwitch");
+
+Activity watchTV("watchingTV");
 
 void setup() {
     iot = IoT::getInstance();
@@ -109,6 +112,8 @@ void setup() {
     iot->addDevice(&rampAwningSwitch);
     iot->addDevice(&rearPorchSwitch);
     iot->addDevice(&rearAwningSwitch);
+    
+    iot->addDevice(&watchTV);
 }
 
 void loop() {
