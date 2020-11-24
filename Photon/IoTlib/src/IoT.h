@@ -113,7 +113,6 @@ private:
     Factory     *_factory;
     Devices     *_devices;
     MQTTManager *_mqttManager;
-    MQTTParser  *_mqttParser;
 
     void subscribeHandler(const char *eventName, const char *rawData);
     void periodicReset();
