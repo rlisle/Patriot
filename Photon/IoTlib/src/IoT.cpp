@@ -175,6 +175,11 @@ void IoT::loop()
 // 
 void IoT::addDevice(Device *device)
 {
+    //TODO: Automatically create a direct device command behavior
+    Behavior *defaultBehavior = new Behavior(100);
+    defaultBehavior->addCondition(new Condition(device->name(), '>', 0));
+    device->addBehavior(defaultBehavior);
+    
     _devices->addDevice(device);
     device->log = globalLog;
     device->publish = globalPublish;
