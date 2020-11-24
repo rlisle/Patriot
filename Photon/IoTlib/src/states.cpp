@@ -38,7 +38,7 @@ States::States() {
 }
 
 void States::expose() {
-    globalStatesVariable = "Testing 1, 2, 3...";
+    globalStatesVariable = "";
     if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
         Serial.println("Unable to expose " + String(kStatesVariableName) + " variable");
     }
