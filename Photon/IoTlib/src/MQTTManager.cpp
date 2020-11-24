@@ -1,5 +1,5 @@
 /******************************************************************
-MQTTManager.h
+MQTTManager.cpp
 
 This class handles all MQTT interactions.
 
@@ -28,6 +28,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _connectID = connectID;     // delete?
     _controllerName = controllerName;
     _devices = devices;
+    
+    _states = States();
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
     connect();
