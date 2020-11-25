@@ -23,18 +23,16 @@ extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName, Devices *devices)
 {
-    _brokerIP = brokerIP;       // delete?
-    _connectID = connectID;     // delete?
     _controllerName = controllerName;
     _devices = devices;
     
     _states = new States();
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
-    connect();
+    connect(connectID);
 }
 
-void MQTTManager::connect() {
+void MQTTManager::connect(String connectID) {
 
     _lastMQTTtime = Time.now();
 
@@ -47,7 +45,7 @@ void MQTTManager::connect() {
         _mqtt->disconnect();
     }
 
-    _mqtt->connect(_connectID);  
+    _mqtt->connect(connectID);  
     if (_mqtt->isConnected()) {
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             log("Unable to subscribe to MQTT " + kPublishName + "/#");
