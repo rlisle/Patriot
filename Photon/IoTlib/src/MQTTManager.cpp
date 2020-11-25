@@ -20,7 +20,6 @@ Changelog:
 #include "constants.h"
 
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
-extern void globalQOScallback(unsigned int);
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName, Devices *devices)
 {
@@ -50,8 +49,6 @@ void MQTTManager::connect() {
 
     _mqtt->connect(_connectID);  
     if (_mqtt->isConnected()) {
-        _mqtt->addQosCallback(globalQOScallback);
-
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             log("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
@@ -102,11 +99,6 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     _lastMQTTtime = Time.now();
 
     parseMessage(topic.toLowerCase(), message.toLowerCase());
-}
-
-void MQTTManager::mqttQOSHandler(unsigned int data) {
-
-    log("QOS callback: " + String(data));
 }
 
 //Mark - Parser

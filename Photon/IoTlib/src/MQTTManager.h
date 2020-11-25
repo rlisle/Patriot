@@ -35,7 +35,6 @@ public:
     void        parseMessage(String topic, String message);
     void        loop();
     void        mqttHandler(char* topic, byte* payload, unsigned int length);
-    void        mqttQOSHandler(unsigned int data);
     
     void        log(String message);
     

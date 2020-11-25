@@ -61,11 +61,6 @@ void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
     iot->mqttHandler(topic, payload, length);
 }
 
-void globalQOScallback(unsigned int data) {
-    IoT* iot = IoT::getInstance();
-    iot->mqttQOSHandler(data);
-}
-
 void globalLog(String message) {
     IoT* iot = IoT::getInstance();
     iot->log(message);
@@ -236,11 +231,5 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
     if(_mqttManager != NULL) {
         _mqttManager->mqttHandler(rawTopic, payload, length);
-    }
-}
-
-void IoT::mqttQOSHandler(unsigned int data) {
-    if(_mqttManager != NULL) {
-        _mqttManager->mqttQOSHandler(data);
     }
 }
