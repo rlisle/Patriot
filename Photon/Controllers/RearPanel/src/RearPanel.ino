@@ -92,6 +92,8 @@ void setup() {
     ceiling.addBehavior(10, "goodmorning", '>', 0);
     blueLed.addBehavior(100, "loftswitch", '>', 0);
     
+    goingToBed.addBehavior(0, "sleeping", '>', 0);
+    
     // ADD ALL DEVICES
     iot->addDevice(&ceiling);
     iot->addDevice(&loft);
