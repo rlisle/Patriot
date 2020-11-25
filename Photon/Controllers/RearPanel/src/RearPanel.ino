@@ -78,7 +78,9 @@ Switch rampAwningSwitch(A3, "RampAwningSwitch");
 Switch rearPorchSwitch(A4, "RearPorchSwitch");
 Switch rearAwningSwitch(A5, "RearAwningSwitch");
 
-Activity watchTV("watchingTV");
+Activity watchingTV("watchingTV");
+Activity goingToBed("goingToBed");
+Activity sleeping("sleeping");
 
 void setup() {
     iot = IoT::getInstance();
@@ -107,7 +109,9 @@ void setup() {
     iot->addDevice(&rearPorchSwitch);
     iot->addDevice(&rearAwningSwitch);
     
-    iot->addDevice(&watchTV);
+    iot->addDevice(&watchingTV);
+    iot->addDevice(&goingToBed);
+    iot->addDevice(&sleeping);
 }
 
 void loop() {
