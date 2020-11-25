@@ -45,7 +45,7 @@ void MQTTManager::connect(String connectID) {
         _mqtt->disconnect();
     }
 
-    _mqtt->connect(connectID);  
+    _mqtt->connect(connectID);
     if (_mqtt->isConnected()) {
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             log("Unable to subscribe to MQTT " + kPublishName + "/#");
@@ -108,7 +108,7 @@ void MQTTManager::parseMessage(String topic, String message)
     
     // New Protocol: patriot/<name>  <value>
     if(topic.startsWith(kPublishName+"/")) {
-        log("parsing t:" + topic + ", m:" + message);
+        //log("parsing t:" + topic + ", m:" + message);
         String subtopic = topic.substring(kPublishName.length()+1);
         
         // Look for reserved names
@@ -147,7 +147,7 @@ void MQTTManager::parseMessage(String topic, String message)
         } else {
             
             int percent = parseValue(message);
-            log("Parser setting state " + subtopic + " to " + message);
+            //log("Parser setting state " + subtopic + " to " + message);
             _states->addState(subtopic,percent);
             _devices->stateDidChange(_states);
         }
