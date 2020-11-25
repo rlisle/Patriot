@@ -73,6 +73,13 @@ class Device {
         _behaviors.addBehavior(behavior); 
     };
 
+    void addBehavior(int level, String name, char comparison, int value) {
+        Behavior *newBehavior = new Behavior(level);
+        Condition *newCondition = new Condition(name, comparison, value);
+        newBehavior->addCondition(newCondition);
+        _behaviors.addBehavior(newBehavior);
+    };
+
     void stateDidChange(States *states) {
         int newLevel = _behaviors.stateDidChange(states);
 //        if(log != NULL) {
