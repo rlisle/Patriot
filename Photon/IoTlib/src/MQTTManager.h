@@ -35,14 +35,11 @@ public:
     void        parseMessage(String topic, String message);
     void        loop();
     void        mqttHandler(char* topic, byte* payload, unsigned int length);
-    void        mqttQOSHandler(unsigned int data);
     
     void        log(String message);
     
 private:
     MQTT      *_mqtt;
-    String    _connectID;
-    String    _brokerIP;
     String    _controllerName;
     system_tick_t _lastMQTTtime;
     
@@ -50,7 +47,7 @@ private:
     Devices   *_devices;
     
     void      (*_callback)(char*,uint8_t*,unsigned int);
-    void      connect();
+    void      connect(String connectID);
     void      reconnectCheck();
     int       parseValue(String message);
 };

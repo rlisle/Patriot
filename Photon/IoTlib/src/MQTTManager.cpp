@@ -20,22 +20,19 @@ Changelog:
 #include "constants.h"
 
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
-extern void globalQOScallback(unsigned int);
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName, Devices *devices)
 {
-    _brokerIP = brokerIP;       // delete?
-    _connectID = connectID;     // delete?
     _controllerName = controllerName;
     _devices = devices;
     
     _states = new States();
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
-    connect();
+    connect(connectID);
 }
 
-void MQTTManager::connect() {
+void MQTTManager::connect(String connectID) {
 
     _lastMQTTtime = Time.now();
 
@@ -48,10 +45,8 @@ void MQTTManager::connect() {
         _mqtt->disconnect();
     }
 
-    _mqtt->connect(_connectID);  
+    _mqtt->connect(connectID);
     if (_mqtt->isConnected()) {
-        _mqtt->addQosCallback(globalQOScallback);
-
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             log("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
@@ -104,11 +99,6 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     parseMessage(topic.toLowerCase(), message.toLowerCase());
 }
 
-void MQTTManager::mqttQOSHandler(unsigned int data) {
-
-    log("QOS callback: " + String(data));
-}
-
 //Mark - Parser
 
 // topic and messages are already lowercase
@@ -118,7 +108,7 @@ void MQTTManager::parseMessage(String topic, String message)
     
     // New Protocol: patriot/<name>  <value>
     if(topic.startsWith(kPublishName+"/")) {
-        log("parsing t:" + topic + ", m:" + message);
+        //log("parsing t:" + topic + ", m:" + message);
         String subtopic = topic.substring(kPublishName.length()+1);
         
         // Look for reserved names
@@ -157,7 +147,7 @@ void MQTTManager::parseMessage(String topic, String message)
         } else {
             
             int percent = parseValue(message);
-            log("Parser setting state " + subtopic + " to " + message);
+            //log("Parser setting state " + subtopic + " to " + message);
             _states->addState(subtopic,percent);
             _devices->stateDidChange(_states);
         }

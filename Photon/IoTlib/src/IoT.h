@@ -49,7 +49,6 @@ class IoT {
 
     friend void globalSubscribeHandler(const char *eventName, const char *rawData);
     friend void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
-    friend void globalQOScallback(unsigned int data);
 
 public:
 
@@ -117,5 +116,4 @@ private:
     void periodicReset();
 
     void mqttHandler(char* topic, byte* payload, unsigned int length);
-    void mqttQOSHandler(unsigned int data);
 };
