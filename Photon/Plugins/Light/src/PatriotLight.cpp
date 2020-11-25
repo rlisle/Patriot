@@ -2,17 +2,7 @@
  light LED dimming control
 
  Features:
- - On/Off control
  - Smooth dimming with duration
-
- - Brightness changes the "on" level
-   If a light is already on, it's brightness is changed.
- - Switch turns a light off, or on to the currently set brightness level
- - setPercent immediately sets the light level without affecting saved brightness setting
- - When localPin changes,
-   - If local mode, light is toggled between 0 and 100 percent
-   - In automatic mode, MQTT event is sent for switch name
- - Currently, local mode is set always
 
  http://www.github.com/rlisle/Patriot
 
@@ -24,6 +14,7 @@
  Datasheets:
 
  Changelog:
+ 2020-11-25: v5 remove local pin, remove Backup SRAM
  2019-11-09: v3.1.0 Add local pin
  2019-01-03: v3.0.0 Assume use of Backup SRAM to persist percent across resets.
  2017-10-28: Convert to v2.
@@ -51,13 +42,6 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
           _isInverted(isInverted),
           _forceDigital(forceDigital)
 {
-    _localMode                = true;
-    _localPinNum              = 0;          // 0 = none
-    _localPinName             = "unnamed";
-    _localPinActiveHigh       = false;
-    _lastReadTime             = 0;
-
-    _brightness               = 100;    // Brightness defaults to 100
     _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
     _targetPercent            = 0;
     _currentPercent           = 0.0;
@@ -65,19 +49,6 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
     _lastUpdateTime           = 0;
     pinMode(pinNum, OUTPUT);
     outputPWM();                        // Set initial state to persisted value
-}
-
-/**
- * Set Local pin
- * @param pinNum Int pin number
- * @param pinName String name of pin
- * @param activeHigh Bool set if high when On (normally low)
- */
-void Light::setLocalPin(int pinNum, String pinName, bool activeHigh) {
-    _localPinNum = pinNum;
-    _localPinName = pinName;
-    _localPinActiveHigh = activeHigh;
-    pinMode(pinNum, INPUT_PULLUP);
 }
 
 /**
@@ -95,25 +66,6 @@ void Light::setPercent(int percent) {
 int Light::getPercent() {
     return _percent;
 }
-
-/**
- * Set brightness
- * @param percent Int 0 to 100
- */
-void Light::setBrightness(int percent) {
-    _brightness = percent;
-    if(_percent == 0) return;       // All done if light is off
-    if(_percent != _brightness) {   // If on and brightness changed, do it
-        changePercent(_brightness);
-    }
-}
-
-/**
- * Get brightness - leave default Device implementation
- */
- int Light::getBrightness() {
-     return _brightness;
- }
 
  /**
   * Set switch
@@ -240,22 +192,6 @@ float Light::getDimmingDuration() {
  */
 void Light::loop()
 {
-    // Poll switch
-    if (isTimeToCheckSwitch())
-    {
-        if (didSwitchChange())
-        {
-            //TODO: Set light on/off as a result of using switch
-            //      This overrides stuck commands, etc.
-            //      May want to provide an optional override and/or dimming later
-            if(_switchState == _localPinActiveHigh) {   // Is turning ON?
-                changePercent(0);
-            } else {
-                changePercent(100);
-            }
-        }
-    }
-
     // Is fading transition underway?
     if(_percent == _targetPercent) {
         // Nothing to do.
@@ -278,36 +214,6 @@ void Light::loop()
     _lastUpdateTime = loopTime;
     outputPWM();
 };
-
-/**
- * isTimeToCheckSwitch()
- * @return bool if enough time has elapsed to sample switch again
- */
-bool Light::isTimeToCheckSwitch()
-{
-    long currentTime = millis();
-    if (currentTime < _lastReadTime + kDebounceDelay)
-    {
-        return false;
-    }
-    _lastReadTime = currentTime;
-    return true;
-}
-
-/**
- * didSwitchChange()
- * @return bool if switch has changed since last reading
- */
-bool Light::didSwitchChange()
-{
-    bool newState = digitalRead(_localPinNum) == 0;
-    if (newState == _switchState)
-    {
-        return false;
-    }
-    _switchState = newState;
-    return true;
-}
 
 /**
  * Set the output PWM value (0-255) based on 0-100 percent value
@@ -347,10 +253,4 @@ bool Light::isPwmSupported()
             break;
     };
     return FALSE;
-}
-
-void Light::log(String message)
-{
-    //TODO:
-//    IoT::log("Light: " + message);
 }
