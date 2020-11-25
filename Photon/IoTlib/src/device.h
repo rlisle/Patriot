@@ -51,7 +51,6 @@ class Device {
     String     _name;
     DeviceType _type;
     int        _percent;
-    int        _brightness;
     Behaviors  _behaviors;
 
     Device*    _next;       // Linked list
@@ -73,6 +72,13 @@ class Device {
         _behaviors.addBehavior(behavior); 
     };
 
+    void addBehavior(int level, String name, char comparison, int value) {
+        Behavior *newBehavior = new Behavior(level);
+        Condition *newCondition = new Condition(name, comparison, value);
+        newBehavior->addCondition(newCondition);
+        _behaviors.addBehavior(newBehavior);
+    };
+
     void stateDidChange(States *states) {
         int newLevel = _behaviors.stateDidChange(states);
 //        if(log != NULL) {
@@ -92,14 +98,6 @@ class Device {
     // This is the method that should control it.
     virtual void setPercent(int percent) { _percent = percent; };
 
-    // Brightness is used to set the percent value when switch is called.
-    virtual int getBrightness() { return _brightness; }
-    virtual void setBrightness(int percent) { _brightness = percent; };
-
-    // Turn a device on or off, using brightness for the on value
-    virtual int getSwitch() { return _percent > 0; }
-    virtual void setSwitch(int percent) { _percent = _brightness; };
-
     // These are just convenience methods
     virtual bool isOn() { return _percent > 0; };
     virtual bool isOff() { return _percent == 0; };
@@ -107,6 +105,9 @@ class Device {
     virtual void setOn() { setPercent(100); };
     virtual void setOff() { setPercent(0); };
 
+    // Override and return false to prevent automatically creating a behavior
+    virtual bool shouldAutoCreateBehavior() { return true; };
+    
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
 };

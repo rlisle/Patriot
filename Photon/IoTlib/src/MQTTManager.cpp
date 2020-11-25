@@ -1,5 +1,5 @@
 /******************************************************************
-MQTTManager.h
+MQTTManager.cpp
 
 This class handles all MQTT interactions.
 
@@ -22,12 +22,14 @@ Changelog:
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 extern void globalQOScallback(unsigned int);
 
-MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName, MQTTParser *parser)
+MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName, Devices *devices)
 {
     _brokerIP = brokerIP;       // delete?
     _connectID = connectID;     // delete?
     _controllerName = controllerName;
-    _parser = parser;
+    _devices = devices;
+    
+    _states = new States();
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
     connect();
@@ -61,9 +63,8 @@ void MQTTManager::connect() {
 
 void MQTTManager::log(String message)
 {
-    if(_mqtt != NULL && _mqtt->isConnected()) {
-        _mqtt->publish("debug/" + _controllerName, message);
-    }
+    publish("debug/" + _controllerName, message);
+    Serial.println(_controllerName + " MQTT log: " + message);
 }
 
 void MQTTManager::publish(String topic, String message) {
@@ -82,11 +83,11 @@ void MQTTManager::loop()
 }
 
 void MQTTManager::reconnectCheck() {
-    system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
-    if(secondsSinceLastMessage > 5 * 60) {
-        log("WARNING: connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-        connect();
-    }
+//    system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
+//    if(secondsSinceLastMessage > 5 * 60) {
+//        log("WARNING: connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
+//        connect();
+//    }
 }
 
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
@@ -100,10 +101,78 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
     _lastMQTTtime = Time.now();
 
-    _parser->parseMessage(topic.toLowerCase(), message.toLowerCase(), this);
+    parseMessage(topic.toLowerCase(), message.toLowerCase());
 }
 
 void MQTTManager::mqttQOSHandler(unsigned int data) {
 
     log("QOS callback: " + String(data));
 }
+
+//Mark - Parser
+
+// topic and messages are already lowercase
+void MQTTManager::parseMessage(String topic, String message)
+{
+    //log("received: " + topic + ", " + message);
+    
+    // New Protocol: patriot/<name>  <value>
+    if(topic.startsWith(kPublishName+"/")) {
+        log("parsing t:" + topic + ", m:" + message);
+        String subtopic = topic.substring(kPublishName.length()+1);
+        
+        // Look for reserved names
+        // PING
+        if(subtopic.equals("ping")) {
+            // Respond if ping is addressed to us
+            if(message.equals(_controllerName)) {
+                log("Ping addressed to us");
+                _mqtt->publish(kPublishName + "/pong", _controllerName);
+            }
+            
+            // PONG
+        } else if(subtopic.equals("pong")) {
+            // Ignore it.
+            
+            // RESET
+        } else if(subtopic.equals("reset")) {
+            // Respond if reset is addressed to us
+            if(message.equals(_controllerName)) {
+                log("Reset addressed to us");
+                System.reset();
+            }
+            
+            // MEMORY
+        } else if(subtopic.equals("memory")) {
+            // Respond if memory is addressed to us
+            if(message.equals(_controllerName)) {
+                log("Memory addressed to us");
+                log( String::format("Free memory = %d", System.freeMemory()));
+            }
+            
+        } else if(subtopic.equals("log")) {
+            // Ignore it.
+            
+            // UNKNOWN
+        } else {
+            
+            int percent = parseValue(message);
+            log("Parser setting state " + subtopic + " to " + message);
+            _states->addState(subtopic,percent);
+            _devices->stateDidChange(_states);
+        }
+    } else {
+        log("  Not our message");
+    }
+}
+
+int MQTTManager::parseValue(String message)
+{
+    if(message.equals("on")) {
+        return 100;
+    } else if(message.equals("off")) {
+        return 0;
+    }
+    return message.toInt();
+}
+

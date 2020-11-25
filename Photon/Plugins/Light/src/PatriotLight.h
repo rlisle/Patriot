@@ -45,32 +45,17 @@ class Light : public Device
     bool      _isInverted;              // On state = LOW instead of default HIGH
     bool      _forceDigital;            // On/Off only, even if PWM supported
 
-    int       _localPinNum;               // Pin # of local switch. 0 if none.
-    String    _localPinName;              // For querying switch status
-    bool      _localPinActiveHigh;        // High turns on light, else low.
-    long      _lastReadTime;              // Last time pin was read
-    bool      _switchState;               // Current state of switch
-    bool      _localMode;               // When true, localPin turns light on/off
-
     bool      isAlreadyOn();
     bool      isAlreadyOff();
     void      changePercent(int percent);
     void      startSmoothDimming();
     void      outputPWM();
     bool      isPwmSupported();
-    bool      isTimeToCheckSwitch();
-    bool      didSwitchChange();
-    void      log(String message);
 
  public:
     Light(int pin, String name, bool isInverted=false, bool forceDigital=false);
-    void      setLocalPin(int pinNum, String pinName, bool activeHigh = false);
     void      setPercent(int percent);      // Set light immediately
     int       getPercent();                 // Return current value
-    void      setBrightness(int percent);   // Change and save dimming on value
-    int       getBrightness();
-    void      setSwitch(int percent);       // Turn light off or on to brightness value
-    int       getSwitch();
     void      setOn();                      // Same as setSwitch 100
     void      setOff();                     // Same as setSwitch 0
     bool      isOn();

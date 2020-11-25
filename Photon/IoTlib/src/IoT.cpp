@@ -115,7 +115,6 @@ IoT::IoT()
     _factory                = new Factory();
     _controllerName         = kDefaultControllerName;
     _mqttManager            = NULL;
-    _mqttParser             = NULL;
 }
 
 /**
@@ -147,8 +146,7 @@ void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
 //    Serial.println("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
-    _mqttParser = new MQTTParser(_controllerName, _devices);
-    _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName, _mqttParser);
+    _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName, _devices);
 }
 
 void IoT::mqttPublish(String topic, String message)
@@ -175,10 +173,12 @@ void IoT::loop()
 // 
 void IoT::addDevice(Device *device)
 {
-    //TODO: Automatically create a direct device command behavior
-    Behavior *defaultBehavior = new Behavior(100);
-    defaultBehavior->addCondition(new Condition(device->name(), '>', 0));
-    device->addBehavior(defaultBehavior);
+    //TODO: Automatically create a direct device command behavior (unless it's a switch)
+    if(device->shouldAutoCreateBehavior()) {
+        Behavior *defaultBehavior = new Behavior(100);
+        defaultBehavior->addCondition(new Condition(device->name(), '>', 0));
+        device->addBehavior(defaultBehavior);
+    }
     
     _devices->addDevice(device);
     device->log = globalLog;
@@ -216,8 +216,8 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String topic = kPublishName + "/" + name;
 
     //TODO: Is this needed if _isBridge is set (handled below)?
-    if(_mqttParser != NULL) {
-        _mqttParser->parseMessage(topic,level,_mqttManager);
+    if(_mqttManager != NULL) {
+        _mqttManager->parseMessage(topic,level);
     }
     
     // Bridge events to MQTT if this is a Bridge

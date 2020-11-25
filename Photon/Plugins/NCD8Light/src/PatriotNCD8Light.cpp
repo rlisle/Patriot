@@ -41,7 +41,6 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     // _percent is left uninitialized if retained storage is used to pickup state from SRAM
     _percent = 0;
     _currentPercent = _percent;
-    _brightness = 100;      // Default to 100
     _dimmingDuration = 2.0; // Default to 2 seconds
     _targetPercent = _percent;
     _incrementPerMillisecond = 0.0;
