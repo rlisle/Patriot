@@ -114,6 +114,9 @@ class Device {
     virtual void setOn() { setPercent(100); };
     virtual void setOff() { setPercent(0); };
 
+    // Override and return false to prevent automatically creating a behavior
+    virtual bool shouldAutoCreateBehavior() { return true; };
+    
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
 };

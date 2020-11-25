@@ -42,4 +42,6 @@ public:
     Switch(int pinNum, String name);
 
     void loop();
+    
+    bool shouldAutoCreateBehavior() { return false; };
 };

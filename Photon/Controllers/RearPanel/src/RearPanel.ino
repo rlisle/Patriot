@@ -87,16 +87,8 @@ void setup() {
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
     // BEHAVIORS
-    // wakeup
     ceiling.addBehavior(10, "goodmorning", '>', 0);
-//    Behavior *wakeup = new Behavior(10);
-//    wakeup->addCondition(new Condition("goodmorning", '>', 0));
-//    ceiling.addBehavior(wakeup);
-    //LoftSwitch
     blueLed.addBehavior(100, "loftswitch", '>', 0);
-//    Behavior *loftSwitchBlueLed = new Behavior(100);
-//    loftSwitchBlueLed->addCondition(new Condition("loftSwitch", '>', 0));
-//    blueLed.addBehavior(loftSwitchBlueLed);    
     
     // ADD ALL DEVICES
     iot->addDevice(&ceiling);

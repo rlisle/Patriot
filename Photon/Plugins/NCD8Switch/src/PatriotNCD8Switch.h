@@ -41,4 +41,6 @@ public:
     NCD8Switch(int address, int switchNum, String name);
     
     void    loop();
+    
+    bool shouldAutoCreateBehavior() { return false; };
 };
