@@ -8,15 +8,15 @@
  *   1. Edit this code
  *   2. "particle flash RearPanel"
  *
- * Hardware
+ * Hardware3
  * 1. NCD Photon Screw Terminal board
  *    6 switch connections:
- *      A0 Ceiling
- *      A1 Loft
- *      A2 Ramp Porch Floods
- *      A3 Ramp Awning LEDs
- *      A4 Rear Porch Flood
- *      A5 Rear Awning LEDs
+ *      A0 Ceiling (brown)
+ *      A1 Loft (red)
+ *      A2 Ramp Porch Floods (yellow)
+ *      A3 Ramp Awning LEDs (green)
+ *      A4 Rear Porch Flood (blue)
+ *      A5 Rear Awning LEDs (white)
  * 2. NCD 8 PWM OC 8W I2C Dimmer board
  *      A0 Ceiling
  *      A1 Loft
@@ -69,7 +69,6 @@ NCD8Light rampAwning(ADDRESS, 4, "RampAwning", 2);
 NCD8Light rearPorch(ADDRESS, 5, "RearPorch", 2);
 NCD8Light rearAwning(ADDRESS, 6, "RearAwning", 2);
 
-Light blueLed(7, "blueLed", false, true);
 
 Switch ceilingSwitch(A0, "OfficeCeilingSwitch");
 Switch loftSwitch(A1, "LoftSwitch");
@@ -77,10 +76,6 @@ Switch rampPorchSwitch(A2, "RampPorchSwitch");
 Switch rampAwningSwitch(A3, "RampAwningSwitch");
 Switch rearPorchSwitch(A4, "RearPorchSwitch");
 Switch rearAwningSwitch(A5, "RearAwningSwitch");
-
-Activity watchingTV("watchingTV");
-Activity goingToBed("goingToBed");
-Activity sleeping("sleeping");
 
 void setup() {
     iot = IoT::getInstance();
@@ -90,9 +85,6 @@ void setup() {
 
     // BEHAVIORS
     ceiling.addBehavior(10, "goodmorning", '>', 0);
-    blueLed.addBehavior(100, "loftswitch", '>', 0);
-    
-    goingToBed.addBehavior(0, "sleeping", '>', 0);
     
     // ADD ALL DEVICES
     iot->addDevice(&ceiling);
