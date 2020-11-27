@@ -79,14 +79,6 @@ class Device {
         _behaviors.addBehavior(newBehavior);
     };
 
-    void stateDidChange(States *states) {
-        int newLevel = _behaviors.stateDidChange(states);
-        if(newLevel != _percent) {
-            log("Device.stateDidChange setting newLevel "+String(newLevel));
-            setPercent(newLevel);
-        }
-    }
-
     void log(String message) {
         if(logPtr != NULL) {
             logPtr(message);
@@ -119,7 +111,14 @@ class Device {
 
     // Override and return false to prevent automatically creating a behavior
     virtual bool shouldAutoCreateBehavior() { return true; };
-    
+
+    virtual void stateDidChange(States *states) {
+        int newLevel = _behaviors.stateDidChange(states);
+        if(newLevel != _percent) {
+            setPercent(newLevel);
+        }
+    }
+
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
 };

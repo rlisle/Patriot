@@ -46,7 +46,7 @@ IoT     *iot;
 
 Light blueLed(7, "blueLed", false, true);
 
-Activity waking("waking");
+//Activity waking("waking");
 Activity watchingTV("watchingTV");
 Activity goingToBed("goingToBed");
 Activity sleeping("sleeping");
@@ -61,7 +61,7 @@ void setup() {
     blueLed.addBehavior(100, "waking", '>', 0);
     blueLed.addBehavior(0, "sleeping", '>', 0);
     
-    waking.addBehavior(0, "goingToBed", '>', 0);
+//    waking.addBehavior(0, "goingToBed", '>', 0);
     
     watchingTV.addBehavior(0, "goingToBed", '>', 0);
     
@@ -72,7 +72,7 @@ void setup() {
     // Devices and Activities
     iot->addDevice(&blueLed);
     
-    iot->addDevice(&waking);
+//    iot->addDevice(&waking);
     iot->addDevice(&watchingTV);
     iot->addDevice(&goingToBed);
     iot->addDevice(&sleeping);
