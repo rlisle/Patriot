@@ -82,6 +82,7 @@ class Device {
     void stateDidChange(States *states) {
         int newLevel = _behaviors.stateDidChange(states);
         if(newLevel != _percent) {
+            log("Device.stateDidChange setting newLevel "+String(newLevel));
             setPercent(newLevel);
         }
     }

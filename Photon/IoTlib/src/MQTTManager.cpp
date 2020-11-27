@@ -104,7 +104,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 // topic and messages are already lowercase
 void MQTTManager::parseMessage(String topic, String message)
 {
-    //log("received: " + topic + ", " + message);
+    log("Parser received: " + topic + ", " + message);
     
     // New Protocol: patriot/<name>  <value>
     if(topic.startsWith(kPublishName+"/")) {
@@ -147,7 +147,7 @@ void MQTTManager::parseMessage(String topic, String message)
         } else {
             
             int percent = parseValue(message);
-            //log("Parser setting state " + subtopic + " to " + message);
+            log("Parser setting state " + subtopic + " to " + message);
             _states->addState(subtopic,percent);
             _devices->stateDidChange(_states);
         }

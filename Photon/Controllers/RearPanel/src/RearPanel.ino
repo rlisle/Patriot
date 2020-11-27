@@ -61,8 +61,8 @@ String mqttServer = "192.168.10.184";
 IoT *iot;
 
 // To use persistent storage, insert "retained" before NCD8Relay
-NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 1);
-NCD8Light loft(ADDRESS, 1, "Loft");
+NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 2);
+NCD8Light loft(ADDRESS, 1, "Loft", 2);
 NCD8Light piano(ADDRESS, 2, "Piano", 2);
 NCD8Light rampPorch(ADDRESS, 3, "RampPorch", 2);
 NCD8Light rampAwning(ADDRESS, 4, "RampAwning", 2);
@@ -77,7 +77,7 @@ Switch rampAwningSwitch(A3, "RampAwningSwitch");
 Switch rearPorchSwitch(A4, "RearPorchSwitch");
 Switch rearAwningSwitch(A5, "RearAwningSwitch");
 
-Activity goodMorning("goodmorning");
+//Activity goodMorning("goodmorning");
 
 void setup() {
     iot = IoT::getInstance();
@@ -86,7 +86,7 @@ void setup() {
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
     // BEHAVIORS
-    ceiling.addBehavior(10, "goodmorning", '>', 0);
+//    ceiling.addBehavior(10, "goodmorning", '>', 0);
     
     ceiling.addBehavior(100, "OfficeCeilingSwitch", '>', 0);
     loft.addBehavior(100, "LoftSwitch", '>', 0);
@@ -111,7 +111,7 @@ void setup() {
     iot->addDevice(&rearPorchSwitch);
     iot->addDevice(&rearAwningSwitch);
     
-    iot->addDevice(&goodMorning);
+//    iot->addDevice(&goodMorning);
 }
 
 void loop() {

@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-27: Override setPercent. Was resetting to 0.
 2020-11-22: Convert to v5 with MQTT support
 2018-01-18: Add type property
 2017-10-27: v2.0.0. Change name to command.
@@ -28,7 +29,7 @@ Changelog:
 #include "PatriotSwitch.h"
 
 #define MILLIS_PER_SECOND 1000
-#define POLL_INTERVAL_MILLIS 5000
+#define POLL_INTERVAL_MILLIS 100
 
 /**
  * Constructor
@@ -39,8 +40,6 @@ Switch::Switch(int pinNum, String name)
         : Device(name, DeviceType::Switch),
         _pin(pinNum)
 {
-    
-    log("Switch "+_name+" initialized");
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);
     _lastPollTime = millis();
@@ -57,7 +56,6 @@ void Switch::loop()
     {
         if (didSwitchChange())
         {
-            log("Switch changed to "+String(_percent));
             notify();
         }
     }
@@ -87,12 +85,12 @@ bool Switch::isTimeToCheckSwitch()
  */
 bool Switch::didSwitchChange()
 {
-    bool newState = digitalRead(_pin) == 0; // Inverted intentionally
+    int pinState = digitalRead(_pin);
+    bool newState = (pinState == 0);
     if (newState == isOn())
     {
         return false;
     }
-    log("newState = "+String(newState)+", _percent = "+String(_percent));
     _percent = newState ? 100 : 0;
     return true;
 }
@@ -104,7 +102,6 @@ bool Switch::didSwitchChange()
  */
 void Switch::notify()
 {
-    log("Notifying");
     String topic = "patriot/" + _name;
     String message = String(_percent);
     publish(topic,message);

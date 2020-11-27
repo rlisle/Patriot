@@ -44,7 +44,7 @@ NCD8Switch::NCD8Switch(int address, int switchNum, String name)
         initializeBoard();
     } else {
         _switchBitmap = 0;
-        Serial.println("ERROR! Invalid switchNum: "+String(switchNum));
+        log("ERROR! Invalid switchNum: "+String(switchNum));
     }
     _lastState    = 0;
 }
@@ -76,7 +76,7 @@ int NCD8Switch::initializeBoard() {
     } while( status != 0 && retries++ < 3);
     
     if(status != 0) {
-        Serial.println("Initialize board failed");
+        log("Initialize board failed");
     }
     
     return status;
@@ -95,7 +95,7 @@ bool NCD8Switch::isOn() {
         status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
     if(status != 0) {
-        Serial.println("Error selecting GPIO register");
+        log("Error selecting GPIO register");
     }
     
     Wire.requestFrom(_address, 1);      // Read 1 byte
@@ -105,7 +105,7 @@ bool NCD8Switch::isOn() {
         int data = Wire.read();
         return((data & _switchBitmap) == 0);    // Inverted
     }
-    Serial.println("Error reading switch");
+    log("Error reading switch");
     return false;
 }
 
@@ -122,9 +122,7 @@ void NCD8Switch::loop()
         _lastPollTime = current;
         if(isOn() != _isOn) {
             _isOn = !_isOn;
-            if(publish != NULL) {
-                publish("patriot/" + _name, _isOn ? "100" : "0" );
-            }
+            publish("patriot/" + _name, _isOn ? "100" : "0" );
         }
     }
 };
