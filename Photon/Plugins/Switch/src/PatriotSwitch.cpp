@@ -28,7 +28,7 @@ Changelog:
 #include "PatriotSwitch.h"
 
 #define MILLIS_PER_SECOND 1000
-#define POLL_INTERVAL_MILLIS 250
+#define POLL_INTERVAL_MILLIS 5000
 
 /**
  * Constructor
@@ -40,6 +40,7 @@ Switch::Switch(int pinNum, String name)
         _pin(pinNum)
 {
     
+    log("Switch "+_name+" initialized");
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);
     _lastPollTime = millis();
@@ -56,7 +57,7 @@ void Switch::loop()
     {
         if (didSwitchChange())
         {
-            publish("debug:"+_name, "Switch changed to "+String(_percent));
+            log("Switch changed to "+String(_percent));
             notify();
         }
     }
@@ -91,6 +92,7 @@ bool Switch::didSwitchChange()
     {
         return false;
     }
+    log("newState = "+String(newState)+", _percent = "+String(_percent));
     _percent = newState ? 100 : 0;
     return true;
 }
@@ -102,6 +104,7 @@ bool Switch::didSwitchChange()
  */
 void Switch::notify()
 {
+    log("Notifying");
     String topic = "patriot/" + _name;
     String message = String(_percent);
     publish(topic,message);

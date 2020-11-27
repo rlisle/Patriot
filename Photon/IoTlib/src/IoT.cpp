@@ -176,8 +176,8 @@ void IoT::addDevice(Device *device)
     }
     
     _devices->addDevice(device);
-    device->log = globalLog;
-    device->publish = globalPublish;
+    device->logPtr = globalLog;
+    device->publishPtr = globalPublish;
 }
 
 
