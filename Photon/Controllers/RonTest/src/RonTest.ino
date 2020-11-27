@@ -75,7 +75,7 @@ void setup() {
     iot->addDevice(&waking);
     iot->addDevice(&watchingTV);
     iot->addDevice(&goingToBed);
-    iot->addDevice(&Sleeping);
+    iot->addDevice(&sleeping);
 }
 
 void loop() {

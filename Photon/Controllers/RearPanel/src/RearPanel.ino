@@ -77,6 +77,8 @@ Switch rampAwningSwitch(A3, "RampAwningSwitch");
 Switch rearPorchSwitch(A4, "RearPorchSwitch");
 Switch rearAwningSwitch(A5, "RearAwningSwitch");
 
+Activity goodMorning("goodmorning");
+
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
@@ -86,6 +88,13 @@ void setup() {
     // BEHAVIORS
     ceiling.addBehavior(10, "goodmorning", '>', 0);
     
+    ceiling.addBehavior(100, "OfficeCeilingSwitch", '>', 0);
+    loft.addBehavior(100, "LoftSwitch", '>', 0);
+    rampPorch.addBehavior(100, "RampPorchSwitch", '>', 0);
+    rampAwning.addBehavior(100, "RampAwningSwitch", '>', 0);
+    rearPorch.addBehavior(100, "RearPorchSwitch", '>', 0);
+    rearAwning.addBehavior(100, "RearAwningSwitch", '>', 0);
+
     // ADD ALL DEVICES
     iot->addDevice(&ceiling);
     iot->addDevice(&loft);
@@ -94,7 +103,6 @@ void setup() {
     iot->addDevice(&rampAwning);
     iot->addDevice(&rearPorch);
     iot->addDevice(&rearAwning);
-    iot->addDevice(&blueLed);
     
     iot->addDevice(&ceilingSwitch);
     iot->addDevice(&loftSwitch);
@@ -103,9 +111,7 @@ void setup() {
     iot->addDevice(&rearPorchSwitch);
     iot->addDevice(&rearAwningSwitch);
     
-    iot->addDevice(&watchingTV);
-    iot->addDevice(&goingToBed);
-    iot->addDevice(&sleeping);
+    iot->addDevice(&goodMorning);
 }
 
 void loop() {

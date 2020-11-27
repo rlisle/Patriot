@@ -39,6 +39,7 @@ Switch::Switch(int pinNum, String name)
         : Device(name, DeviceType::Switch),
         _pin(pinNum)
 {
+    
     _percent = 0;
     pinMode(pinNum, INPUT_PULLUP);
     _lastPollTime = millis();
@@ -55,6 +56,7 @@ void Switch::loop()
     {
         if (didSwitchChange())
         {
+            publish("debug:"+_name, "Switch changed to "+String(_percent));
             notify();
         }
     }
@@ -102,9 +104,5 @@ void Switch::notify()
 {
     String topic = "patriot/" + _name;
     String message = String(_percent);
-    if(publish != NULL) {
-        publish(topic,message);
-    } else {
-        Serial.println("Error: publish ptr not set");
-    }
+    publish(topic,message);
 }

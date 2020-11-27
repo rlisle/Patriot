@@ -57,8 +57,8 @@ class Device {
 
  public:
     // Pointer to methods in IoT. These are set in IoT->addDevice()
-    void (*log)(String message);
-    void (*publish)(String topic, String message);
+    void (*logPtr)(String message);
+    void (*publishPtr)(String topic, String message);
 
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
@@ -81,12 +81,26 @@ class Device {
 
     void stateDidChange(States *states) {
         int newLevel = _behaviors.stateDidChange(states);
-//        if(log != NULL) {
-//            log("Setting new level " + String(newLevel));
-//        }
-        setPercent(newLevel);
+        if(newLevel != _percent) {
+            if(log != NULL) {
+                log("Device.stateDidChange: setting new level " + String(newLevel));
+            }
+            setPercent(newLevel);
+        }
     }
 
+    void log(String message) {
+        if(logPtr != NULL) {
+            logPtr(message);
+        }
+    }
+    
+    void publish(String topic, String message) {
+        if(publishPtr != NULL) {
+            publishPtr(topic, message);
+        }
+    }
+    
     virtual String name() { return _name; };
     virtual DeviceType type() { return _type; };
 
