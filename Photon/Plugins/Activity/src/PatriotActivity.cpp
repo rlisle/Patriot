@@ -4,6 +4,7 @@ Activity plugin
 Features:
 - Allows Alexa to control a 'name' without hardware.
 - This is how 'Activities' are implemented.
+- By attaching behaviors, can be controlled by other states.
 
 http://www.github.com/rlisle/Patriot
 
@@ -23,5 +24,29 @@ Changelog:
  */
 Activity::Activity(String name) : Device(name)
 {
-    // Nothing else to do
+    _wasSetDirectly = false;
 }
+
+void Activity::setPercent(int percent) {
+    _wasSetDirectly = true;
+    _percent = percent;
+};
+
+void Activity::stateDidChange(States *states) {
+    if(_wasSetDirectly) {
+        _wasSetDirectly = false;
+        return;
+    }
+    
+    int newLevel = _behaviors.stateDidChange(states);
+    log("Activity " + _name + " stateDidChange newLevel "+String(newLevel));
+    if(newLevel != _percent) {
+        log("Activity " + _name + " stateDidChange publishing newLevel "+String(newLevel));
+        _percent = newLevel;
+        String topic = "patriot/" + _name;
+        String message = String(_percent);
+        publish(topic,message);
+    }
+}
+
+

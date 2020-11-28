@@ -31,7 +31,7 @@ public:
     
     MQTTManager(String brokerIP, String connectID, String controllerName, Devices* devices);
     
-    void        publish(String topic, String message);
+    bool        publish(String topic, String message);
     void        parseMessage(String topic, String message);
     void        loop();
     void        mqttHandler(char* topic, byte* payload, unsigned int length);

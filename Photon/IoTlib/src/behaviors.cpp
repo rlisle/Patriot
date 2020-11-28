@@ -49,6 +49,7 @@ int Behaviors::stateDidChange(States *states)
     int level = 0;
     for (Behavior *ptr = _behaviors; ptr != NULL; ptr = ptr->_next)
     {
+        //Currently just picking highest level.
         int newLevel = ptr->evaluateStates(states);
         level = max(level,newLevel);
     }

@@ -8,15 +8,15 @@
  *   1. Edit this code
  *   2. "particle flash RearPanel"
  *
- * Hardware
+ * Hardware3
  * 1. NCD Photon Screw Terminal board
  *    6 switch connections:
- *      A0 Ceiling
- *      A1 Loft
- *      A2 Ramp Porch Floods
- *      A3 Ramp Awning LEDs
- *      A4 Rear Porch Flood
- *      A5 Rear Awning LEDs
+ *      A0 Ceiling (brown)
+ *      A1 Loft (red)
+ *      A2 Ramp Porch Floods (yellow)
+ *      A3 Ramp Awning LEDs (green)
+ *      A4 Rear Porch Flood (blue)
+ *      A5 Rear Awning LEDs (white)
  * 2. NCD 8 PWM OC 8W I2C Dimmer board
  *      A0 Ceiling
  *      A1 Loft
@@ -49,10 +49,9 @@
  * 11/04/17 Initial files baseed on FrontPanel
  */
 #include <IoT.h>
-#include <PatriotLight.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
-#include <PatriotActivity.h>
+//#include <PatriotActivity.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
@@ -61,15 +60,14 @@ String mqttServer = "192.168.10.184";
 IoT *iot;
 
 // To use persistent storage, insert "retained" before NCD8Relay
-NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 1);
-NCD8Light loft(ADDRESS, 1, "Loft");
+NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 2);
+NCD8Light loft(ADDRESS, 1, "Loft", 2);
 NCD8Light piano(ADDRESS, 2, "Piano", 2);
 NCD8Light rampPorch(ADDRESS, 3, "RampPorch", 2);
 NCD8Light rampAwning(ADDRESS, 4, "RampAwning", 2);
 NCD8Light rearPorch(ADDRESS, 5, "RearPorch", 2);
 NCD8Light rearAwning(ADDRESS, 6, "RearAwning", 2);
 
-Light blueLed(7, "blueLed", false, true);
 
 Switch ceilingSwitch(A0, "OfficeCeilingSwitch");
 Switch loftSwitch(A1, "LoftSwitch");
@@ -78,18 +76,24 @@ Switch rampAwningSwitch(A3, "RampAwningSwitch");
 Switch rearPorchSwitch(A4, "RearPorchSwitch");
 Switch rearAwningSwitch(A5, "RearAwningSwitch");
 
-Activity watchTV("watchingTV");
+//Activity goodMorning("goodmorning");
 
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
     iot->begin();
-    iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
+    iot->connectMQTT(mqttServer, "PatriotRearPanel1", false);   // MQTT bridge enabled
 
     // BEHAVIORS
-    ceiling.addBehavior(10, "goodmorning", '>', 0);
-    blueLed.addBehavior(100, "loftswitch", '>', 0);
+//    ceiling.addBehavior(10, "goodmorning", '>', 0);
     
+    ceiling.addBehavior(100, "OfficeCeilingSwitch", '>', 0);
+    loft.addBehavior(100, "LoftSwitch", '>', 0);
+    rampPorch.addBehavior(100, "RampPorchSwitch", '>', 0);
+    rampAwning.addBehavior(100, "RampAwningSwitch", '>', 0);
+    rearPorch.addBehavior(100, "RearPorchSwitch", '>', 0);
+    rearAwning.addBehavior(100, "RearAwningSwitch", '>', 0);
+
     // ADD ALL DEVICES
     iot->addDevice(&ceiling);
     iot->addDevice(&loft);
@@ -98,7 +102,6 @@ void setup() {
     iot->addDevice(&rampAwning);
     iot->addDevice(&rearPorch);
     iot->addDevice(&rearAwning);
-    iot->addDevice(&blueLed);
     
     iot->addDevice(&ceilingSwitch);
     iot->addDevice(&loftSwitch);
@@ -107,7 +110,7 @@ void setup() {
     iot->addDevice(&rearPorchSwitch);
     iot->addDevice(&rearAwningSwitch);
     
-    iot->addDevice(&watchTV);
+//    iot->addDevice(&goodMorning);
 }
 
 void loop() {

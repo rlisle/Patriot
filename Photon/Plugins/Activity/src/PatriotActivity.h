@@ -22,10 +22,15 @@ Changelog:
 
 class Activity : public Device
 {
+private:
+    bool _wasSetDirectly;
+    
 public:
     /**
      * Constructor
      */
     Activity(String name);
-
+    
+    void setPercent(int percent);
+    void stateDidChange(States *states);
 };

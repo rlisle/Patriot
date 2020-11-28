@@ -7,12 +7,15 @@
  *
  * It simulates a controller using the built-in LED for testing.
  *
+ * Currently using to develop NCD16Switch and Activity
+ *
  * Hardware
+ * - NCD Photon SCT board
  * - built-in blue LED     D7
- * - 4 Switches on A0-A3
- * - 4 LEDs on D0-D3
+ * - NCD 23017 16 GPIO board - no jumpers set
  *
  * History
+ * 11/26/20 Testing NCD16Switch plugin and Activity plugin
  * 11/5/20  Testing NCD8Light plugin
  * 11/20/19 Testing Light brightness
  * 01/05/19 Remove watchdog timer due to OTA issues.
@@ -27,27 +30,26 @@
  */
 
 #include <IoT.h>
-#include <PatriotNCD8Switch.h>
+//#include <PatriotNCD16Switch.h>
 #include <PatriotLight.h>
+#include <PatriotActivity.h>
+
+#define ADDRESS 0   // No board address jumpers set
 
 String mqttServerIP = "192.168.10.184";
 
 IoT     *iot;
 
-// Use Backup SRAM to persist led state between resets
-// To use persistent storage, insert "retained" before NCD8Relay
-//Light led(D7, "led", false, true);
-// NCD8Light test1(1, 0, "test1", 0); // immediate
-// NCD8Light test2(1, 1, "test2", 1); // 1 second transition
-// NCD8Light test3(1, 2, "test3", 2); // 2 " "
-// NCD8Light test4(1, 3, "test4", 3);
-// NCD8Light test5(1, 4, "test5", 4);
-// NCD8Light test6(1, 5, "test6", 5);
-// NCD8Light test7(1, 6, "test7", 6);
-// NCD8Light test8(1, 7, "test8", 7);
-Light test(7, "test", false, true);
+// To use persistent storage, insert "retained" before device
 
-NCD8Switch switch1(0x20, 1, "Switch1");
+//NCD8Switch switch1(0x20, 1, "Switch1");
+
+Light blueLed(7, "blueLed", false, true);
+
+Activity waking("waking");
+Activity watchingTV("watchingTV");
+Activity goingToBed("goingToBed");
+Activity sleeping("sleeping");
 
 void setup() {
     iot = IoT::getInstance();
@@ -55,29 +57,25 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServerIP, "patriotRonTest1");
     
-    // test1.setLocalPin(A0, "Switch1");
-    // test2.setLocalPin(A1, "Switch2");
-    // test3.setLocalPin(A2, "Switch3");
-    // test4.setLocalPin(A3, "Switch4");
-    
     // Behaviors/Activities
-    Behavior *demo1and2 = new Behavior(100);
-    demo1and2->addCondition(new Condition("demo1", '>', 0));
-    demo1and2->addCondition(new Condition("demo2", '>', 0));
-    test.addBehavior(demo1and2);
-
-    Behavior *demo2not3 = new Behavior(100);
-    demo2not3->addCondition(new Condition("demo2", '>', 0));
-    demo2not3->addCondition(new Condition("demo3", '=', 0));
-    test.addBehavior(demo2not3);
-
-    // Devices
-    //  iot->addDevice(DEV_PTR led);
-    iot->addDevice(&test);
-    iot->addDevice(&switch1);
+    blueLed.addBehavior(100, "waking", '>', 0);
+    blueLed.addBehavior(0, "sleeping", '>', 0);
     
-    // Watchdog Timer
-    //  PhotonWdgs::begin(true,true,10000,TIMER7);
+    waking.addBehavior(0, "goingToBed", '>', 0);
+    
+    watchingTV.addBehavior(0, "goingToBed", '>', 0);
+    
+    goingToBed.addBehavior(0, "sleeping", '>', 0);
+
+    sleeping.addBehavior(0, "waking", '>', 0);
+
+    // Devices and Activities
+    iot->addDevice(&blueLed);
+    
+    iot->addDevice(&waking);
+    iot->addDevice(&watchingTV);
+    iot->addDevice(&goingToBed);
+    iot->addDevice(&sleeping);
 }
 
 void loop() {

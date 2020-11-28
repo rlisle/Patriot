@@ -12,6 +12,7 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-27: Override setPercent. Was resetting to 0.
 2020-11-22: Convert to v5 with MQTT support
 2018-01-18: Add type property
 2017-10-27: v2.0.0. Change name to command.
@@ -28,7 +29,7 @@ Changelog:
 #include "PatriotSwitch.h"
 
 #define MILLIS_PER_SECOND 1000
-#define POLL_INTERVAL_MILLIS 250
+#define POLL_INTERVAL_MILLIS 100
 
 /**
  * Constructor
@@ -84,7 +85,8 @@ bool Switch::isTimeToCheckSwitch()
  */
 bool Switch::didSwitchChange()
 {
-    bool newState = digitalRead(_pin) == 0; // Inverted intentionally
+    int pinState = digitalRead(_pin);
+    bool newState = (pinState == 0);
     if (newState == isOn())
     {
         return false;
@@ -102,9 +104,5 @@ void Switch::notify()
 {
     String topic = "patriot/" + _name;
     String message = String(_percent);
-    if(publish != NULL) {
-        publish(topic,message);
-    } else {
-        Serial.println("Error: publish ptr not set");
-    }
+    publish(topic,message);
 }

@@ -58,14 +58,18 @@ void MQTTManager::connect(String connectID) {
 
 void MQTTManager::log(String message)
 {
-    publish("debug/" + _controllerName, message);
-    Serial.println(_controllerName + " MQTT log: " + message);
+    if(!publish("debug/" + _controllerName, message)){
+        Serial.println(_controllerName + " MQTT log: " + message);
+    }
 }
 
-void MQTTManager::publish(String topic, String message) {
+bool MQTTManager::publish(String topic, String message) {
     if(_mqtt != NULL && _mqtt->isConnected()) {
+        Serial.println("Publishing "+String(topic)+" "+String(message));
         _mqtt->publish(topic,message);
+        return true;
     }
+    return false;
 }
 
 void MQTTManager::loop()
@@ -92,7 +96,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     p[length] = 0;
     String message(p);
     String topic(rawTopic);
-    log("received t: " + topic + ", m: " + message);
+    //log("received t: " + topic + ", m: " + message);
 
     _lastMQTTtime = Time.now();
 
@@ -104,7 +108,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 // topic and messages are already lowercase
 void MQTTManager::parseMessage(String topic, String message)
 {
-    //log("received: " + topic + ", " + message);
+    //log("Parser received: " + topic + ", " + message);
     
     // New Protocol: patriot/<name>  <value>
     if(topic.startsWith(kPublishName+"/")) {
