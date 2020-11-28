@@ -16,6 +16,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
 Changelog:
+2020-11-28: Add log levels: Off, Error, Info, Debug
 2020-11-24: Remove unused variables, refactor parsing
 2020-11-22: Integrate DeviceNames into Devices
 2020-11-21: Delete publishName, implement new MQTT protocol
@@ -61,9 +62,9 @@ void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
     iot->mqttHandler(topic, payload, length);
 }
 
-void globalLog(String message) {
+void globalLog(String message, PLogLevel logLevel = LogError) {
     IoT* iot = IoT::getInstance();
-    iot->log(message);
+    iot->log(message, logLevel);
 }
 
 void globalPublish(String topic, String message) {
@@ -91,14 +92,24 @@ IoT* IoT::_instance = NULL;
  * a spot to add more extensive logging or analytics
  * @param msg
  */
-void IoT::log(String msg)
+void IoT::log(String msg, PLogLevel logLevel)
 {
+    if (_logLevel == LogNone) return;
+    if (_logLevel == LogError && logLevel != LogError) return;
+    if (_logLevel == LogInfo && logLevel == LogDebug) return;
+    
     Serial.println(msg);
 
-    IoT* iot = IoT::getInstance();
-    if(iot->_mqttManager) {
-        iot->_mqttManager->log(msg);
+    if (_mqttManager != NULL) {
+        _mqttManager->log(msg);
     }
+}
+
+/**
+ * Set the amount of logging desired.
+ */
+void IoT::setLogLevel(PLogLevel logLevel) {
+    _logLevel = logLevel;
 }
 
 /**
@@ -107,6 +118,7 @@ void IoT::log(String msg)
 IoT::IoT()
 {
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
+    _logLevel               = LogError;
     _factory                = new Factory();
     _controllerName         = kDefaultControllerName;
     _mqttManager            = NULL;
@@ -139,14 +151,15 @@ void IoT::begin()
 // MQTT 
 void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
-//    Serial.println("Connecting to MQTT patriot on IP " + brokerIP);
     _isBridge = isBridge;
     _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName, _devices);
 }
 
 void IoT::mqttPublish(String topic, String message)
 {
-    _mqttManager->publish(topic, message);
+    if (_mqttManager != NULL) {
+        _mqttManager->publish(topic, message);
+    }
 }
 
 /**
@@ -168,7 +181,6 @@ void IoT::loop()
 // 
 void IoT::addDevice(Device *device)
 {
-    //TODO: Automatically create a direct device command behavior (unless it's a switch)
     if(device->shouldAutoCreateBehavior()) {
         Behavior *defaultBehavior = new Behavior(100);
         defaultBehavior->addCondition(new Condition(device->name(), '>', 0));
@@ -189,8 +201,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
     String data(rawData);
     String event(eventName);
-//    Serial.println("Subscribe handler event: " + event + ", data: " + data);
-
+    
     if(event.equalsIgnoreCase(kPublishName) == false) {
         Serial.println("IoT received unexpected particle.io topic: " + event);
         return;
