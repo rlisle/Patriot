@@ -144,6 +144,9 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic.equals("log")) {
             // Ignore it.
             
+        } else if(subtopic.equals("loglevel/"+_controllerName)) {
+            parseLogLevel(message);
+            
             // UNKNOWN
         } else {
             
@@ -169,3 +172,13 @@ int MQTTManager::parseValue(String message)
     return message.toInt();
 }
 
+void MQTTManager::parseLogLevel(String message) {
+    PLogLevel level = LogError;
+    if (message.equals("none")) level = LogNone;
+    else if (message.equals("error")) level = LogError;
+    else if (message.equals("info")) level = LogInfo;
+    else if (message.equals("debug")) level = LogDebug;
+    
+    IoT* iot = IoT.getInstance();
+    iot->setLogLevel(level);
+}
