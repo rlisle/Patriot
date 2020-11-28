@@ -26,6 +26,7 @@ Changelog:
 #pragma once
 
 #include "behaviors.h"
+#include "PLogLevel.h"
 
 enum class DeviceType {
     Unknown,
@@ -57,7 +58,7 @@ class Device {
 
  public:
     // Pointer to methods in IoT. These are set in IoT->addDevice()
-    void (*logPtr)(String message);
+    void (*logPtr)(String message, PLogLevel logLevel);
     void (*publishPtr)(String topic, String message);
 
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
@@ -79,9 +80,9 @@ class Device {
         _behaviors.addBehavior(newBehavior);
     };
 
-    void log(String message) {
+    void log(String message, PLogLevel logLevel = LogDebug) {
         if(logPtr != NULL) {
-            logPtr(message);
+            logPtr(message, logLevel);
         }
     }
     

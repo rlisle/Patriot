@@ -46,6 +46,7 @@
    - watching
 
  * History
+ * 11/28/20 Update to v5
  * 11/09/20 Add dimmer board support
  * 09/04/20 Change MQTT IP to 192.168.10.184
  * 08/29/20 Remove spaces in device names
@@ -65,7 +66,6 @@
 #include <PatriotNCD8Relay.h>
 #include <PatriotNCD8Light.h>
 
-#define DEV_PTR (Device *)&
 #define ADDRESS1 0x20
 #define ADDRESS2 1    // I2C PWM board switches low switch on
 #define NUMRELAYS 8
@@ -75,11 +75,9 @@ String mqttServer = "192.168.10.184";
 IoT *iot;
 
 // To use persistent storage, insert "retained" before NCD8Relay
-//NCD8Relay kitchenSink(ADDRESS1, NUMRELAYS, 0, "Sink");
 NCD8Relay frontAwning(ADDRESS1, NUMRELAYS, 1, "FrontAwning");
 NCD8Relay rightTrim(ADDRESS1, NUMRELAYS, 2, "RightTrim");
 NCD8Relay leftTrim(ADDRESS1, NUMRELAYS, 3, "LeftTrim");
-//NCD8Relay ceiling(ADDRESS1, NUMRELAYS, 4, "Ceiling");
 NCD8Relay dsFloods(ADDRESS1, NUMRELAYS, 5, "DoorSide");
 NCD8Relay osFloods(ADDRESS1, NUMRELAYS, 6, "OtherSide");
 NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
@@ -95,89 +93,24 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServer, "patriotFrontPanel1");
 
-    // DEVICES
-
-    iot->addDevice(DEV_PTR dsFloods);
-    iot->addDevice(DEV_PTR frontAwning);
-    iot->addDevice(DEV_PTR frontPorch);
-    iot->addDevice(DEV_PTR leftTrim);
-    iot->addDevice(DEV_PTR osFloods);
-    iot->addDevice(DEV_PTR rightTrim);
-
-    iot->addDevice(DEV_PTR ceiling);
-    iot->addDevice(DEV_PTR kitchenCeiling);
-    iot->addDevice(DEV_PTR kitchenSink);
-    iot->addDevice(DEV_PTR kitchenCabinets);
-
     // BEHAVIORS
-    // Note that ON is required, but OFF is optional
-
-    // Arriving (currently done in HomeKit)
-    // iot->addBehavior(new Behavior(DEV_PTR frontPorch, "arriving", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR leftTrim, "arriving", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR rightTrim, "arriving", '>', 0, 100));
-
-    // Cleaning  (on/off)
-    // iot->addBehavior(new Behavior(DEV_PTR ceiling, "cleaning", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink,   "cleaning", '>', 0, 100));
-
-    // Cooking (On/Off)
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "cooking", '>', 0, 100));
-
-    // Evening - Porch lights on (awnings once we can detect if extended)
-    // iot->addBehavior(new Behavior(DEV_PTR frontPorch,  "evening", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR leftTrim,  "evening", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR rightTrim,  "evening", '>', 0, 100));
-
-    // Everything (on/off)
-    // iot->addBehavior(new Behavior(DEV_PTR ceiling, "everything", '>', 0, 100));     // On
-    // iot->addBehavior(new Behavior(DEV_PTR dsFloods, "everything", '>', 0, 100));    // On
-    // iot->addBehavior(new Behavior(DEV_PTR frontAwning, "everything", '>', 0, 100)); // On
-    // iot->addBehavior(new Behavior(DEV_PTR frontPorch, "everything", '>', 0, 100)); // On
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "everything", '>', 0, 100));       // on
-    // iot->addBehavior(new Behavior(DEV_PTR leftTrim, "everything", '>', 0, 100));    // On
-    // iot->addBehavior(new Behavior(DEV_PTR osFloods, "everything", '>', 0, 100));    // On
-    // iot->addBehavior(new Behavior(DEV_PTR rightTrim, "everything", '>', 0, 100));   // On
-
-    // Hosting (on/off - was guest mode)
-
-    // Leaving
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "leaving", '>', 0, 0));
-
-    // Morning
-    // Undo any lights turned on by Waking
-    //iot->addBehavior(new Behavior(DEV_PTR rightTrim,  "morning", '>', 0, 0));
-
-    // Reading
-    // iot->addBehavior(new Behavior(DEV_PTR leftTrim, "reading", '>', 0, 100));
-
-    // Retiring - everything off except bedroom and a few low lights
-    // iot->addBehavior(new Behavior(DEV_PTR ceiling,  "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR dsFloods, "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR frontAwning, "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR frontPorch, "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR leftTrim, "bedtime", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR osFloods, "bedtime", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR rightTrim, "bedtime", '>', 0, 100));
-
-    // Sleeping - Everything off
-    iot->addBehavior(new Behavior(DEV_PTR ceiling,  "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR dsFloods, "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR frontAwning, "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR frontPorch, "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR leftTrim, "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR osFloods, "sleeping", '>', 0, 0));
-    iot->addBehavior(new Behavior(DEV_PTR rightTrim, "sleeping", '>', 0, 0));
 
     // Waking
-    //iot->addBehavior(new Behavior(DEV_PTR rightTrim, "waking", '>', 0, 100));
+    //ceiling.addBehavior(100, "waking", '>', 0);
 
-    // Watching (TV)
-    // iot->addBehavior(new Behavior(DEV_PTR leftTrim, "watching", '>', 0, 100));
-    // iot->addBehavior(new Behavior(DEV_PTR ceiling,  "watching", '>', 0, 0));
-    // iot->addBehavior(new Behavior(DEV_PTR kitchenSink, "watching", '>', 0, 0));
+    // DEVICES
+
+    iot->addDevice(&dsFloods);
+    iot->addDevice(&frontAwning);
+    iot->addDevice(&frontPorch);
+    iot->addDevice(&leftTrim);
+    iot->addDevice(&osFloods);
+    iot->addDevice(&rightTrim);
+
+    iot->addDevice(&ceiling);
+    iot->addDevice(&kitchenCeiling);
+    iot->addDevice(&kitchenSink);
+    iot->addDevice(&kitchenCabinets);
 }
 
 void loop() {

@@ -14,22 +14,6 @@ Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
-
-Changelog:
- 2020-11-21: Delete publishName, implement new MQTT protocol
-2020-11-14: Convert scene-like behaviors back to per-device summing
-2020-11-14: Rename activities to states
-2019-01-05: Removed watchdog timer due to OTA issues.
-2019-01-01: Replace 2am reset with hardware watchdog timer.
-2018-11-05: Refactor to MQTTmanager.
-2018-10-15: Expose MQTT publish.
-2018-03-27: Add MQTT reconnect
-2018-01-17: Add functions for device state and type
-2017-10-22: Convert to scene-like behavior
-2017-05-15: Make devices generic
-2017-03-24: Rename Patriot
-2017-03-05: Convert to v2 particle library
-2016-11-24: Initial version
 ******************************************************************/
 #pragma once
 
@@ -40,6 +24,7 @@ Changelog:
 #include "devices.h"
 #include "MQTTManager.h"
 #include "factory.h"
+#include "PLogLevel.h"
 
 /**
  * Main IoT object.
@@ -91,13 +76,14 @@ public:
     /**
      * Helper methods
      */
-
-    static void log(String msg);
+    void        setLogLevel(PLogLevel logLevel);
+    void        log(String msg, PLogLevel logLevel = LogDebug);
 
 private:
     static IoT* _instance;
-    bool    _isBridge;
-    String  _controllerName;
+    bool        _isBridge;
+    String      _controllerName;
+    PLogLevel    _logLevel;
 
     /**
      * Constructor

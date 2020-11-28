@@ -18,6 +18,7 @@ Changelog:
 ******************************************************************/
 #include "MQTTManager.h"
 #include "constants.h"
+#include "IoT.h"
 
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 
@@ -96,7 +97,6 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
     p[length] = 0;
     String message(p);
     String topic(rawTopic);
-    //log("received t: " + topic + ", m: " + message);
 
     _lastMQTTtime = Time.now();
 
@@ -120,7 +120,7 @@ void MQTTManager::parseMessage(String topic, String message)
         if(subtopic.equals("ping")) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
-                log("Ping addressed to us");
+                //log("Ping addressed to us");
                 _mqtt->publish(kPublishName + "/pong", _controllerName);
             }
             
@@ -132,31 +132,34 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic.equals("reset")) {
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
-                log("Reset addressed to us");
+                //log("Reset addressed to us");
                 System.reset();
             }
             
             // MEMORY
         } else if(subtopic.equals("memory")) {
-            // Respond if memory is addressed to us
             if(message.equals(_controllerName)) {
-                log("Memory addressed to us");
                 log( String::format("Free memory = %d", System.freeMemory()));
             }
             
         } else if(subtopic.equals("log")) {
             // Ignore it.
             
+        } else if(subtopic.equals("loglevel/"+_controllerName)) {
+            parseLogLevel(message);
+            
             // UNKNOWN
         } else {
             
             int percent = parseValue(message);
             //log("Parser setting state " + subtopic + " to " + message);
+            //TODO: something not working here...
             _states->addState(subtopic,percent);
             _devices->stateDidChange(_states);
         }
     } else {
-        log("  Not our message");
+        // Not addressed or recognized by us
+        log("Parser: Not our message: "+String(topic)+" "+String(message));
     }
 }
 
@@ -170,3 +173,14 @@ int MQTTManager::parseValue(String message)
     return message.toInt();
 }
 
+void MQTTManager::parseLogLevel(String message) {
+    PLogLevel level = LogError;
+    if (message.equals("none")) level = LogNone;
+    else if (message.equals("error")) level = LogError;
+    else if (message.equals("info")) level = LogInfo;
+    else if (message.equals("debug")) level = LogDebug;
+    else return;
+    
+    IoT* iot = IoT::getInstance();
+    iot->setLogLevel(level);
+}

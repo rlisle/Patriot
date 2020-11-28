@@ -28,20 +28,31 @@ Activity::Activity(String name) : Device(name)
 }
 
 void Activity::setPercent(int percent) {
-    _wasSetDirectly = true;
-    _percent = percent;
+    log("Activity setPercent "+String(percent), LogDebug);
+//    _wasSetDirectly = true;
+//    _percent = percent;
 };
 
 void Activity::stateDidChange(States *states) {
-    if(_wasSetDirectly) {
-        _wasSetDirectly = false;
-        return;
-    }
+//    if(_wasSetDirectly) {
+//        _wasSetDirectly = false;
+//        return;
+//    }
+
+    //TODO:
     
+    int ourState = states.getStateWithName(_name);
+    if (ourState != NULL) {
+        // Did our state change?
+        if (ourState->_value != _percent) {
+            
+        }
+    }
+
     int newLevel = _behaviors.stateDidChange(states);
-    log("Activity " + _name + " stateDidChange newLevel "+String(newLevel));
+    log("Activity " + _name + " stateDidChange newLevel "+String(newLevel), LogDebug);
     if(newLevel != _percent) {
-        log("Activity " + _name + " stateDidChange publishing newLevel "+String(newLevel));
+        log("Activity " + _name + " stateDidChange publishing newLevel "+String(newLevel), LogDebug);
         _percent = newLevel;
         String topic = "patriot/" + _name;
         String message = String(_percent);
