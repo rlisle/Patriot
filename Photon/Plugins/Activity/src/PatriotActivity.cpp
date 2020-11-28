@@ -27,7 +27,7 @@ Activity::Activity(String name) : Device(name)
     _wasSetDirectly = false;
 }
 
-void setPercent(int percent) {
+void Activity::setPercent(int percent) {
     _wasSetDirectly = true;
     _percent = percent;
 };

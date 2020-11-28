@@ -117,7 +117,7 @@ void MQTTManager::parseMessage(String topic, String message)
         
         // Look for reserved names
         // PING
-        if(subtopic.equals("ping")) {
+        if(subtopic.equals("ping/"+)) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
                 log("Ping addressed to us");
