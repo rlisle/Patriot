@@ -179,6 +179,7 @@ void MQTTManager::parseLogLevel(String message) {
     else if (message.equals("error")) level = LogError;
     else if (message.equals("info")) level = LogInfo;
     else if (message.equals("debug")) level = LogDebug;
+    else return;
     
     IoT* iot = IoT::getInstance();
     iot->setLogLevel(level);
