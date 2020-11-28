@@ -82,7 +82,7 @@ void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
     iot->begin();
-    iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
+    iot->connectMQTT(mqttServer, "PatriotRearPanel1", false);   // MQTT bridge enabled
 
     // BEHAVIORS
 //    ceiling.addBehavior(10, "goodmorning", '>', 0);
