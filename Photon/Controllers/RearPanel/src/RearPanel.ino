@@ -49,10 +49,9 @@
  * 11/04/17 Initial files baseed on FrontPanel
  */
 #include <IoT.h>
-#include <PatriotLight.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
-#include <PatriotActivity.h>
+//#include <PatriotActivity.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
