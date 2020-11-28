@@ -40,7 +40,8 @@ enum class DeviceType {
     TempHumidity,
     Ultrasonic,
     NCD8Light,
-    NCD8Switch
+    NCD8Switch,
+    NCD16Switch
 };
 
 class Devices;
