@@ -18,6 +18,7 @@ Changelog:
 ******************************************************************/
 #include "MQTTManager.h"
 #include "constants.h"
+#include "IoT.h"
 
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 
@@ -179,6 +180,6 @@ void MQTTManager::parseLogLevel(String message) {
     else if (message.equals("info")) level = LogInfo;
     else if (message.equals("debug")) level = LogDebug;
     
-    IoT* iot = IoT.getInstance();
+    IoT* iot = IoT::getInstance();
     iot->setLogLevel(level);
 }

@@ -50,4 +50,5 @@ private:
     void      connect(String connectID);
     void      reconnectCheck();
     int       parseValue(String message);
+    void      parseLogLevel(String message);
 };
