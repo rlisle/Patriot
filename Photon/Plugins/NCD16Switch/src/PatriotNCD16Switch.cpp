@@ -28,8 +28,7 @@
 #include "PatriotNCD16Switch.h"
 
 #define MILLIS_PER_SECOND 1000
-// Switch interval from 250 to 5000 for debugging
-#define POLL_INTERVAL_MILLIS 5000
+#define POLL_INTERVAL_MILLIS 250
 
 /**
  * Constructor
