@@ -21,8 +21,9 @@ Changelog:
 ******************************************************************/
 #include "behavior.h"
 
-Behavior::Behavior(int level)
+Behavior::Behavior(int level, bool isDefault)
 {
+    _isDefault = isDefault;
     _level = level;
     _conditions = new Conditions();
     _next = NULL;
@@ -39,6 +40,10 @@ int Behavior::evaluateStates(States *states)
         Condition* condition = _conditions->getCondition(x);
         if(condition->isTrue(states) == false) {
             return 0;
+        }
+        // If true, and isDefault, then set _level to state's level
+        if (_isDefault) {
+            _level = condition->getStateValue(states);
         }
     }
     return _level;

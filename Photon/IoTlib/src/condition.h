@@ -28,10 +28,11 @@ private:
 public:
     Condition *_next;    // Linked list of conditions
     String    _stateName;
-    char      _comparison;  // '<', '=', or '>'
+    char      _comparison;  // '<', '=', '>', or '!'
     int       _value;
 
     bool matchesCondition(int stateValue);
+    int  getStateValue(States *states);
 
 public:
     Condition(String stateName, char comparison, int value);
