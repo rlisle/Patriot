@@ -171,17 +171,17 @@ void NCD8Light::outputPWM() {
  * 0 = 0, 100 = 255
  */
 int NCD8Light::scalePWM(int percent) {
-//    // Current linear scale
+//    // Previous linear scale
 //    float pwm = percent;
 //    pwm *= 255.0;
 //    pwm /= 100.0;
 //    int val = (int) pwm;
 //    return val;
-    // Try exponential scale
+    // Exponential scale
     float base = 1.05697667;
     float pwm = pow(base,percent);
     if (pwm > 255) {
-        log("255 exceeded: "+String(pwm));
+        return(255);
     }
     return (int) pwm;
 }
