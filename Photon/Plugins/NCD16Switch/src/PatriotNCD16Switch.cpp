@@ -25,10 +25,11 @@
  2020-11-28: Initial creation (based on NCD8Switch)
  ******************************************************************/
 
-#include "PatriotNCD8Switch.h"
+#include "PatriotNCD16Switch.h"
 
 #define MILLIS_PER_SECOND 1000
-#define POLL_INTERVAL_MILLIS 250
+// Switch interval from 250 to 5000 for debugging
+#define POLL_INTERVAL_MILLIS 5000
 
 /**
  * Constructor
@@ -55,8 +56,7 @@ NCD16Switch::NCD16Switch(int address, int switchNum, String name)
  * Private Methods
  */
 
-int NCD8Switch::initializeBoard() {
-    int retries;
+int NCD16Switch::initializeBoard() {
     byte status;
     
     // Only the first switch loaded needs to initialize the I2C link
@@ -65,20 +65,17 @@ int NCD8Switch::initializeBoard() {
     }
 
     // Assumes default IOCON set (interleaved, sequential)
-    retries = 0;
-    do {
-        Wire.beginTransmission(_address);
-        Wire.write(0x00);                   // Select IO Direction register
-        Wire.write(0xff);                   // Set first 8 to inputs
-        Wire.write(0xff);                   // Set second 8 to inputs
-        status = Wire.endTransmission();    // Write 'em, Dano
-        
-        Wire.beginTransmission(_address);
-        Wire.write(0x0C);                   // Select pull-up resistor register
-        Wire.write(0xff);                   // pull-ups enabled on first 8 inputs
-        Wire.write(0xff);                   // pull-ups enabled on second 8 inputs
-        status = Wire.endTransmission();
-    } while( status != 0 && retries++ < 3);
+    Wire.beginTransmission(_address);
+    Wire.write(0x00);                   // Select IO Direction register
+    Wire.write(0xff);                   // Set first 8 to inputs
+    Wire.write(0xff);                   // Set second 8 to inputs
+    status = Wire.endTransmission();    // Write 'em, Dano
+    
+    Wire.beginTransmission(_address);
+    Wire.write(0x0C);                   // Select pull-up resistor register
+    Wire.write(0xff);                   // pull-ups enabled on first 8 inputs
+    Wire.write(0xff);                   // pull-ups enabled on second 8 inputs
+    status = Wire.endTransmission();
     
     if(status != 0) {
         Serial.println("Initialize board failed");
@@ -92,29 +89,28 @@ int NCD8Switch::initializeBoard() {
  * Return state of switch (inverted: low = 100, high = 0)
  */
 bool NCD16Switch::isOn() {
-    int retries = 0;
     int status;
     
     // We'll want to read 2 sequential bytes.
-    // If we using retries, probably can't read sequentially?
-    do {
-        Wire.beginTransmission(_address);
-        Wire.write(0x0C);       // GPIO Register
-        status = Wire.endTransmission();
-    } while(status != 0 && retries++ < 3);
+    Wire.beginTransmission(_address);
+    Wire.write(0x12);       // GPIO Register
+    status = Wire.endTransmission();
     if(status != 0) {
         Serial.println("Error selecting GPIO register");
+        return false;
     }
     
     // Changing reading 1 byte to 2. If sequential set, should work?
-    Wire.requestFrom(_address, 2);      // Read 2 bytes ???
+    Wire.requestFrom(_address, 2);      //
     
-    if (Wire.available() == 2)
+    if (Wire.available() >= 2)
     {
         int data1 = Wire.read();
-        int data2 = Wire.read();    // Is this right?
-        int data = (data2 << 8) || data1;
-        return((data & _switchBitmap) == 0);    // Inverted
+        int data2 = Wire.read();
+        int data = (data1 << 8) + data2;
+        bool result = (data & _switchBitmap) == 0;  // Inverted
+        //log("Switch data read = "+String(data,BIN)+" AND "+String(_switchBitmap,BIN)+" = "+String(result),LogDebug);
+        return(result);
     }
     Serial.println("Error reading switch");
     return false;
@@ -134,9 +130,7 @@ void NCD16Switch::loop()
         bool newIsOn = isOn();
         if(newIsOn != _isOn) {
             _isOn = newIsOn;
-            if(publish != NULL) {
-                publish("patriot/" + _name, _isOn ? "100" : "0" );
-            }
+            publish("patriot/" + _name, _isOn ? "100" : "0" );
         }
     }
 };
