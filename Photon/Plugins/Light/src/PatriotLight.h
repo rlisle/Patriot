@@ -50,6 +50,7 @@ class Light : public Device
     void      changePercent(int percent);
     void      startSmoothDimming();
     void      outputPWM();
+    int       scalePWM(int percent);
     bool      isPwmSupported();
 
  public:

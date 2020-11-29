@@ -26,6 +26,7 @@
  ******************************************************************/
 
 #include "PatriotLight.h"
+#include "math.h"
 
 #define kDebounceDelay 50
 
@@ -193,15 +194,33 @@ void Light::loop()
  */
 void Light::outputPWM() {
     if(isPwmSupported()) {
-        float pwm = _percent;
-        pwm *= 255.0;
-        pwm /= 100.0;
-        analogWrite(_pin, (int) pwm);
+        int pwm = scalePWM(_percent);
+        analogWrite(_pin, pwm);
     } else {
         bool isOn = _percent > 49;
         bool isHigh = (isOn && !_isInverted) || (!isOn && _isInverted);
         digitalWrite(_pin, isHigh ? HIGH : LOW);
     }
+}
+
+/**
+ * Convert 0-100 percent to 0-255 log scale
+ * 0 = 0, 100 = 255
+ */
+int Light::scalePWM(int percent) {
+//    // Previous linear scale
+//    float pwm = percent;
+//    pwm *= 255.0;
+//    pwm /= 100.0;
+//    int val = (int) pwm;
+//    return val;
+    // Exponential scale
+    float base = 1.05697667;
+    float pwm = pow(base,percent);
+    if (pwm > 255) {
+        return(255);
+    }
+    return (int) pwm;
 }
 
 /**
