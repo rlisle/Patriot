@@ -50,12 +50,12 @@ class Light : public Device
     void      changePercent(int percent);
     void      startSmoothDimming();
     void      outputPWM();
+    int       scalePWM(int percent);
     bool      isPwmSupported();
 
  public:
     Light(int pin, String name, bool isInverted=false, bool forceDigital=false);
     void      setPercent(int percent);      // Set light immediately
-    int       getPercent();                 // Return current value
     void      setOn();                      // Same as setSwitch 100
     void      setOff();                     // Same as setSwitch 0
     bool      isOn();

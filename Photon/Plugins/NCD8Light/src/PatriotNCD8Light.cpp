@@ -18,11 +18,13 @@
  Datasheets:
 
  Changelog:
+ 2020-11-29: Add scaling
  2020-02-11: Initial creation based on PatriotNCD8Relay and PatriotLight
  2020-11-05: Update based on testing with NCD8LightTest
  ******************************************************************/
 
 #include "PatriotNCD8Light.h"
+#include "math.h"
 
 #define MILLIS_PER_SECOND 1000
 
@@ -35,18 +37,17 @@
  */
 
 NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration)
-    : Device(name, DeviceType::NCD8Light)
+                     : Device(name, DeviceType::NCD8Light)
 {
+    _address = address;
     _lightNum   = lightNum;
     // _percent is left uninitialized if retained storage is used to pickup state from SRAM
     _percent = 0;
     _currentPercent = _percent;
-    _dimmingDuration = 2.0; // Default to 2 seconds
+    _dimmingDuration = float(duration);
     _targetPercent = _percent;
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
-    _duration   = duration;
-    _address = address;
     initializeBoard();
 }
 
@@ -93,7 +94,7 @@ int8_t NCD8Light::initializeBoard() {
  * @param percent Int 0 to 100.
  */
 void NCD8Light::setPercent(int percent) {
-    //Serial.println("Dimmer " + String(_name) + " setPercent " + String(percent));
+    log("Dimmer " + String(_name) + " setPercent " + String(percent), LogDebug);
     _targetPercent = percent;
     if(_dimmingDuration == 0.0) {
         _percent = percent;
@@ -154,10 +155,7 @@ void NCD8Light::loop()
  * Set the output PWM value (0-255) based on 0-100 percent value
  */
 void NCD8Light::outputPWM() {
-    float pwm = _percent;
-    pwm *= 255.0;
-    pwm /= 100.0;
-    int val = (int) pwm;
+    int val = scalePWM(_percent);
     int reg = 2 + _lightNum;
     Wire.beginTransmission(_address);
 	Wire.write(reg);
@@ -166,4 +164,24 @@ void NCD8Light::outputPWM() {
 	if(status != 0){
 		Serial.println("outputPWM write failed");
 	}
+}
+
+/**
+ * Convert 0-100 percent to 0-255 log scale
+ * 0 = 0, 100 = 255
+ */
+int NCD8Light::scalePWM(int percent) {
+//    // Previous linear scale
+//    float pwm = percent;
+//    pwm *= 255.0;
+//    pwm /= 100.0;
+//    int val = (int) pwm;
+//    return val;
+    // Exponential scale
+    float base = 1.05697667;
+    float pwm = pow(base,percent);
+    if (pwm > 255) {
+        return(255);
+    }
+    return (int) pwm;
 }
