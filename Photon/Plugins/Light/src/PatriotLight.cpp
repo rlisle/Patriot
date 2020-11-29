@@ -60,14 +60,6 @@ void Light::setPercent(int percent) {
 }
 
 /**
- * Get percent
- * @return Int current 0-100 percent value
- */
-int Light::getPercent() {
-    return _percent;
-}
-
-/**
  * Set On
  */
 void Light::setOn() {
