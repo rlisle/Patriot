@@ -60,13 +60,13 @@ String mqttServer = "192.168.10.184";
 IoT *iot;
 
 // To use persistent storage, insert "retained" before NCD8Relay
-NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 5);
-NCD8Light loft(ADDRESS, 1, "Loft", 5);
+NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 2);
+NCD8Light loft(ADDRESS, 1, "Loft", 2);
 NCD8Light rampPorch(ADDRESS, 2, "RampPorch", 2);
 NCD8Light rampAwning(ADDRESS, 3, "RampAwning", 2);
 NCD8Light rearPorch(ADDRESS, 4, "RearPorch", 2);
 NCD8Light rearAwning(ADDRESS, 5, "RearAwning", 2);
-NCD8Light piano(ADDRESS, 6, "Piano", 5);
+NCD8Light piano(ADDRESS, 6, "Piano", 2);
 
 
 Switch ceilingSwitch(A0, "OfficeCeilingSwitch");
