@@ -62,11 +62,11 @@ IoT *iot;
 // To use persistent storage, insert "retained" before NCD8Relay
 NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 2);
 NCD8Light loft(ADDRESS, 1, "Loft", 2);
-NCD8Light piano(ADDRESS, 2, "Piano", 2);
-NCD8Light rampPorch(ADDRESS, 3, "RampPorch", 2);
-NCD8Light rampAwning(ADDRESS, 4, "RampAwning", 2);
-NCD8Light rearPorch(ADDRESS, 5, "RearPorch", 2);
-NCD8Light rearAwning(ADDRESS, 6, "RearAwning", 2);
+NCD8Light rampPorch(ADDRESS, 2, "RampPorch", 2);
+NCD8Light rampAwning(ADDRESS, 3, "RampAwning", 2);
+NCD8Light rearPorch(ADDRESS, 4, "RearPorch", 2);
+NCD8Light rearAwning(ADDRESS, 5, "RearAwning", 2);
+NCD8Light piano(ADDRESS, 6, "Piano", 2);
 
 
 Switch ceilingSwitch(A0, "OfficeCeilingSwitch");
@@ -83,6 +83,7 @@ void setup() {
     iot->setControllerName("RearPanel");
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", false);   // MQTT bridge enabled
+    iot->setLogLevel(LogDebug);
 
     // BEHAVIORS
 //    ceiling.addBehavior(10, "goodmorning", '>', 0);
@@ -97,12 +98,12 @@ void setup() {
     // ADD ALL DEVICES
     iot->addDevice(&ceiling);
     iot->addDevice(&loft);
-    iot->addDevice(&piano);
     iot->addDevice(&rampPorch);
     iot->addDevice(&rampAwning);
     iot->addDevice(&rearPorch);
     iot->addDevice(&rearAwning);
-    
+    iot->addDevice(&piano);
+
     iot->addDevice(&ceilingSwitch);
     iot->addDevice(&loftSwitch);
     iot->addDevice(&rampPorchSwitch);

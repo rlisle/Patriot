@@ -44,9 +44,13 @@ bool Condition::matchesCondition(int stateValue)
 
 bool Condition::isTrue(States *states) 
 {
-    State *state = states->getStateWithName(_stateName);
-    if(state != NULL) {
-        return matchesCondition(state->_value);
-    }
-    return false;
+    int value = getStateValue(states);
+    return matchesCondition(value);
 }
+
+int Condition::getStateValue(States *states) {
+    State *state = states->getStateWithName(_stateName);
+    if(state == NULL) return 0;
+    return state->_value;
+}
+

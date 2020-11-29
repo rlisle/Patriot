@@ -182,7 +182,8 @@ void IoT::loop()
 void IoT::addDevice(Device *device)
 {
     if(device->shouldAutoCreateBehavior()) {
-        Behavior *defaultBehavior = new Behavior(100);
+        bool isDefault = true;
+        Behavior *defaultBehavior = new Behavior(100, isDefault);
         defaultBehavior->addCondition(new Condition(device->name(), '>', 0));
         device->addBehavior(defaultBehavior);
     }
@@ -193,10 +194,11 @@ void IoT::addDevice(Device *device)
 }
 
 
-/*************************************/
-/*** Particle.io Subscribe Handler ***/
-/*** t:patriot m:<device>:<value>  ***/
-/*************************************/
+/**
+ * Particle.io Subscribe Handler
+ * t:patriot m:<device>:<value>
+ * This method handles commands from Alexa
+ */
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
     String data(rawData);
@@ -209,18 +211,23 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     
     // Legacy commands will include a colon
     // t:patriot m:<eventName>:<msg>
-    // Convert to new protocol
-    // eg. t:patriot m:DeskLamp:100 -> t:patriot/desklamp m:100
     int colonPosition = data.indexOf(':');
     if(colonPosition == -1) {
         Serial.println("IoT received invalid particle message: " + data);
         return;
     }
 
+    // Convert to new protocol
+    // eg. t:patriot m:DeskLamp:100 -> t:patriot/desklamp m:100
     String name = data.substring(0,colonPosition).toLowerCase();
     String level = data.substring(colonPosition+1).toLowerCase();
     String topic = kPublishName + "/" + name;
 
+    //TODO: May want to simply use _isBridge and not handle directly here
+    //      That would break if MQTT broker goes down. Is that ok?
+    //      I think our assumptions is that MQTT is always up, and
+    //      this method stops working when there is no internet.
+    
     //TODO: Is this needed if _isBridge is set (handled below)?
     if(_mqttManager != NULL) {
         _mqttManager->parseMessage(topic,level);

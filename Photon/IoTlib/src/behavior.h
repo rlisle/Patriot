@@ -37,9 +37,10 @@ private:
     Behavior*   _next;
     Conditions* _conditions;
     int         _level;       // level to set if event <comparison> value is true
+    bool        _isDefault;     // Set for auto behavior set by direct commands (Alexa).
 
 public:
-    Behavior(int level);
+    Behavior(int level, bool isDefault = false);
 
     void addCondition(Condition *condition);
     int  evaluateStates(States *states);
