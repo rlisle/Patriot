@@ -57,7 +57,7 @@ int NCD8Switch::initializeBoard() {
     int retries;
     byte status;
     
-    // Only the first relay loaded needs to initialize the I2C link
+    // Only the first switch loaded needs to initialize the I2C link
     if(!Wire.isEnabled()) {
         Wire.begin();
     }

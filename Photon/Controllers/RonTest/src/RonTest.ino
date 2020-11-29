@@ -30,7 +30,7 @@
  */
 
 #include <IoT.h>
-//#include <PatriotNCD16Switch.h>
+#include <PatriotNCD16Switch.h>
 #include <PatriotLight.h>
 #include <PatriotActivity.h>
 
@@ -42,13 +42,16 @@ IoT     *iot;
 
 // To use persistent storage, insert "retained" before device
 
-//NCD8Switch switch1(0x20, 1, "Switch1");
+NCD16Switch switch1(0x20, 1, "Switch1");
+NCD16Switch switch2(0x20, 2, "Switch2");
+NCD16Switch switch9(0x20, 9, "Switch9");
+NCD16Switch switch16(0x20, 16, "Switch16");
 
 Light blueLed(7, "blueLed", false, true);
 
-Activity waking("waking");
+//Activity waking("waking");
 //Activity watchingTV("watchingTV");
-Activity goingToBed("goingToBed");
+//Activity goingToBed("goingToBed");
 //Activity sleeping("sleeping");
 
 void setup() {
@@ -59,9 +62,9 @@ void setup() {
     iot->setLogLevel(LogDebug);
     
     // Behaviors/Activities
-    blueLed.addBehavior(100, "waking", '>', 0);
+//    blueLed.addBehavior(100, "waking", '>', 0);
     
-    waking.addBehavior(0, "goingToBed", '>', 0);
+//    waking.addBehavior(0, "goingToBed", '>', 0);
     
 //    watchingTV.addBehavior(0, "goingToBed", '>', 0);
     
@@ -71,10 +74,14 @@ void setup() {
 
     // Devices and Activities
     iot->addDevice(&blueLed);
-    
-    iot->addDevice(&waking);
+    iot->addDevice(&switch1);
+    iot->addDevice(&switch2);
+    iot->addDevice(&switch9);
+    iot->addDevice(&switch16);
+
+//    iot->addDevice(&waking);
 //    iot->addDevice(&watchingTV);
-    iot->addDevice(&goingToBed);
+//    iot->addDevice(&goingToBed);
 //    iot->addDevice(&sleeping);
 }
 
