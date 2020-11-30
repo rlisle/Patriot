@@ -44,7 +44,10 @@ void Activity::stateDidChange(States *states) {
     int ourState = states.getStateWithName(_name);
     if (ourState != NULL) {
         // Did our state change?
-        if (ourState->_value != _percent) {
+        int ourValue = ourState->_value;
+        if (ourValue != _percent) {
+            log("Activity: our state changed: "+String(ourValue), LogDebug);
+            //TODO: what do we do now?
             
         }
     }
