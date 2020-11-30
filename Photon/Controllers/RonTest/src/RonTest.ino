@@ -34,7 +34,7 @@
 #include <PatriotLight.h>
 #include <PatriotActivity.h>
 
-#define ADDRESS 0   // No board address jumpers set
+#define ADDRESS 0x20   // No board address jumpers set
 
 String mqttServerIP = "192.168.10.184";
 
@@ -42,10 +42,10 @@ IoT     *iot;
 
 // To use persistent storage, insert "retained" before device
 
-NCD16Switch switch1(0x20, 1, "Switch1");
-NCD16Switch switch2(0x20, 2, "Switch2");
-NCD16Switch switch9(0x20, 9, "Switch9");
-NCD16Switch switch16(0x20, 16, "Switch16");
+NCD16Switch switch1(ADDRESS, 1, "Switch1");
+NCD16Switch switch2(ADDRESS, 2, "Switch2");
+NCD16Switch switch9(ADDRESS, 9, "Switch9");
+NCD16Switch switch16(ADDRESS, 16, "Switch16");
 
 Light testLed(2, "testLed");
 Light blueLed(7, "blueLed", false, true);
