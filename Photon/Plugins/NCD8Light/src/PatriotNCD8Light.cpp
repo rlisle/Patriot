@@ -133,6 +133,8 @@ void NCD8Light::loop()
         // Nothing to do.
         return;
     }
+    
+    log("light loop percent: "+String(_percent)+", target: "+String(_targetPercent), LogDebug);
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
@@ -167,17 +169,13 @@ void NCD8Light::outputPWM() {
 }
 
 /**
- * Convert 0-100 percent to 0-255 log scale
+ * Convert 0-100 percent to 0-255 exponential scale
  * 0 = 0, 100 = 255
  */
 int NCD8Light::scalePWM(int percent) {
-//    // Previous linear scale
-//    float pwm = percent;
-//    pwm *= 255.0;
-//    pwm /= 100.0;
-//    int val = (int) pwm;
-//    return val;
-    // Exponential scale
+    if (percent <= 0) return 0;
+    if (percent >= 100) return 255;
+    
     float base = 1.05697667;
     float pwm = pow(base,percent);
     if (pwm > 255) {
