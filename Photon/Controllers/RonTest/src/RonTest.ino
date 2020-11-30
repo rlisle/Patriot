@@ -47,6 +47,7 @@ NCD16Switch switch2(0x20, 2, "Switch2");
 NCD16Switch switch9(0x20, 9, "Switch9");
 NCD16Switch switch16(0x20, 16, "Switch16");
 
+Light testLed(2, "testLed");
 Light blueLed(7, "blueLed", false, true);
 
 //Activity waking("waking");
@@ -61,6 +62,8 @@ void setup() {
     iot->connectMQTT(mqttServerIP, "patriotRonTest1", false);
     iot->setLogLevel(LogDebug);
     
+    testLed.setDimmingDuration(5.0);
+    
     // Behaviors/Activities
 //    blueLed.addBehavior(100, "waking", '>', 0);
     
@@ -74,6 +77,7 @@ void setup() {
 
     // Devices and Activities
     iot->addDevice(&blueLed);
+    iot->addDevice(&testLed);
     iot->addDevice(&switch1);
     iot->addDevice(&switch2);
     iot->addDevice(&switch9);
