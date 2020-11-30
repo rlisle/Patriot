@@ -82,6 +82,8 @@ int8_t NCD8Light::initializeBoard() {
 	    Wire.write(0xaa);       // LEDOUT1 LEDS 4-7 dimming
         Wire.endTransmission();
 
+        outputPWM();            // Force light off
+        
     } else {
         Serial.println("initializeBoard failed");
     }
