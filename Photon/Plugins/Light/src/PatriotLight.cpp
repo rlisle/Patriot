@@ -171,7 +171,7 @@ void Light::loop()
         // Nothing to do.
         return;
     }
-    log("light loop percent: "+String(_percent)+", target: "+String(_targetPercent));
+    log("light loop percent: "+String(_percent)+", target: "+String(_targetPercent), LogDebug);
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
