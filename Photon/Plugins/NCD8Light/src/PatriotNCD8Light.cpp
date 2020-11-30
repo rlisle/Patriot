@@ -134,7 +134,7 @@ void NCD8Light::loop()
         return;
     }
     
-    log("light loop percent: "+String(_percent)+", target: "+String(_targetPercent), LogDebug);
+    //log("light loop percent: "+String(_percent)+", target: "+String(_targetPercent), LogDebug);
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
