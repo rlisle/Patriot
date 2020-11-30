@@ -111,6 +111,8 @@ void setup() {
     iot->addDevice(&kitchenCeiling);
     iot->addDevice(&kitchenSink);
     iot->addDevice(&kitchenCabinets);
+    
+    
 }
 
 void loop() {

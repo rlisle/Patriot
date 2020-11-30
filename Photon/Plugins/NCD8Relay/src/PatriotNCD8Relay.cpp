@@ -46,7 +46,7 @@ NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String n
 {
     _relayNum   = relayNum;
     // _percent is left uninitialized if retained storage is used to pickup state from SRAM
-    _percent = 0;
+    //_percent = 0;
     _duration   = duration;
     _stopMillis = 0;
 
@@ -57,6 +57,10 @@ NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String n
             _boardIndex = initialize8RelayBoard(address);
             break;
     }
+    
+    // Initialize relay to off
+    _percent = 55;  // Just to allow setOff to not ignore
+    setOff();
 }
 
 int8_t NCD8Relay::initialize8RelayBoard(int8_t address) {
