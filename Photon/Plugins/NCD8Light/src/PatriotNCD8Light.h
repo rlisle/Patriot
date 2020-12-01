@@ -14,8 +14,6 @@
 
  Datasheets:
 
- Changelog:
- 2020-02-11: Initial creation from modified NCD8Relay
  ******************************************************************/
 
 #pragma once
@@ -29,9 +27,9 @@ class NCD8Light : public Device
     int8_t  _lightNum;                 // Up to 8 lights supported
     int8_t   _address;                 // Address of board (eg. 0x40)
 
-    int      _targetPercent;
-    float    _dimmingDuration;
-    float    _currentPercent;          // Use for smooth dimming transitions
+    int      _dimmingDuration;
+    float    _currentLevel;            // Use for smooth dimming transitions.
+    float    _targetLevel;
     float    _incrementPerMillisecond;
     
     long     _lastUpdateTime;
@@ -39,7 +37,7 @@ class NCD8Light : public Device
     int8_t  initializeBoard();
     void    outputPWM();
     void    startSmoothDimming();
-    int     scalePWM(int percent);
+    float   scalePWM(int percent);
 
  public:
     NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration = 0);

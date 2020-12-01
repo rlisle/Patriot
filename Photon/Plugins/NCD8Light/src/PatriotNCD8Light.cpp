@@ -17,10 +17,6 @@
 
  Datasheets:
 
- Changelog:
- 2020-11-29: Add scaling
- 2020-02-11: Initial creation based on PatriotNCD8Relay and PatriotLight
- 2020-11-05: Update based on testing with NCD8LightTest
  ******************************************************************/
 
 #include "PatriotNCD8Light.h"
@@ -41,29 +37,27 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
 {
     _address = address;
     _lightNum   = lightNum;
+    _dimmingDuration = duration;
     // _percent is left uninitialized if retained storage is used to pickup state from SRAM
     _percent = 0;
-    _currentPercent = _percent;
-    _dimmingDuration = float(duration);
-    _targetPercent = _percent;
+    _currentLevel = 0.0;
+    _targetLevel = 0.0;
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
     initializeBoard();
+    
 }
 
 int8_t NCD8Light::initializeBoard() {
-    int retries = 3;
-    byte status;
+    int status;
 
     // Only the first light loaded needs to initialize the I2C link
     if(!Wire.isEnabled()) {
         Wire.begin();
     }
 
-    do {
-        Wire.beginTransmission(_address);
-        status = Wire.endTransmission();
-    } while( status != 0 && retries-- > 0);
+    Wire.beginTransmission(_address);   // Seems unnecessary
+    status = Wire.endTransmission();
 
     if(status == 0) {
         Wire.beginTransmission(_address);
@@ -96,10 +90,12 @@ int8_t NCD8Light::initializeBoard() {
  * @param percent Int 0 to 100.
  */
 void NCD8Light::setPercent(int percent) {
-    log("Dimmer " + String(_name) + " setPercent " + String(percent), LogDebug);
-    _targetPercent = percent;
-    if(_dimmingDuration == 0.0) {
-        _percent = percent;
+    _currentLevel = scalePWM(_percent);
+    _percent = percent;
+    _targetLevel = scalePWM(percent);
+    log("Dimmer " + String(_name) + " setPercent " + String(percent) + " scaled to " + String(_targetLevel), LogDebug);
+    if(_dimmingDuration == 0) {
+        _currentLevel = _targetLevel;
         outputPWM();
 
     } else {
@@ -113,11 +109,11 @@ void NCD8Light::setPercent(int percent) {
  * An alternative approach would be to calculate # msecs per step
  */
 void NCD8Light::startSmoothDimming() {
-    if((int)_percent != _targetPercent){
-        _currentPercent = _percent;
+    if((int)_currentLevel != _targetLevel){
         _lastUpdateTime = millis();
-        float delta = _targetPercent - _percent;
-        _incrementPerMillisecond = delta / (_dimmingDuration * 1000);
+        float delta = _targetLevel - _currentLevel;
+        _incrementPerMillisecond = delta / (float(_dimmingDuration) * 1000);
+        log("Light "+_name+" setting increment to "+String(_incrementPerMillisecond), LogDebug);
     }
 }
 
@@ -131,24 +127,25 @@ void NCD8Light::startSmoothDimming() {
 void NCD8Light::loop()
 {
     // Is fading transition underway?
-    if(_percent == _targetPercent) {
+    if(_currentLevel == _targetLevel) {
         // Nothing to do.
         return;
     }
     
     //log("light loop percent: "+String(_percent)+", target: "+String(_targetPercent), LogDebug);
 
+    // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
+    
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
-    _currentPercent += _incrementPerMillisecond * millisSinceLastUpdate;
-    _percent = _currentPercent;
-    if(_incrementPerMillisecond > 0) {
-        if(_currentPercent > _targetPercent) {
-            _percent = _targetPercent;
+    _currentLevel += _incrementPerMillisecond * millisSinceLastUpdate;
+    if(_incrementPerMillisecond > 0.0) {
+        if(_currentLevel > _targetLevel) {
+            _currentLevel = _targetLevel;
         }
     } else {
-        if(_currentPercent < _targetPercent) {
-            _percent = _targetPercent;
+        if(_currentLevel < _targetLevel) {
+            _currentLevel = _targetLevel;
         }
     }
     _lastUpdateTime = loopTime;
@@ -156,14 +153,13 @@ void NCD8Light::loop()
 };
 
 /**
- * Set the output PWM value (0-255) based on 0-100 percent value
+ * Set the output PWM _currentLevel (0-255)
  */
 void NCD8Light::outputPWM() {
-    int val = scalePWM(_percent);
     int reg = 2 + _lightNum;
     Wire.beginTransmission(_address);
 	Wire.write(reg);
-	Wire.write(val);
+	Wire.write(int(_currentLevel));
 	byte status = Wire.endTransmission();
 	if(status != 0){
 		Serial.println("outputPWM write failed");
@@ -174,7 +170,7 @@ void NCD8Light::outputPWM() {
  * Convert 0-100 percent to 0-255 exponential scale
  * 0 = 0, 100 = 255
  */
-int NCD8Light::scalePWM(int percent) {
+float NCD8Light::scalePWM(int percent) {
     if (percent <= 0) return 0;
     if (percent >= 100) return 255;
     
@@ -183,5 +179,5 @@ int NCD8Light::scalePWM(int percent) {
     if (pwm > 255) {
         return(255);
     }
-    return (int) pwm;
+    return pwm;
 }
