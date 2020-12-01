@@ -152,8 +152,7 @@ void MQTTManager::parseMessage(String topic, String message)
         } else {
             
             int percent = parseValue(message);
-            //log("Parser setting state " + subtopic + " to " + message);
-            //TODO: something not working here...
+            log("Parser setting state " + subtopic + " to " + message, LogDebug);
             _states->addState(subtopic,percent);
             _devices->stateDidChange(_states);
         }
