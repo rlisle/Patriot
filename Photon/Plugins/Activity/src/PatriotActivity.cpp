@@ -24,36 +24,36 @@ Changelog:
  */
 Activity::Activity(String name) : Device(name)
 {
-    _wasSetDirectly = false;
+    // nothing to do
 }
 
 void Activity::setPercent(int percent) {
-    log("Activity setPercent "+String(percent), LogDebug);
-//    _wasSetDirectly = true;
+    log("Activity setPercent "+String(percent)+", ignoring", LogDebug);
 //    _percent = percent;
 };
 
 void Activity::stateDidChange(States *states) {
-//    if(_wasSetDirectly) {
-//        _wasSetDirectly = false;
-//        return;
-//    }
 
-    //TODO:
+    int ourStateValue = 0;
     
-    int ourState = states.getStateWithName(_name);
+    //TODO:
+    // See if other states changed, and if behaviors affect our state
+
+    // See what states thinks is our current value
+    State* ourState = states->getStateWithName(_name);
     if (ourState != NULL) {
-        // Did our state change?
-        int ourValue = ourState->_value;
-        if (ourValue != _percent) {
-            log("Activity: our state changed: "+String(ourValue), LogDebug);
-            //TODO: what do we do now?
-            
+        
+        ourStateValue = ourState->_value;
+        // Is it the same as our setting?
+        if (ourStateValue != _percent) {
+            log("Activity: our state changed: "+String(ourStateValue)+". Setting _percent", LogDebug);
+            _percent = ourStateValue;
         }
     }
 
+    // If any other states changed, then see if it affects us
     int newLevel = _behaviors.stateDidChange(states);
-    log("Activity " + _name + " stateDidChange newLevel "+String(newLevel), LogDebug);
+    log("Activity " + _name + " stateDidChange behaviors setting newLevel "+String(newLevel), LogDebug);
     if(newLevel != _percent) {
         log("Activity " + _name + " stateDidChange publishing newLevel "+String(newLevel), LogDebug);
         _percent = newLevel;

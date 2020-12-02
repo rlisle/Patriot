@@ -30,30 +30,20 @@
  */
 
 #include <IoT.h>
-#include <PatriotNCD16Switch.h>
 #include <PatriotLight.h>
 #include <PatriotActivity.h>
-
-#define ADDRESS 0x20   // No board address jumpers set
 
 String mqttServerIP = "192.168.10.184";
 
 IoT     *iot;
 
-// To use persistent storage, insert "retained" before device
-
-NCD16Switch switch1(ADDRESS, 1, "Switch1");
-NCD16Switch switch2(ADDRESS, 2, "Switch2");
-NCD16Switch switch9(ADDRESS, 9, "Switch9");
-NCD16Switch switch16(ADDRESS, 16, "Switch16");
-
-Light testLed(2, "testLed");
+Light testLed(2, "testLed");                // Not connected to anything
 Light blueLed(7, "blueLed", false, true);
 
-//Activity waking("waking");
+Activity waking("waking");
 //Activity watchingTV("watchingTV");
 //Activity goingToBed("goingToBed");
-//Activity sleeping("sleeping");
+Activity sleeping("sleeping");
 
 void setup() {
     iot = IoT::getInstance();
@@ -61,13 +51,11 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServerIP, "patriotRonTest1", false);
     iot->setLogLevel(LogDebug);
-    
-    testLed.setDimmingDuration(5.0);
-    
+        
     // Behaviors/Activities
-//    blueLed.addBehavior(100, "waking", '>', 0);
+    blueLed.addBehavior(100, "waking", '>', 0);
     
-//    waking.addBehavior(0, "goingToBed", '>', 0);
+//    waking.addBehavior(0, "sleeping", '>', 0);
     
 //    watchingTV.addBehavior(0, "goingToBed", '>', 0);
     
@@ -78,12 +66,8 @@ void setup() {
     // Devices and Activities
     iot->addDevice(&blueLed);
     iot->addDevice(&testLed);
-    iot->addDevice(&switch1);
-    iot->addDevice(&switch2);
-    iot->addDevice(&switch9);
-    iot->addDevice(&switch16);
 
-//    iot->addDevice(&waking);
+    iot->addDevice(&waking);
 //    iot->addDevice(&watchingTV);
 //    iot->addDevice(&goingToBed);
 //    iot->addDevice(&sleeping);

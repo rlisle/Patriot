@@ -23,7 +23,6 @@ Changelog:
 class Activity : public Device
 {
 private:
-    bool _wasSetDirectly;
     
 public:
     /**
