@@ -38,35 +38,34 @@ void MQTTManager::connect(String connectID) {
     _lastMQTTtime = Time.now();
 
     if(_mqtt == NULL) {
-        log("ERROR! MQTTManager: connect called but object null");
+        log("ERROR! MQTTManager: connect called but object null", LogError);
     }
 
     if(_mqtt->isConnected()) {
-        log("MQTT is connected, so reconnecting...");
+        log("MQTT is connected, so reconnecting...", LogDebug);
         _mqtt->disconnect();
     }
 
     _mqtt->connect(connectID);
     if (_mqtt->isConnected()) {
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
-            log("Unable to subscribe to MQTT " + kPublishName + "/#");
+            log("Unable to subscribe to MQTT " + kPublishName + "/#", LogError);
         }
     } else {
-        log("MQTT is NOT connected! Check MQTT IP address");
+        log("MQTT is NOT connected! Check MQTT IP address", LogError);
     }
-    log("Connected at " + String(_lastMQTTtime));
+    log("Connected at " + String(_lastMQTTtime), LogError); // Not an error, just want it always displayed
 }
 
-void MQTTManager::log(String message)
+void MQTTManager::log(String message, PLogLevel logLevel)
 {
-    if(!publish("debug/" + _controllerName, message)){
-        Serial.println(_controllerName + " MQTT log: " + message);
-    }
+    IoT* iot = IoT::getInstance();
+    iot->log(message, logLevel);
 }
 
 bool MQTTManager::publish(String topic, String message) {
     if(_mqtt != NULL && _mqtt->isConnected()) {
-        Serial.println("Publishing "+String(topic)+" "+String(message));
+        //Serial.println("Publishing "+String(topic)+" "+String(message));
         _mqtt->publish(topic,message);
         return true;
     }
@@ -108,11 +107,11 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 // topic and messages are already lowercase
 void MQTTManager::parseMessage(String topic, String message)
 {
-    //log("Parser received: " + topic + ", " + message);
+    // This creates an infinite loop
+    //log("Parser received: " + topic + ", " + message, LogDebug);
     
     // New Protocol: patriot/<name>  <value>
     if(topic.startsWith(kPublishName+"/")) {
-        //log("parsing t:" + topic + ", m:" + message);
         String subtopic = topic.substring(kPublishName.length()+1);
         
         // Look for reserved names
@@ -120,7 +119,7 @@ void MQTTManager::parseMessage(String topic, String message)
         if(subtopic.equals("ping")) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
-                //log("Ping addressed to us");
+                log("Ping addressed to us", LogDebug);
                 _mqtt->publish(kPublishName + "/pong", _controllerName);
             }
             
@@ -132,20 +131,21 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic.equals("reset")) {
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
-                //log("Reset addressed to us");
+                log("Reset addressed to us", LogDebug);
                 System.reset();
             }
             
             // MEMORY
         } else if(subtopic.equals("memory")) {
             if(message.equals(_controllerName)) {
-                log( String::format("Free memory = %d", System.freeMemory()));
+                log( String::format("Free memory = %d", System.freeMemory()), LogError);
             }
             
         } else if(subtopic.equals("log")) {
             // Ignore it.
             
         } else if(subtopic.equals("loglevel/"+_controllerName)) {
+            log(_controllerName + " setting logLevel = " + message, LogDebug);
             parseLogLevel(message);
             
             // UNKNOWN
@@ -158,7 +158,7 @@ void MQTTManager::parseMessage(String topic, String message)
         }
     } else {
         // Not addressed or recognized by us
-        log("Parser: Not our message: "+String(topic)+" "+String(message));
+        log("Parser: Not our message: "+String(topic)+" "+String(message), LogError);
     }
 }
 

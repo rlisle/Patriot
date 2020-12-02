@@ -101,7 +101,7 @@ void IoT::log(String msg, PLogLevel logLevel)
     Serial.println(msg);
 
     if (_mqttManager != NULL) {
-        _mqttManager->log(msg);
+        _mqttManager->publish(kPublishName+"/log", msg);
     }
 }
 
@@ -201,7 +201,7 @@ void IoT::addDevice(Device *device)
  */
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
-    String data(rawData);
+    String data = String(rawData).trim();
     String event(eventName);
     
     if(event.equalsIgnoreCase(kPublishName) == false) {
@@ -217,6 +217,8 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
         return;
     }
 
+    log("Particle.io subscribe received data: '"+data+"'");
+    
     // Convert to new protocol
     // eg. t:patriot m:DeskLamp:100 -> t:patriot/desklamp m:100
     String name = data.substring(0,colonPosition).toLowerCase();
@@ -229,9 +231,10 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     //      this method stops working when there is no internet.
     
     //TODO: Is this needed if _isBridge is set (handled below)?
-    if(_mqttManager != NULL) {
-        _mqttManager->parseMessage(topic,level);
-    }
+    //TODO: Invoke this only if MQTT is not working
+//    if(_mqttManager != NULL) {
+//        _mqttManager->parseMessage(topic,level);
+//    }
     
     // Bridge events to MQTT if this is a Bridge
     if(_isBridge)

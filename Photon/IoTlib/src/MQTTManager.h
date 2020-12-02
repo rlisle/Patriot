@@ -35,9 +35,7 @@ public:
     void        parseMessage(String topic, String message);
     void        loop();
     void        mqttHandler(char* topic, byte* payload, unsigned int length);
-    
-    void        log(String message);
-    
+        
 private:
     MQTT      *_mqtt;
     String    _controllerName;
@@ -51,4 +49,5 @@ private:
     void      reconnectCheck();
     int       parseValue(String message);
     void      parseLogLevel(String message);
+    void      log(String message, PLogLevel logLevel);  // Convenience method - calls IoT->Log()
 };
