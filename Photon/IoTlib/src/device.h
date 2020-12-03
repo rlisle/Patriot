@@ -30,6 +30,7 @@ Changelog:
 
 enum class DeviceType {
     Unknown,
+    Activity,
     Fan,
     Light,
     Motor,

@@ -40,9 +40,11 @@ IoT     *iot;
 Light testLed(2, "testLed");                // Not connected to anything
 Light blueLed(7, "blueLed", false, true);
 
+// Activities allow Alexa to control them
+// and can also turn off other activities.
 Activity waking("waking");
-//Activity watchingTV("watchingTV");
-//Activity goingToBed("goingToBed");
+Activity watchingTV("watchingTV");
+Activity goingToBed("goingToBed");
 Activity sleeping("sleeping");
 
 void setup() {
@@ -55,7 +57,7 @@ void setup() {
     // Behaviors/Activities
     blueLed.addBehavior(100, "waking", '>', 0);
     
-//    waking.addBehavior(0, "sleeping", '>', 0);
+    waking.addBehavior(0, "sleeping", '>', 0);  // Turn off sleeping when waking > 0
     
 //    watchingTV.addBehavior(0, "goingToBed", '>', 0);
     
