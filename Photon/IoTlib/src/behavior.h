@@ -44,4 +44,5 @@ public:
 
     void addCondition(Condition *condition);
     int  evaluateStates(States *states);
+    Conditions *getConditions() { return _conditions; }
 };

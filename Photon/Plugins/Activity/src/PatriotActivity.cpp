@@ -20,7 +20,7 @@ All text above must be included in any redistribution.
 /**
  * Constructor
  */
-Activity::Activity(String name) : Device(name, Activity)
+Activity::Activity(String name) : Device(name, DeviceType::Activity)
 {
     // nothing to do
 }
@@ -34,22 +34,32 @@ void Activity::setPercent(int percent) {
     log("Activity setPercent "+String(percent)+", was "+String(_percent), LogDebug);
     _percent = percent;     // This is how we detect when it changes
     
+    // Behaviors are only executed when an activity is turned on.
+    if (percent == 0) return;
+    
     //TODO: execute behaviors.
     // In this case behaviors describe how to affect other activities
-    // There should be only 1 behavior for an activity.
-    int numBehaviors = _behaviors->count();
-    for (x=0; x<numBehaviors; x++) {
-        Behavior *behavior = _behaviors->getBehavior(x);
-        
-    }
-    for (Behavior *ptr = _behaviors; ptr != NULL; ptr = ptr->_next)
-    {
-        //Currently just picking highest level.
-        int newLevel = ptr->evaluateStates(states);
-        level = max(level,newLevel);
-    }
-
+    int numBehaviors = _behaviors.count();
+    if (numBehaviors > 1) log("Error: there should only be 1 Activity behavior, but found "+String(numBehaviors), LogError);
     
+    Behavior *behavior = _behaviors.getBehaviorAt(0);
+    Conditions *conditions = behavior->getConditions();
+    int count = conditions->count();
+    for(int x=0; x<count; x++) {
+        Condition *condition = conditions->getCondition(x);
+        String stateName = condition->_stateName;
+        
+        // and behaviors can only turn off other activities,
+        // so infinite loops are not possible.
+        // Later we'll use the operator and level for more complex behavior,
+        // and we'll need to safeguard against loops then.
+        //TODO: get kPublishName somehow instead of hardcoding "patriot"
+        if (stateName != NULL) {
+            publish("patriot/"+stateName, "0");
+        } else {
+            Log("Activity statename null");
+        }
+    }
     
 };
 
@@ -61,6 +71,8 @@ void Activity::setPercent(int percent) {
  */
 void Activity::stateDidChange(States *states) {
 
+    log("Activity stateDidChange", LogDebug);
+    
     // Did our state change? If not, all done here.
     State* ourState = states->getStateWithName(_name);
     if (ourState == NULL) return;

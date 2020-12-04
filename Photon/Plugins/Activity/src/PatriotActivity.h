@@ -30,4 +30,7 @@ public:
     
     void setPercent(int percent);
     void stateDidChange(States *states);
+    
+    bool shouldAutoCreateBehavior() { return false; };
+
 };
