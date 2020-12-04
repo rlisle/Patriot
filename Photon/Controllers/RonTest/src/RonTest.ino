@@ -57,7 +57,7 @@ void setup() {
     // Behaviors/Activities
     blueLed.addBehavior(100, "waking", '>', 0);
     
-    waking.addBehavior(0, "sleeping", '>', 0);  // Turn off sleeping when waking > 0
+//    waking.addBehavior(0, "sleeping", '>', 0);  // Turn off sleeping when waking > 0
     
 //    watchingTV.addBehavior(0, "goingToBed", '>', 0);
     

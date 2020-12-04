@@ -28,9 +28,9 @@ public:
      */
     Activity(String name);
     
-    void setPercent(int percent);
-    void stateDidChange(States *states);
+//    void setPercent(int percent);
+//    void stateDidChange(States *states);
     
-    bool shouldAutoCreateBehavior() { return false; };
+//    bool shouldAutoCreateBehavior() { return false; };
 
 };
