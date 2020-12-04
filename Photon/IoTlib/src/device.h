@@ -55,6 +55,7 @@ class Device {
     DeviceType _type;
     int        _percent;
     Behaviors  _behaviors;
+    Actuators  _actuators;
 
     Device*    _next;       // Linked list
 
@@ -71,8 +72,12 @@ class Device {
         _behaviors = Behaviors();
     }
 
-    void addBehavior(Behavior *behavior) { 
-        _behaviors.addBehavior(behavior); 
+    void addActuator(Actuator *actuator) {
+        _actuators.addActuator(actuator);
+    };
+
+    void addBehavior(Behavior *behavior) {
+        _behaviors.addBehavior(behavior);
     };
 
     void addBehavior(int level, String name, char comparison, int value) {

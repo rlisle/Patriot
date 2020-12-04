@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 States collection
 
 This object manages a collection of State objects.
@@ -14,8 +14,7 @@ Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
-
-******************************************************************/
+*/
 
 #include "states.h"
 #include "constants.h"
