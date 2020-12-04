@@ -13,10 +13,12 @@
 #include "application.h"    // Defines String
 
 class Actuators;
+class Device;
 
 class Actuator
 {
     friend Actuators;
+    friend Device;
     
 private:
     Actuator* _next;

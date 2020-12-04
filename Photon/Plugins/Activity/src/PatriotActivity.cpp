@@ -37,7 +37,11 @@ void Activity::setPercent(int percent) {
     // Behaviors are only executed when an activity is turned on.
     if (percent == 0) return;
 
-    for(Actuator *actuator = _actuators; actuator != NULL; actuator = actuator->_next) {
-        publish("patriot/"+actuator->_name, actuator->_value);
+    int numActuators = _actuators.count();
+    log("Activity numActuators = "+String(numActuators));
+    for(int x=0; x < numActuators; x++) {
+        Actuator *actuator = _actuators.getActuatorAt(x);
+        log("Activity actuating "+actuator->_name);
+        publish("patriot/"+actuator->_name, String(actuator->_value));
     }
 };

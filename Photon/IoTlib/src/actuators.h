@@ -22,6 +22,7 @@ public:
     Actuators();
     
     Actuator*   addActuator(String name, int value);
+    Actuator*   getActuatorAt(int index);
     Actuator*   getActuatorWithName(String name);
     int         count();
     

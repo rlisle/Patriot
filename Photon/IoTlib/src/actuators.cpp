@@ -55,6 +55,16 @@ Actuator *Actuators::getActuatorWithName(String name) {
     return NULL;
 }
 
+Actuator *Actuators::getActuatorAt(int index)
+{
+    Actuator *ptr = _actuators;
+    for(int x = 0; x<index, ptr!=NULL; x++) {
+        ptr = ptr->_next;
+    }
+    return ptr;
+}
+
+
 int Actuators::count() {
     int i = 0;
     for(Actuator* ptr = _actuators; ptr != NULL; ptr = ptr->_next) i++;
