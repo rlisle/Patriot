@@ -25,6 +25,7 @@ Changelog:
 ******************************************************************/
 #pragma once
 
+#include "actuators.h"
 #include "behaviors.h"
 #include "PLogLevel.h"
 
@@ -72,8 +73,8 @@ class Device {
         _behaviors = Behaviors();
     }
 
-    void addActuator(Actuator *actuator) {
-        _actuators.addActuator(actuator);
+    void addActuator(String name, int value) {
+        _actuators.addActuator(name, value);
     };
 
     void addBehavior(Behavior *behavior) {

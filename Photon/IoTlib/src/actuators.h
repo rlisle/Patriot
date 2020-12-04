@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include "actuators.h"
+#include "actuator.h"
 
 class Actuators
 {
@@ -28,4 +28,4 @@ public:
 private:
     Actuator*   _actuators;         // Linked list
     
-}
+};

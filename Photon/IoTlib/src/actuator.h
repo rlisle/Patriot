@@ -12,7 +12,7 @@
 
 #include "application.h"    // Defines String
 
-class Actuators
+class Actuators;
 
 class Actuator
 {
@@ -26,4 +26,4 @@ public:
     int     _value;
     
     Actuator(String name, int value);
-}
+};
