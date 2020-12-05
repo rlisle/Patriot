@@ -56,23 +56,23 @@ void setup() {
         
     // Behaviors/Activities
     blueLed.addBehavior(100, "waking", '>', 0);
-    
-    waking.addActuator("sleeping", 0);  // Turn off sleeping when waking
-    
-//    watchingTV.addBehavior(0, "goingToBed", '>', 0);
-    
-//    goingToBed.addBehavior(0, "sleeping", '>', 0);
 
-//    sleeping.addBehavior(0, "waking", '>', 0);
+    waking.setOtherState("sleeping", 0);    // Turn off sleeping when waking
+    
+    sleeping.setOtherState("waking", 0);    // Beware of loops
+
+    goingToBed.setOtherState("watchingtv", 0);
+    goingToBed.setOtherState("waking", 0);
+
 
     // Devices and Activities
     iot->addDevice(&blueLed);
     iot->addDevice(&testLed);
 
     iot->addDevice(&waking);
-//    iot->addDevice(&watchingTV);
-//    iot->addDevice(&goingToBed);
-//    iot->addDevice(&sleeping);
+    iot->addDevice(&watchingTV);
+    iot->addDevice(&goingToBed);
+    iot->addDevice(&sleeping);
 }
 
 void loop() {

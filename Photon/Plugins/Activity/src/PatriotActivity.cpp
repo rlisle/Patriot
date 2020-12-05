@@ -40,6 +40,7 @@ void Activity::setPercent(int percent) {
     int numActuators = _actuators.count();
     log("Activity numActuators = "+String(numActuators));
     for(int x=0; x < numActuators; x++) {
+        log("Activity actuator loop");
         Actuator *actuator = _actuators.getActuatorAt(x);
         log("Activity actuating "+actuator->_name);
         publish("patriot/"+actuator->_name, String(actuator->_value));

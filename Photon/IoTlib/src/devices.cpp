@@ -76,7 +76,7 @@ void Devices::loop()
 Device *Devices::getDeviceByNum(int deviceNum)
 {
     Device *ptr = _devices;
-    for (int i = deviceNum; i > 0 && ptr != NULL; i--) 
+    for (int i = deviceNum; i > 0 && ptr->_next != NULL; i--) 
     {
         //Serial.println("  getting next, current = "+ptr->name());
         ptr = ptr->_next;

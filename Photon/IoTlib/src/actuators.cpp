@@ -58,7 +58,7 @@ Actuator *Actuators::getActuatorWithName(String name) {
 Actuator *Actuators::getActuatorAt(int index)
 {
     Actuator *ptr = _actuators;
-    for(int x = 0; x<index, ptr!=NULL; x++) {
+    for(int x = 0; x<index, ptr->_next !=NULL; x++) {
         ptr = ptr->_next;
     }
     return ptr;

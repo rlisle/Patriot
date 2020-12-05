@@ -98,10 +98,10 @@ void IoT::log(String msg, PLogLevel logLevel)
     if (_logLevel == LogError && logLevel != LogError) return;
     if (_logLevel == LogInfo && logLevel == LogDebug) return;
     
-    Serial.println(msg);
+    Serial.println(msg);    // Is this needed?
 
     if (_mqttManager != NULL) {
-        _mqttManager->publish(kPublishName+"/log", msg);
+        _mqttManager->publish(kPublishName+"/log", _controllerName + " " + msg);
     }
 }
 
@@ -181,6 +181,7 @@ void IoT::loop()
 // 
 void IoT::addDevice(Device *device)
 {
+    log("addDevice: " + device->name(), LogDebug);
     if(device->shouldAutoCreateBehavior()) {
         bool isDefault = true;
         Behavior *defaultBehavior = new Behavior(100, isDefault);

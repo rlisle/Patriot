@@ -73,7 +73,7 @@ class Device {
         _behaviors = Behaviors();
     }
 
-    void addActuator(String name, int value) {
+    void setOtherState(String name, int value) {
         _actuators.addActuator(name, value);
     };
 
