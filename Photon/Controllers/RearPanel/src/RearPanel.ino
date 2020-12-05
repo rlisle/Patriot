@@ -109,8 +109,8 @@ void setup() {
     iot->addDevice(&rearAwningSwitch);
     
     iot->addDevice(&waking);
-    iot->addDevice(&watchingtv);
-    iot->addDevice(&goingtobed);
+    iot->addDevice(&watchingTV);
+    iot->addDevice(&goingToBed);
     iot->addDevice(&sleeping);
 }
 
