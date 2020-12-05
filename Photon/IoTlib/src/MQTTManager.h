@@ -39,7 +39,6 @@ private:
     String    _controllerName;
     system_tick_t _lastMQTTtime;
     
-    States    *_states;
     Devices   *_devices;
     
     void      (*_callback)(char*,uint8_t*,unsigned int);

@@ -25,11 +25,6 @@ Activity::Activity(String name) : Device(name, DeviceType::Activity)
     // nothing to do
 }
 
-/**
- * This is called by our stateDidChange
- * This is how an Activity controls other activities
- * We may need to add code to prevent infinite loops
- */
 void Activity::setPercent(int percent) {
     log("Activity setPercent "+String(percent)+", was "+String(_percent), LogDebug);
     _percent = percent;     // This is how we detect when it changes

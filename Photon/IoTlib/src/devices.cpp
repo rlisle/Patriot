@@ -50,7 +50,11 @@ void Devices::addDevice(Device *device)
 void Devices::stateDidChange(States *states) {
     for (int i = 0; i < numDevices(); i++)
     {
-        getDeviceByNum(i)->stateDidChange(states);
+        Device *device = getDeviceByNum(i);
+        int newLevel = device->_behaviors.stateDidChange(states);
+        if(newLevel != device->getPercent()) {
+            device->setPercent(newLevel);
+        }
     }
 }
 

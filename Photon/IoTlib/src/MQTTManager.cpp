@@ -25,8 +25,6 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _controllerName = controllerName;
     _devices = devices;
     
-    _states = new States();
-
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
     connect(connectID);
 }
@@ -151,8 +149,10 @@ void MQTTManager::parseMessage(String topic, String message)
             
             int percent = parseValue(message);
             log("Parser setting state " + subtopic + " to " + message, LogDebug);
-            _states->addState(subtopic,percent);
-            _devices->stateDidChange(_states);
+            IoT *iot = IoT::getInstance();
+            States *states = iot->_states;
+            states->addState(subtopic,percent);
+            _devices->stateDidChange(states);
         }
     } else {
         // Not addressed or recognized by us

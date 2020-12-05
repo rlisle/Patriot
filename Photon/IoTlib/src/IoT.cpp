@@ -121,6 +121,7 @@ void IoT::begin()
 {
     Serial.begin(57600);
 
+    _states = new States();
     _devices = new Devices();
 
     // Subscribe to events. There is a 1/second limit for events.
