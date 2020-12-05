@@ -81,7 +81,7 @@ void IoT::log(String msg, PLogLevel logLevel)
     Serial.println(msg);    // Is this needed?
 
     if (_mqttManager != NULL) {
-        _mqttManager->publish(kPublishName+"/log", _controllerName + " " + msg);
+        _mqttManager->publish(kPublishName+"/log", _controllerName + ": " + msg);
     }
 }
 

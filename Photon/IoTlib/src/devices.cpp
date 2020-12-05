@@ -47,9 +47,6 @@ void Devices::addDevice(Device *device)
     buildDevicesVariable();
 }
 
-// Called whenever "state" changes.
-// The state that changed is passed to optimize handling.
-// Devices can ignore the state change if they don't use it.
 void Devices::stateDidChange(States *states) {
     for (int i = 0; i < numDevices(); i++)
     {
