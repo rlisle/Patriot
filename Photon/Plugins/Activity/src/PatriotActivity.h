@@ -12,8 +12,6 @@ Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-23: Initial version based on PseudoDevice
 ******************************************************************/
 #pragma once
 
@@ -23,7 +21,6 @@ Changelog:
 class Activity : public Device
 {
 private:
-    bool _wasSetDirectly;
     
 public:
     /**
@@ -32,5 +29,8 @@ public:
     Activity(String name);
     
     void setPercent(int percent);
-    void stateDidChange(States *states);
+//    void stateDidChange(States *states);
+    
+//    bool shouldAutoCreateBehavior() { return false; };
+
 };

@@ -25,11 +25,13 @@ Changelog:
 ******************************************************************/
 #pragma once
 
+#include "actuators.h"
 #include "behaviors.h"
 #include "PLogLevel.h"
 
 enum class DeviceType {
     Unknown,
+    Activity,
     Fan,
     Light,
     Motor,
@@ -54,6 +56,7 @@ class Device {
     DeviceType _type;
     int        _percent;
     Behaviors  _behaviors;
+    Actuators  _actuators;
 
     Device*    _next;       // Linked list
 
@@ -70,8 +73,12 @@ class Device {
         _behaviors = Behaviors();
     }
 
-    void addBehavior(Behavior *behavior) { 
-        _behaviors.addBehavior(behavior); 
+    void setOtherState(String name, int value) {
+        _actuators.addActuator(name, value);
+    };
+
+    void addBehavior(Behavior *behavior) {
+        _behaviors.addBehavior(behavior);
     };
 
     void addBehavior(int level, String name, char comparison, int value) {
@@ -114,6 +121,7 @@ class Device {
     // Override and return false to prevent automatically creating a behavior
     virtual bool shouldAutoCreateBehavior() { return true; };
 
+    //TODO: Move this logic into Devices so it's not in plugins
     virtual void stateDidChange(States *states) {
         int newLevel = _behaviors.stateDidChange(states);
         if(newLevel != _percent) {

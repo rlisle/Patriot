@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 States collection
 
 This object manages a collection of State objects.
@@ -14,14 +14,7 @@ Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
-
-Changelog:
-2020-11-14: Rename activity to state
-2017-03-24: Rename Patriot
-2017-03-05: Convert to v2 particle library
-2016-12-04: Refactor to behaviors
-2016-06-24: Initial version
-******************************************************************/
+*/
 
 #include "states.h"
 #include "constants.h"
@@ -46,14 +39,14 @@ void States::expose() {
 
 // States are added only once
 State *States::addState(String name, int value) {
-    //Serial.print("addState " + name + "=" + String(value));
+    Serial.println("addState " + name + "=" + String(value));
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
-        //Serial.println(": adding");
+        Serial.println("States addState adding " + name + " = " + String(value));
         state = new State(name,value);
         if(_states == NULL) {
-            //Serial.println("  first state");
+            Serial.println("  first state");
             _states = state;
         } else {
             State* ptr = _states;
@@ -61,10 +54,10 @@ State *States::addState(String name, int value) {
             ptr->_next = state;
         }
     } else {    // State already exists
-        //Serial.println(": updating");
+        Serial.println("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
         state->_value = value;
     }
-    //Serial.println("addState state was added. Count = " + String(count()));
+    Serial.println("addState state was added. Count = " + String(count()));
     buildStatesVariable();
     return state;
 }
@@ -73,12 +66,12 @@ State *States::getStateWithName(String name) {
     State *ptr = _states;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
-            //Serial.println("getStateWithName " + name + " found");
+            Serial.println("getStateWithName " + name + " found");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    //Serial.println("getStateWithName " + name + " not found");
+    Serial.println("getStateWithName " + name + " not found");
     return NULL;
 }
 
@@ -89,7 +82,7 @@ int States::count() {
 }
 
 void States::buildStatesVariable() {
-    //Serial.println("buildStatesVariable");
+    Serial.println("buildStatesVariable");
     String newVariable = "";
     State *ptr = _states;
     while (ptr != NULL) {

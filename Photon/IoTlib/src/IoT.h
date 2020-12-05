@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 This is the primary class for the Patriot IoT library.
 
 It aggregates all the other classes, and provides
@@ -14,7 +14,7 @@ Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
-******************************************************************/
+*/
 #pragma once
 
 #include "Particle.h"
@@ -23,7 +23,6 @@ All text above must be included in any redistribution.
 #include "states.h"
 #include "devices.h"
 #include "MQTTManager.h"
-#include "factory.h"
 #include "PLogLevel.h"
 
 /**
@@ -94,7 +93,6 @@ private:
     /**
      * Include other needed objects
      */
-    Factory     *_factory;
     Devices     *_devices;
     MQTTManager *_mqttManager;
 

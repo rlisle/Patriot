@@ -39,7 +39,7 @@ void Conditions::addCondition(Condition *condition)
 Condition* Conditions::getCondition(int index) {
 //    Serial.println("getCondition: "+String(index));
     Condition *ptr = _conditions;
-    for (int i = index; i > 0 && ptr != NULL; i--) 
+    for (int i = index; i > 0 && ptr->_next != NULL; i--)
     {
 //        Serial.println("  getting next, current = "+ptr->_stateName);
         ptr = ptr->_next;

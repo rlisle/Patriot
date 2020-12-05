@@ -4,7 +4,7 @@ Activity plugin
 Features:
 - Allows Alexa to control a 'name' without hardware.
 - This is how 'Activities' are implemented.
-- By attaching behaviors, can be controlled by other states.
+- By attaching behaviors, can control other states/activities.
 
 http://www.github.com/rlisle/Patriot
 
@@ -13,8 +13,6 @@ Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
-Changelog:
- 2020-11-23: Initial version based on PseudoDevice
 ******************************************************************/
 
 #include "PatriotActivity.h"
@@ -22,45 +20,29 @@ Changelog:
 /**
  * Constructor
  */
-Activity::Activity(String name) : Device(name)
+Activity::Activity(String name) : Device(name, DeviceType::Activity)
 {
-    _wasSetDirectly = false;
+    // nothing to do
 }
 
+/**
+ * This is called by our stateDidChange
+ * This is how an Activity controls other activities
+ * We may need to add code to prevent infinite loops
+ */
 void Activity::setPercent(int percent) {
-    log("Activity setPercent "+String(percent), LogDebug);
-//    _wasSetDirectly = true;
-//    _percent = percent;
+    log("Activity setPercent "+String(percent)+", was "+String(_percent), LogDebug);
+    _percent = percent;     // This is how we detect when it changes
+
+    // Behaviors are only executed when an activity is turned on.
+    if (percent == 0) return;
+
+    int numActuators = _actuators.count();
+    log("Activity numActuators = "+String(numActuators));
+    for(int x=0; x < numActuators; x++) {
+        log("Activity actuator loop");
+        Actuator *actuator = _actuators.getActuatorAt(x);
+        log("Activity actuating "+actuator->_name);
+        publish("patriot/"+actuator->_name, String(actuator->_value));
+    }
 };
-
-void Activity::stateDidChange(States *states) {
-//    if(_wasSetDirectly) {
-//        _wasSetDirectly = false;
-//        return;
-//    }
-
-    //TODO:
-    
-    int ourState = states.getStateWithName(_name);
-    if (ourState != NULL) {
-        // Did our state change?
-        int ourValue = ourState->_value;
-        if (ourValue != _percent) {
-            log("Activity: our state changed: "+String(ourValue), LogDebug);
-            //TODO: what do we do now?
-            
-        }
-    }
-
-    int newLevel = _behaviors.stateDidChange(states);
-    log("Activity " + _name + " stateDidChange newLevel "+String(newLevel), LogDebug);
-    if(newLevel != _percent) {
-        log("Activity " + _name + " stateDidChange publishing newLevel "+String(newLevel), LogDebug);
-        _percent = newLevel;
-        String topic = "patriot/" + _name;
-        String message = String(_percent);
-        publish(topic,message);
-    }
-}
-
-

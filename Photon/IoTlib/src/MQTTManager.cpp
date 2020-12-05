@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 MQTTManager.cpp
 
 This class handles all MQTT interactions.
@@ -13,9 +13,7 @@ Written by Ron Lisle
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2018-11-05: Created by refactoring from IoT
-******************************************************************/
+*/
 #include "MQTTManager.h"
 #include "constants.h"
 #include "IoT.h"

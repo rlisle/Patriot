@@ -55,3 +55,19 @@ int Behaviors::stateDidChange(States *states)
     }
     return level;
 }
+
+int Behaviors::count()
+{
+    int cnt = 0;
+    for(Behavior *ptr = _behaviors; ptr!=NULL; ptr = ptr->_next, cnt++);
+    return cnt;
+}
+
+Behavior *Behaviors::getBehaviorAt(int index)
+{
+    Behavior *ptr = _behaviors;
+    for(int x = 0; x<index, ptr->_next !=NULL; x++) {
+        ptr = ptr->_next;
+    }
+    return ptr;
+}

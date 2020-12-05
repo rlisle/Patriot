@@ -31,8 +31,10 @@ public:
     Behaviors();
 
     void      addBehavior(Behavior *behavior);
-    Behavior* getBehavior(String name);
+//    Behavior* getBehavior(String name);
     int       stateDidChange(States *states);  // Returns calculated value
+    int       count();
+    Behavior* getBehaviorAt(int index);
 
 private:
     Behavior* _behaviors;
