@@ -58,17 +58,32 @@ Switch rampAwningSwitch(A3, "RampAwningSwitch");
 Switch rearPorchSwitch(A4, "RearPorchSwitch");
 Switch rearAwningSwitch(A5, "RearAwningSwitch");
 
-Activity goodMorning("goodmorning");
+// Activities allow Alexa to control them
+// and can also turn off other activities.
+Activity waking("waking");
+Activity watchingTV("watchingTV");
+Activity goingToBed("goingToBed");
+Activity sleeping("sleeping");
 
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
-    iot->setLogLevel(LogDebug);
+    iot->setLogLevel(LogError);
+
+    // Set other states
+    waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking
+    waking.setOtherState("goingtobed", 0);      // and goingToBed
+
+    sleeping.setOtherState("waking", 0);        // Turn off waking when sleeping
+    sleeping.setOtherState("goingtobed", 0);    // and goingToBed
+
+    goingToBed.setOtherState("watchingtv", 0);  // Turn off watchingTV when going to bed
+    goingToBed.setOtherState("waking", 0);      // and waking
 
     // BEHAVIORS
-    ceiling.addBehavior(20, "goodmorning", '>', 0);
+    ceiling.addBehavior(30, "waking", '>', 0);
     
     ceiling.addBehavior(100, "OfficeCeilingSwitch", '>', 0);
     loft.addBehavior(100, "LoftSwitch", '>', 0);
@@ -93,7 +108,10 @@ void setup() {
     iot->addDevice(&rearPorchSwitch);
     iot->addDevice(&rearAwningSwitch);
     
-    iot->addDevice(&goodMorning);
+    iot->addDevice(&waking);
+    iot->addDevice(&watchingtv);
+    iot->addDevice(&goingtobed);
+    iot->addDevice(&sleeping);
 }
 
 void loop() {
