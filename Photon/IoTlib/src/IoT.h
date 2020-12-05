@@ -31,6 +31,8 @@ All text above must be included in any redistribution.
  */
 class IoT {
 
+    friend MQTTManager;
+
     friend void globalSubscribeHandler(const char *eventName, const char *rawData);
     friend void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 
@@ -48,41 +50,42 @@ public:
      * These are used to provide names and change defaults.
      * Only these methods may be called before begin()
      */
-    void setControllerName(String controllerName);
+    void        setControllerName(String controllerName);
 
     /**
      * begin
      * Call begin to initialize the object.
      * This is done here instead of the constructor to improve debugging.
      */
-    void begin();
+    void        begin();
 
     /**
      * connectMQTT(byte * brokerIP, String connectID, bool isBridge = false)
      * Connect to an MQTT broker with specified IP
      **/
-    void connectMQTT(String brokerIP, String connectID, bool isBridge = false);
+    void        connectMQTT(String brokerIP, String connectID, bool isBridge = false);
 
-    void mqttPublish(String topic, String message);
-    
+    void        mqttPublish(String topic, String message);
+    void        addDevice(Device *device);
+    void        setLogLevel(PLogLevel logLevel);
+    void        log(String msg, PLogLevel logLevel = LogDebug);
+
     /**
      * Loop needs to be called periodically
      */
     void loop();
 
-    void addDevice(Device *device);
-
-    /**
-     * Helper methods
-     */
-    void        setLogLevel(PLogLevel logLevel);
-    void        log(String msg, PLogLevel logLevel = LogDebug);
 
 private:
-    static IoT* _instance;
-    bool        _isBridge;
-    String      _controllerName;
+    static IoT*  _instance;
+    
+    bool         _isBridge;
+    String       _controllerName;
     PLogLevel    _logLevel;
+    
+    States*      _states;
+    Devices*     _devices;
+    MQTTManager* _mqttManager;
 
     /**
      * Constructor
@@ -90,14 +93,7 @@ private:
      */
     IoT();
 
-    /**
-     * Include other needed objects
-     */
-    Devices     *_devices;
-    MQTTManager *_mqttManager;
-
     void subscribeHandler(const char *eventName, const char *rawData);
     void periodicReset();
-
     void mqttHandler(char* topic, byte* payload, unsigned int length);
 };

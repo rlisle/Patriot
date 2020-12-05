@@ -121,6 +121,7 @@ void IoT::begin()
 {
     Serial.begin(57600);
 
+    _states = new States();
     _devices = new Devices();
 
     // Subscribe to events. There is a 1/second limit for events.
@@ -171,6 +172,8 @@ void IoT::addDevice(Device *device)
     _devices->addDevice(device);
     device->logPtr = globalLog;
     device->publishPtr = globalPublish;
+    
+    _states->addState(device->name(), device->getPercent());
 }
 
 
@@ -205,17 +208,6 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String level = data.substring(colonPosition+1).toLowerCase();
     String topic = kPublishName + "/" + name;
 
-    //TODO: May want to simply use _isBridge and not handle directly here
-    //      That would break if MQTT broker goes down. Is that ok?
-    //      I think our assumptions is that MQTT is always up, and
-    //      this method stops working when there is no internet.
-    
-    //TODO: Is this needed if _isBridge is set (handled below)?
-    //TODO: Invoke this only if MQTT is not working
-//    if(_mqttManager != NULL) {
-//        _mqttManager->parseMessage(topic,level);
-//    }
-    
     // Bridge events to MQTT if this is a Bridge
     if(_isBridge)
     {

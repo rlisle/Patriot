@@ -121,14 +121,6 @@ class Device {
     // Override and return false to prevent automatically creating a behavior
     virtual bool shouldAutoCreateBehavior() { return true; };
 
-    //TODO: Move this logic into Devices so it's not in plugins
-    virtual void stateDidChange(States *states) {
-        int newLevel = _behaviors.stateDidChange(states);
-        if(newLevel != _percent) {
-            setPercent(newLevel);
-        }
-    }
-
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
 };
