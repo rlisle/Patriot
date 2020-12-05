@@ -1,4 +1,4 @@
-/******************************************************************
+/**
  MQTTManager.h
  
  This class handles all MQTT interactions.
@@ -13,9 +13,7 @@
  BSD license, check LICENSE for more information.
  All text above must be included in any redistribution.
  
- Changelog:
- 2018-11-05: Created by refactoring from IoT
- ******************************************************************/
+ */
 #pragma once
 #include "Particle.h"
 #include "MQTT.h"

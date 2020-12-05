@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 Devices collection
 
 This object manages a collection of device objects.
@@ -9,14 +9,10 @@ Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-18: Convert to linked list
-2017-03-24: Rename Patriot
-2017-03-05: Convert to v2 particle lib
-2016-09-11: Initial version
-******************************************************************/
+*/
 #include "devices.h"
 #include "constants.h"
+#include "IoT.h"
 
 String globalDevicesVariable;
 
@@ -30,28 +26,24 @@ void Devices::expose()
 {
     if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
     {
-        Serial.println("Error: Unable to expose " + kDevicesVariableName + " variable");
+        log("Error: Unable to expose " + kDevicesVariableName + " variable", LogError);
     }
 }
 
 void Devices::addDevice(Device *device)
 {
-    //Serial.println("addDevice name: "+String(device->name()));
+    log("addDevice name: "+String(device->name()), LogDebug);
     if(_devices == NULL) {
-        //Serial.println("  first device");
+        log("  first device", LogDebug);
         _devices = device;
-        //Serial.println("New device name: "+String(_devices->name()));
     } else {
-        //Serial.println("  add device");
+        log("  adding device", LogDebug);
         Device *ptr = _devices;
         while(ptr->_next != NULL) {
-            //Serial.println("  advance to next");
             ptr = ptr->_next;
         }
         ptr->_next = device;
-        //Serial.println("Added device name: "+String(ptr->_next->name()));
     }
-    //TODO: combine with the above loop
     buildDevicesVariable();
 }
 
@@ -78,10 +70,9 @@ Device *Devices::getDeviceByNum(int deviceNum)
     Device *ptr = _devices;
     for (int i = deviceNum; i > 0 && ptr->_next != NULL; i--) 
     {
-        //Serial.println("  getting next, current = "+ptr->name());
         ptr = ptr->_next;
     }
-    //Serial.println("Returning ptr to "+ptr->name());
+    log("getDeviceByNum("+String(deviceNum)+" returning "+ptr->name());
     return ptr;
 }
 
@@ -91,13 +82,12 @@ Device *Devices::getDeviceWithName(String name)
     for (int i = 0; i < numDevices() && ptr != NULL; i++) 
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-            //Serial.println("Returning ptr to "+ptr->name());
+            log("getDeviceWithName "+name+" found.", LogDebug);
             return ptr;
         }
-        //Serial.println("  getting next, current = "+ptr->name());
         ptr = ptr->_next;
     }
-    //Serial.println("Not found, returning NULL");
+    log("Device "+name+" not found, returning NULL", LogDebug);
     return NULL;
 }
 
@@ -111,6 +101,7 @@ int Devices::numDevices()
     return i;
 }
 
+//TODO: combine with addDevice
 void Devices::buildDevicesVariable()
 {
     String newVariable = "";
@@ -124,7 +115,10 @@ void Devices::buildDevicesVariable()
     if(newVariable.length() < kMaxVariableStringLength) {
         globalDevicesVariable = newVariable;
     } else {
-        Serial.println("Devices variable is too long. Need to extend to a 2nd variable");
+        log("Devices variable is too long. Need to extend to a 2nd variable", LogError);
     }
 }
 
+void Devices::log(String message, PLogLevel logLevel) {
+    IoT::getInstance()->log(message, logLevel);
+}

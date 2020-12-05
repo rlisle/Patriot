@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 This is the primary class for the Patriot IoT library.
 
 It aggregates all the other classes, and provides
@@ -15,27 +15,7 @@ Written by Ron Lisle
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-28: Add log levels: Off, Error, Info, Debug
-2020-11-24: Remove unused variables, refactor parsing
-2020-11-22: Integrate DeviceNames into Devices
-2020-11-21: Delete publishName, implement new MQTT protocol
-2020-11-14: Rename activities to states. Delete supportedStates.
-2019-01-05: v3.0.0 Removed watchdog timer due to OTA issues.
-2019-01-01: Replace 2am reset with hardware watchdog timer.
-2018-11-05: Refactor to MQTTmanager.
-2018-10-15: Expose MQTT publish.
-2018-09-04: Bridge Particle to MQTT
-2018-07-07: Convert MQTT format to match SmartThings
-2018-03-16: Add MQTT support
-2018-01-17: Add functions for device state and type
-2017-10-22: Convert to scene-like behavior
-2017-10-12: Add control using device names
-2017-05-15: Make devices generic
-2017-03-24: Rename Patriot
-2017-03-05: Convert to v2 particle library
-2016-11-24: Initial version
-******************************************************************/
+*/
 #include "IoT.h"
 
 /**
@@ -119,7 +99,6 @@ IoT::IoT()
 {
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
     _logLevel               = LogError;
-    _factory                = new Factory();
     _controllerName         = kDefaultControllerName;
     _mqttManager            = NULL;
 }

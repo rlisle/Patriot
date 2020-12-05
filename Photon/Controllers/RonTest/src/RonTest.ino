@@ -7,26 +7,10 @@
  *
  * It simulates a controller using the built-in LED for testing.
  *
- * Currently using to develop NCD16Switch and Activity
- *
  * Hardware
  * - NCD Photon SCT board
  * - built-in blue LED     D7
- * - NCD 23017 16 GPIO board - no jumpers set
  *
- * History
- * 11/26/20 Testing NCD16Switch plugin and Activity plugin
- * 11/5/20  Testing NCD8Light plugin
- * 11/20/19 Testing Light brightness
- * 01/05/19 Remove watchdog timer due to OTA issues.
- * 01/03/19 Save device state in Backup SRAM
- * 12/31/18 Add hardware watchdog timer and dependency SparkIntervalTimer
- * 10/19/18 Remove Desk Lamp and behaviors.
- * 10/15/18 Add Desk Lamp STLight
- * 10/09/18 Update to Patriot 2.3.0 for ping/pong tests
- *  6/21/18 Update to Patriot 2.2.0 with MQTT
- *  3/16/17 Convert to IoT library
- *  2/11/17 Create initial file based on existing template.
  */
 
 #include <IoT.h>
