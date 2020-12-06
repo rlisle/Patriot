@@ -39,7 +39,6 @@
 #define ADDRESS1 0x20   // Relay board
 #define NUMRELAYS 8
 #define ADDRESS2 1      // PWM board switches low switch on
-#define ADDRESS3 0x20   // 16x Switch No jumpers set - WILL THIS CONFLICT WITH RELAY BOARD?
 
 String mqttServer = "192.168.10.184";
 
@@ -58,19 +57,24 @@ NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2);
 NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
 NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
 
-NCD16Switch cabinetSwitch(ADDRESS3, 1, "CabinetSwitch");
-NCD16Switch rightTrimSwitch(ADDRESS3, 2, "RightTrimSwitch");
+NCD16Switch ceilingSwitch(A0, "CeilingSwitch");
+NCD16Switch kitchenCeilingSwitch(A1, "KitchenCeilingSwitch");
+NCD16Switch sinkSwitch(A2, "SinkSwitch");
+Switch cabinetSwitch(A3, "CabinetSwitch");
 
-NCD16Switch sinkSwitch(ADDRESS3, 3, "SinkSwitch");
-NCD16Switch ceilingSwitch(ADDRESS3, 4, "CeilingSwitch");
-NCD16Switch leftTrimSwitch(ADDRESS3, 5, "LeftTrimSwitch");
+Switch rightTrimSwitch(A4, "RightTrimSwitch");
+Switch leftTrimSwitch(A5, "LeftTrimSwitch");
 
-NCD16Switch kitchenCeilingSwitch(ADDRESS3, 6, "KitchenCeilingSwitch");
-NCD16Switch dsFloodsSwitch(ADDRESS3, 7, "DSFloodsSwitch");
-NCD16Switch odsFloodsSwitch(ADDRESS3, 8, "ODSFloodsSwitch");
-NCD16Switch porchSwitch(ADDRESS3, 9, "PorchSwitch");
+Switch dsFloodsSwitch(A6, "DSFloodsSwitch");
+Switch odsFloodsSwitch(A7, "ODSFloodsSwitch");
 
-NCD16Switch frontAwningSwitch(ADDRESS3, 10, "FrontAwningSwitch");
+Switch frontPorchSwitch(RX, "FrontPorchSwitch");
+Switch frontAwningSwitch(TX, "FrontAwningSwitch");
+
+// Activities allow Alexa to control them
+// and can also turn off other activities.
+// These will be used by other panels also, but don't need to be duplicated by them
+//Activity waking("waking");                  // Turns off sleeping
 
 void setup() {
     iot = IoT::getInstance();
@@ -79,10 +83,22 @@ void setup() {
     iot->connectMQTT(mqttServer, "patriotFrontPanel1");
     iot->setLogLevel(LogError);
 
+    // Set other states
+//    waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking
+
     // BEHAVIORS
 
     // Waking
-    //ceiling.addBehavior(100, "waking", '>', 0);
+    ceiling.addBehavior(30, "CeilingSwitch", '>', 0);
+    kitchenCeiling.addBehavior(30, "KitchenCeilingSwitch", '>', 0);
+    kitchenSink.addBehavior(30, "SinkSwitch", '>', 0);
+    kitchenCabinets.addBehavior(30, "CabinetSwitch", '>', 0);
+    rightTrim.addBehavior(30, "RightTrimSwitch", '>', 0);
+    leftTrim.addBehavior(30, "LeftTrimSwitch", '>', 0);
+    dsFloods.addBehavior(30, "DSFloodsSwitch", '>', 0);
+    odsFloods.addBehavior(30, "ODSFloodsSwitch", '>', 0);
+    frontPorch.addBehavior(30, "FrontPorchSwitch", '>', 0);
+    frontAwning.addBehavior(30, "FrontAwningSwitch", '>', 0);
 
     // DEVICES
 
@@ -98,12 +114,12 @@ void setup() {
     iot->addDevice(&kitchenSink);
     iot->addDevice(&kitchenCabinets);
     
+    iot->addDevice(&ceilingSwitch);
+    iot->addDevice(&kitchenCeilingSwitch);
+    iot->addDevice(&sinkSwitch);
     iot->addDevice(&cabinetSwitch);
     iot->addDevice(&rightTrimSwitch);
-    iot->addDevice(&sinkSwitch);
-    iot->addDevice(&ceilingSwitch);
     iot->addDevice(&leftTrimSwitch);
-    iot->addDevice(&kitchenCeilingSwitch);
     iot->addDevice(&dsFloodsSwitch);
     iot->addDevice(&odsFloodsSwitch);
     iot->addDevice(&porchSwitch);
