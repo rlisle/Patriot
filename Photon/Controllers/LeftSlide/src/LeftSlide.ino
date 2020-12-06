@@ -30,64 +30,27 @@ IoT *iot;
 Light couch(TX, "Couch");
 Light vertical(RX, "LeftVertical");
 
+// Switch control functional sets of lights, not individual lights
+Switch couchSwitch1(A0, "CouchSwitch1");
+Switch couchSwitch2(A1, "CouchSwitch2");
+
 void setup() {
   iot = IoT::getInstance();
   iot->setControllerName("LeftSlide");
   iot->begin();
   iot->connectMQTT(mqttServer, "patriotLeftSlide");
-
-  couch.setLocalPin(A0, "Watching");
-  vertical.setLocalPin(A1, "Reading");
-
-  // Devices
-  iot->addDevice(DEV_PTR couch);
-  iot->addDevice(DEV_PTR vertical);
+  iot->setLogLevel(LogError);
 
   // BEHAVIORS
-  // Note that ON is required, but OFF is optional
+    couch.addBehavior(30, "watchingtv", '>', 0);
+    vertical.addBehavior(30, "watchingtv", '>', 0);
 
-  // Arriving
-  //iot->addBehavior(new Behavior(DEV_PTR vertical,  "arriving", '>', 0, 50));
+  // Devices
+  iot->addDevice(&couch);
+  iot->addDevice(&vertical);
+  iot->addDevice(&couchSwitch1);
+  iot->addDevice(&couchSwitch2);
 
-  // Cleaning (On/Off)
-  // iot->addBehavior(new Behavior(DEV_PTR couch, "cleaning", '>', 0, 100));
-
-  // Cooking (On/Off)
-
-  // Evening - Porch lights on (awnings once we can detect if extended)
-//  iot->addBehavior(new Behavior(DEV_PTR vertical,  "evening", '>', 0, 50));
-
-  // Everything (on/off)
-  // iot->addBehavior(new Behavior(DEV_PTR couch, "everything", '>', 0, 100));     // On
-  // iot->addBehavior(new Behavior(DEV_PTR vertical, "everything", '>', 0, 100));    // On
-
-  // Hosting (was guest mode)
-
-  // Leaving
-  // iot->addBehavior(new Behavior(DEV_PTR couch,  "leaving", '>', 0, 0));
-  // iot->addBehavior(new Behavior(DEV_PTR vertical, "leaving", '>', 0, 0));
-
-  // Morning
-  // Turn off any lights turned on my Waking
-  // iot->addBehavior(new Behavior(DEV_PTR vertical,  "morning", '>', 0, 0));
-
-  // Reading (on/off)
-  iot->addBehavior(new Behavior(DEV_PTR couch,  "reading", '>', 0, 100));
-
-  // Retiring - everything except bedroom off and trim
-  // iot->addBehavior(new Behavior(DEV_PTR couch,  "retiring", '>', 0, 0));
-  // iot->addBehavior(new Behavior(DEV_PTR vertical, "retiring", '>', 0, 0));
-
-  // Sleeping - Everything off
-  iot->addBehavior(new Behavior(DEV_PTR couch,  "sleeping", '>', 0, 0));
-  iot->addBehavior(new Behavior(DEV_PTR vertical, "sleeping", '>', 0, 0));
-
-  // Waking
-  // iot->addBehavior(new Behavior(DEV_PTR vertical,  "waking", '>', 0, 2));
-
-  // Watching
-  iot->addBehavior(new Behavior(DEV_PTR couch,  "watching", '>', 0, 30));
-  iot->addBehavior(new Behavior(DEV_PTR vertical, "watching", '>', 0, 30));
 }
 
 void loop() {
