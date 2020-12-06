@@ -111,17 +111,18 @@ void setup() {
     iot->addDevice(&rearAwning);
     iot->addDevice(&piano);
 
-    iot->addDevice(&ceilingSwitch);
+    iot->addDevice(&officeSwitch);
     iot->addDevice(&loftSwitch);
-    iot->addDevice(&rampPorchSwitch);
-    iot->addDevice(&rampAwningSwitch);
-    iot->addDevice(&rearPorchSwitch);
-    iot->addDevice(&rearAwningSwitch);
+    iot->addDevice(&wakingSwitch);
+    iot->addDevice(&awningSwitch);
+    iot->addDevice(&floodsSwitch);
+    iot->addDevice(&pianoSwitch);
     
     iot->addDevice(&waking);
     iot->addDevice(&watchingTV);
     iot->addDevice(&goingToBed);
     iot->addDevice(&sleeping);
+    iot->addDevice(&playingPiano);
 }
 
 void loop() {
