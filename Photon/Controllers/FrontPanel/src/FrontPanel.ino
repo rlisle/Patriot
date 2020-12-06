@@ -90,16 +90,35 @@ void setup() {
     // BEHAVIORS
 
     // Waking
-    ceiling.addBehavior(30, "CeilingSwitch", '>', 0);
-    kitchenCeiling.addBehavior(30, "KitchenCeilingSwitch", '>', 0);
-    kitchenSink.addBehavior(30, "SinkSwitch", '>', 0);
-    kitchenCabinets.addBehavior(30, "CabinetSwitch", '>', 0);
-    rightTrim.addBehavior(30, "RightTrimSwitch", '>', 0);
-    leftTrim.addBehavior(30, "LeftTrimSwitch", '>', 0);
-    dsFloods.addBehavior(30, "DSFloodsSwitch", '>', 0);
-    osFloods.addBehavior(30, "OSFloodsSwitch", '>', 0);
-    frontPorch.addBehavior(30, "FrontPorchSwitch", '>', 0);
-    frontAwning.addBehavior(30, "FrontAwningSwitch", '>', 0);
+    ceiling.addBehavior(30, "waking", '>', 0);
+    kitchenCeiling.addBehavior(30, "waking", '>', 0);
+    kitchenCabinets.addBehavior(30, "waking", '>', 0);
+    kitchenSink.addBehavior(30, "waking", '>', 0);
+    
+    // Watching TV
+    ceiling.addBehavior(45, "watchingtv", '>', 0);
+    kitchenCeiling.addBehavior(30, "watchingtv", '>', 0);
+    kitchenCabinets.addBehavior(30, "watchingtv", '>', 0);
+    kitchenSink.addBehavior(30, "watchingtv", '>', 0);
+
+    // Going to Bed
+    kitchenSink.addBehavior(25, "goingtobed", '>', 0);
+
+    // Sleeping
+    
+    
+    // Switches
+// Uncomment these once they're hooked up. Otherwise they appear to be ON
+//    ceiling.addBehavior(100, "CeilingSwitch", '>', 0);
+//    kitchenCeiling.addBehavior(100, "KitchenCeilingSwitch", '>', 0);
+//    kitchenSink.addBehavior(100, "SinkSwitch", '>', 0);
+//    kitchenCabinets.addBehavior(100, "CabinetSwitch", '>', 0);
+//    rightTrim.addBehavior(100, "RightTrimSwitch", '>', 0);
+//    leftTrim.addBehavior(100, "LeftTrimSwitch", '>', 0);
+//    dsFloods.addBehavior(100, "DSFloodsSwitch", '>', 0);
+//    osFloods.addBehavior(100, "OSFloodsSwitch", '>', 0);
+//    frontPorch.addBehavior(100, "FrontPorchSwitch", '>', 0);
+//    frontAwning.addBehavior(100, "FrontAwningSwitch", '>', 0);
 
     // DEVICES
 
