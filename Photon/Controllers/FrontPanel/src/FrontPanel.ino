@@ -32,6 +32,7 @@
  */
 #include <IoT.h>
 #include <PatriotLight.h>
+#include <PatriotSwitch.h>
 #include <PatriotNCD8Relay.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
@@ -57,16 +58,16 @@ NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2);
 NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
 NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
 
-NCD16Switch ceilingSwitch(A0, "CeilingSwitch");
-NCD16Switch kitchenCeilingSwitch(A1, "KitchenCeilingSwitch");
-NCD16Switch sinkSwitch(A2, "SinkSwitch");
+Switch ceilingSwitch(A0, "CeilingSwitch");
+Switch kitchenCeilingSwitch(A1, "KitchenCeilingSwitch");
+Switch sinkSwitch(A2, "SinkSwitch");
 Switch cabinetSwitch(A3, "CabinetSwitch");
 
 Switch rightTrimSwitch(A4, "RightTrimSwitch");
 Switch leftTrimSwitch(A5, "LeftTrimSwitch");
 
 Switch dsFloodsSwitch(A6, "DSFloodsSwitch");
-Switch odsFloodsSwitch(A7, "ODSFloodsSwitch");
+Switch osFloodsSwitch(A7, "ODSFloodsSwitch");
 
 Switch frontPorchSwitch(RX, "FrontPorchSwitch");
 Switch frontAwningSwitch(TX, "FrontAwningSwitch");
@@ -96,23 +97,23 @@ void setup() {
     rightTrim.addBehavior(30, "RightTrimSwitch", '>', 0);
     leftTrim.addBehavior(30, "LeftTrimSwitch", '>', 0);
     dsFloods.addBehavior(30, "DSFloodsSwitch", '>', 0);
-    odsFloods.addBehavior(30, "ODSFloodsSwitch", '>', 0);
+    osFloods.addBehavior(30, "OSFloodsSwitch", '>', 0);
     frontPorch.addBehavior(30, "FrontPorchSwitch", '>', 0);
     frontAwning.addBehavior(30, "FrontAwningSwitch", '>', 0);
 
     // DEVICES
 
-    iot->addDevice(&dsFloods);
-    iot->addDevice(&frontAwning);
-    iot->addDevice(&frontPorch);
-    iot->addDevice(&leftTrim);
-    iot->addDevice(&osFloods);
-    iot->addDevice(&rightTrim);
-
     iot->addDevice(&ceiling);
     iot->addDevice(&kitchenCeiling);
     iot->addDevice(&kitchenSink);
     iot->addDevice(&kitchenCabinets);
+    iot->addDevice(&rightTrim);
+    iot->addDevice(&leftTrim);
+    iot->addDevice(&dsFloods);
+    iot->addDevice(&osFloods);
+    iot->addDevice(&frontAwning);
+    iot->addDevice(&frontPorch);
+
     
     iot->addDevice(&ceilingSwitch);
     iot->addDevice(&kitchenCeilingSwitch);
@@ -121,8 +122,8 @@ void setup() {
     iot->addDevice(&rightTrimSwitch);
     iot->addDevice(&leftTrimSwitch);
     iot->addDevice(&dsFloodsSwitch);
-    iot->addDevice(&odsFloodsSwitch);
-    iot->addDevice(&porchSwitch);
+    iot->addDevice(&osFloodsSwitch);
+    iot->addDevice(&frontPorchSwitch);
     iot->addDevice(&frontAwningSwitch);
 
 }
