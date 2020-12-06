@@ -73,7 +73,7 @@ Device *Devices::getDeviceByNum(int deviceNum)
     {
         ptr = ptr->_next;
     }
-    log("getDeviceByNum("+String(deviceNum)+" returning "+ptr->name());
+    log("getDeviceByNum("+String(deviceNum)+" returning "+ptr->name(), LogDebug);
     return ptr;
 }
 

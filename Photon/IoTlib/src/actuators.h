@@ -28,5 +28,7 @@ public:
     
 private:
     Actuator*   _actuators;         // Linked list
-    
+
+    void      log(String message, PLogLevel logLevel = LogDebug);  // Convenience method - calls IoT->Log()
+
 };

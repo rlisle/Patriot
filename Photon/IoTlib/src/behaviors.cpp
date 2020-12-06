@@ -66,7 +66,7 @@ int Behaviors::count()
 Behavior *Behaviors::getBehaviorAt(int index)
 {
     Behavior *ptr = _behaviors;
-    for(int x = 0; x<index, ptr->_next !=NULL; x++) {
+    for(int x = 0; x<index && ptr->_next !=NULL; x++) {
         ptr = ptr->_next;
     }
     return ptr;

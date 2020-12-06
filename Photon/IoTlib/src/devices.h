@@ -38,5 +38,5 @@ private:
     
     void buildDevicesVariable();
     void expose();
-    void log(String message, PLogLevel logLevel = LogError);
+    void log(String message, PLogLevel logLevel = LogDebug);
 };

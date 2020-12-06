@@ -31,9 +31,9 @@
     - ?
  */
 #include <IoT.h>
+#include <PatriotLight.h>
 #include <PatriotNCD8Relay.h>
 #include <PatriotNCD8Light.h>
-#include <PatriotNCD16Switch.h>
 #include <PatriotActivity.h>
 
 #define ADDRESS1 0x20   // Relay board
@@ -77,6 +77,7 @@ void setup() {
     iot->setControllerName("FrontPanel");
     iot->begin();
     iot->connectMQTT(mqttServer, "patriotFrontPanel1");
+    iot->setLogLevel(LogError);
 
     // BEHAVIORS
 
