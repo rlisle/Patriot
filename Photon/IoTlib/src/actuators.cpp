@@ -14,6 +14,7 @@ BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 */
 
+#include "IoT.h"
 #include "actuators.h"
 #include "constants.h"
 
@@ -24,10 +25,10 @@ Actuators::Actuators() {
 Actuator *Actuators::addActuator(String name, int value) {
     Actuator *actuator = getActuatorWithName(name);
     if (actuator == NULL) {
-        Serial.println("Actuators addActuator adding " + name + " = " + String(value));
+        log("Actuators addActuator adding " + name + " = " + String(value));
         actuator = new Actuator(name,value);
         if(_actuators == NULL) {
-            Serial.println("  first actuator");
+            log("  first actuator");
             _actuators = actuator;
         } else {
             Actuator* ptr = _actuators;
@@ -35,10 +36,10 @@ Actuator *Actuators::addActuator(String name, int value) {
             ptr->_next = actuator;
         }
     } else {    // Actuator already exists
-        Serial.println("Actuators addActuator updating " + name + " = " + String(value) + ", was " + String(actuator->_value));
+        log("Actuators addActuator updating " + name + " = " + String(value) + ", was " + String(actuator->_value));
         actuator->_value = value;
     }
-    //Serial.println("addActuator actuator was added. Count = " + String(count()));
+    log("addActuator actuator was added. Count = " + String(count()));
     return actuator;
 }
 
@@ -46,19 +47,19 @@ Actuator *Actuators::getActuatorWithName(String name) {
     Actuator *ptr = _actuators;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
-            Serial.println("getActuatorWithName " + name + " found");
+            log("getActuatorWithName " + name + " found");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    Serial.println("getActuatorWithName " + name + " not found");
+    log("getActuatorWithName " + name + " not found");
     return NULL;
 }
 
 Actuator *Actuators::getActuatorAt(int index)
 {
     Actuator *ptr = _actuators;
-    for(int x = 0; x<index, ptr->_next !=NULL; x++) {
+    for(int x = 0; x<index && ptr->_next !=NULL; x++) {
         ptr = ptr->_next;
     }
     return ptr;
@@ -70,3 +71,10 @@ int Actuators::count() {
     for(Actuator* ptr = _actuators; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
+
+void Actuators::log(String message, PLogLevel logLevel)
+{
+    IoT* iot = IoT::getInstance();
+    iot->log(message, logLevel);
+}
+
