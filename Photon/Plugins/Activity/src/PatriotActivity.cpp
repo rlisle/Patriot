@@ -26,18 +26,17 @@ Activity::Activity(String name) : Device(name, DeviceType::Activity)
 }
 
 void Activity::setPercent(int percent) {
-    log("Activity setPercent "+String(percent)+", was "+String(_percent), LogDebug);
+    log("Activity " + _name + " setPercent "+String(percent)+", was "+String(_percent), LogDebug);
     _percent = percent;     // This is how we detect when it changes
 
     // Behaviors are only executed when an activity is turned on.
     if (percent == 0) return;
 
     int numActuators = _actuators.count();
-    log("Activity numActuators = "+String(numActuators));
+    log("Activity numActuators = "+String(numActuators), LogDebug);
     for(int x=0; x < numActuators; x++) {
-        log("Activity actuator loop");
         Actuator *actuator = _actuators.getActuatorAt(x);
-        log("Activity actuating "+actuator->_name);
+        log("Activity actuating "+actuator->_name, LogDebug);
         publish("patriot/"+actuator->_name, String(actuator->_value));
     }
 };
