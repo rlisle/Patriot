@@ -1,30 +1,31 @@
 /**
-  RearPanel Controller
-  Description: This sketch controls all the switches in the Cyclone 4005 rear control panel.
- Author: Ron Lisle
-  Date: 11/04/17
+RearPanel Controller
+Description: This sketch controls all the switches in the Cyclone 4005 rear control panel.
+Author: Ron Lisle
  
   To update Photon:
     1. Edit this code
-    2. "particle flash RearPanel"
+    2. Update IoT and plugins if needed
+    3. "particle flash RearPanel"
  
- Hardware3
+ Hardware
  1. NCD Photon Screw Terminal board
      6 switch connections:
        A0 Ceiling (brown)
-      A1 Loft (red)
+       A1 Loft (red)
        A2 Ramp Porch Floods (yellow)
        A3 Ramp Awning LEDs (green)
        A4 Rear Porch Flood (blue)
        A5 Rear Awning LEDs (white)
   2. NCD 8 PWM OC 8W I2C Dimmer board
-       A0 Ceiling
-       A1 Loft
-       A2 Ramp Porch Floods
-       A3 Ramp Awning LEDs
-       A4 Rear Porch Flood
-       A5 Rear Awning LEDs
-       A6 Piano Spot
+       I/O 0 Ceiling
+       I/O 1 Loft
+       I/O 2 Ramp Porch Floods
+       I/O 3 Ramp Awning LEDs
+       I/O 4 Rear Porch Flood
+       I/O 5 Rear Awning LEDs
+       I/O 6 Piano Spot
+       I/O 7 ?
 
   Other
    - built-in blue LED     D7
@@ -41,7 +42,6 @@ String mqttServer = "192.168.10.184";
 
 IoT *iot;
 
-// To use persistent storage, insert "retained" before NCD8Relay
 NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 2);
 NCD8Light loft(ADDRESS, 1, "Loft", 2);
 NCD8Light rampPorch(ADDRESS, 2, "RampPorch", 2);
@@ -49,21 +49,25 @@ NCD8Light rampAwning(ADDRESS, 3, "RampAwning", 2);
 NCD8Light rearPorch(ADDRESS, 4, "RearPorch", 2);
 NCD8Light rearAwning(ADDRESS, 5, "RearAwning", 2);
 NCD8Light piano(ADDRESS, 6, "Piano", 2);
+// one unused dimmer I/O
 
-
-Switch ceilingSwitch(A0, "OfficeCeilingSwitch");
+// Switch control functional sets of lights, not individual lights
+Switch officeSwitch(A0, "OfficeSwitch");
 Switch loftSwitch(A1, "LoftSwitch");
-Switch rampPorchSwitch(A2, "RampPorchSwitch");
-Switch rampAwningSwitch(A3, "RampAwningSwitch");
-Switch rearPorchSwitch(A4, "RearPorchSwitch");
-Switch rearAwningSwitch(A5, "RearAwningSwitch");
+Switch wakingSwitch(A2, "WakingSwitch");
+Switch awningSwitch(A3, "AwningSwitch");
+Switch floodsSwitch(A4, "FloodsSwitch");
+Switch pianoSwitch(A5, "PianoSwitch");
+// More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
 // Activities allow Alexa to control them
 // and can also turn off other activities.
-Activity waking("waking");
+// These will be used by other panels also, but don't need to be duplicated by them
+Activity waking("waking");                  // Turns off sleeping
 Activity watchingTV("watchingTV");
-Activity goingToBed("goingToBed");
-Activity sleeping("sleeping");
+Activity goingToBed("goingToBed");          // Turns off waking and others
+Activity sleeping("sleeping");              // Turns off goingToBed, waking and others
+Activity playingPiano("playingPiano");
 
 void setup() {
     iot = IoT::getInstance();
@@ -77,20 +81,26 @@ void setup() {
     waking.setOtherState("goingtobed", 0);      // and goingToBed
 
     sleeping.setOtherState("waking", 0);        // Turn off waking when sleeping
+    sleeping.setOtherState("watchingtv", 0);    // and watchingTV
     sleeping.setOtherState("goingtobed", 0);    // and goingToBed
+    sleeping.setOtherState("playingpiano", 0);  // and playingPiano
 
     goingToBed.setOtherState("watchingtv", 0);  // Turn off watchingTV when going to bed
+    goingToBed.setOtherState("playingpiano", 0);// and playingPiano
     goingToBed.setOtherState("waking", 0);      // and waking
 
     // BEHAVIORS
     ceiling.addBehavior(30, "waking", '>', 0);
-    
-    ceiling.addBehavior(100, "OfficeCeilingSwitch", '>', 0);
+    piano.addBehavior(100, "playingpiano", '>', 0);
+
+    // Switches
+    ceiling.addBehavior(100, "OfficeSwitch", '>', 0);
     loft.addBehavior(100, "LoftSwitch", '>', 0);
-    rampPorch.addBehavior(100, "RampPorchSwitch", '>', 0);
-    rampAwning.addBehavior(100, "RampAwningSwitch", '>', 0);
-    rearPorch.addBehavior(100, "RearPorchSwitch", '>', 0);
-    rearAwning.addBehavior(100, "RearAwningSwitch", '>', 0);
+    rampAwning.addBehavior(100, "AwningSwitch", '>', 0);
+    rearAwning.addBehavior(100, "AwningSwitch", '>', 0);
+    rampPorch.addBehavior(100, "FloodSwitch", '>', 0);
+    rearPorch.addBehavior(100, "FloodSwitch", '>', 0);
+    piano.addBehavior(100, "playingSwitch", '>', 0);
 
     // ADD ALL DEVICES
     iot->addDevice(&ceiling);
