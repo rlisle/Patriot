@@ -1,34 +1,34 @@
-/*
- * RearPanel Controller
- * Description: This sketch controls all the switches in the Cyclone 4005 rear control panel.
- * Author: Ron Lisle
- * Date: 11/04/17
- *
- * To update Photon:
- *   1. Edit this code
- *   2. "particle flash RearPanel"
- *
- * Hardware3
- * 1. NCD Photon Screw Terminal board
- *    6 switch connections:
- *      A0 Ceiling (brown)
- *      A1 Loft (red)
- *      A2 Ramp Porch Floods (yellow)
- *      A3 Ramp Awning LEDs (green)
- *      A4 Rear Porch Flood (blue)
- *      A5 Rear Awning LEDs (white)
- * 2. NCD 8 PWM OC 8W I2C Dimmer board
- *      A0 Ceiling
- *      A1 Loft
- *      A2 Ramp Porch Floods
- *      A3 Ramp Awning LEDs
- *      A4 Rear Porch Flood
- *      A5 Rear Awning LEDs
- *      A6 Piano Spot
+/**
+  RearPanel Controller
+  Description: This sketch controls all the switches in the Cyclone 4005 rear control panel.
+ Author: Ron Lisle
+  Date: 11/04/17
+ 
+  To update Photon:
+    1. Edit this code
+    2. "particle flash RearPanel"
+ 
+ Hardware3
+ 1. NCD Photon Screw Terminal board
+     6 switch connections:
+       A0 Ceiling (brown)
+      A1 Loft (red)
+       A2 Ramp Porch Floods (yellow)
+       A3 Ramp Awning LEDs (green)
+       A4 Rear Porch Flood (blue)
+       A5 Rear Awning LEDs (white)
+  2. NCD 8 PWM OC 8W I2C Dimmer board
+       A0 Ceiling
+       A1 Loft
+       A2 Ramp Porch Floods
+       A3 Ramp Awning LEDs
+       A4 Rear Porch Flood
+       A5 Rear Awning LEDs
+       A6 Piano Spot
 
- * Other
+  Other
    - built-in blue LED     D7
- *
+ 
  */
 #include <IoT.h>
 #include <PatriotSwitch.h>
