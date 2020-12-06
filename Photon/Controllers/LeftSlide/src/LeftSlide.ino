@@ -1,48 +1,32 @@
-/*
- * LeftSlide Controller
- * Description: This sketch controls both lights in the left slide.
- * Author: Ron Lisle
- * Date: 11/3/19
- *
- * To update Photon:
- *   1. Edit this code
- *   2. "particle flash LeftSlide"
- *
- * Hardware
- * 1. Photon
- * 2. 3 x LED boards: RX, TX, WKP
- * 3. 2 x switch inputs: A0, A1
- *
- * Activities
-   - arriving
-   - cleaning
-   - cooking
-   - evening / sunsetting
-   - everything (all lights)
-   - hosting
-   - leaving
-   - morning / sunrising
-   - reading 
-   - retiring (bedtime)
-   - sleeping
-   - waking
-   - watching
- *
- * History
- * 08/29/20 Remove spaces from device names
- * 11/03/19 Initial creation
+/**
+Left Slide Controller
+Description: This sketch controls the 2 lights and switch in the left slide.
+Author: Ron Lisle
+ 
+  To update Photon:
+    1. Edit this code
+    2. Update IoT and plugins if needed
+    3. "particle flash LeftSlide"
+ 
+ Hardware
+ 1. NCD Photon Screw Terminal board
+    I/Os selected to all be on the same side
+     2 switch connections:
+       A0 Watch TV
+       A1 Reading
+    2 LED driver boards
+       TX Vertical Lights
+       RX Reading lights
  */
 #include <IoT.h>
 #include <PatriotLight.h>
-
-#define DEV_PTR (Device *)&
-
-IoT *iot;
+#include <PatriotSwitch.h>
+#include <PatriotActivity.h>
 
 String mqttServer = "192.168.1.10";
 
-// Use Backup SRAM to persist led state between resets
-// To use persistent storage, insert "retained" before Light
+IoT *iot;
+
 Light couch(TX, "Couch");
 Light vertical(RX, "LeftVertical");
 
