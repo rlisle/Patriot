@@ -57,6 +57,11 @@ void setup() {
     iot->addDevice(&watchingTV);
     iot->addDevice(&goingToBed);
     iot->addDevice(&sleeping);
+    
+    Log.trace("Trace message");
+    Log.info("Info message");
+    Log.warn("Warn message");
+    Log.error("Error message");
 }
 
 void loop() {
