@@ -23,7 +23,7 @@
 
 class Devices;
 
-class MQTTManager
+class MQTTManager : public LogHandler
 {
 public:
     
@@ -41,10 +41,21 @@ private:
     
     Devices   *_devices;
     
+    int       m_logging;        // a counting semaphore to prevent recursion
+
     void      (*_callback)(char*,uint8_t*,unsigned int);
     void      connect(String connectID);
     void      reconnectCheck();
     int       parseValue(String message);
     void      parseLogLevel(String message);
+    //TODO: remove this once LogHandler is working
     void      log(String message, PLogLevel logLevel);  // Convenience method - calls IoT->Log()
+
+    // LogHandler methods
+    const char* extractFileName(const char *s);
+    const char* extractFuncName(const char *s, size_t *size);
+    void log(const char *category, String message);
+
+protected:
+    virtual void logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) override;
 };
