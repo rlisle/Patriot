@@ -226,6 +226,7 @@ void MQTTManager::log(const char *category, String message) {
 void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
     String s;
 
+    
     // Source file
     if (attr.has_file) {
         s = extractFileName(attr.file);                                                                                 // Strip directory path
