@@ -61,6 +61,13 @@ void setup() {
     Log.info("Info message");
     Log.warn("Warn message");
     Log.error("Error message");
+    
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ERROR = " + String(LOG_LEVEL_ERROR));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_WARN = " + String(LOG_LEVEL_WARN));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_INFO = " + String(LOG_LEVEL_INFO));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_TRACE = " + String(LOG_LEVEL_TRACE));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_NONE = " + String(LOG_LEVEL_NONE));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ALL = " + String(LOG_LEVEL_ALL));
 }
 
 void loop() {

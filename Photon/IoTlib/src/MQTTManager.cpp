@@ -226,6 +226,13 @@ void MQTTManager::log(const char *category, String message) {
 void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
     String s;
 
+//    LOG_LEVEL_ALL = 1
+//    LOG_LEVEL_TRACE = 1
+//    LOG_LEVEL_INFO = 30
+//    LOG_LEVEL_WARN= 40
+//    LOG_LEVEL_ERROR = 50
+//    LOG_LEVEL_NONE = 70
+    if (level < _logLevel) return;
     
     // Source file
     if (attr.has_file) {
