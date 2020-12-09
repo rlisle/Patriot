@@ -36,7 +36,6 @@ void setup() {
     iot->setControllerName("RonTest");
     iot->begin();
     iot->connectMQTT(mqttServerIP, "patriotRonTest1", false);
-    iot->setLogLevel(LogDebug);
         
     // Behaviors/Activities
     blueLed.addBehavior(100, "waking", '>', 0);

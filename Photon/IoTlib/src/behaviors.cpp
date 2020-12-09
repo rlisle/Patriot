@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 Behaviors collection
 
 This object manages a collection of Behavior objects.
@@ -12,14 +12,7 @@ Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-19: Convert to linked list
-2020-11-14: Rename activities to states.
-2017-10-22: Convert to scenes-like behavior.
-2017-03-24: Rename Patriot
-2017-03-05: Convert to v2 particle lib
-2016-06-24: Initial version
-******************************************************************/
+*/
 #include "behaviors.h"
 
 Behaviors::Behaviors()

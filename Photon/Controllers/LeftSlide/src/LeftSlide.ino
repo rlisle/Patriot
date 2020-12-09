@@ -39,7 +39,6 @@ void setup() {
   iot->setControllerName("LeftSlide");
   iot->begin();
   iot->connectMQTT(mqttServer, "patriotLeftSlide");
-  iot->setLogLevel(LogError);
 
   // BEHAVIORS
     couch.addBehavior(30, "watchingtv", '>', 0);

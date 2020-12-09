@@ -48,8 +48,6 @@ private:
     void      reconnectCheck();
     int       parseValue(String message);
     void      parseLogLevel(String message);
-    //TODO: remove this once LogHandler is working
-    void      log(String message, PLogLevel logLevel);  // Convenience method - calls IoT->Log()
 
     // LogHandler methods
     const char* extractFileName(const char *s);

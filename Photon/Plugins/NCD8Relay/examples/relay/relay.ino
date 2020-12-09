@@ -1,4 +1,4 @@
-/*******************************************************
+/**
 NCD 8 Relay board Example
 
 This example supports the 1st relay on an NCD 8 Relay board.
@@ -10,9 +10,7 @@ Written by Ron Lisle
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2017-10-03: Initial creation
-********************************************************/
+*/
 
 #include <IoT.h>
 #include <PatriotNCD8Relay.h>

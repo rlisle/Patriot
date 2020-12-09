@@ -1,4 +1,4 @@
-/******************************************************************
+/**
  NCD 8 Relay board control
 
  Up to 8 relay boards can reside on a single I2C bus.
@@ -18,12 +18,7 @@
 
  Datasheets:
 
- Changelog:
- 2019-01-03: v3 Assume retained storage so percent retained.
- 2018-01-18: Add type property
- 2017-12-03: Add retry.
- 2017-10-03: Initial creation
- ******************************************************************/
+ */
 
 #include "PatriotNCD8Relay.h"
 

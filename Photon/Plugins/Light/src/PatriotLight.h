@@ -1,4 +1,4 @@
-/******************************************************************
+/**
  light LED dimming control
 
  Features:
@@ -14,17 +14,7 @@
 
  Datasheets:
 
- Changelog:
- 2019-11-09: v3.1.0 Add local pin
- 2019-01-03: v3.0.0 Assume use of Backup SRAM to persist percent across resets.
- 2017-10-28: Convert to v2.
- 2017-09-20: Add support for inverted and non-analog outputs
- 2017-05-19: Extract to separate plugin library
- 2017-05-15: Make devices generic
- 2017-03-24: Rename Patriot
- 2016-07-07: Remove dimming mode
- 2016-01-17: Initial version
- ******************************************************************/
+ */
 
 #pragma once
 

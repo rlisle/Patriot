@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 Conditions
 
 This class represents a collection of Conditions objects.
@@ -9,9 +9,7 @@ Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-18: Initial version
-******************************************************************/
+*/
 #include "conditions.h"
 
 Conditions::Conditions()

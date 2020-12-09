@@ -23,7 +23,6 @@ All text above must be included in any redistribution.
 #include "states.h"
 #include "devices.h"
 #include "MQTTManager.h"
-#include "PLogLevel.h"
 
 /**
  * Main IoT object.
@@ -67,8 +66,6 @@ public:
 
     void        mqttPublish(String topic, String message);
     void        addDevice(Device *device);
-    void        setLogLevel(PLogLevel logLevel);
-    void        log(String msg, PLogLevel logLevel = LogDebug);
 
     /**
      * Loop needs to be called periodically
@@ -81,7 +78,6 @@ private:
     
     bool         _isBridge;
     String       _controllerName;
-    PLogLevel    _logLevel;
     
     States*      _states;
     Devices*     _devices;

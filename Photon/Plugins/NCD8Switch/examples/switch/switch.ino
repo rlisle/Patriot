@@ -1,4 +1,4 @@
-/*******************************************************
+/**
 NCD 8 Switch board Example
 
 This example supports a switch connected to the 1st input
@@ -11,9 +11,7 @@ Written by Ron Lisle
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-19: Initial creation
-********************************************************/
+*/
 
 #include <IoT.h>
 #include <PatriotNCD8Switch.h>

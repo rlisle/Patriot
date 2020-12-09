@@ -82,7 +82,6 @@ void setup() {
     iot->setControllerName("FrontPanel");
     iot->begin();
     iot->connectMQTT(mqttServer, "patriotFrontPanel1");
-    iot->setLogLevel(LogError);
 
     // Set other states
 //    waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking

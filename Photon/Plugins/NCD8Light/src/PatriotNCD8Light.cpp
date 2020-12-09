@@ -93,7 +93,7 @@ void NCD8Light::setPercent(int percent) {
     _currentLevel = scalePWM(_percent);
     _percent = percent;
     _targetLevel = scalePWM(percent);
-    log("Dimmer " + String(_name) + " setPercent " + String(percent) + " scaled to " + String(_targetLevel), LogDebug);
+    Log.info("Dimmer " + String(_name) + " setPercent " + String(percent) + " scaled to " + String(_targetLevel));
     if(_dimmingDuration == 0) {
         _currentLevel = _targetLevel;
         outputPWM();
@@ -113,7 +113,7 @@ void NCD8Light::startSmoothDimming() {
         _lastUpdateTime = millis();
         float delta = _targetLevel - _currentLevel;
         _incrementPerMillisecond = delta / (float(_dimmingDuration) * 1000);
-        log("Light "+_name+" setting increment to "+String(_incrementPerMillisecond), LogDebug);
+        Log.info("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
     }
 }
 
@@ -132,7 +132,7 @@ void NCD8Light::loop()
         return;
     }
     
-    //log("light loop percent: "+String(_percent)+", target: "+String(_targetPercent), LogDebug);
+    //Log.trace("light loop percent: "+String(_percent)+", target: "+String(_targetPercent));
 
     // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
     

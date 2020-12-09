@@ -36,26 +36,26 @@ void MQTTManager::connect(String connectID) {
     _lastMQTTtime = Time.now();
 
     if(_mqtt == NULL) {
-        log("ERROR! MQTTManager: connect called but object null", LogError);
+        Log.error("ERROR! MQTTManager: connect called but object null");
     }
 
     if(_mqtt->isConnected()) {
-        log("MQTT is connected, so reconnecting...", LogDebug);
+        Log.info("MQTT is connected, so reconnecting...");
         _mqtt->disconnect();
     }
 
     _mqtt->connect(connectID);
     if (_mqtt->isConnected()) {
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
-            log("Unable to subscribe to MQTT " + kPublishName + "/#", LogError);
+            Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
     } else {
-        log("MQTT is NOT connected! Check MQTT IP address", LogError);
+        Log.error("MQTT is NOT connected! Check MQTT IP address");
     }
     // Looks good, not register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    log("Connected at " + String(_lastMQTTtime), LogError); // Not an error, just want it always displayed
+    Log.error("Connected at " + String(_lastMQTTtime)); // Not an error, just want it always displayed
     
 }
 
@@ -122,7 +122,7 @@ void MQTTManager::parseMessage(String topic, String message)
         if(subtopic.equals("ping")) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
-                log("Ping addressed to us", LogDebug);
+                Log.info("Ping addressed to us");
                 _mqtt->publish(kPublishName + "/pong", _controllerName);
             }
             
@@ -134,28 +134,28 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic.equals("reset")) {
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
-                log("Reset addressed to us", LogDebug);
+                Log.infop("Reset addressed to us");
                 System.reset();
             }
             
             // MEMORY
         } else if(subtopic.equals("memory")) {
             if(message.equals(_controllerName)) {
-                log( String::format("Free memory = %d", System.freeMemory()), LogError);
+                Log.error( String::format("Free memory = %d", System.freeMemory())); // not an error
             }
             
         } else if(subtopic.equals("log")) {
             // Ignore it.
             
         } else if(subtopic.equals("loglevel/"+_controllerName)) {
-            log(_controllerName + " setting logLevel = " + message, LogDebug);
+            Log.info(_controllerName + " setting logLevel = " + message);
             parseLogLevel(message);
             
             // UNKNOWN
         } else {
             
             int percent = parseValue(message);
-            log("Parser setting state " + subtopic + " to " + message, LogDebug);
+            Log.info("Parser setting state " + subtopic + " to " + message);
             IoT *iot = IoT::getInstance();
             States *states = iot->_states;
             states->addState(subtopic,percent);
@@ -163,7 +163,7 @@ void MQTTManager::parseMessage(String topic, String message)
         }
     } else {
         // Not addressed or recognized by us
-        log("Parser: Not our message: "+String(topic)+" "+String(message), LogError);
+        Log.error("Parser: Not our message: "+String(topic)+" "+String(message));
     }
 }
 
@@ -188,34 +188,6 @@ void MQTTManager::parseLogLevel(String message) {
     IoT* iot = IoT::getInstance();
     iot->setLogLevel(level);
 }
-
-//Log example code
-//MQTTLog::MQTTLog(String name, LogLevel level,
-//                               const LogCategoryFilters &filters) : LogHandler(level, filters), m_name(name), m_publishing(0)
-//{
-//    LogManager::instance()->addHandler(this);
-//}
-
-
-/// Publish the log message
-//TODO: refactor this with the existing code above
-//void MQTTManager::log(const char *category, String message) {
-//    //String time = Time.format(Time.now(), TIME_FORMAT_ISO8601_FULL);
-//    //String packet = String::format("<22>1 %s %s %s - - - %s", time.c_str(), m_system.c_str(), m_app.c_str(), message.c_str());
-//
-//    // Just in case someone calls Log.foo from inside publish we don't want to recurse
-//    if(!m_publishing && strcmp(category, "app") == 0) {
-//        m_publishing++;
-//        publish("patriot/log", message);
-//        m_publishing--;
-//    }
-//}
-
-//ParticleWebLog::~ParticleWebLog() {
-//    LogManager::instance()->removeHandler(this);
-//}
-
-
 
 // The floowing methods are taken from Particle FW, specifically spark::StreamLogHandler.
 // See https://github.com/spark/firmware/blob/develop/wiring/src/spark_wiring_logging.cpp
