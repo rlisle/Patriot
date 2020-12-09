@@ -32,6 +32,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     connect(connectID);
 }
 
+//TODO: If MQTT doesn't connect, then start 
 void MQTTManager::connect(String connectID) {
 
     _lastMQTTtime = Time.now();
@@ -275,7 +276,7 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
         s.concat(']');
     }
 
-    //FOR TESTING, USE SERIAL
+    //TODO: If MQTT not connected, write to Serial
 //    Serial.println(s);
     log(category, s);
 }
