@@ -59,13 +59,6 @@ void MQTTManager::connect(String connectID) {
     
 }
 
-// TODO: eliminate this.
-void MQTTManager::log(String message, PLogLevel logLevel)
-{
-    IoT* iot = IoT::getInstance();
-    iot->log(message, logLevel);
-}
-
 bool MQTTManager::publish(String topic, String message) {
     if(_mqtt != NULL && _mqtt->isConnected()) {
         //Serial.println("Publishing "+String(topic)+" "+String(message));
@@ -134,7 +127,7 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic.equals("reset")) {
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
-                Log.infop("Reset addressed to us");
+                Log.info("Reset addressed to us");
                 System.reset();
             }
             
@@ -178,15 +171,18 @@ int MQTTManager::parseValue(String message)
 }
 
 void MQTTManager::parseLogLevel(String message) {
-    PLogLevel level = LogError;
-    if (message.equals("none")) level = LogNone;
-    else if (message.equals("error")) level = LogError;
-    else if (message.equals("info")) level = LogInfo;
-    else if (message.equals("debug")) level = LogDebug;
+    int level = LOG_LEVEL_ERROR;
+    if (message.equals("none")) level = LOG_LEVEL_NONE;
+    else if (message.equals("error")) level = LOG_LEVEL_ERROR;
+    else if (message.equals("warn")) level = LOG_LEVEL_WARN;
+    else if (message.equals("info")) level = LOG_LEVEL_INFO;
+    else if (message.equals("debug")) level = LOG_LEVEL_TRACE;
+    else if (message.equals("all")) level = LOG_LEVEL_ALL;
     else return;
-    
-    IoT* iot = IoT::getInstance();
-    iot->setLogLevel(level);
+
+    //TODO: convert to Log class
+//    IoT* iot = IoT::getInstance();
+//    iot->setLogLevel(level);
 }
 
 // The floowing methods are taken from Particle FW, specifically spark::StreamLogHandler.

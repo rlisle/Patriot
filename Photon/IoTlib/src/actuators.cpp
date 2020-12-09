@@ -71,10 +71,3 @@ int Actuators::count() {
     for(Actuator* ptr = _actuators; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
-
-void Actuators::log(String message, PLogLevel logLevel)
-{
-    IoT* iot = IoT::getInstance();
-    iot->log(message, logLevel);
-}
-
