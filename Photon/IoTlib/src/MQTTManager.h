@@ -26,7 +26,8 @@ class Devices;
 class MQTTManager : public LogHandler
 {
 public:
-    
+    LogLevel    _logLevel;
+
     MQTTManager(String brokerIP, String connectID, String controllerName, Devices* devices);
     
     bool        publish(String topic, String message);

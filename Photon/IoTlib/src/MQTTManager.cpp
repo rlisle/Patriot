@@ -25,7 +25,11 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _controllerName = controllerName;
     _devices = devices;
     _logging = 0;
+    _logLevel = LOG_LEVEL_ERROR;
 
+    Time.zone(-6.0);
+    
+    //TODO: do we need this, and what should we pass?
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
@@ -172,7 +176,7 @@ int MQTTManager::parseValue(String message)
 }
 
 void MQTTManager::parseLogLevel(String message) {
-    int level = LOG_LEVEL_ERROR;
+    LogLevel level = LOG_LEVEL_ERROR;
     if (message.equals("none")) level = LOG_LEVEL_NONE;
     else if (message.equals("error")) level = LOG_LEVEL_ERROR;
     else if (message.equals("warn")) level = LOG_LEVEL_WARN;
@@ -181,9 +185,7 @@ void MQTTManager::parseLogLevel(String message) {
     else if (message.equals("all")) level = LOG_LEVEL_ALL;
     else return;
 
-    //TODO: convert to Log class
-//    IoT* iot = IoT::getInstance();
-//    iot->setLogLevel(level);
+    _logLevel = level;
 }
 
 // The floowing methods are taken from Particle FW, specifically spark::StreamLogHandler.
@@ -210,14 +212,12 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
 }
 
 void MQTTManager::log(const char *category, String message) {
-//TODO: Include time, etc. in message
-//    String time = Time.format(Time.now(), TIME_FORMAT_ISO8601_FULL);
-//    String packet = String::format("<22>1 %s %s %s - - - %s", time.c_str(), m_system.c_str(), m_app.c_str(), message.c_str());
+    String time = Time.format(Time.now(), "%a %H:%M");
 
-    // Just in case someone calls Log.foo from inside publish we don't want to recurse
-    if(!_logging && strcmp(category, "app") == 0) {
+//    if(!_logging && strcmp(category, "app") == 0) {
+    if(!_logging) {
         _logging++;
-        publish("patriot/log", message);
+        publish("patriot/log", time + " " + _controllerName + ": " + message);
         _logging--;
     }
 }
