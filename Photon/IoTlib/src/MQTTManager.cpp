@@ -24,6 +24,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 {
     _controllerName = controllerName;
     _devices = devices;
+    _logging = 0;
 
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
 
@@ -61,7 +62,6 @@ void MQTTManager::connect(String connectID) {
 
 bool MQTTManager::publish(String topic, String message) {
     if(_mqtt != NULL && _mqtt->isConnected()) {
-        //Serial.println("Publishing "+String(topic)+" "+String(message));
         _mqtt->publish(topic,message);
         return true;
     }
@@ -208,6 +208,19 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
     return s1;
 }
 
+void MQTTManager::log(const char *category, String message) {
+//TODO: Include time, etc. in message
+//    String time = Time.format(Time.now(), TIME_FORMAT_ISO8601_FULL);
+//    String packet = String::format("<22>1 %s %s %s - - - %s", time.c_str(), m_system.c_str(), m_app.c_str(), message.c_str());
+
+    // Just in case someone calls Log.foo from inside publish we don't want to recurse
+    if(!_logging && strcmp(category, "app") == 0) {
+        _logging++;
+        publish("patriot/log", message);
+        _logging--;
+    }
+}
+
 // This method is how we are called by the LogManager
 void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
     String s;
@@ -263,6 +276,6 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
     }
 
     //FOR TESTING, USE SERIAL
-    Serial.println(s);
-//    log(category, s);
+//    Serial.println(s);
+    log(category, s);
 }

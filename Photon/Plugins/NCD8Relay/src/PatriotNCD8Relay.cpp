@@ -93,7 +93,7 @@ int8_t NCD8Relay::initializeBoard(int8_t address) {
     } while( status != 0 && retries++ < 3);
 
     if(status != 0) {
-        Serial.println("Set address failed");
+        Log.error("Set address failed");
         //TODO: handle error
     }
 
@@ -119,7 +119,7 @@ int8_t NCD8Relay::addAddressToArray(int8_t address) {
     // byte status = Wire.endTransmission();
     // if(status != 0) {
     //     //TODO: handle any errors, retry, etc.
-    //     Serial.println("Error turning off relays");
+    //     Log.error("Error turning off relays");
     // }
     return _numControllers++;
 }
@@ -162,7 +162,7 @@ void NCD8Relay::setOn() {
 
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
-        Serial.println("Error turning on relays");
+        Log.error("Error turning on relays");
     }
 }
 
@@ -190,7 +190,7 @@ void NCD8Relay::setOff() {
 
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
-        Serial.println("Error turning off relays");
+        Log.error("Error turning off relays");
     }
 }
 

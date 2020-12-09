@@ -87,7 +87,9 @@ void IoT::setControllerName(String name)
  */
 void IoT::begin()
 {
-    Serial.begin(57600);
+    //Use Log instead of Serial. MQTT will receive log messages.
+    //If MQTT won't work, initialize SerialLogHandler logHandler(LOG_LEVEL_ALL);
+    //Serial.begin(57600);
 
     _states = new States();
     _devices = new Devices();
@@ -155,7 +157,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String event(eventName);
     
     if(event.equalsIgnoreCase(kPublishName) == false) {
-        Serial.println("IoT received unexpected particle.io topic: " + event);
+        Log.warn("IoT received unexpected particle.io topic: " + event);
         return;
     }
     
@@ -163,7 +165,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     // t:patriot m:<eventName>:<msg>
     int colonPosition = data.indexOf(':');
     if(colonPosition == -1) {
-        Serial.println("IoT received invalid particle message: " + data);
+        Log.error("IoT received invalid particle message: " + data);
         return;
     }
 

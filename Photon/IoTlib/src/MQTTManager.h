@@ -41,7 +41,7 @@ private:
     
     Devices   *_devices;
     
-    int       m_logging;        // a counting semaphore to prevent recursion
+    int       _logging;        // a counting semaphore to prevent recursion
 
     void      (*_callback)(char*,uint8_t*,unsigned int);
     void      connect(String connectID);

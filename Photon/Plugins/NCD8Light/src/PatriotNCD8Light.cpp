@@ -79,7 +79,7 @@ int8_t NCD8Light::initializeBoard() {
         outputPWM();            // Force light off
         
     } else {
-        Serial.println("initializeBoard failed");
+        Log.error("InitializeBoard failed");
     }
 
     return status;
@@ -162,7 +162,7 @@ void NCD8Light::outputPWM() {
 	Wire.write(int(_currentLevel));
 	byte status = Wire.endTransmission();
 	if(status != 0){
-		Serial.println("outputPWM write failed");
+		Log.error("outputPWM write failed");
 	}
 }
 
