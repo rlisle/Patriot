@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 State
 
 This class represents a state or condition, such as "watching tv",
@@ -19,14 +19,7 @@ Written by Ron Lisle
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-14: Rename activity to state
-2017-03-24: Rename Patriot
-2017-03-05: Convert to v2 particle library
-2016-12-09: Convert to use value instead of isStarted
-2016-07-07: Remove dimming mode
-2016-01-17: Initial version
-******************************************************************/
+*/
 #pragma once
 
 #include "application.h"  // Defines String

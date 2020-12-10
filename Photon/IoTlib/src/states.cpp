@@ -33,20 +33,18 @@ States::States() {
 void States::expose() {
     globalStatesVariable = "";
     if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
-        Serial.println("Unable to expose " + String(kStatesVariableName) + " variable");
+        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
     }
 }
 
 // States are added only once
 State *States::addState(String name, int value) {
-    Serial.println("addState " + name + "=" + String(value));
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
-        Serial.println("States addState adding " + name + " = " + String(value));
+        Log.info("States addState adding " + name + " = " + String(value));
         state = new State(name,value);
         if(_states == NULL) {
-            Serial.println("  first state");
             _states = state;
         } else {
             State* ptr = _states;
@@ -54,10 +52,10 @@ State *States::addState(String name, int value) {
             ptr->_next = state;
         }
     } else {    // State already exists
-        Serial.println("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
+        Log.info("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
         state->_value = value;
     }
-    Serial.println("addState state was added. Count = " + String(count()));
+    Log.info("addState state was added. Count = " + String(count()));
     buildStatesVariable();
     return state;
 }
@@ -66,12 +64,11 @@ State *States::getStateWithName(String name) {
     State *ptr = _states;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
-            Serial.println("getStateWithName " + name + " found");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    Serial.println("getStateWithName " + name + " not found");
+    Log.info("getStateWithName " + name + " not found");
     return NULL;
 }
 
@@ -82,7 +79,6 @@ int States::count() {
 }
 
 void States::buildStatesVariable() {
-    Serial.println("buildStatesVariable");
     String newVariable = "";
     State *ptr = _states;
     while (ptr != NULL) {
@@ -99,7 +95,6 @@ void States::buildStatesVariable() {
             globalStatesVariable = newVariable;
         }
     } else {
-        Serial.println("States variable is too long. Need to extend to a 2nd variable");
-        Serial.println(newVariable);
+        Log.info("States variable is too long. Need to extend to a 2nd variable");
     }
 }

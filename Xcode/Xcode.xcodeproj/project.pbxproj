@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		E4018FE12572990F0020AF8F /* PLogLevel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PLogLevel.h; path = ../Photon/IoTlib/src/PLogLevel.h; sourceTree = "<group>"; };
 		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
 		E41085872568628F00EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Light/library.properties; sourceTree = "<group>"; };
@@ -154,7 +153,6 @@
 				E4849C632566AB3C00A39734 /* state.h */,
 				E4849C5E2566AB3C00A39734 /* states.cpp */,
 				E4849C532566AB3C00A39734 /* states.h */,
-				E4018FE12572990F0020AF8F /* PLogLevel.h */,
 			);
 			name = IoTlib;
 			sourceTree = "<group>";

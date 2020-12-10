@@ -42,11 +42,6 @@ void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
     iot->mqttHandler(topic, payload, length);
 }
 
-void globalLog(String message, PLogLevel logLevel = LogError) {
-    IoT* iot = IoT::getInstance();
-    iot->log(message, logLevel);
-}
-
 void globalPublish(String topic, String message) {
     IoT* iot = IoT::getInstance();
     iot->mqttPublish(topic, message);
@@ -67,38 +62,11 @@ IoT* IoT::getInstance()
 IoT* IoT::_instance = NULL;
 
 /**
- * Helper log method
- * Simply passes msg along to Serial.println, but also provides
- * a spot to add more extensive logging or analytics
- * @param msg
- */
-void IoT::log(String msg, PLogLevel logLevel)
-{
-    if (_logLevel == LogNone) return;
-    if (_logLevel == LogError && logLevel != LogError) return;
-    if (_logLevel == LogInfo && logLevel == LogDebug) return;
-    
-    Serial.println(msg);    // Is this needed?
-
-    if (_mqttManager != NULL) {
-        _mqttManager->publish(kPublishName+"/log", _controllerName + ": " + msg);
-    }
-}
-
-/**
- * Set the amount of logging desired.
- */
-void IoT::setLogLevel(PLogLevel logLevel) {
-    _logLevel = logLevel;
-}
-
-/**
  * Constructor.
  */
 IoT::IoT()
 {
     // be sure not to call anything that requires hardware be initialized here, put those in begin()
-    _logLevel               = LogError;
     _controllerName         = kDefaultControllerName;
     _mqttManager            = NULL;
 }
@@ -119,7 +87,9 @@ void IoT::setControllerName(String name)
  */
 void IoT::begin()
 {
-    Serial.begin(57600);
+    //Use Log instead of Serial. MQTT will receive log messages.
+    //If MQTT won't work, initialize SerialLogHandler logHandler(LOG_LEVEL_ALL);
+    //Serial.begin(57600);
 
     _states = new States();
     _devices = new Devices();
@@ -161,7 +131,7 @@ void IoT::loop()
 // 
 void IoT::addDevice(Device *device)
 {
-    log("addDevice: " + device->name(), LogDebug);
+    Log.info("addDevice: " + device->name());
     if(device->shouldAutoCreateBehavior()) {
         bool isDefault = true;
         Behavior *defaultBehavior = new Behavior(100, isDefault);
@@ -170,7 +140,6 @@ void IoT::addDevice(Device *device)
     }
     
     _devices->addDevice(device);
-    device->logPtr = globalLog;
     device->publishPtr = globalPublish;
     
     _states->addState(device->name(), device->getPercent());
@@ -188,7 +157,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String event(eventName);
     
     if(event.equalsIgnoreCase(kPublishName) == false) {
-        Serial.println("IoT received unexpected particle.io topic: " + event);
+        Log.warn("IoT received unexpected particle.io topic: " + event);
         return;
     }
     
@@ -196,11 +165,11 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     // t:patriot m:<eventName>:<msg>
     int colonPosition = data.indexOf(':');
     if(colonPosition == -1) {
-        Serial.println("IoT received invalid particle message: " + data);
+        Log.error("IoT received invalid particle message: " + data);
         return;
     }
 
-    log("Particle.io subscribe received data: '"+data+"'");
+    Log.info("Particle.io subscribe received data: '"+data+"'");
     
     // Convert to new protocol
     // eg. t:patriot m:DeskLamp:100 -> t:patriot/desklamp m:100

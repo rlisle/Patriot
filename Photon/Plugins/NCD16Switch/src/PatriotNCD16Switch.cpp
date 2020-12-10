@@ -1,4 +1,4 @@
-/******************************************************************
+/**
  NCD GPIO Switch control
 
  Uses the MCP23017
@@ -21,9 +21,7 @@
 
  Datasheets:
 
- Changelog:
- 2020-11-28: Initial creation (based on NCD8Switch)
- ******************************************************************/
+*/
 
 #include "PatriotNCD16Switch.h"
 
@@ -46,7 +44,7 @@ NCD16Switch::NCD16Switch(int address, int switchNum, String name)
         initializeBoard();
     } else {
         _switchBitmap = 0;
-        Serial.println("ERROR! Invalid switchNum: "+String(switchNum));
+        Log.error("Invalid switchNum: "+String(switchNum));
     }
     _lastState    = 0;
 }
@@ -77,7 +75,7 @@ int NCD16Switch::initializeBoard() {
     status = Wire.endTransmission();
     
     if(status != 0) {
-        Serial.println("Initialize board failed");
+        Log.error("Initialize board failed");
     }
     
     return status;
@@ -95,7 +93,7 @@ bool NCD16Switch::isOn() {
     Wire.write(0x12);       // GPIO Register
     status = Wire.endTransmission();
     if(status != 0) {
-        Serial.println("Error selecting GPIO register");
+        Log.error("Error selecting GPIO register");
         return false;
     }
     
@@ -108,10 +106,10 @@ bool NCD16Switch::isOn() {
         int data2 = Wire.read();
         int data = (data1 << 8) + data2;
         bool result = (data & _switchBitmap) == 0;  // Inverted
-        //log("Switch data read = "+String(data,BIN)+" AND "+String(_switchBitmap,BIN)+" = "+String(result),LogDebug);
+        Log.trace("Switch data read = "+String(data,BIN)+" AND "+String(_switchBitmap,BIN)+" = "+String(result));
         return(result);
     }
-    Serial.println("Error reading switch");
+    Log.error("Error reading switch");
     return false;
 }
 

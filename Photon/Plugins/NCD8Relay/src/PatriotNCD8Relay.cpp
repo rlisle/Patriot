@@ -1,4 +1,4 @@
-/******************************************************************
+/**
  NCD 8 Relay board control
 
  Up to 8 relay boards can reside on a single I2C bus.
@@ -18,12 +18,7 @@
 
  Datasheets:
 
- Changelog:
- 2019-01-03: v3 Assume retained storage so percent retained.
- 2018-01-18: Add type property
- 2017-12-03: Add retry.
- 2017-10-03: Initial creation
- ******************************************************************/
+ */
 
 #include "PatriotNCD8Relay.h"
 
@@ -98,7 +93,7 @@ int8_t NCD8Relay::initializeBoard(int8_t address) {
     } while( status != 0 && retries++ < 3);
 
     if(status != 0) {
-        Serial.println("Set address failed");
+        Log.error("Set address failed");
         //TODO: handle error
     }
 
@@ -124,7 +119,7 @@ int8_t NCD8Relay::addAddressToArray(int8_t address) {
     // byte status = Wire.endTransmission();
     // if(status != 0) {
     //     //TODO: handle any errors, retry, etc.
-    //     Serial.println("Error turning off relays");
+    //     Log.error("Error turning off relays");
     // }
     return _numControllers++;
 }
@@ -167,7 +162,7 @@ void NCD8Relay::setOn() {
 
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
-        Serial.println("Error turning on relays");
+        Log.error("Error turning on relays");
     }
 }
 
@@ -195,7 +190,7 @@ void NCD8Relay::setOff() {
 
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
-        Serial.println("Error turning off relays");
+        Log.error("Error turning off relays");
     }
 }
 

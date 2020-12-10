@@ -74,7 +74,6 @@ void setup() {
     iot->setControllerName("RearPanel");
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
-    iot->setLogLevel(LogError);
 
     // Set other states
     waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking

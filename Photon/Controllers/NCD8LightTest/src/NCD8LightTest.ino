@@ -31,15 +31,15 @@ void setup() {
     int retries = 3;
     byte status;
 
-    Serial.println("Connect USB then determine address: ls /dev/tty.usb*");
-    Serial.println("Connect screen /dev/tty.usbmodem* 56400");
+    Log.info("Connect USB then determine address: ls /dev/tty.usb*");
+    Log.info("Connect screen /dev/tty.usbmodem* 56400");
     delay(2000);
 
     if(!Wire.isEnabled()) {
-        Serial.println("Starting wire");
+        Log.info("Starting wire");
         Wire.begin();
     } else {
-      Serial.println("Uh oh, wire was already enabled");
+      Log.warn("Uh oh, wire was already enabled");
     }
 
     retries = 3;
@@ -50,7 +50,7 @@ void setup() {
     } while( status != 0 && retries-- > 0);
 
     if(status == 0) {
-      Serial.println("Status = 0, setting Mode1 and Mode2");
+        Log.info("Status = 0, setting Mode1 and Mode2");
         Wire.beginTransmission(ADDRESS);
         Wire.write(0);      // Control register - No AI, point to reg 0 Mode1
         Wire.write(0);      // Mode1 register: Osc on (no sleep), diable AI, subaddrs, and allcall
@@ -62,59 +62,59 @@ void setup() {
         Wire.endTransmission();
 
     } else {
-        Serial.println("Transmission failed");
+        Log.error("Transmission failed");
     }
 
-    Serial.println("Turning ON all LEDS");
+    Log.info("Turning ON all LEDS");
     Wire.beginTransmission(ADDRESS);
 	  Wire.write(0x8c); // AI + LEDOUT0
 	  Wire.write(0x55); // LEDOUT0 All 4 LEDS ON
 	  Wire.write(0x55); // LEDOUT1 All 4 LEDS ON
 	  status = Wire.endTransmission();
     if(status != 0){
-      Serial.println("Write failed");
+      Log.error("Write failed");
     }else{
-      Serial.println("Write succeeded");
+      Log.info("Write succeeded");
     }    
 
     delay(2000);
 
-    Serial.println("Turning OFF all LEDS");
+    Log.info("Turning OFF all LEDS");
     Wire.beginTransmission(ADDRESS);
 	  Wire.write(0x8c); // AI + LEDOUT0
 	  Wire.write(0x00); // LEDOUT0 All 4 LEDS OFF
 	  Wire.write(0xaa); // LEDOUT1 All 4 LEDS Dimming
 	  status = Wire.endTransmission();
     if(status != 0){
-      Serial.println("Write failed");
+      Log.error("Write failed");
     }else{
-      Serial.println("Write succeeded");
+      Log.info("Write succeeded");
     }    
 
 //    delay(2000);
 
-    // Serial.println("Setting LED 2 = 255");
+    // Log.info("Setting LED 2 = 255");
     // Wire.beginTransmission(ADDRESS);
 	  // Wire.write(3);    // 2 + led #
 	  // Wire.write(255);  // Full brightness
 	  // status = Wire.endTransmission();
     // if(status != 0){
-    //   Serial.println("Write failed");
+    //   Log.error("Write failed");
     // }else{
-    //   Serial.println("Write succeeded");
+    //   Log.info("Write succeeded");
     // }    
 
     // delay(1000);
 
-    // Serial.println("Setting LED 2 = 0");
+    // Log.info("Setting LED 2 = 0");
     // Wire.beginTransmission(ADDRESS);
 	  // Wire.write(3);    // 2 + led #
 	  // Wire.write(0);    // Off
 	  // status = Wire.endTransmission();
     // if(status != 0){
-    //   Serial.println("Write failed");
+    //   Log.error("Write failed");
     // }else{
-    //   Serial.println("Write succeeded");
+    //   Log.info("Write succeeded");
     // }    
 
     // Repeat
@@ -147,25 +147,25 @@ void loop() {
         
     //     }
     //     if(devicesFound){
-    //         Serial.println(newDevices);
+    //         Log.info(newDevices);
     //     }else{
-    //         Serial.println("No Devices Found");
+    //         Log.info("No Devices Found");
     //     }
     // }
 
-    Serial.println("Turning ON LEDS 0-3");
+    Log.info("Turning ON LEDS 0-3");
     Wire.beginTransmission(ADDRESS);
 	  Wire.write(0x8c); // AI + LEDOUT0
 	  Wire.write(0x55); // LEDOUT0 All 4 LEDS ON
 	  //Wire.write(0x55); // LEDOUT1 All 4 LEDS ON
 	  status = Wire.endTransmission();
     if(status != 0){
-      Serial.println("Write failed");
+      Log.error("Write failed");
     }else{
-      Serial.println("Write succeeded");
+      Log.info("Write succeeded");
     }    
 
-    Serial.println("Setting LEDs 4-7 = 255");
+    Log.info("Setting LEDs 4-7 = 255");
     Wire.beginTransmission(ADDRESS);
 	  Wire.write(0x86); // AI + 2 + led # 4
 	  Wire.write(dimming);  // Full brightness
@@ -174,27 +174,27 @@ void loop() {
 	  Wire.write(dimming);  // Full brightness
 	  status = Wire.endTransmission();
     if(status != 0){
-      Serial.println("Write failed");
+      Log.error("Write failed");
     }else{
-      Serial.println("Write succeeded");
+      Log.info("Write succeeded");
     }    
 
     delay(1000);
     dimming += 16;
 
-    Serial.println("Turning OFF LEDS 0-3");
+    Log.info("Turning OFF LEDS 0-3");
     Wire.beginTransmission(ADDRESS);
 	  Wire.write(0x8c); // AI + LEDOUT0
 	  Wire.write(0x00); // LEDOUT0 All 4 LEDS OFF
 	  //Wire.write(0x00); // LEDOUT1 All 4 LEDS OFF
 	  status = Wire.endTransmission();
     if(status != 0){
-      Serial.println("Write failed");
+      Log.error("Write failed");
     }else{
-      Serial.println("Write succeeded");
+      Log.info("Write succeeded");
     }    
 
-    Serial.println("Setting LEDs 4-7 = 0");
+    Log.info("Setting LEDs 4-7 = 0");
     Wire.beginTransmission(ADDRESS);
 	  Wire.write(0x86);    // 2 + led # 4
 	  Wire.write(dimming);
@@ -203,9 +203,9 @@ void loop() {
 	  Wire.write(dimming);
 	  status = Wire.endTransmission();
     if(status != 0){
-      Serial.println("Write failed");
+      Log.error("Write failed");
     }else{
-      Serial.println("Write succeeded");
+      Log.info("Write succeeded");
     }    
 
     delay(1000);

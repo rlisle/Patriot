@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 Constants file
 
 This file contains common constants used by the Patriot IoT library.
@@ -10,12 +10,7 @@ Written by Ron Lisle
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-14: Rename activites to states.
-2017-03-24: Rename Patriot
-2017-03-05: Convert to v2 particle library
-2016-03-05: Initial version
-******************************************************************/
+*/
 #pragma once
 
 /**
