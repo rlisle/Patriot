@@ -3,6 +3,9 @@ RearPanel Controller
 Description: This sketch controls all the switches in the Cyclone 4005 rear control panel.
 Author: Ron Lisle
  
+ This is the bridge controller, so all activities should be added here.
+ This controller will then repeat them to MQTT.
+ 
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
