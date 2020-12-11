@@ -22,7 +22,7 @@ Behaviors::Behaviors()
 
 void Behaviors::addBehavior(Behavior *behavior)
 {
-    Log.info("Adding behavior");
+    Log.trace("Adding behavior");
     if(_behaviors == NULL) {
         _behaviors = behavior;
     } else {

@@ -131,7 +131,7 @@ void IoT::loop()
 // 
 void IoT::addDevice(Device *device)
 {
-    Log.info("addDevice: " + device->name());
+    Log.trace("addDevice: " + device->name());
     if(device->shouldAutoCreateBehavior()) {
         bool isDefault = true;
         Behavior *defaultBehavior = new Behavior(100, isDefault);

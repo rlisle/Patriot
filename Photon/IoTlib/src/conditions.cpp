@@ -19,7 +19,7 @@ Conditions::Conditions()
 
 void Conditions::addCondition(Condition *condition)
 {
-    Log.info("addCondition stateName: "+String(condition->_stateName));
+    Log.trace("addCondition stateName: "+String(condition->_stateName));
     if(_conditions == NULL) {
         _conditions = condition;
     } else {

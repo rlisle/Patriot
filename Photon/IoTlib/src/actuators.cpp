@@ -25,10 +25,10 @@ Actuators::Actuators() {
 Actuator *Actuators::addActuator(String name, int value) {
     Actuator *actuator = getActuatorWithName(name);
     if (actuator == NULL) {
-        Log.info("Actuators addActuator adding " + name + " = " + String(value));
+        Log.trace("Actuators addActuator adding " + name + " = " + String(value));
         actuator = new Actuator(name,value);
         if(_actuators == NULL) {
-            Log.info("  first actuator");
+            Log.trace("  first actuator");
             _actuators = actuator;
         } else {
             Actuator* ptr = _actuators;
@@ -36,10 +36,10 @@ Actuator *Actuators::addActuator(String name, int value) {
             ptr->_next = actuator;
         }
     } else {    // Actuator already exists
-        Log.info("Actuators addActuator updating " + name + " = " + String(value) + ", was " + String(actuator->_value));
+        Log.trace("Actuators addActuator updating " + name + " = " + String(value) + ", was " + String(actuator->_value));
         actuator->_value = value;
     }
-    Log.info("addActuator actuator was added. Count = " + String(count()));
+    Log.trace("addActuator actuator was added. Count = " + String(count()));
     return actuator;
 }
 
@@ -47,12 +47,12 @@ Actuator *Actuators::getActuatorWithName(String name) {
     Actuator *ptr = _actuators;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
-            Log.info("getActuatorWithName " + name + " found");
+            Log.trace("getActuatorWithName " + name + " found");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    Log.info("getActuatorWithName " + name + " not found");
+    Log.trace("getActuatorWithName " + name + " not found");
     return NULL;
 }
 

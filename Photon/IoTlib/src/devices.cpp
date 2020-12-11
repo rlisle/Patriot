@@ -32,12 +32,12 @@ void Devices::expose()
 
 void Devices::addDevice(Device *device)
 {
-    Log.info("addDevice name: "+String(device->name()));
+    Log.trace("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
-        Log.info("  first device");
+        Log.trace("  first device");
         _devices = device;
     } else {
-        Log.info("  adding device");
+        Log.trace("  adding device");
         Device *ptr = _devices;
         while(ptr->_next != NULL) {
             ptr = ptr->_next;
@@ -83,12 +83,12 @@ Device *Devices::getDeviceWithName(String name)
     for (int i = 0; i < numDevices() && ptr != NULL; i++) 
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-            Log.info("getDeviceWithName "+name+" found.");
+            Log.trace("getDeviceWithName "+name+" found.");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    Log.info("Device "+name+" not found, returning NULL");
+    Log.trace("Device "+name+" not found, returning NULL");
     return NULL;
 }
 

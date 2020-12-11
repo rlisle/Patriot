@@ -61,7 +61,7 @@ void MQTTManager::connect(String connectID) {
     // Looks good, not register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    Log.error("Connected at " + String(_lastMQTTtime)); // Not an error, just want it always displayed
+    Log.info("Connected at " + String(_lastMQTTtime));
     
 }
 
@@ -120,7 +120,7 @@ void MQTTManager::parseMessage(String topic, String message)
         if(subtopic.equals("ping")) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
-                Log.info("Ping addressed to us");
+                Log.trace("Ping addressed to us");
                 _mqtt->publish(kPublishName + "/pong", _controllerName);
             }
             
@@ -139,7 +139,7 @@ void MQTTManager::parseMessage(String topic, String message)
             // MEMORY
         } else if(subtopic.equals("memory")) {
             if(message.equals(_controllerName)) {
-                Log.error( String::format("Free memory = %d", System.freeMemory())); // not an error
+                Log.info( String::format("Free memory = %d", System.freeMemory())); // not an error
             }
             
         } else if(subtopic.equals("log")) {
