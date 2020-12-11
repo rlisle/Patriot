@@ -42,7 +42,7 @@ State *States::addState(String name, int value) {
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
-        Log.info("States addState adding " + name + " = " + String(value));
+        Log.trace("States addState adding " + name + " = " + String(value));
         state = new State(name,value);
         if(_states == NULL) {
             _states = state;
@@ -52,10 +52,10 @@ State *States::addState(String name, int value) {
             ptr->_next = state;
         }
     } else {    // State already exists
-        Log.info("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
+        Log.trace("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
         state->_value = value;
     }
-    Log.info("addState state was added. Count = " + String(count()));
+    Log.trace("addState state was added. Count = " + String(count()));
     buildStatesVariable();
     return state;
 }
@@ -68,7 +68,7 @@ State *States::getStateWithName(String name) {
         }
         ptr = ptr->_next;
     }
-    Log.info("getStateWithName " + name + " not found");
+    Log.trace("getStateWithName " + name + " not found");
     return NULL;
 }
 
@@ -95,6 +95,6 @@ void States::buildStatesVariable() {
             globalStatesVariable = newVariable;
         }
     } else {
-        Log.info("States variable is too long. Need to extend to a 2nd variable");
+        Log.error("States variable is too long. Need to extend to a 2nd variable");
     }
 }
