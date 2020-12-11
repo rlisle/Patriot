@@ -25,10 +25,10 @@ Actuators::Actuators() {
 Actuator *Actuators::addActuator(String name, int value) {
     Actuator *actuator = getActuatorWithName(name);
     if (actuator == NULL) {
-        log("Actuators addActuator adding " + name + " = " + String(value));
+        Log.trace("Actuators addActuator adding " + name + " = " + String(value));
         actuator = new Actuator(name,value);
         if(_actuators == NULL) {
-            log("  first actuator");
+            Log.trace("  first actuator");
             _actuators = actuator;
         } else {
             Actuator* ptr = _actuators;
@@ -36,10 +36,10 @@ Actuator *Actuators::addActuator(String name, int value) {
             ptr->_next = actuator;
         }
     } else {    // Actuator already exists
-        log("Actuators addActuator updating " + name + " = " + String(value) + ", was " + String(actuator->_value));
+        Log.trace("Actuators addActuator updating " + name + " = " + String(value) + ", was " + String(actuator->_value));
         actuator->_value = value;
     }
-    log("addActuator actuator was added. Count = " + String(count()));
+    Log.trace("addActuator actuator was added. Count = " + String(count()));
     return actuator;
 }
 
@@ -47,12 +47,12 @@ Actuator *Actuators::getActuatorWithName(String name) {
     Actuator *ptr = _actuators;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
-            log("getActuatorWithName " + name + " found");
+            Log.trace("getActuatorWithName " + name + " found");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    log("getActuatorWithName " + name + " not found");
+    Log.trace("getActuatorWithName " + name + " not found");
     return NULL;
 }
 
@@ -71,10 +71,3 @@ int Actuators::count() {
     for(Actuator* ptr = _actuators; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
-
-void Actuators::log(String message, PLogLevel logLevel)
-{
-    IoT* iot = IoT::getInstance();
-    iot->log(message, logLevel);
-}
-

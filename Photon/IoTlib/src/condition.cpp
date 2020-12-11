@@ -1,4 +1,4 @@
-/******************************************************************
+/**
 Condition
 
 This class represents a comparison to a state.
@@ -11,9 +11,7 @@ Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-18: Initial version
-******************************************************************/
+*/
 #include "condition.h"
 
 Condition::Condition(String stateName, char comparison, int value)

@@ -1,4 +1,4 @@
-/*******************************************************
+/**
 NCD 8 Light board Example
 
 This example supports the 1st channel on an NCD 8 PWM board.
@@ -10,9 +10,7 @@ Written by Ron Lisle
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-02-11: Initial creation from modified NCD8Relay
-********************************************************/
+*/
 
 #include <IoT.h>
 #include <PatriotNCD8Light.h>

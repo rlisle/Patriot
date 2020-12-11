@@ -1,4 +1,4 @@
-/*******************************************************
+/**
 Lights Example
 
 This example contains 4 lights
@@ -16,15 +16,7 @@ Written by Ron Lisle
 BSD license, check LICENSE for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2019-11-09: Update for v3.1.0. Add local pin
-2017-10-25: Update for IoT v1.2.0. Add OFF behaviors.
-2017-05-19: Convert to plugin library
-2017-03-28: Use fixed 'patriot' event name.
-2017-03-24: Rename Patriot
-2017-03-11: TODO: add remaining devices.
-2017-03-07: Initial creation
-********************************************************/
+*/
 
 #include <IoT.h>
 #include <PatriotLight.h>

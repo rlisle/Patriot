@@ -24,44 +24,49 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 {
     _controllerName = controllerName;
     _devices = devices;
+    _logging = 0;
+    _logLevel = LOG_LEVEL_ERROR;
+
+    Time.zone(-6.0);
     
+    //TODO: do we need this, and what should we pass?
+    //const LogCategoryFilters &filters) : LogHandler(level, filters)
+
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
     connect(connectID);
 }
 
+//TODO: If MQTT doesn't connect, then start 
 void MQTTManager::connect(String connectID) {
 
     _lastMQTTtime = Time.now();
 
     if(_mqtt == NULL) {
-        log("ERROR! MQTTManager: connect called but object null", LogError);
+        Log.error("ERROR! MQTTManager: connect called but object null");
     }
 
     if(_mqtt->isConnected()) {
-        log("MQTT is connected, so reconnecting...", LogDebug);
+        Log.info("MQTT is connected, so reconnecting...");
         _mqtt->disconnect();
     }
 
     _mqtt->connect(connectID);
     if (_mqtt->isConnected()) {
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
-            log("Unable to subscribe to MQTT " + kPublishName + "/#", LogError);
+            Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
     } else {
-        log("MQTT is NOT connected! Check MQTT IP address", LogError);
+        Log.error("MQTT is NOT connected! Check MQTT IP address");
     }
-    log("Connected at " + String(_lastMQTTtime), LogError); // Not an error, just want it always displayed
-}
+    // Looks good, not register our MQTT LogHandler
+    LogManager::instance()->addHandler(this);
 
-void MQTTManager::log(String message, PLogLevel logLevel)
-{
-    IoT* iot = IoT::getInstance();
-    iot->log(message, logLevel);
+    Log.info("Connected at " + String(_lastMQTTtime));
+    
 }
 
 bool MQTTManager::publish(String topic, String message) {
     if(_mqtt != NULL && _mqtt->isConnected()) {
-        //Serial.println("Publishing "+String(topic)+" "+String(message));
         _mqtt->publish(topic,message);
         return true;
     }
@@ -115,7 +120,7 @@ void MQTTManager::parseMessage(String topic, String message)
         if(subtopic.equals("ping")) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
-                log("Ping addressed to us", LogDebug);
+                Log.trace("Ping addressed to us");
                 _mqtt->publish(kPublishName + "/pong", _controllerName);
             }
             
@@ -127,28 +132,30 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic.equals("reset")) {
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
-                log("Reset addressed to us", LogDebug);
+                Log.info("Reset addressed to us");
                 System.reset();
             }
             
             // MEMORY
         } else if(subtopic.equals("memory")) {
             if(message.equals(_controllerName)) {
-                log( String::format("Free memory = %d", System.freeMemory()), LogError);
+                Log.info( String::format("Free memory = %d", System.freeMemory())); // not an error
             }
             
         } else if(subtopic.equals("log")) {
             // Ignore it.
             
-        } else if(subtopic.equals("loglevel/"+_controllerName)) {
-            log(_controllerName + " setting logLevel = " + message, LogDebug);
-            parseLogLevel(message);
+        } else if(subtopic.startsWith("loglevel")) {
+            if(subtopic.equals("loglevel/"+_controllerName)) {
+                Log.info(_controllerName + " setting logLevel = " + message);
+                parseLogLevel(message);
+            }
             
             // UNKNOWN
         } else {
             
             int percent = parseValue(message);
-            log("Parser setting state " + subtopic + " to " + message, LogDebug);
+            Log.info("Parser setting state " + subtopic + " to " + message);
             IoT *iot = IoT::getInstance();
             States *states = iot->_states;
             states->addState(subtopic,percent);
@@ -156,7 +163,7 @@ void MQTTManager::parseMessage(String topic, String message)
         }
     } else {
         // Not addressed or recognized by us
-        log("Parser: Not our message: "+String(topic)+" "+String(message), LogError);
+        Log.error("Parser: Not our message: "+String(topic)+" "+String(message));
     }
 }
 
@@ -171,13 +178,119 @@ int MQTTManager::parseValue(String message)
 }
 
 void MQTTManager::parseLogLevel(String message) {
-    PLogLevel level = LogError;
-    if (message.equals("none")) level = LogNone;
-    else if (message.equals("error")) level = LogError;
-    else if (message.equals("info")) level = LogInfo;
-    else if (message.equals("debug")) level = LogDebug;
+    LogLevel level = LOG_LEVEL_ERROR;
+    if (message.equals("none")) level = LOG_LEVEL_NONE;
+    else if (message.equals("error")) level = LOG_LEVEL_ERROR;
+    else if (message.equals("warn")) level = LOG_LEVEL_WARN;
+    else if (message.equals("info")) level = LOG_LEVEL_INFO;
+    else if (message.equals("trace")) level = LOG_LEVEL_TRACE;
+    else if (message.equals("all")) level = LOG_LEVEL_ALL;
     else return;
+
+    _logLevel = level;
+}
+
+// The floowing methods are taken from Particle FW, specifically spark::StreamLogHandler.
+// See https://github.com/spark/firmware/blob/develop/wiring/src/spark_wiring_logging.cpp
+const char* MQTTManager::extractFileName(const char *s) {
+    const char *s1 = strrchr(s, '/');
+    if (s1) {
+        return s1 + 1;
+    }
+    return s;
+}
+
+const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
+    const char *s1 = s;
+    for (; *s; ++s) {
+        if (*s == ' ') {
+            s1 = s + 1;                                                                                                                         // Skip return type
+        } else if (*s == '(') {
+            break;                                                                                                                         // Skip argument types
+        }
+    }
+    *size = s - s1;
+    return s1;
+}
+
+/**
+ The LogHandler calls this method display Log messages.
+ We can format it anyway we'd like.
+ */
+void MQTTManager::log(const char *category, String message) {
+    String time = Time.format(Time.now(), "%a %H:%M");
+
+//    if(!_logging && strcmp(category, "app") == 0) {
+    if(!_logging) {
+        _logging++;
+        publish("patriot/log/"+_controllerName, time + " " + message);
+        _logging--;
+    }
+}
+
+// This method is how we are called by the LogManager
+void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
+    String s;
+
+//    LOG_LEVEL_ALL = 1
+//    LOG_LEVEL_TRACE = 1
+//    LOG_LEVEL_INFO = 30
+//    LOG_LEVEL_WARN= 40
+//    LOG_LEVEL_ERROR = 50
+//    LOG_LEVEL_NONE = 70
+    if (level < _logLevel) return;
     
-    IoT* iot = IoT::getInstance();
-    iot->setLogLevel(level);
+    // Source file
+    if (attr.has_file) {
+        s = extractFileName(attr.file);                                                                                 // Strip directory path
+        s.concat(s);                                                                                 // File name
+        if (attr.has_line) {
+            s.concat(":");
+            s.concat(String(attr.line));                                                                                                                         // Line number
+        }
+        if (attr.has_function) {
+            s.concat(", ");
+        } else {
+            s.concat(": ");
+        }
+    }
+
+    // Function name
+    if (attr.has_function) {
+        size_t n = 0;
+        s = extractFuncName(attr.function, &n);                                                                                 // Strip argument and return types
+        s.concat(s);
+        s.concat("(): ");
+    }
+
+    // Level
+    s.concat(levelName(level));
+    s.concat(": ");
+
+    // Message
+    if (msg) {
+        s.concat(msg);
+    }
+
+    // Additional attributes
+    if (attr.has_code || attr.has_details) {
+        s.concat(" [");
+        // Code
+        if (attr.has_code) {
+            s.concat(String::format("code = %p", (intptr_t)attr.code));
+        }
+        // Details
+        if (attr.has_details) {
+            if (attr.has_code) {
+                s.concat(", ");
+            }
+            s.concat("details = ");
+            s.concat(attr.details);
+        }
+        s.concat(']');
+    }
+
+    //TODO: If MQTT not connected, write to Serial
+//    Serial.println(s);
+    log(category, s);
 }

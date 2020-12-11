@@ -11,23 +11,11 @@ Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
-Changelog:
-2020-11-20: Add NCD8Switch
-2018-01-17: Add function for device type
-2017-10-27: V2.0.0
-2017-05-20: Provide default implementations for everything,
-            so this class is not abstract anymore.
-2017-05-19: Remove dependencies to allow use in plugin.
-2017-05-15: Make devices generic
-2017-03-24: Rename Patriot
-2017-03-05: Convert to v2 particle lib
-2016-09-11: Initial version
 ******************************************************************/
 #pragma once
 
 #include "actuators.h"
 #include "behaviors.h"
-#include "PLogLevel.h"
 
 enum class DeviceType {
     Unknown,
@@ -62,7 +50,6 @@ class Device {
 
  public:
     // Pointer to methods in IoT. These are set in IoT->addDevice()
-    void (*logPtr)(String message, PLogLevel logLevel);
     void (*publishPtr)(String topic, String message);
 
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
@@ -87,12 +74,6 @@ class Device {
         newBehavior->addCondition(newCondition);
         _behaviors.addBehavior(newBehavior);
     };
-
-    void log(String message, PLogLevel logLevel = LogDebug) {
-        if(logPtr != NULL) {
-            logPtr(message, logLevel);
-        }
-    }
     
     void publish(String topic, String message) {
         if(publishPtr != NULL) {

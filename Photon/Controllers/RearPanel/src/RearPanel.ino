@@ -3,6 +3,9 @@ RearPanel Controller
 Description: This sketch controls all the switches in the Cyclone 4005 rear control panel.
 Author: Ron Lisle
  
+ This is the bridge controller, so all activities should be added here.
+ This controller will then repeat them to MQTT.
+ 
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
@@ -74,7 +77,6 @@ void setup() {
     iot->setControllerName("RearPanel");
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
-    iot->setLogLevel(LogError);
 
     // Set other states
     waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking

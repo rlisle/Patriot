@@ -36,7 +36,6 @@ void setup() {
     iot->setControllerName("RonTest");
     iot->begin();
     iot->connectMQTT(mqttServerIP, "patriotRonTest1", false);
-    iot->setLogLevel(LogDebug);
         
     // Behaviors/Activities
     blueLed.addBehavior(100, "waking", '>', 0);
@@ -57,6 +56,18 @@ void setup() {
     iot->addDevice(&watchingTV);
     iot->addDevice(&goingToBed);
     iot->addDevice(&sleeping);
+    
+    Log.trace("Trace message");
+    Log.info("Info message");
+    Log.warn("Warn message");
+    Log.error("Error message");
+    
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ERROR = " + String(LOG_LEVEL_ERROR));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_WARN = " + String(LOG_LEVEL_WARN));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_INFO = " + String(LOG_LEVEL_INFO));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_TRACE = " + String(LOG_LEVEL_TRACE));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_NONE = " + String(LOG_LEVEL_NONE));
+    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ALL = " + String(LOG_LEVEL_ALL));
 }
 
 void loop() {

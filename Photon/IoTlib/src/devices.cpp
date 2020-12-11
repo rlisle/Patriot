@@ -26,18 +26,18 @@ void Devices::expose()
 {
     if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
     {
-        log("Error: Unable to expose " + kDevicesVariableName + " variable", LogError);
+        Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
     }
 }
 
 void Devices::addDevice(Device *device)
 {
-    log("addDevice name: "+String(device->name()), LogDebug);
+    Log.trace("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
-        log("  first device", LogDebug);
+        Log.trace("  first device");
         _devices = device;
     } else {
-        log("  adding device", LogDebug);
+        Log.trace("  adding device");
         Device *ptr = _devices;
         while(ptr->_next != NULL) {
             ptr = ptr->_next;
@@ -73,7 +73,7 @@ Device *Devices::getDeviceByNum(int deviceNum)
     {
         ptr = ptr->_next;
     }
-    //log("getDeviceByNum("+String(deviceNum)+" returning "+ptr->name(), LogDebug);  too much noise
+    Log.trace("getDeviceByNum("+String(deviceNum)+" returning "+ptr->name());
     return ptr;
 }
 
@@ -83,12 +83,12 @@ Device *Devices::getDeviceWithName(String name)
     for (int i = 0; i < numDevices() && ptr != NULL; i++) 
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-            log("getDeviceWithName "+name+" found.", LogDebug);
+            Log.trace("getDeviceWithName "+name+" found.");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    log("Device "+name+" not found, returning NULL", LogDebug);
+    Log.trace("Device "+name+" not found, returning NULL");
     return NULL;
 }
 
@@ -116,10 +116,6 @@ void Devices::buildDevicesVariable()
     if(newVariable.length() < kMaxVariableStringLength) {
         globalDevicesVariable = newVariable;
     } else {
-        log("Devices variable is too long. Need to extend to a 2nd variable", LogError);
+        Log.error("Devices variable is too long. Need to extend to a 2nd variable");
     }
-}
-
-void Devices::log(String message, PLogLevel logLevel) {
-    IoT::getInstance()->log(message, logLevel);
 }
