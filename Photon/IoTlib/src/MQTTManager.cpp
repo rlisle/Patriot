@@ -61,7 +61,7 @@ void MQTTManager::connect(String connectID) {
     // Looks good, not register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    Log.error("Connected at " + String(_lastMQTTtime)); // Not an error, just want it always displayed
+    Log.info("Connected at " + String(_lastMQTTtime));
     
 }
 
@@ -120,7 +120,7 @@ void MQTTManager::parseMessage(String topic, String message)
         if(subtopic.equals("ping")) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
-                Log.info("Ping addressed to us");
+                Log.trace("Ping addressed to us");
                 _mqtt->publish(kPublishName + "/pong", _controllerName);
             }
             
@@ -139,15 +139,17 @@ void MQTTManager::parseMessage(String topic, String message)
             // MEMORY
         } else if(subtopic.equals("memory")) {
             if(message.equals(_controllerName)) {
-                Log.error( String::format("Free memory = %d", System.freeMemory())); // not an error
+                Log.info( String::format("Free memory = %d", System.freeMemory())); // not an error
             }
             
         } else if(subtopic.equals("log")) {
             // Ignore it.
             
-        } else if(subtopic.equals("loglevel/"+_controllerName)) {
-            Log.info(_controllerName + " setting logLevel = " + message);
-            parseLogLevel(message);
+        } else if(subtopic.startsWith("loglevel")) {
+            if(subtopic.equals("loglevel/"+_controllerName)) {
+                Log.info(_controllerName + " setting logLevel = " + message);
+                parseLogLevel(message);
+            }
             
             // UNKNOWN
         } else {
@@ -181,7 +183,7 @@ void MQTTManager::parseLogLevel(String message) {
     else if (message.equals("error")) level = LOG_LEVEL_ERROR;
     else if (message.equals("warn")) level = LOG_LEVEL_WARN;
     else if (message.equals("info")) level = LOG_LEVEL_INFO;
-    else if (message.equals("debug")) level = LOG_LEVEL_TRACE;
+    else if (message.equals("trace")) level = LOG_LEVEL_TRACE;
     else if (message.equals("all")) level = LOG_LEVEL_ALL;
     else return;
 
@@ -211,13 +213,17 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
     return s1;
 }
 
+/**
+ The LogHandler calls this method display Log messages.
+ We can format it anyway we'd like.
+ */
 void MQTTManager::log(const char *category, String message) {
     String time = Time.format(Time.now(), "%a %H:%M");
 
 //    if(!_logging && strcmp(category, "app") == 0) {
     if(!_logging) {
         _logging++;
-        publish("patriot/log", time + " " + _controllerName + ": " + message);
+        publish("patriot/log/"+_controllerName, time + " " + message);
         _logging--;
     }
 }

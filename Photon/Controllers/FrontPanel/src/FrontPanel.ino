@@ -4,6 +4,8 @@
   Author: Ron Lisle
   Date: 9/16/17
  
+ This isn't the bridge controller, so we shouldn't receive any activities from particle.io
+ 
   To update Photon:
     1. Edit this code
     2. "particle flash FrontPanel"
