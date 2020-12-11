@@ -145,9 +145,11 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic.equals("log")) {
             // Ignore it.
             
-        } else if(subtopic.equals("loglevel/"+_controllerName)) {
-            Log.info(_controllerName + " setting logLevel = " + message);
-            parseLogLevel(message);
+        } else if(subtopic.startsWith("loglevel")) {
+            if(subtopic.equals("loglevel/"+_controllerName)) {
+                Log.info(_controllerName + " setting logLevel = " + message);
+                parseLogLevel(message);
+            }
             
             // UNKNOWN
         } else {
@@ -181,7 +183,7 @@ void MQTTManager::parseLogLevel(String message) {
     else if (message.equals("error")) level = LOG_LEVEL_ERROR;
     else if (message.equals("warn")) level = LOG_LEVEL_WARN;
     else if (message.equals("info")) level = LOG_LEVEL_INFO;
-    else if (message.equals("debug")) level = LOG_LEVEL_TRACE;
+    else if (message.equals("trace")) level = LOG_LEVEL_TRACE;
     else if (message.equals("all")) level = LOG_LEVEL_ALL;
     else return;
 
