@@ -213,13 +213,17 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
     return s1;
 }
 
+/**
+ The LogHandler calls this method display Log messages.
+ We can format it anyway we'd like.
+ */
 void MQTTManager::log(const char *category, String message) {
     String time = Time.format(Time.now(), "%a %H:%M");
 
 //    if(!_logging && strcmp(category, "app") == 0) {
     if(!_logging) {
         _logging++;
-        publish("patriot/log", time + " " + _controllerName + ": " + message);
+        publish("patriot/log/"+_controllerName, time + " " + message);
         _logging--;
     }
 }
