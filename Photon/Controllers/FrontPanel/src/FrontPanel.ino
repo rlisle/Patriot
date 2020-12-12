@@ -35,12 +35,9 @@
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotSwitch.h>
-#include <PatriotNCD8Relay.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
 
-#define ADDRESS1 0x20   // Relay board
-#define NUMRELAYS 8
 #define ADDRESS2 1      // PWM board switches low switch on
 
 String mqttServer = "192.168.10.184";
@@ -48,17 +45,19 @@ String mqttServer = "192.168.10.184";
 IoT *iot;
 
 // To use persistent storage, insert "retained" before NCD8Relay
-NCD8Relay frontAwning(ADDRESS1, NUMRELAYS, 1, "FrontAwning");
-NCD8Relay rightTrim(ADDRESS1, NUMRELAYS, 2, "RightTrim");
-NCD8Relay leftTrim(ADDRESS1, NUMRELAYS, 3, "LeftTrim");
-NCD8Relay dsFloods(ADDRESS1, NUMRELAYS, 5, "DoorSide");
-NCD8Relay osFloods(ADDRESS1, NUMRELAYS, 6, "OtherSide");
-NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
+//NCD8Relay frontAwning(ADDRESS1, NUMRELAYS, 1, "FrontAwning");
+//NCD8Relay rightTrim(ADDRESS1, NUMRELAYS, 2, "RightTrim");
+//NCD8Relay leftTrim(ADDRESS1, NUMRELAYS, 3, "LeftTrim");
+//NCD8Relay dsFloods(ADDRESS1, NUMRELAYS, 5, "DoorSide");
+//NCD8Relay osFloods(ADDRESS1, NUMRELAYS, 6, "OtherSide");
+//NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
 
 NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
 NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2);
 NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
 NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
+NCD8Light rightTrim(ADDRESS2, 4, "RightTrim");
+NCD8Light leftTrim(ADDRESS2, 5, "LeftTrim");
 
 Switch ceilingSwitch(A0, "CeilingSwitch");
 Switch kitchenCeilingSwitch(A1, "KitchenCeilingSwitch");
@@ -129,22 +128,22 @@ void setup() {
     iot->addDevice(&kitchenCabinets);
     iot->addDevice(&rightTrim);
     iot->addDevice(&leftTrim);
-    iot->addDevice(&dsFloods);
-    iot->addDevice(&osFloods);
-    iot->addDevice(&frontAwning);
-    iot->addDevice(&frontPorch);
+//    iot->addDevice(&dsFloods);
+//    iot->addDevice(&osFloods);
+//    iot->addDevice(&frontAwning);
+//    iot->addDevice(&frontPorch);
 
     
-    iot->addDevice(&ceilingSwitch);
-    iot->addDevice(&kitchenCeilingSwitch);
-    iot->addDevice(&sinkSwitch);
-    iot->addDevice(&cabinetSwitch);
-    iot->addDevice(&rightTrimSwitch);
-    iot->addDevice(&leftTrimSwitch);
-    iot->addDevice(&dsFloodsSwitch);
-    iot->addDevice(&osFloodsSwitch);
-    iot->addDevice(&frontPorchSwitch);
-    iot->addDevice(&frontAwningSwitch);
+//    iot->addDevice(&ceilingSwitch);
+//    iot->addDevice(&kitchenCeilingSwitch);
+//    iot->addDevice(&sinkSwitch);
+//    iot->addDevice(&cabinetSwitch);
+//    iot->addDevice(&rightTrimSwitch);
+//    iot->addDevice(&leftTrimSwitch);
+//    iot->addDevice(&dsFloodsSwitch);
+//    iot->addDevice(&osFloodsSwitch);
+//    iot->addDevice(&frontPorchSwitch);
+//    iot->addDevice(&frontAwningSwitch);
 
 }
 
