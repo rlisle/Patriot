@@ -27,9 +27,9 @@
     - Kitchen Ceiling
     - Sink
     - Cabinets
-    - ?
-    - ?
-    - ?
+    - ? Trim
+    - ? Trim
+    - Front Awning LEDs
     - ?
  */
 #include <IoT.h>
@@ -58,18 +58,18 @@ NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
 NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
 NCD8Light rightTrim(ADDRESS2, 4, "RightTrim");
 NCD8Light leftTrim(ADDRESS2, 5, "LeftTrim");
+NCD8Light frontAwning(ADDRESS2, 6, "FrontAwning");
+//TODO: 8th dimmer
 
+// Reorder once wiring connected
 Switch ceilingSwitch(A0, "CeilingSwitch");
 Switch kitchenCeilingSwitch(A1, "KitchenCeilingSwitch");
 Switch sinkSwitch(A2, "SinkSwitch");
 Switch cabinetSwitch(A3, "CabinetSwitch");
-
 Switch rightTrimSwitch(A4, "RightTrimSwitch");
 Switch leftTrimSwitch(A5, "LeftTrimSwitch");
-
 Switch dsFloodsSwitch(A6, "DSFloodsSwitch");
 Switch osFloodsSwitch(A7, "ODSFloodsSwitch");
-
 Switch frontPorchSwitch(RX, "FrontPorchSwitch");
 Switch frontAwningSwitch(TX, "FrontAwningSwitch");
 
@@ -130,7 +130,7 @@ void setup() {
     iot->addDevice(&leftTrim);
 //    iot->addDevice(&dsFloods);
 //    iot->addDevice(&osFloods);
-//    iot->addDevice(&frontAwning);
+    iot->addDevice(&frontAwning);
 //    iot->addDevice(&frontPorch);
 
     
