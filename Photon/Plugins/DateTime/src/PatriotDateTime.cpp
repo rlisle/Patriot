@@ -16,6 +16,7 @@ All text above must be included in any redistribution.
 #include "PatriotDateTime.h"
 
 #define MILLIS_PER_SECOND 1000
+// Update each minute
 #define POLL_INTERVAL_MILLIS 60000
 
 /**
@@ -62,8 +63,10 @@ bool DateTime::isTimeUpdate()
  * notify()
  * Publish switch state
  */
-void DateTime::notify()
+void DateTime::publishMinutes()
 {
+    String time = Time.format(Time.now(), "%a %H:%M");
+
     //TODO:
 //    String topic = "patriot/" + _name;
 //    String message = String(_percent);
