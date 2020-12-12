@@ -53,7 +53,7 @@ IoT *iot;
 //NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
 
 NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
-NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2);
+NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 0);
 NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
 NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
 NCD8Light rightTrim(ADDRESS2, 4, "RightTrim");
