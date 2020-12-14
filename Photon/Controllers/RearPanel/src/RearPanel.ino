@@ -63,7 +63,7 @@ Switch floodsSwitch(A4, "FloodsSwitch");
 Switch pianoSwitch(A5, "PianoSwitch");
 // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
-// Activities allow Alexa to control them
+// Activities allow Alexa to control them directly or via routines
 // and can also turn off other activities.
 // These will be used by other panels also, but don't need to be duplicated by them
 Activity waking("waking");                  // Turns off sleeping
