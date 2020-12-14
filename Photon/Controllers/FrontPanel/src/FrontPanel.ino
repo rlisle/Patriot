@@ -46,7 +46,7 @@ IoT *iot;
 
 // Remove when wiring change complete
 NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
-NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
+NCD8Light cabinets(ADDRESS2, 3, "Cabinets", 2);
 
 // Uncomment when wiring change complete
 //NCD8Light dsFloods(ADDRESS2, 0, "DoorSide");

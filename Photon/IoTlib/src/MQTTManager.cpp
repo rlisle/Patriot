@@ -134,7 +134,7 @@ void MQTTManager::parseMessage(String topic, String message)
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
                 Log.info("Reset addressed to us");
-                System.reset();
+                System.reset(RESET_NO_WAIT);
             }
             
             // MEMORY
