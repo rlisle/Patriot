@@ -66,11 +66,14 @@ Switch pianoSwitch(A5, "PianoSwitch");
 // Activities allow Alexa to control them directly or via routines
 // and can also turn off other activities.
 // These will be used by other panels also, but don't need to be duplicated by them
-Activity waking("waking");                  // Turns off sleeping
-Activity watchingTV("watchingTV");
-Activity goingToBed("goingToBed");          // Turns off waking and others
+Activity cleaning("cleaning");              // Turn on all main lights
+Activity cooking("cooking");                // Turn on lots of kitchen lights
+Activity playing("playing");                // Turns on piano lights
+Activity reading("reading");                // Turn on coach reading lights
+Activity retiring("retiring");              // Turns off waking and others
 Activity sleeping("sleeping");              // Turns off goingToBed, waking and others
-Activity playingPiano("playingPiano");
+Activity waking("waking");                  // Turns off sleeping
+Activity watching("watching");
 
 void setup() {
     iot = IoT::getInstance();
@@ -80,20 +83,20 @@ void setup() {
 
     // Set other states
     waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking
-    waking.setOtherState("goingtobed", 0);      // and goingToBed
+    waking.setOtherState("retiring", 0);        // and goingToBed
 
     sleeping.setOtherState("waking", 0);        // Turn off waking when sleeping
-    sleeping.setOtherState("watchingtv", 0);    // and watchingTV
-    sleeping.setOtherState("goingtobed", 0);    // and goingToBed
-    sleeping.setOtherState("playingpiano", 0);  // and playingPiano
+    sleeping.setOtherState("watching", 0);      // and watchingTV
+    sleeping.setOtherState("retiring", 0);      // and goingToBed
+    sleeping.setOtherState("playing", 0);       // and playingPiano
 
-    goingToBed.setOtherState("watchingtv", 0);  // Turn off watchingTV when going to bed
-    goingToBed.setOtherState("playingpiano", 0);// and playingPiano
-    goingToBed.setOtherState("waking", 0);      // and waking
+    retiring.setOtherState("watching", 0);      // Turn off watchingTV when going to bed
+    retiring.setOtherState("playing", 0);       // and playing piano
+    retiring.setOtherState("waking", 0);        // and waking
 
     // BEHAVIORS
     ceiling.addBehavior(30, "waking", '>', 0);
-    piano.addBehavior(100, "playingpiano", '>', 0);
+    piano.addBehavior(100, "playing", '>', 0);
 
     // Switches
     ceiling.addBehavior(100, "OfficeSwitch", '>', 0);
@@ -113,6 +116,7 @@ void setup() {
     iot->addDevice(&rearAwning);
     iot->addDevice(&piano);
 
+    // ADD SWITCHES
     iot->addDevice(&officeSwitch);
     iot->addDevice(&loftSwitch);
     iot->addDevice(&wakingSwitch);
@@ -120,11 +124,15 @@ void setup() {
     iot->addDevice(&floodsSwitch);
     iot->addDevice(&pianoSwitch);
     
-    iot->addDevice(&waking);
-    iot->addDevice(&watchingTV);
-    iot->addDevice(&goingToBed);
+    // ADD ACTIVITIES
+    iot->addDevice(&cleaning);
+    iot->addDevice(&cooking);
+    iot->addDevice(&playing);
+    iot->addDevice(&reading);
+    iot->addDevice(&retiring);
     iot->addDevice(&sleeping);
-    iot->addDevice(&playingPiano);
+    iot->addDevice(&waking);
+    iot->addDevice(&watching);
 }
 
 void loop() {

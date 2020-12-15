@@ -96,14 +96,14 @@ void setup() {
     cabinets.addBehavior(30, "waking", '>', 0);
     sink.addBehavior(30, "waking", '>', 0);
     
-    // Watching TV
-    ceiling.addBehavior(45, "watchingtv", '>', 0);
-    kitchenCeiling.addBehavior(30, "watchingtv", '>', 0);
-    cabinets.addBehavior(30, "watchingtv", '>', 0);
-    sink.addBehavior(30, "watchingtv", '>', 0);
+    // Watching
+    ceiling.addBehavior(45, "watching", '>', 0);
+    kitchenCeiling.addBehavior(30, "watching", '>', 0);
+    cabinets.addBehavior(30, "watching", '>', 0);
+    sink.addBehavior(30, "watching", '>', 0);
 
-    // Going to Bed
-    sink.addBehavior(25, "goingtobed", '>', 0);
+    // Retiring
+    sink.addBehavior(25, "retiring", '>', 0);
 
     // Sleeping
     
