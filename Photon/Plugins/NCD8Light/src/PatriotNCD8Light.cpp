@@ -78,6 +78,8 @@ int8_t NCD8Light::initializeBoard() {
 
         outputPWM();            // Force light off
         
+        Log.trace("InitializeBoard sucess");
+        
     } else {
         Log.error("InitializeBoard failed");
     }

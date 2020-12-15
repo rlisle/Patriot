@@ -26,6 +26,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _devices = devices;
     _logging = 0;
     _logLevel = LOG_LEVEL_ERROR;
+//    _logLevel = LOG_LEVEL_TRACE;    // DEBUGGING ONLY!!!
 
     Time.zone(-6.0);
     
@@ -133,7 +134,7 @@ void MQTTManager::parseMessage(String topic, String message)
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
                 Log.info("Reset addressed to us");
-                System.reset();
+                System.reset(RESET_NO_WAIT);
             }
             
             // MEMORY
@@ -142,7 +143,7 @@ void MQTTManager::parseMessage(String topic, String message)
                 Log.info( String::format("Free memory = %d", System.freeMemory())); // not an error
             }
             
-        } else if(subtopic.equals("log")) {
+        } else if(subtopic.equals("log") || subtopic.startsWith("log/")) {
             // Ignore it.
             
         } else if(subtopic.startsWith("loglevel")) {
