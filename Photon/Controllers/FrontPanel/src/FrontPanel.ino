@@ -27,52 +27,52 @@
     - Kitchen Ceiling
     - Sink
     - Cabinets
-    - ?
-    - ?
-    - ?
+    - ? Trim
+    - ? Trim
+    - Front Awning LEDs
     - ?
  */
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotSwitch.h>
-#include <PatriotNCD8Relay.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
 
-#define ADDRESS1 0x20   // Relay board
-#define NUMRELAYS 8
 #define ADDRESS2 1      // PWM board switches low switch on
 
 String mqttServer = "192.168.10.184";
 
 IoT *iot;
 
-// To use persistent storage, insert "retained" before NCD8Relay
-NCD8Relay frontAwning(ADDRESS1, NUMRELAYS, 1, "FrontAwning");
-NCD8Relay rightTrim(ADDRESS1, NUMRELAYS, 2, "RightTrim");
-NCD8Relay leftTrim(ADDRESS1, NUMRELAYS, 3, "LeftTrim");
-NCD8Relay dsFloods(ADDRESS1, NUMRELAYS, 5, "DoorSide");
-NCD8Relay osFloods(ADDRESS1, NUMRELAYS, 6, "OtherSide");
-NCD8Relay frontPorch(ADDRESS1, NUMRELAYS, 7, "FrontPorch");
-
+// Remove when wiring change complete
 NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
-NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 2);
-NCD8Light kitchenSink(ADDRESS2, 2, "Sink", 2);
-NCD8Light kitchenCabinets(ADDRESS2, 3, "Cabinets", 2);
+NCD8Light cabinets(ADDRESS2, 3, "Cabinets", 2);
 
-Switch ceilingSwitch(A0, "CeilingSwitch");
-Switch kitchenCeilingSwitch(A1, "KitchenCeilingSwitch");
-Switch sinkSwitch(A2, "SinkSwitch");
-Switch cabinetSwitch(A3, "CabinetSwitch");
+// Uncomment when wiring change complete
+//NCD8Light dsFloods(ADDRESS2, 0, "DoorSide");
+NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 0);
+NCD8Light sink(ADDRESS2, 2, "Sink", 2);
+//NCD8Light osFloods(ADDRESS2, 3, "OtherSide");
+NCD8Light rightTrim(ADDRESS2, 4, "RightTrim");
+NCD8Light leftTrim(ADDRESS2, 5, "LeftTrim");
+NCD8Light frontAwning(ADDRESS2, 6, "FrontAwning");
+NCD8Light frontPorch(ADDRESS2, 7, "FrontPorch");
 
-Switch rightTrimSwitch(A4, "RightTrimSwitch");
-Switch leftTrimSwitch(A5, "LeftTrimSwitch");
-
-Switch dsFloodsSwitch(A6, "DSFloodsSwitch");
-Switch osFloodsSwitch(A7, "ODSFloodsSwitch");
-
-Switch frontPorchSwitch(RX, "FrontPorchSwitch");
-Switch frontAwningSwitch(TX, "FrontAwningSwitch");
+// Enable when wiring change complete
+//Light ceiling(D2, "ceiling", 2);
+//Light cabinets(D3, "cabinets", 2);
+              
+// Enable and reorder once wiring connected
+//Switch ceilingSwitch(A0, "CeilingSwitch");
+//Switch kitchenCeilingSwitch(A1, "KitchenCeilingSwitch");
+//Switch sinkSwitch(A2, "SinkSwitch");
+//Switch cabinetSwitch(A3, "CabinetSwitch");
+//Switch rightTrimSwitch(A4, "RightTrimSwitch");
+//Switch leftTrimSwitch(A5, "LeftTrimSwitch");
+//Switch dsFloodsSwitch(A6, "DSFloodsSwitch");
+//Switch osFloodsSwitch(A7, "ODSFloodsSwitch");
+//Switch frontPorchSwitch(RX, "FrontPorchSwitch");
+//Switch frontAwningSwitch(TX, "FrontAwningSwitch");
 
 // Activities allow Alexa to control them
 // and can also turn off other activities.
@@ -93,17 +93,17 @@ void setup() {
     // Waking
     ceiling.addBehavior(30, "waking", '>', 0);
     kitchenCeiling.addBehavior(30, "waking", '>', 0);
-    kitchenCabinets.addBehavior(30, "waking", '>', 0);
-    kitchenSink.addBehavior(30, "waking", '>', 0);
+    cabinets.addBehavior(30, "waking", '>', 0);
+    sink.addBehavior(30, "waking", '>', 0);
     
-    // Watching TV
-    ceiling.addBehavior(45, "watchingtv", '>', 0);
-    kitchenCeiling.addBehavior(30, "watchingtv", '>', 0);
-    kitchenCabinets.addBehavior(30, "watchingtv", '>', 0);
-    kitchenSink.addBehavior(30, "watchingtv", '>', 0);
+    // Watching
+    ceiling.addBehavior(45, "watching", '>', 0);
+    kitchenCeiling.addBehavior(30, "watching", '>', 0);
+    cabinets.addBehavior(30, "watching", '>', 0);
+    sink.addBehavior(30, "watching", '>', 0);
 
-    // Going to Bed
-    kitchenSink.addBehavior(25, "goingtobed", '>', 0);
+    // Retiring
+    sink.addBehavior(25, "retiring", '>', 0);
 
     // Sleeping
     
@@ -112,7 +112,7 @@ void setup() {
 // Uncomment these once they're hooked up. Otherwise they appear to be ON
 //    ceiling.addBehavior(100, "CeilingSwitch", '>', 0);
 //    kitchenCeiling.addBehavior(100, "KitchenCeilingSwitch", '>', 0);
-//    kitchenSink.addBehavior(100, "SinkSwitch", '>', 0);
+//    sink.addBehavior(100, "SinkSwitch", '>', 0);
 //    kitchenCabinets.addBehavior(100, "CabinetSwitch", '>', 0);
 //    rightTrim.addBehavior(100, "RightTrimSwitch", '>', 0);
 //    leftTrim.addBehavior(100, "LeftTrimSwitch", '>', 0);
@@ -123,28 +123,28 @@ void setup() {
 
     // DEVICES
 
-    iot->addDevice(&ceiling);
     iot->addDevice(&kitchenCeiling);
-    iot->addDevice(&kitchenSink);
-    iot->addDevice(&kitchenCabinets);
+    iot->addDevice(&sink);
     iot->addDevice(&rightTrim);
     iot->addDevice(&leftTrim);
-    iot->addDevice(&dsFloods);
-    iot->addDevice(&osFloods);
+//    iot->addDevice(&dsFloods);
+//    iot->addDevice(&osFloods);
     iot->addDevice(&frontAwning);
     iot->addDevice(&frontPorch);
 
-    
-    iot->addDevice(&ceilingSwitch);
-    iot->addDevice(&kitchenCeilingSwitch);
-    iot->addDevice(&sinkSwitch);
-    iot->addDevice(&cabinetSwitch);
-    iot->addDevice(&rightTrimSwitch);
-    iot->addDevice(&leftTrimSwitch);
-    iot->addDevice(&dsFloodsSwitch);
-    iot->addDevice(&osFloodsSwitch);
-    iot->addDevice(&frontPorchSwitch);
-    iot->addDevice(&frontAwningSwitch);
+    iot->addDevice(&ceiling);
+    iot->addDevice(&cabinets);
+
+//    iot->addDevice(&ceilingSwitch);
+//    iot->addDevice(&kitchenCeilingSwitch);
+//    iot->addDevice(&sinkSwitch);
+//    iot->addDevice(&cabinetSwitch);
+//    iot->addDevice(&rightTrimSwitch);
+//    iot->addDevice(&leftTrimSwitch);
+//    iot->addDevice(&dsFloodsSwitch);
+//    iot->addDevice(&osFloodsSwitch);
+//    iot->addDevice(&frontPorchSwitch);
+//    iot->addDevice(&frontAwningSwitch);
 
 }
 
