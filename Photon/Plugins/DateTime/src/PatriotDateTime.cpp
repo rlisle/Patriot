@@ -38,7 +38,7 @@ void DateTime::loop()
 {
     if (isTimeToUpdate())
     {
-        //TODO:
+        publishMinutes();
     }
 }
 
@@ -60,15 +60,13 @@ bool DateTime::isTimeUpdate()
 }
 
 /**
- * notify()
- * Publish switch state
+ * publishMinutes()
+ * Publish current minutes
  */
 void DateTime::publishMinutes()
 {
-    String time = Time.format(Time.now(), "%a %H:%M");
-
-    //TODO:
-//    String topic = "patriot/" + _name;
+    String minutes = Time.format(Time.now(), "%M");
+    String topic = "patriot/" + _name;
 //    String message = String(_percent);
 //    publish(topic,message);
 }
