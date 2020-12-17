@@ -45,22 +45,22 @@ String mqttServer = "192.168.10.184";
 IoT *iot;
 
 // Remove when wiring change complete
-NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
-NCD8Light cabinets(ADDRESS2, 3, "Cabinets", 2);
+//NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
+//NCD8Light cabinets(ADDRESS2, 3, "Cabinets", 2);
 
 // Uncomment when wiring change complete
-//NCD8Light dsFloods(ADDRESS2, 0, "DoorSide");
+NCD8Light dsFloods(ADDRESS2, 0, "DoorSide");
 NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 0);
 NCD8Light sink(ADDRESS2, 2, "Sink", 2);
-//NCD8Light osFloods(ADDRESS2, 3, "OtherSide");
+NCD8Light osFloods(ADDRESS2, 3, "OtherSide");
 NCD8Light rightTrim(ADDRESS2, 4, "RightTrim");
 NCD8Light leftTrim(ADDRESS2, 5, "LeftTrim");
 NCD8Light frontAwning(ADDRESS2, 6, "FrontAwning");
 NCD8Light frontPorch(ADDRESS2, 7, "FrontPorch");
 
 // Enable when wiring change complete
-//Light ceiling(D2, "ceiling", 2);
-//Light cabinets(D3, "cabinets", 2);
+Light ceiling(D2, "ceiling", 2);
+Light cabinets(D3, "cabinets", 2);
               
 // Enable and reorder once wiring connected
 //Switch ceilingSwitch(A0, "CeilingSwitch");
@@ -97,9 +97,9 @@ void setup() {
     sink.addBehavior(30, "waking", '>', 0);
     
     // Watching
-    ceiling.addBehavior(45, "watching", '>', 0);
-    kitchenCeiling.addBehavior(30, "watching", '>', 0);
-    cabinets.addBehavior(30, "watching", '>', 0);
+    ceiling.addBehavior(90, "watching", '>', 0);
+    kitchenCeiling.addBehavior(50, "watching", '>', 0);
+    cabinets.addBehavior(50, "watching", '>', 0);
     sink.addBehavior(30, "watching", '>', 0);
 
     // Retiring
@@ -127,8 +127,8 @@ void setup() {
     iot->addDevice(&sink);
     iot->addDevice(&rightTrim);
     iot->addDevice(&leftTrim);
-//    iot->addDevice(&dsFloods);
-//    iot->addDevice(&osFloods);
+    iot->addDevice(&dsFloods);
+    iot->addDevice(&osFloods);
     iot->addDevice(&frontAwning);
     iot->addDevice(&frontPorch);
 
