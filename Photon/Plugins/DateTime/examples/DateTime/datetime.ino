@@ -2,6 +2,18 @@
 Patriot DateTime Example
 
 This example shows how to use the Patriot DateTime plugin
+It instantiates the plugin which will then generate
+MQTT messages/states for:
+  * Dawn
+  * Sunrise
+  * Daytime
+  * Morning
+  * Noon
+  * Afternoon
+  * Sunset
+  * Dusk
+  * Evening
+  * Nighttime
 
 http://www.github.com/rlisle/Patriot
 

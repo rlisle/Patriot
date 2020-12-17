@@ -20,18 +20,19 @@ All text above must be included in any redistribution.
 enum class DeviceType {
     Unknown,
     Activity,
+    DateTime,
     Fan,
     Light,
     Motor,
+    NCD8Light,
     NCD8Relay,
+    NCD8Switch,
+    NCD16Switch,
     Presence,
     Relay,
     Switch,
     TempHumidity,
-    Ultrasonic,
-    NCD8Light,
-    NCD8Switch,
-    NCD16Switch
+    Ultrasonic
 };
 
 class Devices;
