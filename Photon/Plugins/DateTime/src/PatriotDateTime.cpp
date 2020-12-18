@@ -19,6 +19,27 @@ All text above must be included in any redistribution.
 // Update each minute
 #define POLL_INTERVAL_MILLIS 60000
 
+HourMinute::HourMinute(int hour, int minute) {
+    _hour = hour;
+    _minute = minute;
+}
+
+bool HourMinute::operator ==(const HourMinute& hm) {
+    return hm._hour == _hour && hm._minute == _minute;
+}
+
+bool HourMinute::operator >(const HourMinute& hm) {
+    if(hm._hour > _hour) return true;
+    if(hm._hour < _hour) return false;
+    return hm._minute > _minute;
+}
+
+bool HourMinute::operator <(const HourMinute& hm) {
+    if(hm._hour < _hour) return true;
+    if(hm._hour > _hour) return false;
+    return hm._minute < _minute;
+}
+
 /**
  * Constructor
  */

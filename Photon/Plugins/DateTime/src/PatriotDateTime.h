@@ -17,6 +17,17 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include "device.h"
 
+class HourMinute {
+    int     _hour;
+    int     _minute;
+    
+    HourMinute(int hour, int minute);
+    
+    bool    operator ==(const HourMinute& hm);
+    bool    operator >(const HourMinute& hm);
+    bool    operator <(const HourMinute& hm);
+}
+
 class DateTime : public Device
 {
 private:
@@ -24,6 +35,7 @@ private:
 
     bool      isTimeToUpdate();
     void      notify();
+    
     
 public:
     DateTime();
