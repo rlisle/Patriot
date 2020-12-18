@@ -38,6 +38,7 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
+#include <PatriotDateTime.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
@@ -45,6 +46,7 @@ String mqttServer = "192.168.10.184";
 
 IoT *iot;
 
+//TODO: Move from global to setup
 NCD8Light ceiling(ADDRESS, 0, "OfficeCeiling", 2);
 NCD8Light loft(ADDRESS, 1, "Loft", 2);
 NCD8Light rampPorch(ADDRESS, 2, "RampPorch", 2);
@@ -76,6 +78,8 @@ Activity waking("waking");                  // Turns off sleeping
 Activity watching("watching");
 
 void setup() {
+    DateTime* dateTime = new DateTime();
+    
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
     iot->begin();
@@ -133,6 +137,9 @@ void setup() {
     iot->addDevice(&sleeping);
     iot->addDevice(&waking);
     iot->addDevice(&watching);
+    
+    // ADD OTHER
+    iot->addDevice(dateTime);
 }
 
 void loop() {

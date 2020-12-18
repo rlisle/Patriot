@@ -26,7 +26,7 @@ class HourMinute {
     bool    operator ==(const HourMinute& hm);
     bool    operator >(const HourMinute& hm);
     bool    operator <(const HourMinute& hm);
-}
+};
 
 class DateTime : public Device
 {
