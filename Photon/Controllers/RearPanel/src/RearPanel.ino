@@ -89,14 +89,20 @@ void setup() {
     waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking
     waking.setOtherState("retiring", 0);        // and goingToBed
 
-    sleeping.setOtherState("waking", 0);        // Turn off waking when sleeping
-    sleeping.setOtherState("watching", 0);      // and watchingTV
-    sleeping.setOtherState("retiring", 0);      // and goingToBed
-    sleeping.setOtherState("playing", 0);       // and playingPiano
+    retiring.setOtherState("cleaning", 0);
+    retiring.setOtherState("cooking", 0);
+    retiring.setOtherState("playing", 0);
+    retiring.setOtherState("readinging", 0);
+    retiring.setOtherState("waking", 0);
+    retiring.setOtherState("watching", 0);
 
-    retiring.setOtherState("watching", 0);      // Turn off watchingTV when going to bed
-    retiring.setOtherState("playing", 0);       // and playing piano
-    retiring.setOtherState("waking", 0);        // and waking
+    sleeping.setOtherState("cleaning", 0);
+    sleeping.setOtherState("cooking", 0);
+    sleeping.setOtherState("playing", 0);
+    sleeping.setOtherState("readinging", 0);
+    sleeping.setOtherState("retiring", 0);
+    sleeping.setOtherState("waking", 0);
+    sleeping.setOtherState("watching", 0);
 
     // BEHAVIORS
     ceiling.addBehavior(30, "waking", '>', 0);
