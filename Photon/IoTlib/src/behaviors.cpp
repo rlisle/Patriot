@@ -39,6 +39,7 @@ int Behaviors::stateDidChange(States *states)
     int level = 0;
     for (Behavior *ptr = _behaviors; ptr != NULL; ptr = ptr->_next)
     {
+        Log.trace("stateDidChange");
         //Currently just picking highest level.
         int newLevel = ptr->evaluateStates(states);
         level = max(level,newLevel);

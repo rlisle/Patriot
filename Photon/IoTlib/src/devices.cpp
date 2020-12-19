@@ -53,6 +53,7 @@ void Devices::stateDidChange(States *states) {
         Device *device = getDeviceByNum(i);
         int newLevel = device->_behaviors.stateDidChange(states);
         if(newLevel != device->getPercent()) {
+            Log.trace("Device newLevel: "+String(newLevel));
             device->setPercent(newLevel);
         }
     }

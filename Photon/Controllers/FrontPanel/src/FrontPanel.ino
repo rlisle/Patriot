@@ -103,10 +103,14 @@ void setup() {
     sink.addBehavior(30, "watching", '>', 0);
 
     // Retiring
-    sink.addBehavior(25, "retiring", '>', 0);
+    ceiling.addBehavior(30, "retiring", '>', 0);
+    kitchenCeiling.addBehavior(30, "retiring", '>', 0);
+    cabinets.addBehavior(30, "retiring", '>', 0);
+    sink.addBehavior(30, "retiring", '>', 0);
 
     // Sleeping
-    
+    // Handled by Alexa room commands
+
     
     // Switches
 // Uncomment these once they're hooked up. Otherwise they appear to be ON
