@@ -1,16 +1,17 @@
-# PatriotDateTime
+# PatriotPartOfDay
 
-A Patriot plugin to provide date and time state messages
+A Patriot plugin to provide MQTT partofday messages for dawn, sunrise,
+morning, noon, afternoon, sunset, dusk, and night
 
 
 ## Usage
 
-Include this library in one Photon sketch to provide date/time states
+Include this library in one Photon sketch to provide partofday states
 for use by all controllers on the same MQTT network.
 Refer to the more complex examples in the main Patriot IoT examples
  directory.
 
-This example creates a single DateTime device to broadcast date & time
+This example creates a single PartOfDay device to broadcast
 messages to the MQTT network.
 
 You can use the Particle.io console to monitor these states via the
@@ -19,17 +20,19 @@ published 'States' variable, or observe them in realtime on MQTT
 
 ```
 #include <IoT.h>
-#include <PatriotDateTime.h>
+#include <PatriotPartOfDay.h>
 
 IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
-    iot->setControllerName("myPhoton");
     iot->begin();
 
-    DateTime *dateTime = new DateTime();
-    iot->addDevice(&dateTime);
+    // Create DateTime device
+    PartOfDay *partOfDay = new PartOfDay();
+
+    // Add it to IoT
+    iot->addDevice(partOfDay);
 }
 
 void loop() {

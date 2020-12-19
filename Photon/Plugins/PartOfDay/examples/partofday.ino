@@ -1,19 +1,17 @@
 /*******************************************************
-Patriot DateTime Example
+Patriot PartOfDay Example
 
-This example shows how to use the Patriot DateTime plugin
+This example shows how to use the Patriot PartOfDay plugin
 It instantiates the plugin which will then generate
-MQTT messages/states for:
+MQTT messages/states for "partofday" with the values:
   * Dawn
   * Sunrise
-  * Daytime
   * Morning
   * Noon
   * Afternoon
   * Sunset
   * Dusk
-  * Evening
-  * Nighttime
+  * Night
 
 http://www.github.com/rlisle/Patriot
 
@@ -25,7 +23,7 @@ All text above must be included in any redistribution.
 ********************************************************/
 
 #include <IoT.h>
-#include <PatriotDateTime.h>
+#include <PatriotPartOfDay.h>
 
 IoT *iot;
 
@@ -34,10 +32,10 @@ void setup() {
     iot->begin();
 
     // Create DateTime device
-    DateTime *dateTime = new DateTime();
+    PartOfDay *partOfDay = new PartOfDay();
 
     // Add it to IoT
-    iot->addDevice(dateTime);
+    iot->addDevice(partOfDay);
 }
 
 void loop() {

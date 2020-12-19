@@ -65,11 +65,11 @@
 		E4849C7A256724DC00A39734 /* PatriotNCD8Switch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotNCD8Switch.h; path = ../Photon/Plugins/NCD8Switch/src/PatriotNCD8Switch.h; sourceTree = "<group>"; };
 		E4849C7B256724F500A39734 /* switch.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = switch.ino; path = ../Photon/Plugins/NCD8Switch/examples/switch/switch.ino; sourceTree = "<group>"; };
 		E4849C7C2567250A00A39734 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD8Switch/library.properties; sourceTree = "<group>"; };
-		E4927CC0257FB0D2007B5FDD /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; name = examples; path = ../Photon/Plugins/DateTime/examples; sourceTree = "<group>"; };
-		E4927CC1257FB0D2007B5FDD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/DateTime/library.properties; sourceTree = "<group>"; };
-		E4927CC2257FB0D2007B5FDD /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../Photon/Plugins/DateTime/LICENSE; sourceTree = "<group>"; };
-		E4927CC3257FB0D2007B5FDD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Plugins/DateTime/README.md; sourceTree = "<group>"; };
-		E4927CC4257FB0D2007B5FDD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/DateTime/src; sourceTree = "<group>"; };
+		E4927CC0257FB0D2007B5FDD /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = examples; sourceTree = "<group>"; };
+		E4927CC1257FB0D2007B5FDD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; path = library.properties; sourceTree = "<group>"; };
+		E4927CC2257FB0D2007B5FDD /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		E4927CC3257FB0D2007B5FDD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E4927CC4257FB0D2007B5FDD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
 		E4D62D8A2572DC7600E1555C /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD16Switch/library.properties; sourceTree = "<group>"; };
 		E4D62D8B2572DC8E00E1555C /* PatriotNCD16Switch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD16Switch.cpp; path = ../Photon/Plugins/NCD16Switch/src/PatriotNCD16Switch.cpp; sourceTree = "<group>"; };
 		E4D62D8C2572DC8E00E1555C /* PatriotNCD16Switch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotNCD16Switch.h; path = ../Photon/Plugins/NCD16Switch/src/PatriotNCD16Switch.h; sourceTree = "<group>"; };
@@ -205,7 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				E4256946256C527C007D8450 /* Activity */,
-				E4927CBF257FB05F007B5FDD /* DateTime */,
+				E4927CBF257FB05F007B5FDD /* PartOfDay */,
 				E4849C772566B4BB00A39734 /* Light */,
 				E4849C762566B4B300A39734 /* NCD8Light */,
 				E4849C752566B4A400A39734 /* NCD8Relay */,
@@ -261,7 +261,7 @@
 			name = NCD8Switch;
 			sourceTree = "<group>";
 		};
-		E4927CBF257FB05F007B5FDD /* DateTime */ = {
+		E4927CBF257FB05F007B5FDD /* PartOfDay */ = {
 			isa = PBXGroup;
 			children = (
 				E4927CC0257FB0D2007B5FDD /* examples */,
@@ -270,7 +270,8 @@
 				E4927CC3257FB0D2007B5FDD /* README.md */,
 				E4927CC4257FB0D2007B5FDD /* src */,
 			);
-			name = DateTime;
+			name = PartOfDay;
+			path = ../Photon/Plugins/PartOfDay;
 			sourceTree = "<group>";
 		};
 		E4D62D892572DC4400E1555C /* NCD16Switch */ = {
