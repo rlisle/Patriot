@@ -38,7 +38,7 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
-#include <PatriotDateTime.h>
+#include <PatriotPartOfDay.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
@@ -78,7 +78,7 @@ Activity waking("waking");                  // Turns off sleeping
 Activity watching("watching");
 
 void setup() {
-    DateTime* dateTime = new DateTime();
+//    PartOfDay* partOfDay = new PartOfDay();
     
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
@@ -145,7 +145,7 @@ void setup() {
     iot->addDevice(&watching);
     
     // ADD OTHER
-    iot->addDevice(dateTime);
+//    iot->addDevice(partOfDay);
 }
 
 void loop() {

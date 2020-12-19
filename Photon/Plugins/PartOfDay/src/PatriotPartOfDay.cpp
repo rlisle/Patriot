@@ -62,7 +62,7 @@ PartOfDay::PartOfDay()
 {
     _lastPollTime = millis();
     _current = determine();
-    publish();
+    publishCurrent();
 }
 
 
@@ -105,16 +105,16 @@ bool PartOfDay::isTimeToUpdate()
  */
 String PartOfDay::determine()
 {
-    Period *dawn = Period(6,52,"dawn");
-    Period *sunrise = Period(7,22,"sunrise");
-    Period *morning = Period(7,23,"morning");
-    Period *noon = Period(12,0,"noon");
-    Period *afternoon = Period(12,1,"afternoon");
-    Period *sunset = Period(17,33,"sunset");
-    Period *dusk = Period(17,34,"dusk");
-    Period *night = Period(18,3,"night");
+    Period dawn = Period(6,52,"dawn");
+    Period sunrise = Period(7,22,"sunrise");
+    Period morning = Period(7,23,"morning");
+    Period noon = Period(12,0,"noon");
+    Period afternoon = Period(12,1,"afternoon");
+    Period sunset = Period(17,33,"sunset");
+    Period dusk = Period(17,34,"dusk");
+    Period night = Period(18,3,"night");
 
-    Period *current = Period(Time.hour(),Time.minute(), "now");
+    Period current = Period(Time.hour(),Time.minute(), "now");
     
     if (current > night) return "night";
     if (current > dusk) return "dusk";

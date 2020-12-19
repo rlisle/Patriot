@@ -30,10 +30,12 @@ All text above must be included in any redistribution.
 #include "device.h"
 
 class Period {
+private:
     int     _hour;
     int     _minute;
     String  _name;
-    
+
+public:
     Period(int hour, int minute, String name);
     
     bool    operator ==(const Period& hm);
@@ -45,7 +47,7 @@ class PartOfDay : public Device
 {
 private:
     long       _lastPollTime;
-    Period     _periods[8];
+//    Period     _periods[8];
 
     bool       isTimeToUpdate();
     String     determine();

@@ -20,7 +20,6 @@ All text above must be included in any redistribution.
 enum class DeviceType {
     Unknown,
     Activity,
-    DateTime,
     Fan,
     Light,
     Motor,
@@ -28,6 +27,7 @@ enum class DeviceType {
     NCD8Relay,
     NCD8Switch,
     NCD16Switch,
+    PartOfDay,
     Presence,
     Relay,
     Switch,
