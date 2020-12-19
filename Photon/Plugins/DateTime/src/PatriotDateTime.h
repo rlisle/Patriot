@@ -34,7 +34,8 @@ private:
     long       _lastPollTime;
 
     bool      isTimeToUpdate();
-    void      notify();
+    Period    calculatePeriod();
+    void      publish();
     
     
 public:

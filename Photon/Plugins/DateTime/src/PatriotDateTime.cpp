@@ -19,6 +19,17 @@ All text above must be included in any redistribution.
 // Update each minute
 #define POLL_INTERVAL_MILLIS 60000
 
+enum class Period {
+    Night,
+    Dawn,
+    Sunrise,
+    Morning,
+    Noon,
+    Afternoon,
+    Sunset,
+    Dusk
+};
+
 HourMinute::HourMinute(int hour, int minute) {
     _hour = hour;
     _minute = minute;
@@ -59,7 +70,7 @@ void DateTime::loop()
 {
     if (isTimeToUpdate())
     {
-        publishMinutes();
+        publishChanges();
     }
 }
 
@@ -69,7 +80,7 @@ void DateTime::loop()
  * isTimeToUpdate()
  * @return bool if enough time has elapsed to sample switch again
  */
-bool DateTime::isTimeUpdate()
+bool DateTime::isTimeToUpdate()
 {
     long currentTime = millis();
     if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
@@ -84,9 +95,13 @@ bool DateTime::isTimeUpdate()
  * publishMinutes()
  * Publish current minutes
  */
-void DateTime::publishMinutes()
+Period DateTime::calculatePeriod()
 {
-    String minutes = Time.format(Time.now(), "%M");
+    HourMinute *current = HourMinute(Time.hour(),Time.minute())
+    
+}
+
+void publish(Period period) {
     String topic = "patriot/" + _name;
 //    String message = String(_percent);
 //    publish(topic,message);
