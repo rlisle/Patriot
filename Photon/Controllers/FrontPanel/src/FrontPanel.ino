@@ -97,7 +97,7 @@ void setup() {
     sink.addBehavior(30, "waking", '>', 0);
     
     // Watching
-    ceiling.addBehavior(90, "watching", '>', 0);
+    ceiling.addBehavior(70, "watching", '>', 0);
     kitchenCeiling.addBehavior(50, "watching", '>', 0);
     cabinets.addBehavior(50, "watching", '>', 0);
     sink.addBehavior(30, "watching", '>', 0);
