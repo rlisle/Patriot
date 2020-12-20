@@ -22,18 +22,6 @@ String mqttServerIP = "192.168.10.184";
 
 IoT     *iot;
 
-Light testLed(2, "testLed");                // Not connected to anything
-Light blueLed(7, "blueLed", false, true);
-
-//PartOfDay partOfDay();
-
-// Activities allow Alexa to control them
-// and can also turn off other activities.
-//Activity waking("waking");
-//Activity watchingTV("watchingTV");
-//Activity goingToBed("goingToBed");
-//Activity sleeping("sleeping");
-
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RonTest");
@@ -41,32 +29,35 @@ void setup() {
     iot->connectMQTT(mqttServerIP, "patriotRonTest1", false);
 
     PartOfDay *partOfDay = new PartOfDay();
-    
+
+    Light *testLed = new Light(2, "testLed");   // Not connected
+    Light *blueLed = new Light(7, "blueLed", false, true);
+
+    // Activities allow Alexa to control them
+    // and can also turn off other activities.
+    Activity *cooking = new Activity("cooking");
+    Activity *cleaning = new Activity("cleaning");
+
     // Behaviors/Activities
-//    blueLed.addBehavior(100, "waking", '>', 0);
+    blueLed->addBehavior(100, "cooking", '>', 0);
+    blueLed->addBehavior(100, "cleaning", '>', 0);
 
-//    waking.setOtherState("sleeping", 0);    // Turn off sleeping when waking
+    cleaning->setOtherState("cooking", 0);
+    cooking->setOtherState("cleaning", 0);
     
-//    sleeping.setOtherState("waking", 0);    // Beware of loops
-
-//    goingToBed.setOtherState("watchingtv", 0);
-//    goingToBed.setOtherState("waking", 0);
-
 
     // Devices and Activities
-    iot->addDevice(&blueLed);
-    iot->addDevice(&testLed);
+    iot->addDevice(blueLed);
+    iot->addDevice(testLed);
     iot->addDevice(partOfDay);
 
-//    iot->addDevice(&waking);
-//    iot->addDevice(&watchingTV);
-//    iot->addDevice(&goingToBed);
-//    iot->addDevice(&sleeping);
+    iot->addDevice(cooking);
+    iot->addDevice(cleaning);
     
-    Log.error("Error message");
-    Log.warn("Warn message");
-    Log.info("Info message");
-    Log.trace("Trace message");
+//    Log.error("Error message");
+//    Log.warn("Warn message");
+//    Log.info("Info message");
+//    Log.trace("Trace message");
 
 //    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ERROR = " + String(LOG_LEVEL_ERROR));
 //    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_WARN = " + String(LOG_LEVEL_WARN));
