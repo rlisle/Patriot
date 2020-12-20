@@ -62,7 +62,7 @@ void MQTTManager::connect(String connectID) {
     // Looks good, not register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    Log.info("Connected at " + String(_lastMQTTtime));
+    Log.info("MQTT Connected");
     
 }
 
@@ -214,21 +214,6 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
     return s1;
 }
 
-/**
- The LogHandler calls this method display Log messages.
- We can format it anyway we'd like.
- */
-void MQTTManager::log(const char *category, String message) {
-    String time = Time.format(Time.now(), "%a %H:%M");
-
-//    if(!_logging && strcmp(category, "app") == 0) {
-    if(!_logging) {
-        _logging++;
-        publish("patriot/log/"+_controllerName, time + " " + message);
-        _logging--;
-    }
-}
-
 // This method is how we are called by the LogManager
 void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
     String s;
@@ -291,7 +276,20 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
         s.concat(']');
     }
 
-    //TODO: If MQTT not connected, write to Serial
+    //TODO: If MQTT not connected, write to Serial instead
 //    Serial.println(s);
     log(category, s);
 }
+
+// This is our formatter. We can format messages however we want.
+void MQTTManager::log(const char *category, String message) {
+    String time = Time.format(Time.now(), "%a %H:%M");
+
+//    if(!_logging && strcmp(category, "app") == 0) {
+    if(!_logging) {
+        _logging++;
+        publish("patriot/log/"+_controllerName, time + " " + message);
+        _logging--;
+    }
+}
+

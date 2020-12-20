@@ -18,8 +18,6 @@
 #include "PatriotLight.h"
 #include "math.h"
 
-#define kDebounceDelay 50
-
 /**
  * Constructor
  * @param pinNum is the pin number that is connected to the light.
@@ -47,6 +45,7 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
  * @param percent Int 0 to 100
  */
 void Light::setPercent(int percent) {
+    Log.info("Light setPercent: " + String(percent));
     changePercent(percent);
 }
 
@@ -97,12 +96,15 @@ bool Light::isAlreadyOff() {
  * An alternative approach would be to calculate # msecs per step
  */
 void Light::startSmoothDimming() {
-    if((int)_percent != _targetPercent){
-        _currentPercent = _percent;
-        _lastUpdateTime = millis();
-        float delta = _targetPercent - _percent;
-        _incrementPerMillisecond = delta / (_dimmingDuration * 1000);
+    if((int)_percent == _targetPercent){
+        Log.trace("Light startSmoothDimming equal");
+        return;
     }
+    _currentPercent = _percent;
+    _lastUpdateTime = millis();
+    float delta = _targetPercent - _percent;
+    _incrementPerMillisecond = delta / (_dimmingDuration * 1000);
+    Log.trace("Light startSmoothDimming target: " + String(_percent) + ", increment: " + String(_incrementPerMillisecond));
 }
 
 /**
@@ -158,7 +160,6 @@ void Light::loop()
 {
     // Is fading transition underway?
     if(_percent == _targetPercent) {
-        // Nothing to do.
         return;
     }
 
@@ -169,10 +170,12 @@ void Light::loop()
     if(_incrementPerMillisecond > 0) {
         if(_currentPercent > _targetPercent) {
             _percent = _targetPercent;
+            Log.trace("Light loop: up done");
         }
     } else {
         if(_currentPercent < _targetPercent) {
             _percent = _targetPercent;
+            Log.trace("Light loop: down done");
         }
     }
     _lastUpdateTime = loopTime;

@@ -23,15 +23,16 @@ enum class DeviceType {
     Fan,
     Light,
     Motor,
+    NCD8Light,
     NCD8Relay,
+    NCD8Switch,
+    NCD16Switch,
+    PartOfDay,
     Presence,
     Relay,
     Switch,
     TempHumidity,
-    Ultrasonic,
-    NCD8Light,
-    NCD8Switch,
-    NCD16Switch
+    Ultrasonic
 };
 
 class Devices;
