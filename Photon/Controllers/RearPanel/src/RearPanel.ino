@@ -84,7 +84,7 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
-    iot->mqttPublish("DEBUG", "RearPanel starting");
+//    iot->mqttPublish("DEBUG", "RearPanel starting");
     
 //    PartOfDay* partOfDay = new PartOfDay();
 
@@ -148,9 +148,9 @@ void setup() {
     iot->addDevice(&watching);
     
     // ADD OTHER
-    iot->mqttPublish("DEBUG", "RearPanel addding partOfDay device");
+//    iot->mqttPublish("DEBUG", "RearPanel addding partOfDay device");
 //    iot->addDevice(partOfDay);
-    iot->mqttPublish("DEBUG", "RearPanel partOfDay device added");
+//    iot->mqttPublish("DEBUG", "RearPanel partOfDay device added");
 }
 
 void loop() {

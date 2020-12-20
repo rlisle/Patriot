@@ -26,10 +26,10 @@ Light blueLed(7, "blueLed", false, true);
 
 // Activities allow Alexa to control them
 // and can also turn off other activities.
-Activity waking("waking");
-Activity watchingTV("watchingTV");
-Activity goingToBed("goingToBed");
-Activity sleeping("sleeping");
+//Activity waking("waking");
+//Activity watchingTV("watchingTV");
+//Activity goingToBed("goingToBed");
+//Activity sleeping("sleeping");
 
 void setup() {
     iot = IoT::getInstance();
@@ -38,36 +38,36 @@ void setup() {
     iot->connectMQTT(mqttServerIP, "patriotRonTest1", false);
         
     // Behaviors/Activities
-    blueLed.addBehavior(100, "waking", '>', 0);
+//    blueLed.addBehavior(100, "waking", '>', 0);
 
-    waking.setOtherState("sleeping", 0);    // Turn off sleeping when waking
+//    waking.setOtherState("sleeping", 0);    // Turn off sleeping when waking
     
-    sleeping.setOtherState("waking", 0);    // Beware of loops
+//    sleeping.setOtherState("waking", 0);    // Beware of loops
 
-    goingToBed.setOtherState("watchingtv", 0);
-    goingToBed.setOtherState("waking", 0);
+//    goingToBed.setOtherState("watchingtv", 0);
+//    goingToBed.setOtherState("waking", 0);
 
 
     // Devices and Activities
     iot->addDevice(&blueLed);
     iot->addDevice(&testLed);
 
-    iot->addDevice(&waking);
-    iot->addDevice(&watchingTV);
-    iot->addDevice(&goingToBed);
-    iot->addDevice(&sleeping);
+//    iot->addDevice(&waking);
+//    iot->addDevice(&watchingTV);
+//    iot->addDevice(&goingToBed);
+//    iot->addDevice(&sleeping);
     
     Log.trace("Trace message");
     Log.info("Info message");
     Log.warn("Warn message");
     Log.error("Error message");
     
-    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ERROR = " + String(LOG_LEVEL_ERROR));
-    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_WARN = " + String(LOG_LEVEL_WARN));
-    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_INFO = " + String(LOG_LEVEL_INFO));
-    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_TRACE = " + String(LOG_LEVEL_TRACE));
-    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_NONE = " + String(LOG_LEVEL_NONE));
-    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ALL = " + String(LOG_LEVEL_ALL));
+//    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ERROR = " + String(LOG_LEVEL_ERROR));
+//    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_WARN = " + String(LOG_LEVEL_WARN));
+//    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_INFO = " + String(LOG_LEVEL_INFO));
+//    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_TRACE = " + String(LOG_LEVEL_TRACE));
+//    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_NONE = " + String(LOG_LEVEL_NONE));
+//    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ALL = " + String(LOG_LEVEL_ALL));
 }
 
 void loop() {
