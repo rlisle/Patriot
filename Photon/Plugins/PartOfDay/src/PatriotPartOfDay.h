@@ -33,10 +33,10 @@ class Period {
 private:
     int     _hour;
     int     _minute;
-    String  _name;
+    int     _podNum;        //TODO: change to enum
 
 public:
-    Period(int hour, int minute, String name);
+    Period(int hour, int minute, int podNum);
     
     bool    operator ==(const Period& hm);
     bool    operator >(const Period& hm);
@@ -50,11 +50,11 @@ private:
 //    Period     _periods[8];
 
     bool       isTimeToUpdate();
-    String     determine();
+    int        determine();
     void       publishCurrent();
     
 public:
-    String     _current;
+    int        _current;
     
     PartOfDay();
 

@@ -4,15 +4,15 @@ PatriotPartOfDay plugin
  Features:
  - Broadcasts the current part of the day
   
-  - Periods can be (in order):
-     Night
-     Dawn
-     Sunrise
-     Morning
-     Noon
-     Afternoon
-     Sunset
-     Dusk
+  - Periods can be (in podNum order):
+     0 Night
+     1 Dawn
+     2 Sunrise
+     3 Morning
+     4 Noon
+     5 Afternoon
+     6 Sunset
+     7 Dusk
 
   Sunrise, noon, and sunset only occur for 1 minute
   
@@ -31,10 +31,11 @@ All text above must be included in any redistribution.
 // Update each minute
 #define POLL_INTERVAL_MILLIS 60000
 
-Period::Period(int hour, int minute, String name) {
+
+Period::Period(int hour, int minute, int podNum) {
     _hour = hour;
     _minute = minute;
-    _name = name;
+    _podNum = podNum;
     
 }
 
@@ -43,15 +44,16 @@ bool Period::operator ==(const Period& period) {
 }
 
 bool Period::operator >(const Period& period) {
-    if(period._hour > _hour) return true;
-    if(period._hour < _hour) return false;
-    return period._minute > _minute;
+    //Log.info("Comparing period " + String(period._hour) + ":" + String(period._minute));
+    if(_hour > period._hour) return true;
+    if(_hour < period._hour) return false;
+    return _minute > period._minute;
 }
 
 bool Period::operator <(const Period& period) {
-    if(period._hour < _hour) return true;
-    if(period._hour > _hour) return false;
-    return period._minute < _minute;
+    if(_hour < period._hour) return true;
+    if(_hour > period._hour) return false;
+    return _minute < period._minute;
 }
 
 /**
@@ -61,8 +63,9 @@ PartOfDay::PartOfDay()
         : Device("PartOfDay", DeviceType::PartOfDay)
 {
     _lastPollTime = millis();
-    _current = determine();
-    publishCurrent();
+    _current = 0;
+    //_current = determine();
+    //publishCurrent();     // Causing loop?
 }
 
 
@@ -74,9 +77,10 @@ void PartOfDay::loop()
 {
     if (isTimeToUpdate())
     {
-        String now = determine();
+        int now = determine();
+        //Log.info("PartOfDay: time to update = " + String(now));
         if (now != _current) {
-            Log.trace("PartOfDay now: " + now);
+            //Log.info("PartOfDay now: " + now);
             _current = now;
             publishCurrent();
         }
@@ -104,29 +108,29 @@ bool PartOfDay::isTimeToUpdate()
  * publishinutes()
  * Publish current minutes
  */
-String PartOfDay::determine()
+int PartOfDay::determine()
 {
-    Period dawn = Period(6,52,"dawn");
-    Period sunrise = Period(7,22,"sunrise");
-    Period morning = Period(7,23,"morning");
-    Period noon = Period(12,0,"noon");
-    Period afternoon = Period(12,1,"afternoon");
-    Period sunset = Period(17,33,"sunset");
-    Period dusk = Period(17,34,"dusk");
-    Period night = Period(18,3,"night");
+    Period dawn = Period(6,52,1);               // Dawn
+    Period sunrise = Period(7,22,2);            // Sunrise
+    Period morning = Period(7,23,3);            // Morning
+    Period noon = Period(12,0,4);               // Noon
+    Period afternoon = Period(12,1,5);          // Afternoon
+    Period sunset = Period(17,33,6);            // Sunset
+    Period dusk = Period(17,34,7);              // Dusk
+    Period night = Period(18,3,0);              // Night
 
-    Period current = Period(Time.hour(),Time.minute(), "now");
+    Period current = Period(Time.hour(),Time.minute(), 0);
+    //Log.info("PartOfDay determine: time now = " + String(Time.hour()) + ":" + String(Time.minute()));
     
-    if (current > night) return "night";
-    if (current > dusk) return "dusk";
-    if (current > night) return "sunset";
-    if (current > night) return "afternoon";
-    if (current > night) return "noon";
-    if (current > night) return "morning";
-    if (current > night) return "sunrise";
-    if (current > night) return "dawn";
-    if (current > night) return "Night";
-    return "night";
+    if (current > night) return 0;
+    if (current > dusk) return 7;
+    if (current > sunset) return 6;
+    if (current > afternoon) return 5;
+    if (current > noon) return 4;
+    if (current > morning) return 3;
+    if (current > sunrise) return 2;
+    if (current > dawn) return 1;
+    return 0;
 }
 
 void PartOfDay::publishCurrent() {

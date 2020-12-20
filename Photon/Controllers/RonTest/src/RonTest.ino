@@ -16,6 +16,7 @@
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotActivity.h>
+#include <PatriotPartOfDay.h>
 
 String mqttServerIP = "192.168.10.184";
 
@@ -23,6 +24,8 @@ IoT     *iot;
 
 Light testLed(2, "testLed");                // Not connected to anything
 Light blueLed(7, "blueLed", false, true);
+
+//PartOfDay partOfDay();
 
 // Activities allow Alexa to control them
 // and can also turn off other activities.
@@ -36,7 +39,9 @@ void setup() {
     iot->setControllerName("RonTest");
     iot->begin();
     iot->connectMQTT(mqttServerIP, "patriotRonTest1", false);
-        
+
+    PartOfDay *partOfDay = new PartOfDay();
+    
     // Behaviors/Activities
 //    blueLed.addBehavior(100, "waking", '>', 0);
 
@@ -51,17 +56,18 @@ void setup() {
     // Devices and Activities
     iot->addDevice(&blueLed);
     iot->addDevice(&testLed);
+    iot->addDevice(partOfDay);
 
 //    iot->addDevice(&waking);
 //    iot->addDevice(&watchingTV);
 //    iot->addDevice(&goingToBed);
 //    iot->addDevice(&sleeping);
     
-    Log.trace("Trace message");
-    Log.info("Info message");
-    Log.warn("Warn message");
     Log.error("Error message");
-    
+    Log.warn("Warn message");
+    Log.info("Info message");
+    Log.trace("Trace message");
+
 //    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_ERROR = " + String(LOG_LEVEL_ERROR));
 //    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_WARN = " + String(LOG_LEVEL_WARN));
 //    Log(LOG_LEVEL_ERROR, "LOG_LEVEL_INFO = " + String(LOG_LEVEL_INFO));
