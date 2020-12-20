@@ -54,43 +54,43 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
-    NCD8Light *ceiling = NCD8Light(ADDRESS, 0, "OfficeCeiling", 2);
-    NCD8Light *loft = NCD8Light(ADDRESS, 1, "Loft", 2);
-    NCD8Light *rampPorch = NCD8Light(ADDRESS, 2, "RampPorch", 2);
-    NCD8Light *rampAwning = NCD8Light(ADDRESS, 3, "RampAwning", 2);
-    NCD8Light *rearPorch = NCD8Light(ADDRESS, 4, "RearPorch", 2);
-    NCD8Light *rearAwning = NCD8Light(ADDRESS, 5, "RearAwning", 2);
-    NCD8Light *piano = NCD8Light(ADDRESS, 6, "Piano", 2);
+    NCD8Light *ceiling = new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2);
+    NCD8Light *loft = new NCD8Light(ADDRESS, 1, "Loft", 2);
+    NCD8Light *rampPorch = new NCD8Light(ADDRESS, 2, "RampPorch", 2);
+    NCD8Light *rampAwning = new NCD8Light(ADDRESS, 3, "RampAwning", 2);
+    NCD8Light *rearPorch = new NCD8Light(ADDRESS, 4, "RearPorch", 2);
+    NCD8Light *rearAwning =new  NCD8Light(ADDRESS, 5, "RearAwning", 2);
+    NCD8Light *piano = new NCD8Light(ADDRESS, 6, "Piano", 2);
     // one unused dimmer I/O
 
     // Switch control functional sets of lights, not individual lights
-    Switch *officeSwitch = Switch(A0, "OfficeSwitch");
-    Switch *loftSwitch = Switch(A1, "LoftSwitch");
-    Switch *wakingSwitch = Switch(A2, "WakingSwitch");
-    Switch *awningSwitch = Switch(A3, "AwningSwitch");
-    Switch *floodsSwitch = Switch(A4, "FloodsSwitch");
-    Switch *pianoSwitch = Switch(A5, "PianoSwitch");
+    Switch *officeSwitch = new Switch(A0, "OfficeSwitch");
+    Switch *loftSwitch = new Switch(A1, "LoftSwitch");
+    Switch *wakingSwitch = new Switch(A2, "WakingSwitch");
+    Switch *awningSwitch = new Switch(A3, "AwningSwitch");
+    Switch *floodsSwitch = new Switch(A4, "FloodsSwitch");
+    Switch *pianoSwitch = new Switch(A5, "PianoSwitch");
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     //TODO: roll wake states together into an enum
     // Activities allow Alexa to control them directly or via routines
     // and can also turn off other activities.
     // These will be used by other panels also, but don't need to be duplicated by them
-    Activity *cleaning = Activity("cleaning");              // Turn on all main lights
-    Activity *cooking = Activity("cooking");                // Turn on lots of kitchen lights
-    Activity *playing = Activity("playing");                // Turns on piano lights
-    Activity *reading = Activity("reading");                // Turn on coach reading lights
-    Activity *retiring = Activity("retiring");              // Turns off waking and others
-    Activity *sleeping = Activity("sleeping");              // Turns off goingToBed, waking and others
-    Activity *waking = Activity("waking");                  // Turns off sleeping
+    Activity *cleaning = new Activity("cleaning");              // Turn on all main lights
+    Activity *cooking = new Activity("cooking");                // Turn on lots of kitchen lights
+    Activity *playing = new Activity("playing");                // Turns on piano lights
+    Activity *reading = new Activity("reading");                // Turn on coach reading lights
+    Activity *retiring = new Activity("retiring");              // Turns off waking and others
+    Activity *sleeping = new Activity("sleeping");              // Turns off goingToBed, waking and others
+    Activity *waking = new Activity("waking");                  // Turns off sleeping
     // Replace this with Dusk and Night
-    Activity *watching = Activity("watching");
+    Activity *watching = new Activity("watching");
     
     PartOfDay* partOfDay = new PartOfDay();
 
     // Set other states
-    waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking
-    waking.setOtherState("retiring", 0);        // and goingToBed
+    waking->setOtherState("sleeping", 0);        // Turn off sleeping when waking
+    waking->setOtherState("retiring", 0);        // and goingToBed
 
     retiring->setOtherState("cleaning", 0);
     retiring->setOtherState("cooking", 0);
