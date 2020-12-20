@@ -44,10 +44,6 @@ String mqttServer = "192.168.10.184";
 
 IoT *iot;
 
-// Remove when wiring change complete
-//NCD8Light ceiling(ADDRESS2, 0, "Ceiling", 2);
-//NCD8Light cabinets(ADDRESS2, 3, "Cabinets", 2);
-
 // Uncomment when wiring change complete
 NCD8Light dsFloods(ADDRESS2, 0, "DoorSide");
 NCD8Light kitchenCeiling(ADDRESS2, 1, "kitchenCeiling", 0);
@@ -58,7 +54,6 @@ NCD8Light leftTrim(ADDRESS2, 5, "LeftTrim");
 NCD8Light frontAwning(ADDRESS2, 6, "FrontAwning");
 NCD8Light frontPorch(ADDRESS2, 7, "FrontPorch");
 
-// Enable when wiring change complete
 Light ceiling(D2, "ceiling", 2);
 Light cabinets(D3, "cabinets", 2);
               

@@ -62,7 +62,7 @@ void MQTTManager::connect(String connectID) {
     // Looks good, not register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    Log.info("Connected at " + String(_lastMQTTtime));
+    Log.info("MQTT Connected");
     
 }
 
