@@ -38,7 +38,7 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
-#include <PatriotPartOfDay.h>
+//#include <PatriotPartOfDay.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
@@ -78,12 +78,15 @@ Activity waking("waking");                  // Turns off sleeping
 Activity watching("watching");
 
 void setup() {
-//    PartOfDay* partOfDay = new PartOfDay();
     
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
+
+    iot->mqttPublish("DEBUG", "RearPanel starting");
+    
+//    PartOfDay* partOfDay = new PartOfDay();
 
     // Set other states
     waking.setOtherState("sleeping", 0);        // Turn off sleeping when waking
@@ -145,7 +148,9 @@ void setup() {
     iot->addDevice(&watching);
     
     // ADD OTHER
+    iot->mqttPublish("DEBUG", "RearPanel addding partOfDay device");
 //    iot->addDevice(partOfDay);
+    iot->mqttPublish("DEBUG", "RearPanel partOfDay device added");
 }
 
 void loop() {

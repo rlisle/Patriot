@@ -76,6 +76,7 @@ void PartOfDay::loop()
     {
         String now = determine();
         if (now != _current) {
+            Log.trace("PartOfDay now: " + now);
             _current = now;
             publishCurrent();
         }
