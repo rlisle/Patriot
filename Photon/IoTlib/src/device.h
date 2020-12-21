@@ -71,8 +71,7 @@ class Device {
 
     Behavior* addBehavior(int level, String name, char comparison, int value) {
         Behavior *newBehavior = new Behavior(level);
-        Condition *newCondition = new Condition(name, comparison, value);
-        newBehavior->addCondition(newCondition);
+        newBehavior->addCondition(name, comparison, value);
         _behaviors.addBehavior(newBehavior);
         return newBehavior;         // Allows adding more conditions
     };

@@ -70,7 +70,7 @@ void setup() {
     // BEHAVIORS
     // Good Morning (sleeping = 0)
     Behavior* b1 = new Behavior(30);
-    b1->addCondition("sleeping", '=', 0);
+    b1->addCondition("sleeping", '=', AWAKE);
     b1->addCondition("partofday", '<', MORNING);
 
     // Bedtime (sleeping = 1)

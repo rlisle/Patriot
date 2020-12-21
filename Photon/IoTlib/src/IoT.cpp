@@ -135,7 +135,7 @@ void IoT::addDevice(Device *device)
     if(device->shouldAutoCreateBehavior()) {
         bool isDefault = true;
         Behavior *defaultBehavior = new Behavior(100, isDefault);
-        defaultBehavior->addCondition(new Condition(device->name(), '>', 0));
+        defaultBehavior->addCondition(device->name(), '>', 0);
         device->addBehavior(defaultBehavior);
     }
     

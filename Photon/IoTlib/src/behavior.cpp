@@ -22,7 +22,8 @@ Behavior::Behavior(int level, bool isDefault)
     _next = NULL;
 }
 
-void Behavior::addCondition(Condition *condition) {
+void Behavior::addCondition(String stateName, char comparison, int value) {
+    Condition *condition = new Condition(stateName, comparison, value);
     _conditions->addCondition(condition);
 }
 

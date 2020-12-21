@@ -35,7 +35,7 @@ private:
 public:
     Behavior(int level, bool isDefault = false);
 
-    void addCondition(Condition *condition);
+    void addCondition(String stateName, char comparison, int value);
     int  evaluateStates(States *states);
     Conditions *getConditions() { return _conditions; }
 };
