@@ -76,40 +76,20 @@ void setup() {
     // Activities allow Alexa to control them directly or via routines
     // and can also turn off other activities.
     // These will be used by other panels also, but don't need to be duplicated by them
-    Activity *cleaning = new Activity("cleaning");              // Turn on all main lights
-    Activity *cooking = new Activity("cooking");                // Turn on lots of kitchen lights
-    Activity *playing = new Activity("playing");                // Turns on piano lights
-    Activity *reading = new Activity("reading");                // Turn on coach reading lights
-    Activity *retiring = new Activity("retiring");              // Turns off waking and others
-    Activity *sleeping = new Activity("sleeping");              // Turns off goingToBed, waking and others
-    Activity *waking = new Activity("waking");                  // Turns off sleeping
-    // Replace this with Dusk and Night
-    Activity *watching = new Activity("watching");
+    Activity *cleaning = new Activity("cleaning");   // Turn on all main lights
+    Activity *cooking = new Activity("cooking");     // Turn on lots of kitchen lights
+    Activity *wakestate = new Activity("wakestate"); // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
+    Activity *resetstate = new Activity("resetstate");
     
     PartOfDay* partOfDay = new PartOfDay();
 
     // Set other states
-    waking->setOtherState("sleeping", 0);        // Turn off sleeping when waking
-    waking->setOtherState("retiring", 0);        // and goingToBed
-
-    retiring->setOtherState("cleaning", 0);
-    retiring->setOtherState("cooking", 0);
-    retiring->setOtherState("playing", 0);
-    retiring->setOtherState("readinging", 0);
-    retiring->setOtherState("waking", 0);
-    retiring->setOtherState("watching", 0);
-
-    sleeping->setOtherState("cleaning", 0);
-    sleeping->setOtherState("cooking", 0);
-    sleeping->setOtherState("playing", 0);
-    sleeping->setOtherState("readinging", 0);
-    sleeping->setOtherState("retiring", 0);
-    sleeping->setOtherState("waking", 0);
-    sleeping->setOtherState("watching", 0);
+    wakestate->setOtherState("cleaning", 0);
+    wakestate->setOtherState("cooking", 0);
 
     // BEHAVIORS
-    ceiling->addBehavior(30, "waking", '>', 0);
-    piano->addBehavior(100, "playing", '>', 0);
+    ceiling->addBehavior(30, "wakestate", '=', 0);
+    ceiling->addBehavior(100, "cleaning", '>', 0);
 
     // Switches
     ceiling->addBehavior(100, "OfficeSwitch", '>', 0);
@@ -118,7 +98,7 @@ void setup() {
     rearAwning->addBehavior(100, "AwningSwitch", '>', 0);
     rampPorch->addBehavior(100, "FloodSwitch", '>', 0);
     rearPorch->addBehavior(100, "FloodSwitch", '>', 0);
-    piano->addBehavior(100, "playingSwitch", '>', 0);
+    piano->addBehavior(100, "pianoSwitch", '>', 0);
 
     // ADD ALL DEVICES
     iot->addDevice(ceiling);
@@ -140,12 +120,8 @@ void setup() {
     // ADD ACTIVITIES
     iot->addDevice(cleaning);
     iot->addDevice(cooking);
-    iot->addDevice(playing);
-    iot->addDevice(reading);
-    iot->addDevice(retiring);
-    iot->addDevice(sleeping);
-    iot->addDevice(waking);
-    iot->addDevice(watching);
+    iot->addDevice(wakestate);
+    iot->addDevice(resetstate);
     
     // ADD OTHER
     iot->addDevice(partOfDay);
