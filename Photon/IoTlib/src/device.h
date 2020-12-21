@@ -69,11 +69,12 @@ class Device {
         _behaviors.addBehavior(behavior);
     };
 
-    void addBehavior(int level, String name, char comparison, int value) {
+    Behavior* addBehavior(int level, String name, char comparison, int value) {
         Behavior *newBehavior = new Behavior(level);
         Condition *newCondition = new Condition(name, comparison, value);
         newBehavior->addCondition(newCondition);
         _behaviors.addBehavior(newBehavior);
+        return newBehavior;         // Allows adding more conditions
     };
     
     void publish(String topic, String message) {

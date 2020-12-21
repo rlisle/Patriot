@@ -69,7 +69,9 @@ void setup() {
 
     // BEHAVIORS
     // Good Morning (sleeping = 0)
-    ceiling->addBehavior(30, "sleeping", '=', 0);   // Turn on dimly with "Good Morning"
+    Behavior* b1 = new Behavior(30);
+    b1->addCondition("sleeping", '=', 0);
+    b1->addCondition("partofday", '<', MORNING);
 
     // Bedtime (sleeping = 1)
     ceiling->addBehavior(0, "sleeping", '=', 1);   // Turn on dimly with "Good Morning"

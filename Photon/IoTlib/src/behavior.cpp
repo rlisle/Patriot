@@ -32,6 +32,7 @@ int Behavior::evaluateStates(States *states)
     for(int x=0; x<_conditions->count(); x++){
         Condition* condition = _conditions->getCondition(x);
         if(condition->isTrue(states) == false) {
+            // this is an AND of all conditions
             return 0;
         }
         // If true, and isDefault, then set _level to state's level
