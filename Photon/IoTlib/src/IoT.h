@@ -24,6 +24,21 @@ All text above must be included in any redistribution.
 #include "devices.h"
 #include "MQTTManager.h"
 
+// PartOfDay
+#define NIGHT 0
+#define DAWN 1
+#define SUNRISE 2
+#define MORNING 3
+#define NOON 4
+#define AFTERNOON 5
+#define SUNSET 6
+#define DUSK 7
+
+// Sleeping
+#define AWAKE 0
+#define RETIRING 1
+#define ASLEEP 2
+
 /**
  * Main IoT object.
  * It provides an API for creating and communicating with all others.

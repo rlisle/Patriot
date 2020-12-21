@@ -8,29 +8,9 @@
  
   To update Photon:
     1. Edit this code
+    2. Update IoT and plugins if needed
     2. "particle flash FrontPanel"
  
-  Hardware
-  1. Particle.io Photon
-  2. I2C cables between boards
-  3. NCD.io NCD8Relay Photon Controller 0x20
-    - Front Awning LEDs    (2)
-    - Right Trim           (3)
-    - Left Trim            (4)
-    - Door Side Floods     (6)
-    - Other Side Floods    (7)
-    - Porch                (8)
-    - ?
-    - ?
-  4. NCD.io NCD8Light I2C 8x Dimmer Controller
-    - Ceiling
-    - Kitchen Ceiling
-    - Sink
-    - Cabinets
-    - ? Trim
-    - ? Trim
-    - Front Awning LEDs
-    - ?
  */
 #include <IoT.h>
 #include <PatriotLight.h>
@@ -75,37 +55,33 @@ void setup() {
     //Switch *frontPorchSwitch = new Switch(RX, "FrontPorchSwitch");
     //Switch *frontAwningSwitch = new Switch(TX, "FrontAwningSwitch");
 
-    // Activities allow Alexa to control them
-    // and can also turn off other activities.
-    // Currently all activities are defined in RearPanel
-    //Activity waking = new Activity("waking");                  // Turns off sleeping
-
-
-    // Set other states
-//    waking->setOtherState("sleeping", 0);        // Turn off sleeping when waking
-
+    // ACTIVITIES - none (see RearPanel)
+    
     // BEHAVIORS
 
-    // Waking
-    ceiling->addBehavior(30, "waking", '>', 0);
-    kitchenCeiling->addBehavior(30, "waking", '>', 0);
-    cabinets->addBehavior(30, "waking", '>', 0);
-    sink->addBehavior(30, "waking", '>', 0);
+    // Good Morning (sleeping = 0)
+    ceiling->addBehavior(30, "sleeping", '=', AWAKE);
+    kitchenCeiling->addBehavior(30, "sleeping", '=', AWAKE);
+    cabinets->addBehavior(30, "sleeping", '=', AWAKE);
+    sink->addBehavior(30, "sleeping", '=', AWAKE);
     
-    // Watching
-    ceiling->addBehavior(70, "watching", '>', 0);
-    kitchenCeiling->addBehavior(50, "watching", '>', 0);
-    cabinets->addBehavior(50, "watching", '>', 0);
-    sink->addBehavior(30, "watching", '>', 0);
+    // TODO: Dusk/Evening AND Awake
+    ceiling->addBehavior(70, "partofday", '=', DUSK);
+    kitchenCeiling->addBehavior(50, "watching", '=', DUSK);
+    cabinets->addBehavior(50, "watching", '=', DUSK);
+    sink->addBehavior(30, "watching", '=', DUSK);
 
     // Retiring
-    ceiling->addBehavior(30, "retiring", '>', 0);
-    kitchenCeiling->addBehavior(30, "retiring", '>', 0);
-    cabinets->addBehavior(30, "retiring", '>', 0);
-    sink->addBehavior(30, "retiring", '>', 0);
+    ceiling->addBehavior(30, "sleeping", '=', RETIRING);
+    kitchenCeiling->addBehavior(30, "sleeping", '=', RETIRING);
+    cabinets->addBehavior(30, "sleeping", '=', RETIRING);
+    sink->addBehavior(30, "sleeping", '=', RETIRING);
 
     // Sleeping
-    // Handled by Alexa room commands
+    ceiling->addBehavior(0, "sleeping", '=', ASLEEP);
+    kitchenCeiling->addBehavior(0, "sleeping", '=', ASLEEP);
+    cabinets->addBehavior(0, "sleeping", '=', ASLEEP);
+    sink->addBehavior(0, "sleeping", '=', ASLEEP);
 
     
     // Switches
