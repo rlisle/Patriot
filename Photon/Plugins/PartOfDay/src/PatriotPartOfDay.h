@@ -5,15 +5,18 @@ Features:
 - Broadcasts the current part of the day
  
  - Periods can be (in order):
-    Night
-    Dawn
     Sunrise
     Morning
     Noon
     Afternoon
     Sunset
     Dusk
-
+    Night
+    Dawn
+ 
+ So dark out is PartOfDay > Sunset
+ and light out is PartOfDay < Dusk
+ 
  Sunrise, noon, and sunset only occur for 1 minute
  
 http://www.github.com/rlisle/Patriot

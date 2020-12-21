@@ -25,14 +25,14 @@ All text above must be included in any redistribution.
 #include "MQTTManager.h"
 
 // PartOfDay
-#define NIGHT 0
-#define DAWN 1
-#define SUNRISE 2
-#define MORNING 3
-#define NOON 4
-#define AFTERNOON 5
-#define SUNSET 6
-#define DUSK 7
+#define SUNRISE 0
+#define MORNING 1
+#define NOON 2
+#define AFTERNOON 3
+#define SUNSET 4
+#define DUSK 5
+#define NIGHT 6
+#define DAWN 7
 
 // Sleeping
 #define AWAKE 0
