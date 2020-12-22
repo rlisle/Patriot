@@ -22,7 +22,8 @@ Behavior::Behavior(int level, bool isDefault)
     _next = NULL;
 }
 
-void Behavior::addCondition(Condition *condition) {
+void Behavior::addCondition(String stateName, char comparison, int value) {
+    Condition *condition = new Condition(stateName, comparison, value);
     _conditions->addCondition(condition);
 }
 
@@ -32,6 +33,7 @@ int Behavior::evaluateStates(States *states)
     for(int x=0; x<_conditions->count(); x++){
         Condition* condition = _conditions->getCondition(x);
         if(condition->isTrue(states) == false) {
+            // this is an AND of all conditions
             return 0;
         }
         // If true, and isDefault, then set _level to state's level

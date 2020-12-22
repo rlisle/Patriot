@@ -56,8 +56,8 @@ class Device {
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
     Device(String name = "", DeviceType type = DeviceType::Unknown) 
-            : _name(name), _type(type), _next(NULL)
-    { 
+            : _name(name), _type(type), _percent(0), _next(NULL)
+    {
         _behaviors = Behaviors();
     }
 
@@ -69,11 +69,11 @@ class Device {
         _behaviors.addBehavior(behavior);
     };
 
-    void addBehavior(int level, String name, char comparison, int value) {
+    Behavior* addBehavior(int level, String name, char comparison, int value) {
         Behavior *newBehavior = new Behavior(level);
-        Condition *newCondition = new Condition(name, comparison, value);
-        newBehavior->addCondition(newCondition);
+        newBehavior->addCondition(name, comparison, value);
         _behaviors.addBehavior(newBehavior);
+        return newBehavior;         // Allows adding more conditions
     };
     
     void publish(String topic, String message) {

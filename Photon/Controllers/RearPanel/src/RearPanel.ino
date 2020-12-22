@@ -11,28 +11,6 @@ Author: Ron Lisle
     2. Update IoT and plugins if needed
     3. "particle flash RearPanel"
  
- Hardware
- 1. NCD Photon Screw Terminal board
-     6 switch connections:
-       A0 Ceiling (brown)
-       A1 Loft (red)
-       A2 Ramp Porch Floods (yellow)
-       A3 Ramp Awning LEDs (green)
-       A4 Rear Porch Flood (blue)
-       A5 Rear Awning LEDs (white)
-  2. NCD 8 PWM OC 8W I2C Dimmer board
-       I/O 0 Ceiling
-       I/O 1 Loft
-       I/O 2 Ramp Porch Floods
-       I/O 3 Ramp Awning LEDs
-       I/O 4 Rear Porch Flood
-       I/O 5 Rear Awning LEDs
-       I/O 6 Piano Spot
-       I/O 7 ?
-
-  Other
-   - built-in blue LED     D7
- 
  */
 #include <IoT.h>
 #include <PatriotSwitch.h>
@@ -54,6 +32,7 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
+    // Lights
     NCD8Light *ceiling = new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2);
     NCD8Light *loft = new NCD8Light(ADDRESS, 1, "Loft", 2);
     NCD8Light *rampPorch = new NCD8Light(ADDRESS, 2, "RampPorch", 2);
@@ -63,7 +42,7 @@ void setup() {
     NCD8Light *piano = new NCD8Light(ADDRESS, 6, "Piano", 2);
     // one unused dimmer I/O
 
-    // Switch control functional sets of lights, not individual lights
+    // Switches
     Switch *officeSwitch = new Switch(A0, "OfficeSwitch");
     Switch *loftSwitch = new Switch(A1, "LoftSwitch");
     Switch *wakingSwitch = new Switch(A2, "WakingSwitch");
@@ -72,45 +51,36 @@ void setup() {
     Switch *pianoSwitch = new Switch(A5, "PianoSwitch");
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
-    //TODO: roll wake states together into an enum
     // Activities allow Alexa to control them directly or via routines
     // and can also turn off other activities.
-    // These will be used by other panels also, but don't need to be duplicated by them
-    Activity *cleaning = new Activity("cleaning");              // Turn on all main lights
-    Activity *cooking = new Activity("cooking");                // Turn on lots of kitchen lights
-    Activity *playing = new Activity("playing");                // Turns on piano lights
-    Activity *reading = new Activity("reading");                // Turn on coach reading lights
-    Activity *retiring = new Activity("retiring");              // Turns off waking and others
-    Activity *sleeping = new Activity("sleeping");              // Turns off goingToBed, waking and others
-    Activity *waking = new Activity("waking");                  // Turns off sleeping
-    // Replace this with Dusk and Night
-    Activity *watching = new Activity("watching");
+    // These can be used by other panels also, but don't need to be duplicated by them
+    Activity *cleaning = new Activity("cleaning");   // Turn on all main lights
+    Activity *cooking = new Activity("cooking");     // Turn on lots of kitchen lights
+    Activity *sleeping = new Activity("sleeping");   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
     
     PartOfDay* partOfDay = new PartOfDay();
 
     // Set other states
-    waking->setOtherState("sleeping", 0);        // Turn off sleeping when waking
-    waking->setOtherState("retiring", 0);        // and goingToBed
-
-    retiring->setOtherState("cleaning", 0);
-    retiring->setOtherState("cooking", 0);
-    retiring->setOtherState("playing", 0);
-    retiring->setOtherState("readinging", 0);
-    retiring->setOtherState("waking", 0);
-    retiring->setOtherState("watching", 0);
-
     sleeping->setOtherState("cleaning", 0);
     sleeping->setOtherState("cooking", 0);
-    sleeping->setOtherState("playing", 0);
-    sleeping->setOtherState("readinging", 0);
-    sleeping->setOtherState("retiring", 0);
-    sleeping->setOtherState("waking", 0);
-    sleeping->setOtherState("watching", 0);
 
     // BEHAVIORS
-    ceiling->addBehavior(30, "waking", '>', 0);
-    piano->addBehavior(100, "playing", '>', 0);
+    // Good Morning (sleeping = 0)
+    Behavior* b1 = new Behavior(30);
+    b1->addCondition("sleeping", '=', AWAKE);
+    b1->addCondition("partofday", '<', MORNING);
 
+    // Bedtime (sleeping = 1)
+    ceiling->addBehavior(0, "sleeping", '=', 1);
+
+    // Good Night (sleeping = 2)
+    ceiling->addBehavior(0, "sleeping", '=', 2);
+
+    // Cleaning
+    ceiling->addBehavior(100, "cleaning", '>', 0);
+    
+    // Cooking - none
+    
     // Switches
     ceiling->addBehavior(100, "OfficeSwitch", '>', 0);
     loft->addBehavior(100, "LoftSwitch", '>', 0);
@@ -118,7 +88,7 @@ void setup() {
     rearAwning->addBehavior(100, "AwningSwitch", '>', 0);
     rampPorch->addBehavior(100, "FloodSwitch", '>', 0);
     rearPorch->addBehavior(100, "FloodSwitch", '>', 0);
-    piano->addBehavior(100, "playingSwitch", '>', 0);
+    piano->addBehavior(100, "pianoSwitch", '>', 0);
 
     // ADD ALL DEVICES
     iot->addDevice(ceiling);
@@ -140,12 +110,7 @@ void setup() {
     // ADD ACTIVITIES
     iot->addDevice(cleaning);
     iot->addDevice(cooking);
-    iot->addDevice(playing);
-    iot->addDevice(reading);
-    iot->addDevice(retiring);
     iot->addDevice(sleeping);
-    iot->addDevice(waking);
-    iot->addDevice(watching);
     
     // ADD OTHER
     iot->addDevice(partOfDay);
