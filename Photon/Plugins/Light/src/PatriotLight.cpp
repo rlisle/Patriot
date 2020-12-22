@@ -45,7 +45,7 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
  * @param percent Int 0 to 100
  */
 void Light::setPercent(int percent) {
-    Log.info("Light setPercent: " + String(percent));
+    Log.info("Light " + _name + " setPercent: " + String(percent));
     changePercent(percent);
 }
 
@@ -97,38 +97,14 @@ bool Light::isAlreadyOff() {
  */
 void Light::startSmoothDimming() {
     if((int)_percent == _targetPercent){
-        Log.trace("Light startSmoothDimming equal");
+        Log.info("Light " + _name + " startSmoothDimming equal");
         return;
     }
     _currentPercent = _percent;
     _lastUpdateTime = millis();
     float delta = _targetPercent - _percent;
     _incrementPerMillisecond = delta / (_dimmingDuration * 1000);
-    Log.trace("Light startSmoothDimming target: " + String(_percent) + ", increment: " + String(_incrementPerMillisecond));
-}
-
-/**
- * Set light off
- */
-void Light::setOff() {
-    if(isAlreadyOff()) return;
-    setPercent(0);
-}
-
-/**
- * Is light on?
- * @return bool true if light is on
- */
-bool Light::isOn() {
-    return !isOff();
-}
-
-/**
- * Is light off?
- * @return bool true if light is off
- */
-bool Light::isOff() {
-    return _targetPercent == 0;
+    Log.info("Light " + _name + " startSmoothDimming target: " + String(_percent) + ", increment: " + String(_incrementPerMillisecond));
 }
 
 /**
@@ -170,12 +146,12 @@ void Light::loop()
     if(_incrementPerMillisecond > 0) {
         if(_currentPercent > _targetPercent) {
             _percent = _targetPercent;
-            Log.trace("Light loop: up done");
+            Log.info("Light "+_name+" loop: up done");
         }
     } else {
         if(_currentPercent < _targetPercent) {
             _percent = _targetPercent;
-            Log.trace("Light loop: down done");
+            Log.info("Light "+_name+" loop: down done");
         }
     }
     _lastUpdateTime = loopTime;
