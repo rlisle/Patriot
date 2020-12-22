@@ -50,14 +50,6 @@ void Light::setPercent(int percent) {
 }
 
 /**
- * Set On
- */
-void Light::setOn() {
-    if(isAlreadyOn()) return;
-    changePercent(100);
-}
-
-/**
  * Change percent
  * @param percent Int new percent value
  */
@@ -72,22 +64,6 @@ void Light::changePercent(int percent) {
     } else {
         startSmoothDimming();
     }
-}
-
-/**
- * Is already on?
- * @return bool true if light is on
- */
-bool Light::isAlreadyOn() {
-    return _targetPercent > 0;
-}
-
-/**
- * Is already off?
- * @return bool true if light is off
- */
-bool Light::isAlreadyOff() {
-    return _targetPercent == 0;
 }
 
 /**
