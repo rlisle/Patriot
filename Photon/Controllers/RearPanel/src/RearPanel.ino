@@ -123,13 +123,20 @@ int prevSleeping = ASLEEP;
 // Since everything happens in loop(), we shouldn't need
 // to worry about states changing asynchronously while
 // we are processing them
+// TODO: refactor previous/didChange into IoT
 void loop() {
     // Sleeping turns off other states
     int newSleeping = iot->getState("sleeping");
     if( newSleeping != prevSleeping ) {
+        // is sleeping
         if( newSleeping > AWAKE ) {
-            iot->setState("cleaning", 0);
-            iot->setState("cooking", 0);
+            iot->publishState("cleaning", 0);
+            iot->publishState("cooking", 0);
+        }
+        
+        // Alexa, Good morning
+        if( newSleeping == AWAKE ) {
+            iot->setDevice("OfficeCeiling", 30);
         }
         
         prevSleeping = newSleeping; // Refactor to IoT
