@@ -57,15 +57,12 @@ void setup() {
     Activity *cleaning = new Activity("cleaning");   // Turn on all main lights
     Activity *cooking = new Activity("cooking");     // Turn on lots of kitchen lights
     Activity *sleeping = new Activity("sleeping");   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
-    Activity *resetting = new Activity("resetting"); // 1 = perform reset. Need to clear when done.
     
     PartOfDay* partOfDay = new PartOfDay();
 
     // Set other states
     sleeping->setOtherState("cleaning", 0);
     sleeping->setOtherState("cooking", 0);
-    //TODO: will resetting work if it resets itself?
-    resetting->setOtherState("resetting", 0);
 
     // BEHAVIORS
     // Good Morning (sleeping = 0)
@@ -74,7 +71,7 @@ void setup() {
     b1->addCondition("partofday", '<', MORNING);
 
     // Bedtime (sleeping = 1)
-    ceiling->addBehavior(0, "sleeping", '=', 1);   // Turn on dimly with "Good Morning"
+    ceiling->addBehavior(0, "sleeping", '=', 1);
 
     // Good Night (sleeping = 2)
     ceiling->addBehavior(0, "sleeping", '=', 2);
@@ -114,7 +111,6 @@ void setup() {
     iot->addDevice(cleaning);
     iot->addDevice(cooking);
     iot->addDevice(sleeping);
-    iot->addDevice(resetting);
     
     // ADD OTHER
     iot->addDevice(partOfDay);
