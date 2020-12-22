@@ -61,8 +61,9 @@ void setup() {
     PartOfDay* partOfDay = new PartOfDay();
 
     // Set other states
-    sleeping->setOtherState("cleaning", 0);
-    sleeping->setOtherState("cooking", 0);
+    //sleeping->setOtherState("cleaning", 0);
+    //sleeping->setOtherState("cooking", 0);
+    
 
     // BEHAVIORS
     // Good Morning (sleeping = 0)
@@ -116,6 +117,23 @@ void setup() {
     iot->addDevice(partOfDay);
 }
 
+// Save previous states we care about
+int prevSleeping = SLEEPING;
+
+// Since everything happens in loop(), we shouldn't need
+// to worry about states changing asynchronously while
+// we are processing them
 void loop() {
+    // Sleeping turns off other states
+    int newSleeping = iot->getState("sleeping");
+    if( newSleeping != prevSleeping ) {
+        if( newSleeping > AWAKE ) {
+            setState("cleaning", 0);
+            setState("cooking", 0);
+        }
+        
+        prevSleeping = newSleeping; // Refactor to IoT
+    }
+    
     iot->loop();
 }

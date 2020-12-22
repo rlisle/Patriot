@@ -87,6 +87,11 @@ public:
      */
     void loop();
 
+    /**
+    Values used by loop programming
+     */
+    int getState(String name);                  // Returns percent or -1
+    int setDevice(String name, int percent);    // returns 0 success else error code: -1 name not found
 
 private:
     static IoT*  _instance;

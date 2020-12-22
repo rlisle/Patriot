@@ -195,3 +195,30 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
         _mqttManager->mqttHandler(rawTopic, payload, length);
     }
 }
+
+/**
+ Sketch Programming Support
+ */
+/**
+ getState()
+ param: name of state
+ returns 0-100 percent or -1 if name not found
+ */
+int getState(String name) {
+    State* state = _states->getStateWithName(name);
+    if( state == NULL) return -1;
+    
+    return state->_value;
+}
+/**
+ setDevice()
+ param: name of device
+ param: percent to set
+ returns: 0 if success, -1 if device not found
+ */
+int setDevice(String name, int percent) {
+    Device* device = _devices->getDeviceWithName(name);
+    if( device == NULL) return -1;
+    device->setPercent(percent);
+    return 0;
+}
