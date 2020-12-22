@@ -221,7 +221,7 @@ void IoT::setState(String name, int value) {
  param: value to assign state
  return: 0 success, -1 MQTT error
  */
-int publishState(String name, int value) {
+int IoT::publishState(String name, int value) {
     if(_mqttManager != NULL) {
         _mqttManager->publish("patriot/" + name, String(value));
         return 0;

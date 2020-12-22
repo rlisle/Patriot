@@ -60,11 +60,7 @@ void setup() {
     
     PartOfDay* partOfDay = new PartOfDay();
 
-    // Set other states
-    //sleeping->setOtherState("cleaning", 0);
-    //sleeping->setOtherState("cooking", 0);
-    
-
+// Behaviors are now implemented entirely within loop() below.
     // BEHAVIORS
     // Good Morning (sleeping = 0)
 //    Behavior* b1 = new Behavior(30);
@@ -119,27 +115,37 @@ void setup() {
 
 // Save previous states we care about
 int prevSleeping = ASLEEP;
+int prevPartOfDay = NIGHT;
 
 // Since everything happens in loop(), we shouldn't need
 // to worry about states changing asynchronously while
 // we are processing them
 // TODO: refactor previous/didChange into IoT
 void loop() {
+    int sleeping = iot->getState("sleeping");
+    int partOfDay = iot->getState("partofday");
+    
     // Sleeping turns off other states
-    int newSleeping = iot->getState("sleeping");
-    if( newSleeping != prevSleeping ) {
+    if( sleeping != prevSleeping ) {
         // is sleeping
-        if( newSleeping > AWAKE ) {
+        if( sleeping > AWAKE ) {
             iot->publishState("cleaning", 0);
             iot->publishState("cooking", 0);
         }
         
         // Alexa, Good morning
-        if( newSleeping == AWAKE ) {
+        if( sleeping == AWAKE && partofday > SUNSET ) {
             iot->setDevice("OfficeCeiling", 30);
         }
         
         prevSleeping = newSleeping; // Refactor to IoT
+    }
+    
+    if( partOfDay != prevPartOfDay) {
+        if( partOfDay == SUNRISE ) {
+            // Turn off lights at sunrise
+            iot->setDevice("OfficeCeiling", 0);
+        }
     }
     
     iot->loop();
