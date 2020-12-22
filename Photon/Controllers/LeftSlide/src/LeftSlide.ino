@@ -40,10 +40,6 @@ void setup() {
   iot->begin();
   iot->connectMQTT(mqttServer, "patriotLeftSlide");
 
-  // BEHAVIORS
-    couch.addBehavior(30, "watchingtv", '>', 0);
-    vertical.addBehavior(30, "watchingtv", '>', 0);
-
   // Devices
   iot->addDevice(&couch);
   iot->addDevice(&vertical);

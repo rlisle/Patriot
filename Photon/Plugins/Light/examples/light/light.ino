@@ -47,16 +47,6 @@ void setup() {
     iot->addDevice(table);
     iot->addDevice(reading);
     iot->addDevice(sink);
-
-    // Setup behaviors for our devices (provide both on and off for v1.2.0)
-    iot->addBehavior(new Behavior(porch, "Outside", '>', 0, 100));
-    iot->addBehavior(new Behavior(porch, "Outside", '=', 0, 0));
-    iot->addBehavior(new Behavior(table, "Kitchen", '>', 0, 100));
-    iot->addBehavior(new Behavior(table, "Kitchen", '=', 0, 0));
-    iot->addBehavior(new Behavior(reading, "Bedroom", '>', 0, 100));
-    iot->addBehavior(new Behavior(reading, "Bedroom", '=', 0, 0));
-    iot->addBehavior(new Behavior(sink, "Bathroom",'>',0, 100));
-    iot->addBehavior(new Behavior(sink, "Bathroom",'=',0, 0));
 }
 
 void loop() {

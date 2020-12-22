@@ -57,31 +57,31 @@ void setup() {
 
     // ACTIVITIES - none (see RearPanel)
     
-    // BEHAVIORS
-
-    // Good Morning (sleeping = 0 AWAKE)
-    ceiling->addBehavior(30, "sleeping", '=', AWAKE);
-    kitchenCeiling->addBehavior(50, "sleeping", '=', AWAKE);
-    cabinets->addBehavior(40, "sleeping", '=', AWAKE);
-    sink->addBehavior(40, "sleeping", '=', AWAKE);
-    
-    // TODO: Awake && Dusk/Evening (pre-sunrise && post-sunset)
-    ceiling->addBehavior(70, "partofday", '>', SUNSET);
-    kitchenCeiling->addBehavior(50, "partofday", '=', SUNSET);
-    cabinets->addBehavior(50, "partofday", '=', SUNSET);
-    sink->addBehavior(30, "partofday", '=', SUNSET);
-
-    // Retiring
-    ceiling->addBehavior(30, "sleeping", '=', RETIRING);
-    kitchenCeiling->addBehavior(30, "sleeping", '=', RETIRING);
-    cabinets->addBehavior(30, "sleeping", '=', RETIRING);
-    sink->addBehavior(30, "sleeping", '=', RETIRING);
-
-    // Sleeping
-    ceiling->addBehavior(0, "sleeping", '=', ASLEEP);
-    kitchenCeiling->addBehavior(0, "sleeping", '=', ASLEEP);
-    cabinets->addBehavior(0, "sleeping", '=', ASLEEP);
-    sink->addBehavior(0, "sleeping", '=', ASLEEP);
+//    // BEHAVIORS
+//
+//    // Good Morning (sleeping = 0 AWAKE)
+//    ceiling->addBehavior(30, "sleeping", '=', AWAKE);
+//    kitchenCeiling->addBehavior(50, "sleeping", '=', AWAKE);
+//    cabinets->addBehavior(40, "sleeping", '=', AWAKE);
+//    sink->addBehavior(40, "sleeping", '=', AWAKE);
+//    
+//    // TODO: Awake && Dusk/Evening (pre-sunrise && post-sunset)
+//    ceiling->addBehavior(70, "partofday", '>', SUNSET);
+//    kitchenCeiling->addBehavior(50, "partofday", '=', SUNSET);
+//    cabinets->addBehavior(50, "partofday", '=', SUNSET);
+//    sink->addBehavior(30, "partofday", '=', SUNSET);
+//
+//    // Retiring
+//    ceiling->addBehavior(30, "sleeping", '=', RETIRING);
+//    kitchenCeiling->addBehavior(30, "sleeping", '=', RETIRING);
+//    cabinets->addBehavior(30, "sleeping", '=', RETIRING);
+//    sink->addBehavior(30, "sleeping", '=', RETIRING);
+//
+//    // Sleeping
+//    ceiling->addBehavior(0, "sleeping", '=', ASLEEP);
+//    kitchenCeiling->addBehavior(0, "sleeping", '=', ASLEEP);
+//    cabinets->addBehavior(0, "sleeping", '=', ASLEEP);
+//    sink->addBehavior(0, "sleeping", '=', ASLEEP);
 
     
     // Switches

@@ -19,7 +19,6 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 #include "constants.h"
-#include "behavior.h"
 #include "states.h"
 #include "devices.h"
 #include "MQTTManager.h"
@@ -90,8 +89,9 @@ public:
     /**
     Values used by loop programming
      */
-    int getState(String name);                  // Returns percent or -1
-    int setDevice(String name, int percent);    // returns 0 success else error code: -1 name not found
+    int  getState(String name);                  // Returns percent or -1
+    void setState(String name, int value);       // Modifies existing, or adds new state with value
+    int  setDevice(String name, int percent);    // returns 0 success else error code: -1 name not found
 
 private:
     static IoT*  _instance;

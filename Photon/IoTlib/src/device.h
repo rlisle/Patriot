@@ -14,9 +14,6 @@ All text above must be included in any redistribution.
 ******************************************************************/
 #pragma once
 
-#include "actuators.h"
-#include "behaviors.h"
-
 enum class DeviceType {
     Unknown,
     Activity,

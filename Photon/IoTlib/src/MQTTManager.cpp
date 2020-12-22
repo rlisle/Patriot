@@ -160,7 +160,6 @@ void MQTTManager::parseMessage(String topic, String message)
             IoT *iot = IoT::getInstance();
             States *states = iot->_states;
             states->addState(subtopic,percent);
-            _devices->stateDidChange(states);
         }
     } else {
         // Not addressed or recognized by us

@@ -67,29 +67,29 @@ void setup() {
 
     // BEHAVIORS
     // Good Morning (sleeping = 0)
-    Behavior* b1 = new Behavior(30);
-    b1->addCondition("sleeping", '=', AWAKE);
-    b1->addCondition("partofday", '<', MORNING);
-
-    // Bedtime (sleeping = 1)
-    ceiling->addBehavior(0, "sleeping", '=', 1);
-
-    // Good Night (sleeping = 2)
-    ceiling->addBehavior(0, "sleeping", '=', 2);
-
-    // Cleaning
-    ceiling->addBehavior(100, "cleaning", '>', 0);
+//    Behavior* b1 = new Behavior(30);
+//    b1->addCondition("sleeping", '=', AWAKE);
+//    b1->addCondition("partofday", '<', MORNING);
+//
+//    // Bedtime (sleeping = 1)
+//    ceiling->addBehavior(0, "sleeping", '=', 1);
+//
+//    // Good Night (sleeping = 2)
+//    ceiling->addBehavior(0, "sleeping", '=', 2);
+//
+//    // Cleaning
+//    ceiling->addBehavior(100, "cleaning", '>', 0);
     
     // Cooking - none
     
     // Switches
-    ceiling->addBehavior(100, "OfficeSwitch", '>', 0);
-    loft->addBehavior(100, "LoftSwitch", '>', 0);
-    rampAwning->addBehavior(100, "AwningSwitch", '>', 0);
-    rearAwning->addBehavior(100, "AwningSwitch", '>', 0);
-    rampPorch->addBehavior(100, "FloodSwitch", '>', 0);
-    rearPorch->addBehavior(100, "FloodSwitch", '>', 0);
-    piano->addBehavior(100, "pianoSwitch", '>', 0);
+//    ceiling->addBehavior(100, "OfficeSwitch", '>', 0);
+//    loft->addBehavior(100, "LoftSwitch", '>', 0);
+//    rampAwning->addBehavior(100, "AwningSwitch", '>', 0);
+//    rearAwning->addBehavior(100, "AwningSwitch", '>', 0);
+//    rampPorch->addBehavior(100, "FloodSwitch", '>', 0);
+//    rearPorch->addBehavior(100, "FloodSwitch", '>', 0);
+//    piano->addBehavior(100, "pianoSwitch", '>', 0);
 
     // ADD ALL DEVICES
     iot->addDevice(ceiling);
@@ -118,7 +118,7 @@ void setup() {
 }
 
 // Save previous states we care about
-int prevSleeping = SLEEPING;
+int prevSleeping = ASLEEP;
 
 // Since everything happens in loop(), we shouldn't need
 // to worry about states changing asynchronously while
@@ -128,8 +128,8 @@ void loop() {
     int newSleeping = iot->getState("sleeping");
     if( newSleeping != prevSleeping ) {
         if( newSleeping > AWAKE ) {
-            setState("cleaning", 0);
-            setState("cooking", 0);
+            iot->setState("cleaning", 0);
+            iot->setState("cooking", 0);
         }
         
         prevSleeping = newSleeping; // Refactor to IoT
