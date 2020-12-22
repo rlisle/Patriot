@@ -59,17 +59,17 @@ void setup() {
     
     // BEHAVIORS
 
-    // Good Morning (sleeping = 0)
+    // Good Morning (sleeping = 0 AWAKE)
     ceiling->addBehavior(30, "sleeping", '=', AWAKE);
-    kitchenCeiling->addBehavior(30, "sleeping", '=', AWAKE);
-    cabinets->addBehavior(30, "sleeping", '=', AWAKE);
-    sink->addBehavior(30, "sleeping", '=', AWAKE);
+    kitchenCeiling->addBehavior(50, "sleeping", '=', AWAKE);
+    cabinets->addBehavior(40, "sleeping", '=', AWAKE);
+    sink->addBehavior(40, "sleeping", '=', AWAKE);
     
-    // TODO: Dusk/Evening AND Awake
-    ceiling->addBehavior(70, "partofday", '=', DUSK);
-    kitchenCeiling->addBehavior(50, "watching", '=', DUSK);
-    cabinets->addBehavior(50, "watching", '=', DUSK);
-    sink->addBehavior(30, "watching", '=', DUSK);
+    // TODO: Awake && Dusk/Evening (pre-sunrise && post-sunset)
+    ceiling->addBehavior(70, "partofday", '>', SUNSET);
+    kitchenCeiling->addBehavior(50, "partofday", '=', SUNSET);
+    cabinets->addBehavior(50, "partofday", '=', SUNSET);
+    sink->addBehavior(30, "partofday", '=', SUNSET);
 
     // Retiring
     ceiling->addBehavior(30, "sleeping", '=', RETIRING);
