@@ -134,11 +134,11 @@ void loop() {
         }
         
         // Alexa, Good morning
-        if( sleeping == AWAKE && partofday > SUNSET ) {
+        if( sleeping == AWAKE && partOfDay > SUNSET ) {
             iot->setDevice("OfficeCeiling", 30);
         }
         
-        prevSleeping = newSleeping; // Refactor to IoT
+        prevSleeping = sleeping; // Refactor to IoT
     }
     
     if( partOfDay != prevPartOfDay) {
@@ -146,6 +146,7 @@ void loop() {
             // Turn off lights at sunrise
             iot->setDevice("OfficeCeiling", 0);
         }
+        prevPartOfDay = partOfDay;
     }
     
     iot->loop();
