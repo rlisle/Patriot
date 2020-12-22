@@ -44,8 +44,6 @@ class Device {
     String     _name;
     DeviceType _type;
     int        _percent;
-    Behaviors  _behaviors;
-    Actuators  _actuators;
 
     Device*    _next;       // Linked list
 
