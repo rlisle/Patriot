@@ -2,7 +2,7 @@
  NCD Light control
 
  Features:
- - 0-4096 dimming control
+ - 0-255 dimming control
  - Supports multiple boards
  
  http://www.github.com/rlisle/Patriot
