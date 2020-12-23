@@ -107,7 +107,8 @@ int prevCleaning = 0;
 void loop() {
     int sleeping = iot->getState("sleeping");
     int partOfDay = iot->getState("partofday");
-    
+    int cleaning = iot->getState("cleaning");
+
     // Sleeping turns off other states
     if( sleeping != prevSleeping ) {
         
