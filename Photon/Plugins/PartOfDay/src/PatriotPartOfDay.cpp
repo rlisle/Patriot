@@ -59,7 +59,7 @@ bool Period::operator <(const Period& period) {
  * Constructor
  */
 PartOfDay::PartOfDay()
-        : Device("PartOfDay", DeviceType::PartOfDay)
+        : Device("PartOfDaySource", DeviceType::PartOfDay)
 {
     _lastPollTime = millis();
     _current = 0;
