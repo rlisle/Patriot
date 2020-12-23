@@ -33,7 +33,5 @@ public:
     void loop();
     
     // Override to prevent MQTT from setting _percent.
-    // Needed because of no auto behavior.
-    // Our own generated MQTT message will reset _percent back to 0.
     void setPercent(int percent) { return; };
 };
