@@ -35,7 +35,6 @@ class Light : public Device
     bool      _isInverted;              // On state = LOW instead of default HIGH
     bool      _forceDigital;            // On/Off only, even if PWM supported
 
-    void      changePercent(int percent);
     void      startSmoothDimming();
     void      outputPWM();
     int       scalePWM(int percent);

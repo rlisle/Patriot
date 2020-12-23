@@ -46,14 +46,6 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
  */
 void Light::setPercent(int percent) {
     Log.info("Light " + _name + " setPercent: " + String(percent));
-    changePercent(percent);
-}
-
-/**
- * Change percent
- * @param percent Int new percent value
- */
-void Light::changePercent(int percent) {
     if(_targetPercent == percent) return;
 
     _targetPercent = percent;
@@ -153,6 +145,7 @@ void Light::outputPWM() {
  * 0 = 0, 100 = 255
  */
 int Light::scalePWM(int percent) {
+    //TODO: This is too extreme. Adjust algorithm
     if (percent == 0) return 0;
     if (percent >= 100) return 255;
     
