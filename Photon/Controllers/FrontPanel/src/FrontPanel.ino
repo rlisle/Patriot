@@ -149,6 +149,8 @@ void loop() {
             iot->setDevice("kitchenCeiling", 60);
             iot->setDevice("cabinets", 60);
             iot->setDevice("sink", 60);
+            iot->setDevice("FrontAwning", 100);
+            iot->setDevice("FrontPorch", 60);
         }
         
         prevPartOfDay = partOfDay;

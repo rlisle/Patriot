@@ -167,7 +167,7 @@ void loop() {
             iot->setDevice("Loft", 0);
             iot->setDevice("RampPorch", 50);
             iot->setDevice("RampAwning", 100);
-            iot->setDevice("RearProch", 50);
+            iot->setDevice("RearProch", 60);
             iot->setDevice("RearAwning", 100);
             iot->setDevice("Piano", 30);
         }
