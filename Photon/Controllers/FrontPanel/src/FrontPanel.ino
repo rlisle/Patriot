@@ -39,36 +39,23 @@ void setup() {
     NCD8Light *frontAwning = new NCD8Light(ADDRESS2, 6, "FrontAwning");
     NCD8Light *frontPorch = new NCD8Light(ADDRESS2, 7, "FrontPorch");
 
-    Light *ceiling = new Light(D2, "ceiling", 2);
-    Light *cabinets = new Light(D3, "cabinets", 2);
+    Light *ceiling = new Light(D2, "Ceiling", 2);
+    Light *cabinets = new Light(D3, "Cabinets", 2);
 
     // Enable and reorder once wiring connected
-    //Switch *ceilingSwitch = new Switch(A0, "CeilingSwitch");
-    //Switch *kitchenCeilingSwitch = new Switch(A1, "KitchenCeilingSwitch");
-    //Switch *sinkSwitch = new Switch(A2, "SinkSwitch");
-    //Switch *cabinetSwitch = new Switch(A3, "CabinetSwitch");
-    //Switch *rightTrimSwitch = new Switch(A4, "RightTrimSwitch");
-    //Switch *leftTrimSwitch = new Switch(A5, "LeftTrimSwitch");
-    //Switch *dsFloodsSwitch = new Switch(A6, "DSFloodsSwitch");
-    //Switch *osFloodsSwitch = new Switch(A7, "ODSFloodsSwitch");
-    //Switch *frontPorchSwitch = new Switch(RX, "FrontPorchSwitch");
-    //Switch *frontAwningSwitch = new Switch(TX, "FrontAwningSwitch");
+    Switch *ceilingSwitch = new Switch(A0, "CeilingSwitch");
+    Switch *kitchenCeilingSwitch = new Switch(A1, "KitchenCeilingSwitch");
+    Switch *sinkSwitch = new Switch(A2, "SinkSwitch");
+    Switch *cabinetSwitch = new Switch(A3, "CabinetSwitch");
+    Switch *rightTrimSwitch = new Switch(A4, "RightTrimSwitch");
+    Switch *leftTrimSwitch = new Switch(A5, "LeftTrimSwitch");
+    Switch *dsFloodsSwitch = new Switch(A6, "DSFloodsSwitch");
+    Switch *osFloodsSwitch = new Switch(A7, "ODSFloodsSwitch");
+    Switch *frontPorchSwitch = new Switch(RX, "FrontPorchSwitch");
+    Switch *frontAwningSwitch = new Switch(TX, "FrontAwningSwitch");
 
     // ACTIVITIES - none (see RearPanel)
         
-    // Switches
-// Uncomment these once they're hooked up. Otherwise they appear to be ON
-//    ceiling->addBehavior(100, "CeilingSwitch", '>', 0);
-//    kitchenCeiling->addBehavior(100, "KitchenCeilingSwitch", '>', 0);
-//    sink->addBehavior(100, "SinkSwitch", '>', 0);
-//    kitchenCabinets->addBehavior(100, "CabinetSwitch", '>', 0);
-//    rightTrim->addBehavior(100, "RightTrimSwitch", '>', 0);
-//    leftTrim->addBehavior(100, "LeftTrimSwitch", '>', 0);
-//    dsFloods->addBehavior(100, "DSFloodsSwitch", '>', 0);
-//    osFloods->addBehavior(100, "OSFloodsSwitch", '>', 0);
-//    frontPorch->addBehavior(100, "FrontPorchSwitch", '>', 0);
-//    frontAwning->addBehavior(100, "FrontAwningSwitch", '>', 0);
-
     // DEVICES
 
     iot->addDevice(kitchenCeiling);
@@ -83,22 +70,33 @@ void setup() {
     iot->addDevice(ceiling);
     iot->addDevice(cabinets);
 
-//    iot->addDevice(ceilingSwitch);
-//    iot->addDevice(kitchenCeilingSwitch);
-//    iot->addDevice(sinkSwitch);
-//    iot->addDevice(cabinetSwitch);
-//    iot->addDevice(rightTrimSwitch);
-//    iot->addDevice(leftTrimSwitch);
-//    iot->addDevice(dsFloodsSwitch);
-//    iot->addDevice(osFloodsSwitch);
-//    iot->addDevice(frontPorchSwitch);
-//    iot->addDevice(frontAwningSwitch);
+    iot->addDevice(ceilingSwitch);
+    iot->addDevice(kitchenCeilingSwitch);
+    iot->addDevice(sinkSwitch);
+    iot->addDevice(cabinetSwitch);
+    iot->addDevice(rightTrimSwitch);
+    iot->addDevice(leftTrimSwitch);
+    iot->addDevice(dsFloodsSwitch);
+    iot->addDevice(osFloodsSwitch);
+    iot->addDevice(frontPorchSwitch);
+    iot->addDevice(frontAwningSwitch);
 
 }
 
 // Save previous states we care about
 int prevSleeping = ASLEEP;
 int prevPartOfDay = NIGHT;
+
+int prevCeilingSwitch = 0;
+int prevKitchenCeilingSwitch = 0;
+int prevSinkSwitch = 0;
+int prevCabinetSwitch = 0;
+int prevRightTrimSwitch = 0;
+int prevLeftTrimSwitch = 0;
+int prevDSFloodSwitch = 0;
+int prevOSFloodSwitch = 0;
+int prevFrontPorchSwitch = 0;
+int prevFrontAwningSwitch = 0;
 
 void loop() {
     int sleeping = iot->getState("sleeping");
@@ -158,4 +156,20 @@ void loop() {
     
 
     iot->loop();
+}
+
+void setAllInsideLights(int level) {
+    iot->setDevice("KitchenCeiling", level);
+    iot->addDevice("Sink", level);
+    iot->addDevice("RightTrim", level);
+    iot->addDevice("LeftTrim", level);
+    iot->addDevice("Ceiling", level);
+    iot->addDevice("Cabinets", level);
+}
+
+void setAllOutsideLights(int level) {
+    iot->addDevice("DoorSide", level);
+    iot->addDevice("OtherSide", level);
+    iot->addDevice("FrontAwning", level);
+    iot->addDevice("FrontPorch", level);
 }
