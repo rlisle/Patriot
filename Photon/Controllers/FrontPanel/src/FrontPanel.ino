@@ -43,16 +43,16 @@ void setup() {
     Light *cabinets = new Light(D3, "Cabinets", 2);
 
     // Enable and reorder once wiring connected
-    Switch *ceilingSwitch = new Switch(A0, "CeilingSwitch");
-    Switch *kitchenCeilingSwitch = new Switch(A1, "KitchenCeilingSwitch");
-    Switch *sinkSwitch = new Switch(A2, "SinkSwitch");
-    Switch *cabinetSwitch = new Switch(A3, "CabinetSwitch");
-    Switch *rightTrimSwitch = new Switch(A4, "RightTrimSwitch");
-    Switch *leftTrimSwitch = new Switch(A5, "LeftTrimSwitch");
-    Switch *dsFloodsSwitch = new Switch(A6, "DoorSideSwitch");
-    Switch *odsFloodsSwitch = new Switch(A7, "OtherSideSwitch");
-    Switch *frontPorchSwitch = new Switch(RX, "FrontPorchSwitch");
-    Switch *frontAwningSwitch = new Switch(TX, "FrontAwningSwitch");
+    Switch *ceilingSwitch = new Switch(A0, "CeilingSwitch");                // A0 bottom "Light"
+    Switch *kitchenCeilingSwitch = new Switch(A1, "KitchenCeilingSwitch");  // A1 3rd row left "Ceiling Lights"
+    Switch *sinkSwitch = new Switch(A2, "SinkSwitch");              // A2 3rd row l/m "DS Flood Lights"
+    Switch *cabinetSwitch = new Switch(A3, "CabinetSwitch");        // A3 3rd row r/m "ODS Flood Lights"
+    Switch *rightTrimSwitch = new Switch(A4, "RightTrimSwitch");    // A4 3rd row right "Porch Lights"
+    Switch *leftTrimSwitch = new Switch(A5, "LeftTrimSwitch");      // A5 top left (tape "Cabinet")
+    Switch *dsFloodsSwitch = new Switch(A6, "DoorSideSwitch");      // A6 top right
+    Switch *odsFloodsSwitch = new Switch(A7, "OtherSideSwitch");    // A7 2nd row left (tape "Sink")
+    Switch *frontPorchSwitch = new Switch(RX, "FrontPorchSwitch");  // RX 2nd row middle (tape "Ceiling")
+    Switch *frontAwningSwitch = new Switch(TX, "FrontAwningSwitch"); // TX 2nd row right (tape "Indirect")
 
     // ACTIVITIES - none (see RearPanel)
         
