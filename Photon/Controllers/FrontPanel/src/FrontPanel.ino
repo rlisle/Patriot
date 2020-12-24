@@ -53,17 +53,17 @@ void setup() {
     // 3rd r-m: A3      "ODS Flood Lights"
     // 3rd right: A4    "Porch Lights"
     // bottom: A0       "Light"
-    Switch *leftTrimSwitch = new Switch(TX, "LeftTrimSwitch");          // tape "Cabinet"       (top left)
-    Switch *kitchenCeilingSwitch = new Switch(RX, "KitchenCeilingSwitch"); //                   (top right)
-    Switch *sinkSwitch = new Switch(A7, "SinkSwitch");                  // tape "Sink"          (2nd left)
-    Switch *cabinetSwitch = new Switch(A5, "CabinetSwitch");            // tape "Ceiling"       (2nd middle)
-    Switch *rightTrimSwitch = new Switch(A6, "RightTrimSwitch");        // tape "Indirect"      (2nd right)
-
-    Switch *ceilingSwitch = new Switch(A1, "CeilingSwitch");            // "Ceiling"            (3rd left)
-    Switch *dsFloodsSwitch = new Switch(A2, "DoorSideSwitch");          // "DS Flood Lights"    (3rd l-m)
-    Switch *odsFloodsSwitch = new Switch(A3, "OtherSideSwitch");        // "ODS Flood Lights"   (3rd m-r)
-    Switch *frontPorchSwitch = new Switch(A4, "FrontPorchSwitch");      // "Porch Lights"       (3rd right)
-    Switch *frontAwningSwitch = new Switch(A0, "FrontAwningSwitch");    // "Light"              (bottom)
+    Switch *cabinetSwitch = new Switch(A5, "CabinetSwitch");            // tape "Cabinet"     (top left)
+    Switch *rightTrimSwitch = new Switch(A6, "RightTrimSwitch");        //                    (top right)
+    Switch *sinkSwitch = new Switch(A7, "SinkSwitch");                  // tape "Sink"        (2nd left)
+    Switch *kitchenCeilingSwitch = new Switch(RX, "KitchenCeilingSwitch"); // tape "Ceiling"  (2nd middle)
+    Switch *leftTrimSwitch = new Switch(TX, "LeftTrimSwitch");          // tape "Indirect"    (2nd right)
+    
+    Switch *ceilingSwitch = new Switch(A1, "CeilingSwitch");            // "Ceiling"          (3rd left)
+    Switch *dsFloodsSwitch = new Switch(A2, "DoorSideSwitch");          // "DS Flood Lights"  (3rd l-m)
+    Switch *odsFloodsSwitch = new Switch(A3, "OtherSideSwitch");        // "ODS Flood Lights" (3rd m-r)
+    Switch *frontPorchSwitch = new Switch(A4, "FrontPorchSwitch");      // "Porch Lights"     (3rd right)
+    Switch *frontAwningSwitch = new Switch(A0, "FrontAwningSwitch");    // "Light"            (bottom)
 
     // ACTIVITIES - none (see RearPanel)
         
