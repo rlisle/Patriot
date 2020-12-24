@@ -160,16 +160,16 @@ void loop() {
 
 void setAllInsideLights(int level) {
     iot->setDevice("KitchenCeiling", level);
-    iot->addDevice("Sink", level);
-    iot->addDevice("RightTrim", level);
-    iot->addDevice("LeftTrim", level);
-    iot->addDevice("Ceiling", level);
-    iot->addDevice("Cabinets", level);
+    iot->setDevice("Sink", level);
+    iot->setDevice("RightTrim", level);
+    iot->setDevice("LeftTrim", level);
+    iot->setDevice("Ceiling", level);
+    iot->setDevice("Cabinets", level);
 }
 
 void setAllOutsideLights(int level) {
-    iot->addDevice("DoorSide", level);
-    iot->addDevice("OtherSide", level);
-    iot->addDevice("FrontAwning", level);
-    iot->addDevice("FrontPorch", level);
+    iot->setDevice("DoorSide", level);
+    iot->setDevice("OtherSide", level);
+    iot->setDevice("FrontAwning", level);
+    iot->setDevice("FrontPorch", level);
 }
