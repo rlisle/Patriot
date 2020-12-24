@@ -42,17 +42,28 @@ void setup() {
     Light *ceiling = new Light(D2, "Ceiling", 2);
     Light *cabinets = new Light(D3, "Cabinets", 2);
 
-    // Enable and reorder once wiring connected
-    Switch *ceilingSwitch = new Switch(A0, "CeilingSwitch");                // A0 bottom "Light"
-    Switch *kitchenCeilingSwitch = new Switch(A1, "KitchenCeilingSwitch");  // A1 3rd row left "Ceiling Lights"
-    Switch *sinkSwitch = new Switch(A2, "SinkSwitch");              // A2 3rd row l/m "DS Flood Lights"
-    Switch *cabinetSwitch = new Switch(A3, "CabinetSwitch");        // A3 3rd row r/m "ODS Flood Lights"
-    Switch *rightTrimSwitch = new Switch(A4, "RightTrimSwitch");    // A4 3rd row right "Porch Lights"
-    Switch *leftTrimSwitch = new Switch(A5, "LeftTrimSwitch");      // A5 top left (tape "Cabinet")
-    Switch *dsFloodsSwitch = new Switch(A6, "DoorSideSwitch");      // A6 top right
-    Switch *odsFloodsSwitch = new Switch(A7, "OtherSideSwitch");    // A7 2nd row left (tape "Sink")
-    Switch *frontPorchSwitch = new Switch(RX, "FrontPorchSwitch");  // RX 2nd row middle (tape "Ceiling")
-    Switch *frontAwningSwitch = new Switch(TX, "FrontAwningSwitch"); // TX 2nd row right (tape "Indirect")
+    // Switch wiring
+    // Top left: RX     tape "Cabinet"
+    // Top right: TX
+    // 2nd left: A7     tape "Sink"
+    // 2nd middle: A5   tape "Ceiling"
+    // 2nd right: A6    tape "Indirect"
+    // 3rd left: A1     "Ceiling"
+    // 3rd l-m: A2      "DS Flood Lights"
+    // 3rd r-m: A3      "ODS Flood Lights"
+    // 3rd right: A4    "Porch Lights"
+    // bottom: A0       "Light"
+    Switch *leftTrimSwitch = new Switch(TX, "LeftTrimSwitch");          // tape "Cabinet"       (top left)
+    Switch *kitchenCeilingSwitch = new Switch(RX, "KitchenCeilingSwitch"); //                   (top right)
+    Switch *sinkSwitch = new Switch(A7, "SinkSwitch");                  // tape "Sink"          (2nd left)
+    Switch *cabinetSwitch = new Switch(A5, "CabinetSwitch");            // tape "Ceiling"       (2nd middle)
+    Switch *rightTrimSwitch = new Switch(A6, "RightTrimSwitch");        // tape "Indirect"      (2nd right)
+
+    Switch *ceilingSwitch = new Switch(A1, "CeilingSwitch");            // "Ceiling"            (3rd left)
+    Switch *dsFloodsSwitch = new Switch(A2, "DoorSideSwitch");          // "DS Flood Lights"    (3rd l-m)
+    Switch *odsFloodsSwitch = new Switch(A3, "OtherSideSwitch");        // "ODS Flood Lights"   (3rd m-r)
+    Switch *frontPorchSwitch = new Switch(A4, "FrontPorchSwitch");      // "Porch Lights"       (3rd right)
+    Switch *frontAwningSwitch = new Switch(A0, "FrontAwningSwitch");    // "Light"              (bottom)
 
     // ACTIVITIES - none (see RearPanel)
         
@@ -213,10 +224,10 @@ void loop() {
 // device when it changes. The switch and device must use
 // similar names, the "Switch" appended to the device name.
 // TODO: move this into IoT once working
-void setDeviceFromSwitch(String name, *prevValue) {
-    int switchValue = iot->getState(name+"Switch");
-    //TODO:
-}
+//void setDeviceFromSwitch(String name, int *prevValue) {
+//    int switchValue = iot->getState(name+"Switch");
+//    //TODO:
+//}
 
 void setAllInsideLights(int level) {
     iot->setDevice("KitchenCeiling", level);
