@@ -35,9 +35,6 @@ class Light : public Device
     bool      _isInverted;              // On state = LOW instead of default HIGH
     bool      _forceDigital;            // On/Off only, even if PWM supported
 
-    bool      isAlreadyOn();
-    bool      isAlreadyOff();
-    void      changePercent(int percent);
     void      startSmoothDimming();
     void      outputPWM();
     int       scalePWM(int percent);
@@ -46,10 +43,6 @@ class Light : public Device
  public:
     Light(int pin, String name, bool isInverted=false, bool forceDigital=false);
     void      setPercent(int percent);      // Set light immediately
-    void      setOn();                      // Same as setSwitch 100
-    void      setOff();                     // Same as setSwitch 0
-    bool      isOn();
-    bool      isOff();
 
     void      setDimmingDuration(float duration);
     float     getDimmingDuration();

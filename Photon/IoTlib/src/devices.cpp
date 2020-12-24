@@ -47,18 +47,6 @@ void Devices::addDevice(Device *device)
     buildDevicesVariable();
 }
 
-void Devices::stateDidChange(States *states) {
-    for (int i = 0; i < numDevices(); i++)
-    {
-        Device *device = getDeviceByNum(i);
-        int newLevel = device->_behaviors.stateDidChange(states);
-        if(newLevel != device->getPercent()) {
-            Log.trace("Device newLevel: "+String(newLevel));
-            device->setPercent(newLevel);
-        }
-    }
-}
-
 void Devices::loop()
 {
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)

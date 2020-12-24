@@ -14,9 +14,6 @@ All text above must be included in any redistribution.
 ******************************************************************/
 #pragma once
 
-#include "actuators.h"
-#include "behaviors.h"
-
 enum class DeviceType {
     Unknown,
     Activity,
@@ -44,8 +41,6 @@ class Device {
     String     _name;
     DeviceType _type;
     int        _percent;
-    Behaviors  _behaviors;
-    Actuators  _actuators;
 
     Device*    _next;       // Linked list
 
@@ -58,24 +53,9 @@ class Device {
     Device(String name = "", DeviceType type = DeviceType::Unknown) 
             : _name(name), _type(type), _percent(0), _next(NULL)
     {
-        _behaviors = Behaviors();
+        // Nothing to do.
     }
 
-    void setOtherState(String name, int value) {
-        _actuators.addActuator(name, value);
-    };
-
-    void addBehavior(Behavior *behavior) {
-        _behaviors.addBehavior(behavior);
-    };
-
-    Behavior* addBehavior(int level, String name, char comparison, int value) {
-        Behavior *newBehavior = new Behavior(level);
-        newBehavior->addCondition(name, comparison, value);
-        _behaviors.addBehavior(newBehavior);
-        return newBehavior;         // Allows adding more conditions
-    };
-    
     void publish(String topic, String message) {
         if(publishPtr != NULL) {
             publishPtr(topic, message);
@@ -99,9 +79,6 @@ class Device {
 
     virtual void setOn() { setPercent(100); };
     virtual void setOff() { setPercent(0); };
-
-    // Override and return false to prevent automatically creating a behavior
-    virtual bool shouldAutoCreateBehavior() { return true; };
 
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};

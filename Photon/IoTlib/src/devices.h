@@ -31,8 +31,6 @@ public:
     Device*     getDeviceWithName(String name);
     int         numDevices();
     
-    void        stateDidChange(States *states);
-    
 private:
     Device*     _devices;     // Linked list of device objects
     

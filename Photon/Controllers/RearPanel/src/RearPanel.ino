@@ -60,35 +60,14 @@ void setup() {
     
     PartOfDay* partOfDay = new PartOfDay();
 
-    // Set other states
-    sleeping->setOtherState("cleaning", 0);
-    sleeping->setOtherState("cooking", 0);
-
-    // BEHAVIORS
-    // Good Morning (sleeping = 0)
-    Behavior* b1 = new Behavior(30);
-    b1->addCondition("sleeping", '=', AWAKE);
-    b1->addCondition("partofday", '<', MORNING);
-
-    // Bedtime (sleeping = 1)
-    ceiling->addBehavior(0, "sleeping", '=', 1);
-
-    // Good Night (sleeping = 2)
-    ceiling->addBehavior(0, "sleeping", '=', 2);
-
-    // Cleaning
-    ceiling->addBehavior(100, "cleaning", '>', 0);
-    
-    // Cooking - none
-    
     // Switches
-    ceiling->addBehavior(100, "OfficeSwitch", '>', 0);
-    loft->addBehavior(100, "LoftSwitch", '>', 0);
-    rampAwning->addBehavior(100, "AwningSwitch", '>', 0);
-    rearAwning->addBehavior(100, "AwningSwitch", '>', 0);
-    rampPorch->addBehavior(100, "FloodSwitch", '>', 0);
-    rearPorch->addBehavior(100, "FloodSwitch", '>', 0);
-    piano->addBehavior(100, "pianoSwitch", '>', 0);
+//    ceiling->addBehavior(100, "OfficeSwitch", '>', 0);
+//    loft->addBehavior(100, "LoftSwitch", '>', 0);
+//    rampAwning->addBehavior(100, "AwningSwitch", '>', 0);
+//    rearAwning->addBehavior(100, "AwningSwitch", '>', 0);
+//    rampPorch->addBehavior(100, "FloodSwitch", '>', 0);
+//    rearPorch->addBehavior(100, "FloodSwitch", '>', 0);
+//    piano->addBehavior(100, "pianoSwitch", '>', 0);
 
     // ADD ALL DEVICES
     iot->addDevice(ceiling);
@@ -116,6 +95,95 @@ void setup() {
     iot->addDevice(partOfDay);
 }
 
+// Save previous states we care about
+int prevSleeping = ASLEEP;
+int prevPartOfDay = NIGHT;
+int prevCleaning = 0;
+
+// Since everything happens in loop(), we shouldn't need
+// to worry about states changing asynchronously while
+// we are processing them
+// TODO: refactor previous/didChange into IoT
 void loop() {
+    int sleeping = iot->getState("sleeping");
+    int partOfDay = iot->getState("partofday");
+    int cleaning = iot->getState("cleaning");
+
+    // Sleeping turns off other states
+    if( sleeping != prevSleeping ) {
+        
+        // Alexa, Good morning
+        if( sleeping == AWAKE && partOfDay > SUNSET ) {
+            iot->setDevice("OfficeCeiling", 30);
+        }
+        
+        // Alexa, Bedtime
+        if( sleeping == RETIRING ) {
+            iot->publishState("cleaning", 0);
+            iot->publishState("cooking", 0);
+            
+            iot->setDevice("OfficeCeiling", 30);
+            iot->setDevice("Loft", 0);
+            iot->setDevice("RampPorch", 0);
+            iot->setDevice("RampAwning", 0);
+            iot->setDevice("RearProch", 0);
+            iot->setDevice("RearAwning", 0);
+            iot->setDevice("Piano", 0);
+        }
+        
+        // Alexa, Goodnight
+        if( sleeping == ASLEEP ) {
+            iot->publishState("cleaning", 0);
+            iot->publishState("cooking", 0);
+            
+            iot->setDevice("OfficeCeiling", 0);
+            iot->setDevice("Loft", 0);
+            iot->setDevice("RampPorch", 0);
+            iot->setDevice("RampAwning", 0);
+            iot->setDevice("RearProch", 0);
+            iot->setDevice("RearAwning", 0);
+            iot->setDevice("Piano", 0);
+        }
+        
+        prevSleeping = sleeping; // Refactor to IoT
+    }
+    
+    if( partOfDay != prevPartOfDay ) {
+        
+        if( partOfDay == SUNRISE ) {
+            // Turn off lights at sunrise
+            iot->setDevice("OfficeCeiling", 0);
+            iot->setDevice("Loft", 0);
+            iot->setDevice("RampPorch", 0);
+            iot->setDevice("RampAwning", 0);
+            iot->setDevice("RearProch", 0);
+            iot->setDevice("RearAwning", 0);
+            iot->setDevice("Piano", 0);
+        }
+        
+        if( partOfDay == DUSK ) {
+            // Turn on lights after sunset
+            iot->setDevice("OfficeCeiling", 50);
+            iot->setDevice("Loft", 0);
+            iot->setDevice("RampPorch", 50);
+            iot->setDevice("RampAwning", 100);
+            iot->setDevice("RearProch", 60);
+            iot->setDevice("RearAwning", 100);
+            iot->setDevice("Piano", 30);
+        }
+        
+        prevPartOfDay = partOfDay;
+    }
+    
+    if( cleaning != prevCleaning ) {
+        int cleaningLevel = (cleaning==0) ? 0 : 100;
+        
+        iot->setDevice("OfficeCeiling", cleaningLevel);
+        iot->setDevice("Loft", cleaningLevel);
+        iot->setDevice("Piano", cleaningLevel);
+
+        prevCleaning = cleaning;
+    }
+    
     iot->loop();
 }

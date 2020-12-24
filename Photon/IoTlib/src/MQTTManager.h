@@ -17,7 +17,6 @@
 #pragma once
 #include "Particle.h"
 #include "MQTT.h"
-#include "behaviors.h"
 #include "devices.h"
 #include "states.h"
 

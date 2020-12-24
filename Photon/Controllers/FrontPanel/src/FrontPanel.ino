@@ -16,7 +16,6 @@
 #include <PatriotLight.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
-#include <PatriotActivity.h>
 
 #define ADDRESS2 1      // PWM board switches low switch on
 
@@ -32,11 +31,11 @@ void setup() {
     iot->connectMQTT(mqttServer, "patriotFrontPanel1");
 
     NCD8Light *dsFloods = new NCD8Light(ADDRESS2, 0, "DoorSide");
-    NCD8Light *kitchenCeiling = new NCD8Light(ADDRESS2, 1, "kitchenCeiling", 0);
+    NCD8Light *kitchenCeiling = new NCD8Light(ADDRESS2, 1, "kitchenCeiling", 2);
     NCD8Light *sink = new NCD8Light(ADDRESS2, 2, "Sink", 2);
     NCD8Light *osFloods = new NCD8Light(ADDRESS2, 3, "OtherSide");
-    NCD8Light *rightTrim = new NCD8Light(ADDRESS2, 4, "RightTrim");
-    NCD8Light *leftTrim = new NCD8Light(ADDRESS2, 5, "LeftTrim");
+    NCD8Light *rightTrim = new NCD8Light(ADDRESS2, 4, "RightTrim",1);
+    NCD8Light *leftTrim = new NCD8Light(ADDRESS2, 5, "LeftTrim",1);
     NCD8Light *frontAwning = new NCD8Light(ADDRESS2, 6, "FrontAwning");
     NCD8Light *frontPorch = new NCD8Light(ADDRESS2, 7, "FrontPorch");
 
@@ -56,34 +55,7 @@ void setup() {
     //Switch *frontAwningSwitch = new Switch(TX, "FrontAwningSwitch");
 
     // ACTIVITIES - none (see RearPanel)
-    
-    // BEHAVIORS
-
-    // Good Morning (sleeping = 0 AWAKE)
-    ceiling->addBehavior(30, "sleeping", '=', AWAKE);
-    kitchenCeiling->addBehavior(50, "sleeping", '=', AWAKE);
-    cabinets->addBehavior(40, "sleeping", '=', AWAKE);
-    sink->addBehavior(40, "sleeping", '=', AWAKE);
-    
-    // TODO: Awake && Dusk/Evening (pre-sunrise && post-sunset)
-    ceiling->addBehavior(70, "partofday", '>', SUNSET);
-    kitchenCeiling->addBehavior(50, "partofday", '=', SUNSET);
-    cabinets->addBehavior(50, "partofday", '=', SUNSET);
-    sink->addBehavior(30, "partofday", '=', SUNSET);
-
-    // Retiring
-    ceiling->addBehavior(30, "sleeping", '=', RETIRING);
-    kitchenCeiling->addBehavior(30, "sleeping", '=', RETIRING);
-    cabinets->addBehavior(30, "sleeping", '=', RETIRING);
-    sink->addBehavior(30, "sleeping", '=', RETIRING);
-
-    // Sleeping
-    ceiling->addBehavior(0, "sleeping", '=', ASLEEP);
-    kitchenCeiling->addBehavior(0, "sleeping", '=', ASLEEP);
-    cabinets->addBehavior(0, "sleeping", '=', ASLEEP);
-    sink->addBehavior(0, "sleeping", '=', ASLEEP);
-
-    
+        
     // Switches
 // Uncomment these once they're hooked up. Otherwise they appear to be ON
 //    ceiling->addBehavior(100, "CeilingSwitch", '>', 0);
@@ -124,6 +96,66 @@ void setup() {
 
 }
 
+// Save previous states we care about
+int prevSleeping = ASLEEP;
+int prevPartOfDay = NIGHT;
+
 void loop() {
+    int sleeping = iot->getState("sleeping");
+    int partOfDay = iot->getState("partofday");
+    
+    if( sleeping != prevSleeping ) {
+        
+        // Alexa, Good morning
+        if( sleeping == AWAKE && partOfDay > SUNSET ) {
+            iot->setDevice("ceiling", 40);
+            iot->setDevice("kitchenCeiling", 40);
+            iot->setDevice("cabinets", 50);
+            iot->setDevice("sink", 60);
+        }
+        
+        // Alexa, bedtime
+        if( sleeping == ASLEEP) {
+            iot->setDevice("ceiling", 30);
+            iot->setDevice("kitchenCeiling", 30);
+            iot->setDevice("cabinets", 30);
+            iot->setDevice("sink", 30);
+        }
+        
+        // Alexa, Good Night
+        if( sleeping == ASLEEP) {
+            iot->setDevice("ceiling", 0);
+            iot->setDevice("kitchenCeiling", 0);
+            iot->setDevice("cabinets", 0);
+            iot->setDevice("sink", 0);
+        }
+
+        prevSleeping = sleeping; // Refactor to IoT
+    }
+    
+    if( partOfDay != prevPartOfDay) {
+        
+        // Turn off lights at sunrise
+        if( partOfDay == SUNRISE ) {
+            iot->setDevice("ceiling", 0);
+            iot->setDevice("kitchenCeiling", 0);
+            iot->setDevice("cabinets", 0);
+            iot->setDevice("sink", 0);
+        }
+        
+        // Turn on lights in the evening
+        if( partOfDay == DUSK ) {
+            iot->setDevice("ceiling", 60);
+            iot->setDevice("kitchenCeiling", 60);
+            iot->setDevice("cabinets", 60);
+            iot->setDevice("sink", 60);
+            iot->setDevice("FrontAwning", 100);
+            iot->setDevice("FrontPorch", 60);
+        }
+        
+        prevPartOfDay = partOfDay;
+    }
+    
+
     iot->loop();
 }

@@ -132,12 +132,6 @@ void IoT::loop()
 void IoT::addDevice(Device *device)
 {
     Log.trace("addDevice: " + device->name());
-    if(device->shouldAutoCreateBehavior()) {
-        bool isDefault = true;
-        Behavior *defaultBehavior = new Behavior(100, isDefault);
-        defaultBehavior->addCondition(device->name(), '>', 0);
-        device->addBehavior(defaultBehavior);
-    }
     
     _devices->addDevice(device);
     device->publishPtr = globalPublish;
@@ -194,4 +188,56 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
     if(_mqttManager != NULL) {
         _mqttManager->mqttHandler(rawTopic, payload, length);
     }
+}
+
+/**
+ Sketch Programming Support
+ */
+
+/**
+ getState()
+ param: name of state
+ returns 0-100 percent or -1 if name not found
+ */
+int IoT::getState(String name) {
+    State* state = _states->getStateWithName(name);
+    if( state == NULL) return -1;
+    
+    return state->_value;
+}
+
+/**
+ setState()
+ param: name of state
+ param: value to assign state
+ */
+void IoT::setState(String name, int value) {
+    _states->addState(name, value);
+}
+
+/**
+ publishState()
+ param: name of state
+ param: value to assign state
+ return: 0 success, -1 MQTT error
+ */
+int IoT::publishState(String name, int value) {
+    if(_mqttManager != NULL) {
+        _mqttManager->publish("patriot/" + name, String(value));
+        return 0;
+    }
+    return -1;
+}
+
+/**
+ setDevice()
+ param: name of device
+ param: percent to set
+ returns: 0 if success, -1 if device not found
+ */
+int IoT::setDevice(String name, int percent) {
+    Device* device = _devices->getDeviceWithName(name);
+    if( device == NULL) return -1;
+    device->setPercent(percent);
+    return 0;
 }

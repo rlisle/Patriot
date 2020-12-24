@@ -25,9 +25,6 @@ void setup() {
     byte numRelays = 8;
     Relay *relay1 = new Relay(address, numRelays, 0, "relay");
     iot->addDevice(relay1);
-
-    iot->addBehavior(relay1, new Behavior("my gadget", '>', 0, 100));    // Turn on
-    iot->addBehavior(relay1, new Behavior("my gadget", '=', 0, 0));      // Turn off
 }
 
 void loop() {

@@ -38,12 +38,12 @@ void setup() {
     Activity *cooking = new Activity("cooking");
     Activity *cleaning = new Activity("cleaning");
 
-    // Behaviors/Activities
-    blueLed->addBehavior(100, "cooking", '>', 0);
-    blueLed->addBehavior(100, "cleaning", '>', 0);
-
-    cleaning->setOtherState("cooking", 0);
-    cooking->setOtherState("cleaning", 0);
+//    // Behaviors/Activities
+//    blueLed->addBehavior(100, "cooking", '>', 0);
+//    blueLed->addBehavior(100, "cleaning", '>', 0);
+//
+//    cleaning->setOtherState("cooking", 0);
+//    cooking->setOtherState("cleaning", 0);
     
 
     // Devices and Activities

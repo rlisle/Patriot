@@ -140,7 +140,7 @@ void MQTTManager::parseMessage(String topic, String message)
             // MEMORY
         } else if(subtopic.equals("memory")) {
             if(message.equals(_controllerName)) {
-                Log.info( String::format("Free memory = %d", System.freeMemory())); // not an error
+                Log.info( String::format("Free memory = %d", System.freeMemory()));
             }
             
         } else if(subtopic.equals("log") || subtopic.startsWith("log/")) {
@@ -158,9 +158,15 @@ void MQTTManager::parseMessage(String topic, String message)
             int percent = parseValue(message);
             Log.info("Parser setting state " + subtopic + " to " + message);
             IoT *iot = IoT::getInstance();
-            States *states = iot->_states;
-            states->addState(subtopic,percent);
-            _devices->stateDidChange(states);
+            // Is this a device name?
+            Device *device = _devices->getDeviceWithName(subtopic);
+            if( device != NULL ) {
+                device->setPercent(percent);
+            } else {
+                //TODO: pass this in along with devices
+                States *states = iot->_states;
+                states->addState(subtopic,percent);
+            }
         }
     } else {
         // Not addressed or recognized by us

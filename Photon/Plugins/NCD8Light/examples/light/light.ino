@@ -26,8 +26,6 @@ void setup() {
     NCDLight *light1 = new NCDLight(address, numLights, 0, "light1");
     iot->addDevice(light1);
 
-    iot->addBehavior(light1, new Behavior("my gadget", '>', 0, 100));    // Turn on
-    iot->addBehavior(light1, new Behavior("my gadget", '=', 0, 0));      // Turn off
 }
 
 void loop() {

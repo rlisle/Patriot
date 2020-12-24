@@ -44,7 +44,6 @@ bool Period::operator ==(const Period& period) {
 }
 
 bool Period::operator >(const Period& period) {
-    //Log.info("Comparing period " + String(period._hour) + ":" + String(period._minute));
     if(_hour > period._hour) return true;
     if(_hour < period._hour) return false;
     return _minute > period._minute;
@@ -60,7 +59,7 @@ bool Period::operator <(const Period& period) {
  * Constructor
  */
 PartOfDay::PartOfDay()
-        : Device("PartOfDay", DeviceType::PartOfDay)
+        : Device("PartOfDaySource", DeviceType::PartOfDay)
 {
     _lastPollTime = millis();
     _current = 0;
@@ -110,6 +109,7 @@ bool PartOfDay::isTimeToUpdate()
  */
 int PartOfDay::determine()
 {
+    //TODO: set once each day using _periods array
     Period dawn = Period(6,52,1);               // Dawn
     Period sunrise = Period(7,22,2);            // Sunrise
     Period morning = Period(7,23,3);            // Morning

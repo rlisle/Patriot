@@ -1,4 +1,4 @@
-/******************************************************************
+/**
  NCD PCA9634 8-channel PWM board control
 
  Up to 8 I2C boards can reside on a single I2C bus.
@@ -17,7 +17,7 @@
 
  Datasheets:
 
- ******************************************************************/
+ */
 
 #include "PatriotNCD8Light.h"
 #include "math.h"
@@ -38,7 +38,6 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     _address = address;
     _lightNum   = lightNum;
     _dimmingDuration = duration;
-    // _percent is left uninitialized if retained storage is used to pickup state from SRAM
     _percent = 0;
     _currentLevel = 0.0;
     _targetLevel = 0.0;
@@ -78,7 +77,7 @@ int8_t NCD8Light::initializeBoard() {
 
         outputPWM();            // Force light off
         
-        Log.trace("InitializeBoard sucess");
+        Log.info("InitializeBoard sucess");
         
     } else {
         Log.error("InitializeBoard failed");
@@ -130,7 +129,6 @@ void NCD8Light::loop()
 {
     // Is fading transition underway?
     if(_currentLevel == _targetLevel) {
-        // Nothing to do.
         return;
     }
     
@@ -176,6 +174,7 @@ float NCD8Light::scalePWM(int percent) {
     if (percent <= 0) return 0;
     if (percent >= 100) return 255;
     
+    //TODO: This is too extreme. Need to refine algorithm
     float base = 1.05697667;
     float pwm = pow(base,percent);
     if (pwm > 255) {
