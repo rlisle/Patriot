@@ -89,8 +89,10 @@ public:
     /**
     Values used by loop programming
      */
-    bool didTurnOn(String name); // hasChanged && value > 0
-    bool didTurnOff(String name);   // hasChanged && value == 0
+    bool didTurnOn(String name);                // hasChanged && value > 0
+    bool didTurnOff(String name);               // hasChanged && value == 0
+    bool handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
+    
     State *getState(String name);
     int  getStateValue(String name);            // Returns percent or -1
     void setStateValue(String name, int value); // Modifies existing, or adds new state with value

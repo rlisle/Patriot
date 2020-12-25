@@ -165,7 +165,9 @@ void loop() {
     }
 
     // SWITCHES
-    
+    iot->handleLightSwitch("Piano"));    // Requires switch and light names to match: "Piano" & "PianoSwitch"
+    iot->handleLightSwitch("Cleaning")); // Requires switch and light names to match: "Cleaning" & "CleaningSwitch"
+
 }
 
 void setAllInsideLights(int level) {

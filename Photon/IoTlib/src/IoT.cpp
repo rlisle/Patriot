@@ -196,6 +196,19 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  Sketch Programming Support
  */
 
+bool handleLightSwitch(String name) {
+    State *lightSwitch = getState(name+"Switch");
+    if( lightSwitch != NULL && lightSwitch->hasChanged()) {
+        State *light = getState(name);
+        if( light != NULL ) {
+            Log.info("Turning on light to %d", lightSwitch->value());
+            light->setValue( lightSwitch->value() );
+            return true;
+        }
+    }
+    return false;
+}
+
 bool IoT::didTurnOn(String name) { // hasChanged && value > 0
     State *state = getState(name);
     if( state != NULL ) {
