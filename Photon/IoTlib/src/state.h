@@ -43,5 +43,4 @@ public:
     void    setValue(int value);
     
     bool    hasChanged();
-    void    syncPrevious();
 };

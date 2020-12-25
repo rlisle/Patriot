@@ -24,9 +24,18 @@ public:
     State*     getStateWithName(String name);
     int        count();
     
+    /**
+     syncPrevious will set all previous values in preparation of reading new values
+     */
+    void syncPrevious();
+
 private:
     State*     _states;                 // Linked list
     
+    
+    /**
+     Particle.io variable "States"
+     */
     void buildStatesVariable();
     void expose();
 

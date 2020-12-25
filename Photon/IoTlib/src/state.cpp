@@ -23,14 +23,10 @@ int State::value() {
     return _value;
 }
 
-int State::setValue(int value) {
+void State::setValue(int value) {
     _value = value;
 }
 
 bool State::hasChanged() {
     return _value != _previous;
-}
-
-void State::syncPrevious() {
-    _previous = _value;
 }

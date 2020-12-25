@@ -30,13 +30,6 @@ States::States() {
     expose();
 }
 
-void States::expose() {
-    globalStatesVariable = "";
-    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
-        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
-    }
-}
-
 // States are added only once
 State *States::addState(String name, int value) {
     // Update existing state if it exists
@@ -76,6 +69,21 @@ int States::count() {
     int i = 0;
     for(State* ptr = _states; ptr != NULL; ptr = ptr->_next) i++;
     return i;
+}
+
+void States::syncPrevious() {
+    for(State *ptr = _states; ptr != NULL; ptr = ptr->_next) {
+        ptr->_previous = ptr->_value;
+    }
+}
+
+// Particle.io States variable
+
+void States::expose() {
+    globalStatesVariable = "";
+    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
+        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
+    }
 }
 
 void States::buildStatesVariable() {

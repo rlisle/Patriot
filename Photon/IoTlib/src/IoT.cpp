@@ -117,7 +117,9 @@ void IoT::mqttPublish(String topic, String message)
  * typically from the sketch loop() method.
  */
 void IoT::loop()
-{    
+{
+    _states->syncPrevious();
+    
     if(_devices != NULL) {
         _devices->loop();
     }
@@ -193,6 +195,26 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 /**
  Sketch Programming Support
  */
+
+bool IoT::didTurnOn(String name) { // hasChanged && value > 0
+    State *state = getState(name);
+    if( state != NULL ) {
+        if(state->hasChanged()) {
+            return state->value() > 0;
+        }
+    }
+    return false;
+}
+
+bool IoT::didTurnOff(String name) {   // hasChanged && value == 0
+    State *state = getState(name);
+    if( state != NULL ) {
+        if(state->hasChanged()) {
+            return state->value() == 0;
+        }
+    }
+    return false;
+}
 
 /**
  getState()

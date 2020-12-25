@@ -86,35 +86,17 @@ void setup() {
     iot->addDevice(partOfDay);
 }
 
-// Save previous states we care about
-int prevSleeping = ASLEEP;
-int prevPartOfDay = NIGHT;
-int prevCleaning = 0;
-
-int prevCleaningSwitch = 0;
-int prevDogsSwitch = 0;
-int prevAwakeSwitch = 0;
-int prevPianoSwitch = 0;
-int prevA4Switch = 0;
-int prevAllOffSwitch = 0;
-
-// Since everything happens in loop(), we shouldn't need
-// to worry about states changing asynchronously while
-// we are processing them
-// TODO: refactor previous/didChange into IoT
 void loop() {
-    State sleeping = iot->getState("sleeping");
-    State partOfDay = iot->getState("partofday");
 
-//    int cleaning = iot->getStateValue("cleaning");
-//    int cleaningSwitch = iot->getStateValue("CleaningSwitch");
-//    int dogsSwitch = iot->getStateValue("DogsSwitch");
-//    int awakeSwitch = iot->getStateValue("AwakeSwitch");
-//    int pianoSwitch = iot->getStateValue("PianoSwitch");
-//    int a4Switch = iot->getStateValue("A4Switch");
-//    int allOffSwitch = iot->getStateValue("AllOffSwitch");
+    // When IoT loop() is call, it will
+    // - set all previous levels
+    // - read switches and update levels
+    // - update light dimming
+    iot->loop();
+    
+    State* sleeping = iot->getState("sleeping");
+    State* partOfDay = iot->getState("partofday");
 
-    // Sleeping turns off other states
     if( sleeping->hasChanged() ) {
         
         // Alexa, Good morning
@@ -149,13 +131,11 @@ void loop() {
             iot->setDeviceValue("RearAwning", 0);
             iot->setDeviceValue("Piano", 0);
         }
-        
-        sleeping->syncPrevious(); // Refactor to IoT
     }
     
-    if( partOfDay != prevPartOfDay ) {
+    if( partOfDay->hasChanged() ) {
         
-        if( partOfDay == SUNRISE ) {
+        if( partOfDay->value() == SUNRISE ) {
             // Turn off lights at sunrise
             iot->setDeviceValue("OfficeCeiling", 0);
             iot->setDeviceValue("Loft", 0);
@@ -166,7 +146,7 @@ void loop() {
             iot->setDeviceValue("Piano", 0);
         }
         
-        if( partOfDay == DUSK ) {
+        if( partOfDay->value() == DUSK ) {
             // Turn on lights after sunset
             iot->setDeviceValue("OfficeCeiling", 50);
             iot->setDeviceValue("Loft", 0);
@@ -176,18 +156,16 @@ void loop() {
             iot->setDeviceValue("RearAwning", 100);
             iot->setDeviceValue("Piano", 30);
         }
-        
-        prevPartOfDay = partOfDay;
     }
     
-    if( cleaning != prevCleaning ) {
-        setAllInsideLights( (cleaning==0) ? 0 : 100 );
-        prevCleaning = cleaning;
+    if( iot->didTurnOn("cleaning") ) {
+        setAllInsideLights( 100 );
+    } else if( iot->didTurnOff("cleaning") ) {
+        setAllInsideLights( 0 );
     }
-    
+
     // SWITCHES
     
-    iot->loop();
 }
 
 void setAllInsideLights(int level) {
