@@ -43,31 +43,22 @@ void setup() {
     // one unused dimmer I/O
 
     // Switches
-    Switch *officeSwitch = new Switch(A0, "OfficeSwitch");
-    Switch *loftSwitch = new Switch(A1, "LoftSwitch");
-    Switch *wakingSwitch = new Switch(A2, "WakingSwitch");
-    Switch *awningSwitch = new Switch(A3, "AwningSwitch");
-    Switch *floodsSwitch = new Switch(A4, "FloodsSwitch");
-    Switch *pianoSwitch = new Switch(A5, "PianoSwitch");
+    // Switches provide control without Alexa, which normally would be used
+    Switch *cleaningSwitch = new Switch(A0, "CleaningSwitch");    // AKA Panic Switch - everything ON
+    Switch *dogsSwitch = new Switch(A1, "DogsSwitch");
+    Switch *awakeSwitch = new Switch(A2, "AwakeSwitch");        // eg. Good Morning
+    Switch *pianoSwitch = new Switch(A3, "PianoSwitch");
+    Switch *a4Switch = new Switch(A4, "A4Switch");
+    Switch *allOffSwitch = new Switch(A5, "AllOffSwitch");      // eg. Good night
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities allow Alexa to control them directly or via routines
-    // and can also turn off other activities.
     // These can be used by other panels also, but don't need to be duplicated by them
     Activity *cleaning = new Activity("cleaning");   // Turn on all main lights
     Activity *cooking = new Activity("cooking");     // Turn on lots of kitchen lights
     Activity *sleeping = new Activity("sleeping");   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
     
     PartOfDay* partOfDay = new PartOfDay();
-
-    // Switches
-//    ceiling->addBehavior(100, "OfficeSwitch", '>', 0);
-//    loft->addBehavior(100, "LoftSwitch", '>', 0);
-//    rampAwning->addBehavior(100, "AwningSwitch", '>', 0);
-//    rearAwning->addBehavior(100, "AwningSwitch", '>', 0);
-//    rampPorch->addBehavior(100, "FloodSwitch", '>', 0);
-//    rearPorch->addBehavior(100, "FloodSwitch", '>', 0);
-//    piano->addBehavior(100, "pianoSwitch", '>', 0);
 
     // ADD ALL DEVICES
     iot->addDevice(ceiling);
@@ -79,12 +70,12 @@ void setup() {
     iot->addDevice(piano);
 
     // ADD SWITCHES
-    iot->addDevice(officeSwitch);
-    iot->addDevice(loftSwitch);
-    iot->addDevice(wakingSwitch);
-    iot->addDevice(awningSwitch);
-    iot->addDevice(floodsSwitch);
+    iot->addDevice(cleaningSwitch);
+    iot->addDevice(dogsSwitch);
+    iot->addDevice(awakeSwitch);
     iot->addDevice(pianoSwitch);
+    iot->addDevice(a4Switch);
+    iot->addDevice(allOffSwitch);
     
     // ADD ACTIVITIES
     iot->addDevice(cleaning);
@@ -100,6 +91,13 @@ int prevSleeping = ASLEEP;
 int prevPartOfDay = NIGHT;
 int prevCleaning = 0;
 
+int prevCleaningSwitch = 0;
+int prevDogsSwitch = 0;
+int prevAwakeSwitch = 0;
+int prevPianoSwitch = 0;
+int prevA4Switch = 0;
+int prevAllOffSwitch = 0;
+
 // Since everything happens in loop(), we shouldn't need
 // to worry about states changing asynchronously while
 // we are processing them
@@ -108,6 +106,13 @@ void loop() {
     int sleeping = iot->getState("sleeping");
     int partOfDay = iot->getState("partofday");
     int cleaning = iot->getState("cleaning");
+
+    int cleaningSwitch = iot->getState("CleaningSwitch");
+    int dogsSwitch = iot->getState("DogsSwitch");
+    int awakeSwitch = iot->getState("AwakeSwitch");
+    int pianoSwitch = iot->getState("PianoSwitch");
+    int a4Switch = iot->getState("A4Switch");
+    int allOffSwitch = iot->getState("AllOffSwitch");
 
     // Sleeping turns off other states
     if( sleeping != prevSleeping ) {
@@ -176,14 +181,25 @@ void loop() {
     }
     
     if( cleaning != prevCleaning ) {
-        int cleaningLevel = (cleaning==0) ? 0 : 100;
-        
-        iot->setDevice("OfficeCeiling", cleaningLevel);
-        iot->setDevice("Loft", cleaningLevel);
-        iot->setDevice("Piano", cleaningLevel);
-
+        setAllInsideLights( (cleaning==0) ? 0 : 100 );
         prevCleaning = cleaning;
     }
     
+    // SWITCHES
+    
     iot->loop();
+}
+
+void setAllInsideLights(int level) {
+    iot->setDevice("OfficeCeiling", level);
+    iot->setDevice("Loft", level);
+    iot->setDevice("Piano", level);
+}
+
+void setAllOutsideLights(int level) {
+    iot->setDevice("RampPorch", level);
+    iot->setDevice("RampAwning", level);
+    iot->setDevice("RearProch", level);
+    iot->setDevice("RearAwning", level);
+
 }
