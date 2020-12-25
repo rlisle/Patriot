@@ -195,33 +195,33 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  */
 
 /**
- getState()
+ getStateValue()
  param: name of state
  returns 0-100 percent or -1 if name not found
  */
-int IoT::getState(String name) {
+int IoT::getStateValue(String name) {
     State* state = _states->getStateWithName(name);
     if( state == NULL) return -1;
     
-    return state->_value;
+    return state->value();
 }
 
 /**
- setState()
+ setStateValue()
  param: name of state
  param: value to assign state
  */
-void IoT::setState(String name, int value) {
+void IoT::setStateValue(String name, int value) {
     _states->addState(name, value);
 }
 
 /**
- publishState()
+ publishValue()
  param: name of state
  param: value to assign state
  return: 0 success, -1 MQTT error
  */
-int IoT::publishState(String name, int value) {
+int IoT::publishValue(String name, int value) {
     if(_mqttManager != NULL) {
         _mqttManager->publish("patriot/" + name, String(value));
         return 0;
@@ -230,12 +230,12 @@ int IoT::publishState(String name, int value) {
 }
 
 /**
- setDevice()
+ setDeviceValue()
  param: name of device
  param: percent to set
  returns: 0 if success, -1 if device not found
  */
-int IoT::setDevice(String name, int percent) {
+int IoT::setDeviceValue(String name, int percent) {
     Device* device = _devices->getDeviceWithName(name);
     if( device == NULL) return -1;
     device->setPercent(percent);
