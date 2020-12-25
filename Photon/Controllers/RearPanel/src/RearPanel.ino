@@ -103,27 +103,27 @@ int prevAllOffSwitch = 0;
 // we are processing them
 // TODO: refactor previous/didChange into IoT
 void loop() {
-    int sleeping = iot->getStateValue("sleeping");
-    int partOfDay = iot->getStateValue("partofday");
-    int cleaning = iot->getStateValue("cleaning");
+    State sleeping = iot->getState("sleeping");
+    State partOfDay = iot->getState("partofday");
 
-    int cleaningSwitch = iot->getStateValue("CleaningSwitch");
-    int dogsSwitch = iot->getStateValue("DogsSwitch");
-    int awakeSwitch = iot->getStateValue("AwakeSwitch");
-    int pianoSwitch = iot->getStateValue("PianoSwitch");
-    int a4Switch = iot->getStateValue("A4Switch");
-    int allOffSwitch = iot->getStateValue("AllOffSwitch");
+//    int cleaning = iot->getStateValue("cleaning");
+//    int cleaningSwitch = iot->getStateValue("CleaningSwitch");
+//    int dogsSwitch = iot->getStateValue("DogsSwitch");
+//    int awakeSwitch = iot->getStateValue("AwakeSwitch");
+//    int pianoSwitch = iot->getStateValue("PianoSwitch");
+//    int a4Switch = iot->getStateValue("A4Switch");
+//    int allOffSwitch = iot->getStateValue("AllOffSwitch");
 
     // Sleeping turns off other states
-    if( sleeping != prevSleeping ) {
+    if( sleeping->hasChanged() ) {
         
         // Alexa, Good morning
-        if( sleeping == AWAKE && partOfDay > SUNSET ) {
+        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
             iot->setDeviceValue("OfficeCeiling", 30);
         }
         
         // Alexa, Bedtime
-        if( sleeping == RETIRING ) {
+        if( sleeping->value() == RETIRING ) {
             iot->publishValue("cleaning", 0);
             iot->publishValue("cooking", 0);
             
@@ -137,7 +137,7 @@ void loop() {
         }
         
         // Alexa, Goodnight
-        if( sleeping == ASLEEP ) {
+        if( sleeping->value() == ASLEEP ) {
             iot->publishValue("cleaning", 0);
             iot->publishValue("cooking", 0);
             
@@ -150,7 +150,7 @@ void loop() {
             iot->setDeviceValue("Piano", 0);
         }
         
-        prevSleeping = sleeping; // Refactor to IoT
+        sleeping->syncPrevious(); // Refactor to IoT
     }
     
     if( partOfDay != prevPartOfDay ) {

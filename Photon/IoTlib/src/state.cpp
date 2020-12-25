@@ -19,18 +19,18 @@ State::State(String name, int value)
     _previous = -1;
 }
 
-bool State::hasChanged() {
-    return _value != _previous;
-}
-
 int State::value() {
     return _value;
 }
 
-void State::setValue(int value) {
+int State::setValue(int value) {
     _value = value;
 }
 
-void State::setPrevious() {
+bool State::hasChanged() {
+    return _value != _previous;
+}
+
+void State::syncPrevious() {
     _previous = _value;
 }

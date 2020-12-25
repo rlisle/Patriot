@@ -38,9 +38,10 @@ private:
 
 public:
     State(String name, int value);
-    
-    bool    hasChanged();
+
     int     value();
     void    setValue(int value);
-    void    setPrevious();
+    
+    bool    hasChanged();
+    void    syncPrevious();
 };

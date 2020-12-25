@@ -89,7 +89,7 @@ public:
     /**
     Values used by loop programming
      */
-    //State *getState(String name);
+    State *getState(String name);
     int  getStateValue(String name);            // Returns percent or -1
     void setStateValue(String name, int value); // Modifies existing, or adds new state with value
     int  publishValue(String name, int value);  // Sends MQTT state message

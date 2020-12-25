@@ -195,6 +195,15 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  */
 
 /**
+ getState()
+ param: name of state
+ returns: pointer to State object or NULL if not found
+ */
+State* IoT::getState(String name) {
+    return _states->getStateWithName(name);
+}
+
+/**
  getStateValue()
  param: name of state
  returns 0-100 percent or -1 if name not found
