@@ -110,44 +110,44 @@ int prevFrontPorchSwitch = 0;
 int prevFrontAwningSwitch = 0;
 
 void loop() {
-    int sleeping = iot->getState("sleeping");
-    int partOfDay = iot->getState("partofday");
+    int sleeping = iot->getStateValue("sleeping");
+    int partOfDay = iot->getStateValue("partofday");
     
-    int ceilingSwitch = iot->getState("CeilingSwitch");
-    int kitchenCeilingSwitch = iot->getState("KitchenCeilingSwitch");
-    int sinkSwitch = iot->getState("SinkSwitch");
-    int cabinetSwitch = iot->getState("CabinetSwitch");
-    int rightTrimSwitch = iot->getState("RightTrimSwitch");
-    int leftTrimSwitch = iot->getState("LeftTrimSwitch");
-    int doorSideSwitch = iot->getState("DoorSideSwitch");
-    int otherSideSwitch = iot->getState("OtherSideSwitch");
-    int frontPorchSwitch = iot->getState("FrontPorchSwitch");
-    int frontAwningSwitch = iot->getState("FrontAwningSwitch");
+    int ceilingSwitch = iot->getStateValue("CeilingSwitch");
+    int kitchenCeilingSwitch = iot->getStateValue("KitchenCeilingSwitch");
+    int sinkSwitch = iot->getStateValue("SinkSwitch");
+    int cabinetSwitch = iot->getStateValue("CabinetSwitch");
+    int rightTrimSwitch = iot->getStateValue("RightTrimSwitch");
+    int leftTrimSwitch = iot->getStateValue("LeftTrimSwitch");
+    int doorSideSwitch = iot->getStateValue("DoorSideSwitch");
+    int otherSideSwitch = iot->getStateValue("OtherSideSwitch");
+    int frontPorchSwitch = iot->getStateValue("FrontPorchSwitch");
+    int frontAwningSwitch = iot->getStateValue("FrontAwningSwitch");
 
     if( sleeping != prevSleeping ) {
         
         // Alexa, Good morning
         if( sleeping == AWAKE && partOfDay > SUNSET ) {
-            iot->setDevice("ceiling", 40);
-            iot->setDevice("kitchenCeiling", 40);
-            iot->setDevice("cabinets", 50);
-            iot->setDevice("sink", 60);
+            iot->setDeviceValue("ceiling", 40);
+            iot->setDeviceValue("kitchenCeiling", 40);
+            iot->setDeviceValue("cabinets", 50);
+            iot->setDeviceValue("sink", 60);
         }
         
         // Alexa, bedtime
         if( sleeping == ASLEEP) {
-            iot->setDevice("ceiling", 30);
-            iot->setDevice("kitchenCeiling", 30);
-            iot->setDevice("cabinets", 30);
-            iot->setDevice("sink", 30);
+            iot->setDeviceValue("ceiling", 30);
+            iot->setDeviceValue("kitchenCeiling", 30);
+            iot->setDeviceValue("cabinets", 30);
+            iot->setDeviceValue("sink", 30);
         }
         
         // Alexa, Good Night
         if( sleeping == ASLEEP) {
-            iot->setDevice("ceiling", 0);
-            iot->setDevice("kitchenCeiling", 0);
-            iot->setDevice("cabinets", 0);
-            iot->setDevice("sink", 0);
+            iot->setDeviceValue("ceiling", 0);
+            iot->setDeviceValue("kitchenCeiling", 0);
+            iot->setDeviceValue("cabinets", 0);
+            iot->setDeviceValue("sink", 0);
         }
 
         prevSleeping = sleeping; // Refactor to IoT
@@ -157,63 +157,63 @@ void loop() {
         
         // Turn off lights at sunrise
         if( partOfDay == SUNRISE ) {
-            iot->setDevice("ceiling", 0);
-            iot->setDevice("kitchenCeiling", 0);
-            iot->setDevice("cabinets", 0);
-            iot->setDevice("sink", 0);
+            iot->setDeviceValue("ceiling", 0);
+            iot->setDeviceValue("kitchenCeiling", 0);
+            iot->setDeviceValue("cabinets", 0);
+            iot->setDeviceValue("sink", 0);
         }
         
         // Turn on lights in the evening
         if( partOfDay == DUSK ) {
-            iot->setDevice("ceiling", 60);
-            iot->setDevice("kitchenCeiling", 60);
-            iot->setDevice("cabinets", 60);
-            iot->setDevice("sink", 60);
-            iot->setDevice("FrontAwning", 100);
-            iot->setDevice("FrontPorch", 60);
+            iot->setDeviceValue("ceiling", 60);
+            iot->setDeviceValue("kitchenCeiling", 60);
+            iot->setDeviceValue("cabinets", 60);
+            iot->setDeviceValue("sink", 60);
+            iot->setDeviceValue("FrontAwning", 100);
+            iot->setDeviceValue("FrontPorch", 60);
         }
         
         prevPartOfDay = partOfDay;
     }
     
     if( ceilingSwitch != prevCeilingSwitch) {
-        iot->setDevice("Ceiling", ceilingSwitch);
+        iot->setDeviceValue("Ceiling", ceilingSwitch);
         prevCeilingSwitch = ceilingSwitch;
     }
     if( kitchenCeilingSwitch != prevKitchenCeilingSwitch) {
-        iot->setDevice("KitchenCeiling", kitchenCeilingSwitch);
+        iot->setDeviceValue("KitchenCeiling", kitchenCeilingSwitch);
         prevKitchenCeilingSwitch = kitchenCeilingSwitch;
     }
     if( sinkSwitch != prevSinkSwitch) {
-        iot->setDevice("Sink", sinkSwitch);
+        iot->setDeviceValue("Sink", sinkSwitch);
         prevSinkSwitch = sinkSwitch;
     }
     if( cabinetSwitch != prevCabinetSwitch) {
-        iot->setDevice("Cabinet", cabinetSwitch);
+        iot->setDeviceValue("Cabinet", cabinetSwitch);
         prevCabinetSwitch = cabinetSwitch;
     }
     if( rightTrimSwitch != prevRightTrimSwitch) {
-        iot->setDevice("RightTrim", rightTrimSwitch);
+        iot->setDeviceValue("RightTrim", rightTrimSwitch);
         prevRightTrimSwitch = rightTrimSwitch;
     }
     if( leftTrimSwitch != prevLeftTrimSwitch) {
-        iot->setDevice("LeftTrim", leftTrimSwitch);
+        iot->setDeviceValue("LeftTrim", leftTrimSwitch);
         prevLeftTrimSwitch = leftTrimSwitch;
     }
     if( doorSideSwitch != prevDoorSideSwitch) {
-        iot->setDevice("DoorSide", doorSideSwitch);
+        iot->setDeviceValue("DoorSide", doorSideSwitch);
         prevDoorSideSwitch = doorSideSwitch;
     }
     if( otherSideSwitch != prevOtherSideSwitch) {
-        iot->setDevice("OtherSide", otherSideSwitch);
+        iot->setDeviceValue("OtherSide", otherSideSwitch);
         prevOtherSideSwitch = otherSideSwitch;
     }
     if( frontPorchSwitch != prevFrontPorchSwitch) {
-        iot->setDevice("FrontPorch", frontPorchSwitch);
+        iot->setDeviceValue("FrontPorch", frontPorchSwitch);
         prevFrontPorchSwitch = frontPorchSwitch;
     }
     if( frontAwningSwitch != prevFrontAwningSwitch) {
-        iot->setDevice("FrontAwning", frontAwningSwitch);
+        iot->setDeviceValue("FrontAwning", frontAwningSwitch);
         prevFrontAwningSwitch = frontAwningSwitch;
     }
 
@@ -224,23 +224,23 @@ void loop() {
 // device when it changes. The switch and device must use
 // similar names, the "Switch" appended to the device name.
 // TODO: move this into IoT once working
-//void setDeviceFromSwitch(String name, int *prevValue) {
-//    int switchValue = iot->getState(name+"Switch");
+//void setDeviceValueFromSwitch(String name, int *prevValue) {
+//    int switchValue = iot->getStateValue(name+"Switch");
 //    //TODO:
 //}
 
 void setAllInsideLights(int level) {
-    iot->setDevice("KitchenCeiling", level);
-    iot->setDevice("Sink", level);
-    iot->setDevice("RightTrim", level);
-    iot->setDevice("LeftTrim", level);
-    iot->setDevice("Ceiling", level);
-    iot->setDevice("Cabinets", level);
+    iot->setDeviceValue("KitchenCeiling", level);
+    iot->setDeviceValue("Sink", level);
+    iot->setDeviceValue("RightTrim", level);
+    iot->setDeviceValue("LeftTrim", level);
+    iot->setDeviceValue("Ceiling", level);
+    iot->setDeviceValue("Cabinets", level);
 }
 
 void setAllOutsideLights(int level) {
-    iot->setDevice("DoorSide", level);
-    iot->setDevice("OtherSide", level);
-    iot->setDevice("FrontAwning", level);
-    iot->setDevice("FrontPorch", level);
+    iot->setDeviceValue("DoorSide", level);
+    iot->setDeviceValue("OtherSide", level);
+    iot->setDeviceValue("FrontAwning", level);
+    iot->setDeviceValue("FrontPorch", level);
 }
