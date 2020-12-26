@@ -41,6 +41,7 @@ class NCD8Light : public Device
 
  public:
     NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration = 0);
+    void    begin();
     void    setPercent(int percent);
     void    loop();
 };

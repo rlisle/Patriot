@@ -44,10 +44,9 @@ class Device {
 
     Device*    _next;       // Linked list
 
+public:
     // Pointer to MQTT publish method in IoT.
     void (*publishPtr)(String topic, String message);
-
- public:
 
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.

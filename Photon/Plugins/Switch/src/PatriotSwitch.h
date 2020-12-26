@@ -30,6 +30,7 @@ private:
 public:
     Switch(int pinNum, String name);
 
+    void begin();
     void loop();
     
     // Override to prevent MQTT from setting _percent.

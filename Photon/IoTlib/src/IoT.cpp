@@ -136,8 +136,9 @@ void IoT::addDevice(Device *device)
     Log.trace("addDevice: " + device->name());
     
     _devices->addDevice(device);
-    device->begin(globalPublish);
-    
+    device->publishPtr = globalPublish;
+    device->begin();
+
     _states->addState(device->name(), device->getPercent());
 }
 

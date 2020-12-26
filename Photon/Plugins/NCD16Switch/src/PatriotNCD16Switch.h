@@ -37,7 +37,8 @@ private:
 
 public:
     NCD16Switch(int address, int switchNum, String name);
-    
+
+    void    begin();
     void    loop();
     
     // Override to prevent MQTT from setting _percent.

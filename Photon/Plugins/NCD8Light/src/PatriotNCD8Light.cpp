@@ -43,8 +43,10 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     _targetLevel = 0.0;
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
+}
+
+void NCD8Light::begin() {
     initializeBoard();
-    
 }
 
 int8_t NCD8Light::initializeBoard() {

@@ -61,13 +61,17 @@ bool Period::operator <(const Period& period) {
 PartOfDay::PartOfDay()
         : Device("PartOfDaySource", DeviceType::PartOfDay)
 {
-    _lastPollTime = millis();
     _current = -1;
-    //_current = determine();
-    //publishCurrent();     // publish not set until after addDevice
 }
 
-PartOfDay::begin(void (*pubPtr)()
+/**
+ begin is called after publishPtr is set, so we can publish her but not in constructor
+ */
+void PartOfDay::begin() {
+    _lastPollTime = millis();
+    _current = determine();
+    publishCurrent();     // publish not set until after addDevice
+}
 
 /**
  * loop()
@@ -77,7 +81,6 @@ void PartOfDay::loop()
 {
     if (_current == -1 || isTimeToUpdate())
     {
-        Log.info("PartOfDay: time is %d %d:%d",_podNum, _hour, minute);
         int now = determine();
         if (now != _current) {
             Log.info("PartOfDay changed to %d", now);

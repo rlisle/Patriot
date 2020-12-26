@@ -31,13 +31,16 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
           _isInverted(isInverted),
           _forceDigital(forceDigital)
 {
-    _dimmingDuration          = isPwmSupported() ? 2.0 : 0;
     _targetPercent            = 0;
     _currentPercent           = 0.0;
     _incrementPerMillisecond  = 0.0;
     _lastUpdateTime           = 0;
-    pinMode(pinNum, OUTPUT);
-    outputPWM();                        // Set initial state to persisted value
+}
+
+void Light::begin() {
+    _dimmingDuration = isPwmSupported() ? 2.0 : 0;
+    pinMode(_pin, OUTPUT);
+    outputPWM();
 }
 
 /**

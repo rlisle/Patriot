@@ -40,12 +40,14 @@ NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String n
     : Device(name, DeviceType::NCD8Relay)
 {
     _relayNum   = relayNum;
-    // _percent is left uninitialized if retained storage is used to pickup state from SRAM
-    //_percent = 0;
+    _numRelays = numRelays;
+    _percent = 0;
     _duration   = duration;
     _stopMillis = 0;
+}
 
-    switch(numRelays)
+void NCD8Relay::begin() {
+    switch(_numRelays)
     {
         case 8:
         default:
