@@ -25,8 +25,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _controllerName = controllerName;
     _devices = devices;
     _logging = 0;
-//    _logLevel = LOG_LEVEL_ERROR;
-    _logLevel = LOG_LEVEL_TRACE;    // DEBUGGING ONLY!!!
+    _logLevel = LOG_LEVEL_ERROR;
+//    _logLevel = LOG_LEVEL_TRACE;    // DEBUGGING ONLY!!!
 
     Time.zone(-6.0);
     
@@ -163,11 +163,8 @@ void MQTTManager::parseMessage(String topic, String message)
             if( device != NULL ) {
                 device->setPercent(percent);
             }
-//            } else {
-                //TODO: pass this in along with devices
-                States *states = iot->_states;
-                states->addState(subtopic,percent);
-//            }
+            States *states = iot->_states;
+            states->addState(subtopic,percent);
         }
     } else {
         // Not addressed or recognized by us
