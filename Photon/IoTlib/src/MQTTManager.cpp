@@ -25,8 +25,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _controllerName = controllerName;
     _devices = devices;
     _logging = 0;
-    _logLevel = LOG_LEVEL_ERROR;
-//    _logLevel = LOG_LEVEL_TRACE;    // DEBUGGING ONLY!!!
+//    _logLevel = LOG_LEVEL_ERROR;
+    _logLevel = LOG_LEVEL_TRACE;    // DEBUGGING ONLY!!!
 
     Time.zone(-6.0);
     
@@ -109,7 +109,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 // topic and messages are already lowercase
 void MQTTManager::parseMessage(String topic, String message)
 {
-    // This creates an infinite loop
+    // This creates an infinite loop. Don't do it.
     //log("Parser received: " + topic + ", " + message, LogDebug);
     
     // New Protocol: patriot/<name>  <value>
@@ -162,11 +162,12 @@ void MQTTManager::parseMessage(String topic, String message)
             Device *device = _devices->getDeviceWithName(subtopic);
             if( device != NULL ) {
                 device->setPercent(percent);
-            } else {
+            }
+//            } else {
                 //TODO: pass this in along with devices
                 States *states = iot->_states;
                 states->addState(subtopic,percent);
-            }
+//            }
         }
     } else {
         // Not addressed or recognized by us
@@ -186,18 +187,18 @@ int MQTTManager::parseValue(String message)
 
 void MQTTManager::parseLogLevel(String message) {
     LogLevel level = LOG_LEVEL_ERROR;
-    if (message.equals("none")) level = LOG_LEVEL_NONE;
-    else if (message.equals("error")) level = LOG_LEVEL_ERROR;
-    else if (message.equals("warn")) level = LOG_LEVEL_WARN;
-    else if (message.equals("info")) level = LOG_LEVEL_INFO;
-    else if (message.equals("trace")) level = LOG_LEVEL_TRACE;
-    else if (message.equals("all")) level = LOG_LEVEL_ALL;
+    if (message.equals("none")) level = LOG_LEVEL_NONE;         // 70
+    else if (message.equals("error")) level = LOG_LEVEL_ERROR;  // 50
+    else if (message.equals("warn")) level = LOG_LEVEL_WARN;    // 40
+    else if (message.equals("info")) level = LOG_LEVEL_INFO;    // 30
+    else if (message.equals("trace")) level = LOG_LEVEL_TRACE;  // 1
+    else if (message.equals("all")) level = LOG_LEVEL_ALL;      // 1
     else return;
 
     _logLevel = level;
 }
 
-// The floowing methods are taken from Particle FW, specifically spark::StreamLogHandler.
+// The following methods are taken from Particle FW, specifically spark::StreamLogHandler.
 // See https://github.com/spark/firmware/blob/develop/wiring/src/spark_wiring_logging.cpp
 const char* MQTTManager::extractFileName(const char *s) {
     const char *s1 = strrchr(s, '/');

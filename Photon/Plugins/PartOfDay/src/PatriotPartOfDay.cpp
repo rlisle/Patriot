@@ -62,9 +62,9 @@ PartOfDay::PartOfDay()
         : Device("PartOfDaySource", DeviceType::PartOfDay)
 {
     _lastPollTime = millis();
-    _current = 0;
+    _current = -1;
     //_current = determine();
-    //publishCurrent();     // Causing loop?
+    //publishCurrent();     // publish not set until after addDevice
 }
 
 
@@ -74,12 +74,12 @@ PartOfDay::PartOfDay()
  */
 void PartOfDay::loop()
 {
-    if (isTimeToUpdate())
+    if (_current == -1 || isTimeToUpdate())
     {
+        Log.info("PartOfDay: time is %d %d:%d",_podNum, _hour, minute);
         int now = determine();
-        //Log.info("PartOfDay: time to update = " + String(now));
         if (now != _current) {
-            //Log.info("PartOfDay now: " + now);
+            Log.info("PartOfDay changed to %d", now);
             _current = now;
             publishCurrent();
         }

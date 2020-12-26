@@ -97,7 +97,7 @@ void loop() {
     State* sleeping = iot->getState("sleeping");
     State* partOfDay = iot->getState("partofday");
 
-    if( sleeping->hasChanged() ) {
+    if( sleeping != NULL && sleeping->hasChanged() ) {
         
         Log.info("sleeping has changed");
         
@@ -135,8 +135,10 @@ void loop() {
         }
     }
     
-    if( partOfDay->hasChanged() ) {
-        
+    if( partOfDay != NULL && partOfDay->hasChanged() ) {
+
+        Log.info("partOfDay has changed");
+
         if( partOfDay->value() == SUNRISE ) {
             // Turn off lights at sunrise
             iot->setDeviceValue("OfficeCeiling", 0);
@@ -161,8 +163,10 @@ void loop() {
     }
     
     if( iot->didTurnOn("cleaning") ) {
+        Log.info("cleaning did turn on");
         setAllInsideLights( 100 );
     } else if( iot->didTurnOff("cleaning") ) {
+        Log.info("cleaning did turn off");
         setAllInsideLights( 0 );
     }
 
