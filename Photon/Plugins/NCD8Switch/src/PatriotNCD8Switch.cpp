@@ -37,14 +37,20 @@ NCD8Switch::NCD8Switch(int address, int switchNum, String name)
 {
     _address = address;
     _lastPollTime = 0;
-    if(switchNum > 0 && switchNum <= 8) {
-        _switchBitmap = 0x01 << (switchNum-1);
-        initializeBoard();
-    } else {
-        _switchBitmap = 0;
-        Log.error("Invalid switchNum: "+String(switchNum));
-    }
     _lastState    = 0;
+    _switchBitmap = 0;
+    
+    if(_switchNum > 0 && switchNum <= 8) {
+        _switchBitmap = 0x01 << (switchNum-1);
+    }
+}
+
+void NCD8Switch::begin() {
+    if(_switchBitmap == 0) {
+        Log.error("Invalid switchNum");
+        return;
+    }
+    initializeBoard();
 }
 
 /**

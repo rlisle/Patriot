@@ -16,4 +16,17 @@ State::State(String name, int value)
     _next  = NULL;
     _value = value;
     _name  = name;
+    _previous = -1;
+}
+
+int State::value() {
+    return _value;
+}
+
+void State::setValue(int value) {
+    _value = value;
+}
+
+bool State::hasChanged() {
+    return _value != _previous;
 }

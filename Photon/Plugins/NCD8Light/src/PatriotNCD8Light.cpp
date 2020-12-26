@@ -43,8 +43,10 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     _targetLevel = 0.0;
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
+}
+
+void NCD8Light::begin() {
     initializeBoard();
-    
 }
 
 int8_t NCD8Light::initializeBoard() {
@@ -77,10 +79,10 @@ int8_t NCD8Light::initializeBoard() {
 
         outputPWM();            // Force light off
         
-        Log.info("InitializeBoard sucess");
+        Log.info("InitializeBoard " + _name + " sucess");
         
     } else {
-        Log.error("InitializeBoard failed");
+        Log.error("InitializeBoard " + _name + " FAILED!");
     }
 
     return status;
@@ -162,7 +164,7 @@ void NCD8Light::outputPWM() {
 	Wire.write(int(_currentLevel));
 	byte status = Wire.endTransmission();
 	if(status != 0){
-		Log.error("outputPWM write failed");
+		Log.error("NCD8Light outputPWM write failed for light "+String(_lightNum)+", level = "+String(_currentLevel));
 	}
 }
 

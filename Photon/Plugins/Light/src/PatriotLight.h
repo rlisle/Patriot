@@ -42,6 +42,8 @@ class Light : public Device
 
  public:
     Light(int pin, String name, bool isInverted=false, bool forceDigital=false);
+    void      begin();
+    
     void      setPercent(int percent);      // Set light immediately
 
     void      setDimmingDuration(float duration);

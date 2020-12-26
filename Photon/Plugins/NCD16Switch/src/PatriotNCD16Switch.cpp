@@ -39,14 +39,20 @@ NCD16Switch::NCD16Switch(int address, int switchNum, String name)
 {
     _address = address;
     _lastPollTime = 0;
+    _lastState    = 0;
+    _switchBitmap = 0;
+    
     if(switchNum > 0 && switchNum <= 16) {
         _switchBitmap = 0x01 << (switchNum-1);
-        initializeBoard();
-    } else {
-        _switchBitmap = 0;
-        Log.error("Invalid switchNum: "+String(switchNum));
     }
-    _lastState    = 0;
+}
+
+void NCD16Switch::begin() {
+    if(switchBitmap == 0) {
+        Log.error("Invalid switchNum");
+        return;
+    }
+    initializeBoard();
 }
 
 /**

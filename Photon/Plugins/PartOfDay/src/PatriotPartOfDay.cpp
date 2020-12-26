@@ -61,12 +61,17 @@ bool Period::operator <(const Period& period) {
 PartOfDay::PartOfDay()
         : Device("PartOfDaySource", DeviceType::PartOfDay)
 {
-    _lastPollTime = millis();
-    _current = 0;
-    //_current = determine();
-    //publishCurrent();     // Causing loop?
+    _current = -1;
 }
 
+/**
+ begin is called after publishPtr is set, so we can publish her but not in constructor
+ */
+void PartOfDay::begin() {
+    _lastPollTime = millis();
+    _current = determine();
+    publishCurrent();
+}
 
 /**
  * loop()
@@ -74,12 +79,11 @@ PartOfDay::PartOfDay()
  */
 void PartOfDay::loop()
 {
-    if (isTimeToUpdate())
+    if (_current == -1 || isTimeToUpdate())
     {
         int now = determine();
-        //Log.info("PartOfDay: time to update = " + String(now));
         if (now != _current) {
-            //Log.info("PartOfDay now: " + now);
+            Log.info("PartOfDay changed to %d", now);
             _current = now;
             publishCurrent();
         }
@@ -120,7 +124,7 @@ int PartOfDay::determine()
     Period night = Period(18,3,0);              // Night
 
     Period current = Period(Time.hour(),Time.minute(), 0);
-    //Log.info("PartOfDay determine: time now = " + String(Time.hour()) + ":" + String(Time.minute()));
+    Log.info("PartOfDay determine: time now = " + String(Time.hour()) + ":" + String(Time.minute()));
     
     if (current > night) return 0;
     if (current > dusk) return 7;

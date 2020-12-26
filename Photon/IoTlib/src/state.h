@@ -32,10 +32,15 @@ class State
     
 private:
     State*    _next;
-    
-public:
     String    _name;
     int       _value;
-    
+    int       _previous;
+
+public:
     State(String name, int value);
+
+    int     value();
+    void    setValue(int value);
+    
+    bool    hasChanged();
 };

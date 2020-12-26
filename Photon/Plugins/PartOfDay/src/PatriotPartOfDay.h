@@ -60,7 +60,8 @@ public:
     int        _current;
     
     PartOfDay();
-
+    
+    void begin();
     void loop();
     
 };

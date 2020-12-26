@@ -28,10 +28,12 @@ Switch::Switch(int pinNum, String name)
         _pin(pinNum)
 {
     _percent = 0;
-    pinMode(pinNum, INPUT_PULLUP);
-    _lastPollTime = millis();
 }
 
+void Switch::begin() {
+    pinMode(_pin, INPUT_PULLUP);
+    _lastPollTime = millis();
+}
 
 /**
  * loop()

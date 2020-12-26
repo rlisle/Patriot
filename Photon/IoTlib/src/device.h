@@ -44,8 +44,8 @@ class Device {
 
     Device*    _next;       // Linked list
 
- public:
-    // Pointer to methods in IoT. These are set in IoT->addDevice()
+public:
+    // Pointer to MQTT publish method in IoT.
     void (*publishPtr)(String topic, String message);
 
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
@@ -53,15 +53,18 @@ class Device {
     Device(String name = "", DeviceType type = DeviceType::Unknown) 
             : _name(name), _type(type), _percent(0), _next(NULL)
     {
-        // Nothing to do.
+        // Do any setup work in begin()
     }
 
+    
     void publish(String topic, String message) {
         if(publishPtr != NULL) {
             publishPtr(topic, message);
         }
     }
-    
+
+    virtual void begin() {};
+
     virtual String name() { return _name; };
     virtual DeviceType type() { return _type; };
 

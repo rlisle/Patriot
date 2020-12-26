@@ -32,6 +32,7 @@ class NCD8Relay : public Device
     int8_t  _boardIndex;            // Index into static arrays
     int8_t  _registerAddress;       // Is this different for different boards?
     int8_t  _duration;              // # seconds to keep on. 0 = forever
+    int8_t  _numRelays;             // # of relays on board (8 or less)
     long    _stopMillis;            // time in millis to auto-stop
 
     static int8_t _numControllers;    // Count of relay boards on I2C bus
@@ -45,6 +46,8 @@ class NCD8Relay : public Device
 
  public:
     NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration = 0);
+    
+    void    begin();
 
     void    setPercent(int percent);
     void    setOn();

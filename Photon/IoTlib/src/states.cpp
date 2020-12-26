@@ -30,19 +30,12 @@ States::States() {
     expose();
 }
 
-void States::expose() {
-    globalStatesVariable = "";
-    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
-        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
-    }
-}
-
 // States are added only once
 State *States::addState(String name, int value) {
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
-        Log.trace("States addState adding " + name + " = " + String(value));
+        Log.info("States addState adding " + name + " = " + String(value));
         state = new State(name,value);
         if(_states == NULL) {
             _states = state;
@@ -52,10 +45,10 @@ State *States::addState(String name, int value) {
             ptr->_next = state;
         }
     } else {    // State already exists
-        Log.trace("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
+        Log.info("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
         state->_value = value;
     }
-    Log.trace("addState state was added. Count = " + String(count()));
+    Log.info("addState state was added. Count = " + String(count()));
     buildStatesVariable();
     return state;
 }
@@ -68,7 +61,7 @@ State *States::getStateWithName(String name) {
         }
         ptr = ptr->_next;
     }
-    Log.trace("getStateWithName " + name + " not found");
+    Log.info("getStateWithName " + name + " not found");
     return NULL;
 }
 
@@ -76,6 +69,21 @@ int States::count() {
     int i = 0;
     for(State* ptr = _states; ptr != NULL; ptr = ptr->_next) i++;
     return i;
+}
+
+void States::syncPrevious() {
+    for(State *ptr = _states; ptr != NULL; ptr = ptr->_next) {
+        ptr->_previous = ptr->_value;
+    }
+}
+
+// Particle.io States variable
+
+void States::expose() {
+    globalStatesVariable = "";
+    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
+        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
+    }
 }
 
 void States::buildStatesVariable() {
