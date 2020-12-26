@@ -120,7 +120,7 @@ int PartOfDay::determine()
     Period night = Period(18,3,0);              // Night
 
     Period current = Period(Time.hour(),Time.minute(), 0);
-    //Log.info("PartOfDay determine: time now = " + String(Time.hour()) + ":" + String(Time.minute()));
+    Log.info("PartOfDay determine: time now = " + String(Time.hour()) + ":" + String(Time.minute()));
     
     if (current > night) return 0;
     if (current > dusk) return 7;

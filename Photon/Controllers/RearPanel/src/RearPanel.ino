@@ -99,6 +99,8 @@ void loop() {
 
     if( sleeping->hasChanged() ) {
         
+        Log.info("sleeping has changed");
+        
         // Alexa, Good morning
         if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
             iot->setDeviceValue("OfficeCeiling", 30);
@@ -165,18 +167,19 @@ void loop() {
     }
 
     // SWITCHES
-    iot->handleLightSwitch("Piano"));    // Requires switch and light names to match: "Piano" & "PianoSwitch"
-    iot->handleLightSwitch("Cleaning")); // Requires switch and light names to match: "Cleaning" & "CleaningSwitch"
+    iot->handleLightSwitch("Piano");    // Requires switch and light names to match: "Piano" & "PianoSwitch"
 
 }
 
 void setAllInsideLights(int level) {
+    Log.info("setAllInsideLights %d",level);
     iot->setDeviceValue("OfficeCeiling", level);
     iot->setDeviceValue("Loft", level);
     iot->setDeviceValue("Piano", level);
 }
 
 void setAllOutsideLights(int level) {
+    Log.info("setAllOutsideLights %d",level);
     iot->setDeviceValue("RampPorch", level);
     iot->setDeviceValue("RampAwning", level);
     iot->setDeviceValue("RearProch", level);
