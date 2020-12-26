@@ -164,7 +164,7 @@ void NCD8Light::outputPWM() {
 	Wire.write(int(_currentLevel));
 	byte status = Wire.endTransmission();
 	if(status != 0){
-		Log.error("outputPWM write failed");
+		Log.error("NCD8Light outputPWM write failed for light "+String(_lightNum)+", level = "+String(_currentLevel));
 	}
 }
 
