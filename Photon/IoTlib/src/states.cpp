@@ -72,6 +72,7 @@ int States::count() {
 }
 
 void States::syncPrevious() {
+    Log.info("syncPrevious");
     for(State *ptr = _states; ptr != NULL; ptr = ptr->_next) {
         ptr->_previous = ptr->_value;
     }

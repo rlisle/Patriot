@@ -103,9 +103,9 @@ void loop() {
     State* sleeping = iot->getState("sleeping");
     State* partOfDay = iot->getState("partofday");
 
-    if( sleeping->hasChanged() ) {
+    if( sleeping != NULL && sleeping->hasChanged() ) {
 
-        Log.info("sleeping has changed");
+        Log.info("sleeping has changed: %d",sleeping->value());
         
         // Alexa, Good morning
         if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
@@ -125,7 +125,9 @@ void loop() {
         }
     }
     
-    if( partOfDay->hasChanged() ) {
+    if( partOfDay != NULL && partOfDay->hasChanged() ) {
+        
+        Log.info("PartOfDay has changed: %d", partOfDay->value());
         
         if( partOfDay->value() == SUNRISE ) {
             setAllOutsideLights(0);
@@ -136,7 +138,6 @@ void loop() {
             setEveningLights();
         }
     }
-
     
     iot->handleLightSwitch("Ceiling");
     iot->handleLightSwitch("KitchenCeiling");
