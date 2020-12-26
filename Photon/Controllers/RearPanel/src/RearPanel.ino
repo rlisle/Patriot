@@ -33,57 +33,32 @@ void setup() {
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
     // Lights
-    NCD8Light *ceiling = new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2);
-    NCD8Light *loft = new NCD8Light(ADDRESS, 1, "Loft", 2);
-    NCD8Light *rampPorch = new NCD8Light(ADDRESS, 2, "RampPorch", 2);
-    NCD8Light *rampAwning = new NCD8Light(ADDRESS, 3, "RampAwning", 2);
-    NCD8Light *rearPorch = new NCD8Light(ADDRESS, 4, "RearPorch", 2);
-    NCD8Light *rearAwning =new  NCD8Light(ADDRESS, 5, "RearAwning", 2);
-    NCD8Light *piano = new NCD8Light(ADDRESS, 6, "Piano", 2);
+    iot->addDevice(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 1, "Loft", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 2, "RampPorch", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 3, "RampAwning", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 4, "RearPorch", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 5, "RearAwning", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 6, "Piano", 2));
     // one unused dimmer I/O
 
     // Switches
     // Switches provide control without Alexa, which normally would be used
-    Switch *cleaningSwitch = new Switch(A0, "CleaningSwitch");    // AKA Panic Switch - everything ON
-    Switch *dogsSwitch = new Switch(A1, "DogsSwitch");
-    Switch *awakeSwitch = new Switch(A2, "AwakeSwitch");        // eg. Good Morning
-    Switch *pianoSwitch = new Switch(A3, "PianoSwitch");
-    Switch *a4Switch = new Switch(A4, "A4Switch");
-    Switch *allOffSwitch = new Switch(A5, "AllOffSwitch");      // eg. Good night
+    iot->addDevice(new Switch(A0, "CleaningSwitch"));    // AKA Panic Switch - everything ON
+    iot->addDevice(new Switch(A1, "DogsSwitch"));
+    iot->addDevice(new Switch(A2, "AwakeSwitch"));        // eg. Good Morning
+    iot->addDevice(new Switch(A3, "PianoSwitch"));
+    iot->addDevice(new Switch(A4, "A4Switch"));
+    iot->addDevice(new Switch(A5, "AllOffSwitch"));      // eg. Good night
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities allow Alexa to control them directly or via routines
     // These can be used by other panels also, but don't need to be duplicated by them
-    Activity *cleaning = new Activity("cleaning");   // Turn on all main lights
-    Activity *cooking = new Activity("cooking");     // Turn on lots of kitchen lights
-    Activity *sleeping = new Activity("sleeping");   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
+    iot->addDevice(new Activity("cleaning"));   // Turn on all main lights
+    iot->addDevice(new Activity("cooking"));     // Turn on lots of kitchen lights
+    iot->addDevice(new Activity("sleeping"));   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
     
-    PartOfDay* partOfDay = new PartOfDay();
-
-    // ADD ALL DEVICES
-    iot->addDevice(ceiling);
-    iot->addDevice(loft);
-    iot->addDevice(rampPorch);
-    iot->addDevice(rampAwning);
-    iot->addDevice(rearPorch);
-    iot->addDevice(rearAwning);
-    iot->addDevice(piano);
-
-    // ADD SWITCHES
-    iot->addDevice(cleaningSwitch);
-    iot->addDevice(dogsSwitch);
-    iot->addDevice(awakeSwitch);
-    iot->addDevice(pianoSwitch);
-    iot->addDevice(a4Switch);
-    iot->addDevice(allOffSwitch);
-    
-    // ADD ACTIVITIES
-    iot->addDevice(cleaning);
-    iot->addDevice(cooking);
-    iot->addDevice(sleeping);
-    
-    // ADD OTHER
-    iot->addDevice(partOfDay);
+    iot->addDevice(new PartOfDay());
 }
 
 void loop() {

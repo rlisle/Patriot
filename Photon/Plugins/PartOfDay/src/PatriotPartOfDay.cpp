@@ -67,6 +67,7 @@ PartOfDay::PartOfDay()
     //publishCurrent();     // publish not set until after addDevice
 }
 
+PartOfDay::begin(void (*pubPtr)()
 
 /**
  * loop()
