@@ -32,6 +32,8 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
 
+    iot->addDevice(new PartOfDay());
+
     // Lights
     iot->addDevice(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
     iot->addDevice(new NCD8Light(ADDRESS, 1, "Loft", 2));
@@ -57,8 +59,6 @@ void setup() {
     iot->addDevice(new Activity("cleaning"));   // Turn on all main lights
     iot->addDevice(new Activity("cooking"));     // Turn on lots of kitchen lights
     iot->addDevice(new Activity("sleeping"));   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
-    
-    iot->addDevice(new PartOfDay());
 }
 
 void loop() {

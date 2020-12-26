@@ -70,7 +70,7 @@ PartOfDay::PartOfDay()
 void PartOfDay::begin() {
     _lastPollTime = millis();
     _current = determine();
-    publishCurrent();     // publish not set until after addDevice
+    publishCurrent();
 }
 
 /**
