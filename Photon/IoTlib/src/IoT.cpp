@@ -211,6 +211,7 @@ bool IoT::handleLightSwitch(String name) {
             return false;
         }
         Log.info("Turning on light to %d", lightSwitch->value());
+        setDeviceValue(name, lightSwitch->value() );
         light->setValue( lightSwitch->value() );
         return true;
     }
