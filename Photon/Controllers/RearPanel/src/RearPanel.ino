@@ -45,7 +45,8 @@ void setup() {
     // one unused dimmer I/O
 
     // Switches
-    // Switches provide control without Alexa, which normally would be used
+    // Switches provide backup control for when Alexa is not available.
+    // This can happen when the internet is not available.
     iot->addDevice(new Switch(A0, "OfficeCeilingSwitch"));
     iot->addDevice(new Switch(A1, "LoftSwitch"));
     iot->addDevice(new Switch(A2, "RampPorchSwitch"));
@@ -55,7 +56,7 @@ void setup() {
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities allow Alexa to control them directly or via routines
-    // These can be used by other panels also, but don't need to be duplicated by them
+    // These can be used by other panels also without them creating their own Activites.
     iot->addDevice(new Activity("cleaning"));   // Turn on all main lights
     iot->addDevice(new Activity("cooking"));     // Turn on lots of kitchen lights
     iot->addDevice(new Activity("sleeping"));   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
@@ -146,7 +147,7 @@ void loop() {
     }
 
     // SWITCHES
-    iot->handleLightSwitch("OfficeCeiling");    // Requires switch and light names to match: "Piano" & "PianoSwitch"
+    iot->handleLightSwitch("OfficeCeiling");
     iot->handleLightSwitch("Loft");
     iot->handleLightSwitch("RampPorch");
     iot->handleLightSwitch("RampAwning");
