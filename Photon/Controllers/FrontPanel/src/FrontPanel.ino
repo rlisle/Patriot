@@ -6,6 +6,18 @@
  
  This isn't the bridge controller, so we shouldn't receive any activities from particle.io
  
+  Switch wiring
+  Top left:       RX  tape "Cabinet"
+  Top right:     TX
+  2nd left:       A7  tape "Sink"
+  2nd middle: A5  tape "Ceiling"
+  2nd right:     A6  tape "Indirect"
+  3rd left:        A1  "Ceiling"
+  3rd l-m:        A2  "DS Flood Lights"
+  3rd r-m:        A3  "ODS Flood Lights"
+  3rd right:      A4  "Porch Lights"
+  bottom:        A0  "Light"
+
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
@@ -17,7 +29,7 @@
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 
-#define ADDRESS2 1      // PWM board switches low switch on
+#define ADDRESS 1      // PWM board switches low switch on
 
 String mqttServer = "192.168.10.184";
 
@@ -30,40 +42,28 @@ void setup() {
     iot->begin();
     iot->connectMQTT(mqttServer, "patriotFrontPanel1");
 
-    iot->addDevice(new NCD8Light(ADDRESS2, 0, "DoorSide", 2));
-    iot->addDevice(new NCD8Light(ADDRESS2, 1, "KitchenCeiling", 2));
-    iot->addDevice(new NCD8Light(ADDRESS2, 2, "Sink", 2));
-    iot->addDevice(new NCD8Light(ADDRESS2, 3, "OtherSide", 2));
-    iot->addDevice(new NCD8Light(ADDRESS2, 4, "RightTrim",2));
-    iot->addDevice(new NCD8Light(ADDRESS2, 5, "LeftTrim",2));
-    iot->addDevice(new NCD8Light(ADDRESS2, 6, "FrontAwning", 2));
-    iot->addDevice(new NCD8Light(ADDRESS2, 7, "FrontPorch", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 0, "DoorSide", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 1, "KitchenCeiling", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 2, "Sink", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 3, "OtherSide", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 4, "RightTrim",2));
+    iot->addDevice(new NCD8Light(ADDRESS, 5, "LeftTrim",2));
+    iot->addDevice(new NCD8Light(ADDRESS, 6, "FrontAwning", 2));
+    iot->addDevice(new NCD8Light(ADDRESS, 7, "FrontPorch", 2));
 
     iot->addDevice(new Light(D2, "Ceiling", 2));
     iot->addDevice(new Light(D3, "Cabinets", 2));
 
-    // Switch wiring
-    // Top left: RX     tape "Cabinet"
-    // Top right: TX
-    // 2nd left: A7     tape "Sink"
-    // 2nd middle: A5   tape "Ceiling"
-    // 2nd right: A6    tape "Indirect"
-    // 3rd left: A1     "Ceiling"
-    // 3rd l-m: A2      "DS Flood Lights"
-    // 3rd r-m: A3      "ODS Flood Lights"
-    // 3rd right: A4    "Porch Lights"
-    // bottom: A0       "Light"
-    iot->addDevice(new Switch(A5, "CabinetsSwitch"));        // tape "Cabinet"     (top left)
-    iot->addDevice(new Switch(A6, "RightTrimSwitch"));      //                    (top right)
-    iot->addDevice(new Switch(A7, "SinkSwitch"));           // tape "Sink"        (2nd left)
-    iot->addDevice(new Switch(RX, "KitchenCeilingSwitch")); // tape "Ceiling"  (2nd middle)
-    iot->addDevice(new Switch(TX, "LeftTrimSwitch"));       // tape "Indirect"    (2nd right)
-    
-    iot->addDevice(new Switch(A1, "CeilingSwitch"));        // "Ceiling"          (3rd left)
-    iot->addDevice(new Switch(A2, "DoorSideSwitch"));       // "DS Flood Lights"  (3rd l-m)
-    iot->addDevice(new Switch(A3, "OtherSideSwitch"));      // "ODS Flood Lights" (3rd m-r)
-    iot->addDevice(new Switch(A4, "FrontPorchSwitch"));     // "Porch Lights"     (3rd right)
-    iot->addDevice(new Switch(A0, "FrontAwningSwitch"));    // "Light"            (bottom)
+    iot->addDevice(new Switch(A5, "CabinetsSwitch"));
+    iot->addDevice(new Switch(A6, "RightTrimSwitch"));
+    iot->addDevice(new Switch(A7, "SinkSwitch"));
+    iot->addDevice(new Switch(RX, "KitchenCeilingSwitch"));
+    iot->addDevice(new Switch(TX, "LeftTrimSwitch"));
+    iot->addDevice(new Switch(A1, "CeilingSwitch"));
+    iot->addDevice(new Switch(A2, "DoorSideSwitch"));
+    iot->addDevice(new Switch(A3, "OtherSideSwitch"));
+    iot->addDevice(new Switch(A4, "FrontPorchSwitch"));
+    iot->addDevice(new Switch(A0, "FrontAwningSwitch"));
 }
 
 void loop() {
