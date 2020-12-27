@@ -46,12 +46,12 @@ void setup() {
 
     // Switches
     // Switches provide control without Alexa, which normally would be used
-    iot->addDevice(new Switch(A0, "CleaningSwitch"));    // AKA Panic Switch - everything ON
-    iot->addDevice(new Switch(A1, "DogsSwitch"));
-    iot->addDevice(new Switch(A2, "AwakeSwitch"));        // eg. Good Morning
-    iot->addDevice(new Switch(A3, "PianoSwitch"));
-    iot->addDevice(new Switch(A4, "A4Switch"));
-    iot->addDevice(new Switch(A5, "AllOffSwitch"));      // eg. Good night
+    iot->addDevice(new Switch(A0, "OfficeCeilingSwitch"));
+    iot->addDevice(new Switch(A1, "LoftSwitch"));
+    iot->addDevice(new Switch(A2, "RampPorchSwitch"));
+    iot->addDevice(new Switch(A3, "RampAwningSwitch"));
+    iot->addDevice(new Switch(A4, "RearPorchSwitch"));
+    iot->addDevice(new Switch(A5, "RearAwningSwitch"));
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities allow Alexa to control them directly or via routines
@@ -146,8 +146,12 @@ void loop() {
     }
 
     // SWITCHES
-    iot->handleLightSwitch("Piano");    // Requires switch and light names to match: "Piano" & "PianoSwitch"
-
+    iot->handleLightSwitch("OfficeCeiling");    // Requires switch and light names to match: "Piano" & "PianoSwitch"
+    iot->handleLightSwitch("Loft");
+    iot->handleLightSwitch("RampPorch");
+    iot->handleLightSwitch("RampAwning");
+    iot->handleLightSwitch("RearPorch");
+    iot->handleLightSwitch("RearAwning");
 }
 
 void setAllInsideLights(int level) {
