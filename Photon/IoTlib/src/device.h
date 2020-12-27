@@ -56,32 +56,25 @@ public:
         // Do any setup work in begin()
     }
 
-    
+    // Can not be called in the constructor.
     void publish(String topic, String message) {
         if(publishPtr != NULL) {
             publishPtr(topic, message);
         }
     }
 
+    // begin() is called automatically when device is added to IoT using addDevice() after the publishPtr has been set.
+    // Do any heavy lifting or publishing here and not in constructor.
     virtual void begin() {};
+    
+    // Perform hardware reset if possible
+    virtual void reset() {};
 
     virtual String name() { return _name; };
     virtual DeviceType type() { return _type; };
 
-    // This method can either read the device directly, or use a value
-    // set in the loop() if continuous or asynchronous polling is used.
     virtual int getPercent() { return _percent; }
-
-    // You will need to override this if you are creating an output device
-    // This is the method that should control it.
     virtual void setPercent(int percent) { _percent = percent; };
-
-    // These are just convenience methods
-    virtual bool isOn() { return _percent > 0; };
-    virtual bool isOff() { return _percent == 0; };
-
-    virtual void setOn() { setPercent(100); };
-    virtual void setOff() { setPercent(0); };
 
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};

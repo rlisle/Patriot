@@ -88,10 +88,10 @@ int NCD16Switch::initializeBoard() {
 }
 
 /**
- * isOn
+ * isSwitchOn
  * Return state of switch (inverted: low = 100, high = 0)
  */
-bool NCD16Switch::isOn() {
+bool NCD16Switch::isSwitchOn() {
     int status;
     
     // We'll want to read 2 sequential bytes.
@@ -130,7 +130,7 @@ void NCD16Switch::loop()
     if(current > _lastPollTime + POLL_INTERVAL_MILLIS)
     {
         _lastPollTime = current;
-        bool newIsOn = isOn();
+        bool newIsOn = isSwitchOn();
         if(newIsOn != _isOn) {
             _isOn = newIsOn;
             publish("patriot/" + _name, _isOn ? "100" : "0" );

@@ -74,9 +74,10 @@ bool Switch::isTimeToCheckSwitch()
  */
 bool Switch::didSwitchChange()
 {
-    int pinState = digitalRead(_pin);
+    int pinState = digitalRead(_pin);   // Inverted: 0 is on, 1 is off
     bool newState = (pinState == 0);
-    if (newState == isOn())
+    bool oldState = (_percent != 0);
+    if (newState == oldState)
     {
         return false;
     }

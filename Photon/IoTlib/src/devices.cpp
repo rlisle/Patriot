@@ -55,6 +55,16 @@ void Devices::loop()
     }
 }
 
+void Devices::reset()
+{
+    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
+    {
+        // TODO: call reset only once per board, not device
+        ptr->reset();
+    }
+}
+
+
 Device *Devices::getDeviceByNum(int deviceNum)
 {
     Device *ptr = _devices;

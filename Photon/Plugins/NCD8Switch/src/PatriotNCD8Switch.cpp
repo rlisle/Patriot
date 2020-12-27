@@ -87,10 +87,10 @@ int NCD8Switch::initializeBoard() {
 }
 
 /**
- * isOn
+ * isSwitchOn
  * Return state of switch (inverted: low = 100, high = 0)
  */
-bool NCD8Switch::isOn() {
+bool NCD8Switch::isSwitchOn() {
     int retries = 0;
     int status;
     do {
@@ -124,8 +124,9 @@ void NCD8Switch::loop()
     if(current > _lastPollTime + POLL_INTERVAL_MILLIS)
     {
         _lastPollTime = current;
-        if(isOn() != _isOn) {
-            _isOn = !_isOn;
+        bool newIsOn = isSwitchOn();
+        if(newIsOn != _isOn) {
+            _isOn = newIsOn;
             publish("patriot/" + _name, _isOn ? "100" : "0" );
         }
     }
