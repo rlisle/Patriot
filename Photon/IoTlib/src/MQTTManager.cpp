@@ -26,7 +26,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _devices = devices;
     _logging = 0;
     _logLevel = LOG_LEVEL_ERROR;
-//    _logLevel = LOG_LEVEL_TRACE;    // DEBUGGING ONLY!!!
+//    _logLevel = LOG_LEVEL_ALL;    // DEBUGGING ONLY!!!
 
     Time.zone(-6.0);
     
@@ -134,6 +134,7 @@ void MQTTManager::parseMessage(String topic, String message)
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
                 Log.info("Reset addressed to us");
+                _devices->reset();
                 System.reset(RESET_NO_WAIT);
             }
             
