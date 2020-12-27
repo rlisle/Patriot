@@ -141,7 +141,7 @@ void NCD8Relay::setPercent(int percent) {
  */
 void NCD8Relay::setOn() {
 
-    if(isOn()) return;
+    if(_percent > 0) return;
 
     _percent = 100;
 
