@@ -32,14 +32,9 @@ All text above must be included in any redistribution.
 // Update each minute
 #define POLL_INTERVAL_MILLIS 60000
 
-float const LONGITUDE = 145.00;
-float const LATITUDE = -37.00;
-
-TimeLord tardis;
-tardis.TimeZone(10 * 60); // tell TimeLord what timezone your RTC is synchronized to. You can ignore DST
-                          // as long as the RTC never changes back and forth between DST and non-DST
-tardis.Position(LATITUDE, LONGITUDE); // tell TimeLord where in the world we are
-
+// Austin lat/long: 30.2672° N, 97.7431° W
+float const LONGITUDE = -97.733330;
+float const LATITUDE =  30.266666;
 
 Period::Period(int hour, int minute, int podNum) {
     _hour = hour;
@@ -122,8 +117,14 @@ bool PartOfDay::isTimeToUpdate()
  */
 int PartOfDay::determine()
 {
-    byte sunrise[] = {  0, 0, 12, 27, 12, 2020 }; // store today's date (at noon) in an array for TimeLord to use
-    byte sunset[] = { 0, 0, 12, 27, 12, 2020 };
+    byte bSunrise[] = {  0, 0, 12, 27, 12, 20 }; // store today's date (at noon) in an array for TimeLord to use
+    byte bSunset[] = { 0, 0, 12, 27, 12, 20 };
+
+    TimeLord tardis;
+    
+    tardis.TimeZone(-6 * 60); // tell TimeLord what timezone your RTC is synchronized to. You can ignore DST
+                              // as long as the RTC never changes back and forth between DST and non-DST
+    tardis.Position(LATITUDE, LONGITUDE); // tell TimeLord where in the world we are
 
     bSunrise[3] = Time.day();
     bSunrise[4] = Time.month();
@@ -131,11 +132,15 @@ int PartOfDay::determine()
     tardis.SunRise(bSunrise);
     Period *sunRise = new Period(bSunrise[tl_hour], bSunrise[tl_minute], 2);
 
+    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), int(bSunrise[tl_hour]), int(bSunrise[tl_minute]));
+    
     bSunset[3] = Time.day();
     bSunset[4] = Time.month();
     bSunset[5] = Time.year();
     tardis.SunSet(bSunset);
     Period *sunSet = new Period(bSunset[tl_hour], bSunset[tl_minute], 2);
+    
+    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), int(bSunset[tl_hour]), int(bSunset[tl_minute]));
     
     //TODO: set once each day using _periods array
     Period dawn = Period(6,52,1);               // Dawn
