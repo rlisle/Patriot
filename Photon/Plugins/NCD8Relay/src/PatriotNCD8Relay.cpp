@@ -172,7 +172,7 @@ void NCD8Relay::setOn() {
  * Set relay off
  */
 void NCD8Relay::setOff() {
-    if(isOff()) return;
+    if(_percent == 0) return;
 
     _percent = 0;
     _stopMillis = 0;

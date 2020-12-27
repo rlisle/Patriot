@@ -87,7 +87,7 @@ int NCD8Switch::initializeBoard() {
 }
 
 /**
- * isOn
+ * isSwitchOn
  * Return state of switch (inverted: low = 100, high = 0)
  */
 bool NCD8Switch::isSwitchOn() {

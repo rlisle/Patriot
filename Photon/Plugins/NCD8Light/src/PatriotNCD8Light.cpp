@@ -88,6 +88,20 @@ int8_t NCD8Light::initializeBoard() {
     return status;
 }
 
+void NCD8Light::reset() {
+    // Issue PCA9634 SWRST
+    Wire.beginTransmission(_address);
+    Wire.write(0x06);
+    Wire.write(0xa5);
+    Wire.write(0x5a);
+    byte status = Wire.endTransmission();
+    if(status != 0){
+        Log.error("NCD8Light reset write failed for light "+String(_lightNum));
+        return;
+    }
+    initializeBoard();
+}
+
 /**
  * Set percent
  * @param percent Int 0 to 100.

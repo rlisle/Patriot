@@ -33,7 +33,7 @@ private:
     bool    _isOn;          // current/last switch state
     
     int    initializeBoard();
-    bool   isOn();          // Read the switch state
+    bool   isSwitchOn();          // Read the switch state
 
 public:
     NCD8Switch(int address, int switchNum, String name);
