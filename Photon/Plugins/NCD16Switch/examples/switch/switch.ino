@@ -27,8 +27,7 @@ void setup() {
     iot->connectMQTT(mqttServerIP, "myPatriotTest1");   // Whatever you want here
 
     byte address = 0x00;    // No jumpers set
-    Switch *switch1 = new Switch(address, 0, "switch1");
-    iot->addDevice(switch1);
+    iot->addDevice(new Switch(address, 0, "switch1"));
 }
 
 void loop() {
