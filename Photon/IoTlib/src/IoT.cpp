@@ -196,20 +196,21 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  */
 
 bool IoT::handleLightSwitch(String name) {
-    State *lightSwitch = getState(name+"Switch");
+    //This won't work anymore because devices don't set state
+    Device *lightSwitch = getDeviceWithName(name+"Switch");
     if( lightSwitch == NULL) {
         Log.error("handleLightSwitch: " + name + "Switch not found!");
         return false;
     }
     if( lightSwitch->hasChanged() ) {
         Log.info("handleLightSwitch hasChanged");
-        State *light = getState(name);
+        Device *light = getDeviceWithName(name);
         if( light == NULL ) {
             Log.error("handleLightSwitch: light " + name + " not found!");
             return false;
         }
         Log.info("Turning on light to %d", lightSwitch->value());
-        setDeviceValue(name, lightSwitch->value() );
+        light->setPercent( lightSwitch->value() );
         light->setValue( lightSwitch->value() );
         return true;
     }
