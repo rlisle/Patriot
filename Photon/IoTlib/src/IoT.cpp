@@ -138,8 +138,6 @@ void IoT::addDevice(Device *device)
     _devices->addDevice(device);
     device->publishPtr = globalPublish;
     device->begin();
-
-    _states->addState(device->name(), device->getPercent());
 }
 
 
