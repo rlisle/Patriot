@@ -50,11 +50,14 @@ class PartOfDay : public Device
 {
 private:
     long       _lastPollTime;
-//    Period     _periods[8];
+    long       _lastPollDay;
+    Period     _periods[8];
 
-    bool       isTimeToUpdate();
-    int        determine();
-    void       publishCurrent();
+    bool       isNextMinute();
+    bool       isNextDay();
+    void       calcSunriseSunset();
+    int        calcPartOfDay();
+    void       publish(int partOfDay);
     
 public:
     int        _current;
