@@ -36,10 +36,12 @@ class Period {
 private:
     int     _hour;
     int     _minute;
-    int     _podNum;        //TODO: change to enum
 
 public:
-    Period(int hour, int minute, int podNum);
+    Period(int hour, int minute);
+    
+    // minute can be < 0 or > 59 and will be corrected
+    void    set(int hour, int minute);
     
     bool    operator ==(const Period& hm);
     bool    operator >(const Period& hm);

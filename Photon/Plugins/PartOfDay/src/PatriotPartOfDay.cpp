@@ -35,10 +35,29 @@ All text above must be included in any redistribution.
 float const LONGITUDE = -97.733330;
 float const LATITUDE =  30.266666;
 
-Period::Period(int hour, int minute, int podNum) {
+Period::Period(int hour, int minute) {
     _hour = hour;
     _minute = minute;
-    _podNum = podNum;
+}
+
+// hour and minute can be < 0 or too big and will be corrected
+void Period::set(int hour, int minute) {
+    _hour = hour;
+    _minute = minute;
+    if(_minute < 0) {
+        _hour--;
+        _minute += 60;
+    }
+    if(_minute >= 60) {
+        _hour++;
+        _minute -= 60;
+    }
+    if(_hour >= 24) {
+        _hour -= 24;
+    }
+    if(_hour < 0) {
+        hour += 24;
+    }
 }
 
 bool Period::operator ==(const Period& period) {
@@ -70,9 +89,9 @@ PartOfDay::PartOfDay()
  begin is called after publishPtr is set, so we can publish her but not in constructor
  */
 void PartOfDay::begin() {
-    _lastPollTime = millis();
-    _current = determine();
-    publishCurrent();
+    // Force next loop to perform both
+    _lastPollTime = 0;
+    _lastPollDay = 0;
 }
 
 /**
@@ -81,9 +100,9 @@ void PartOfDay::begin() {
  */
 void PartOfDay::loop()
 {
-    if (_current == -1 || isNextMinute())
+    if(isNextMinute())
     {
-        if( _current == -1 || isNextDay()) {
+        if(isNextDay()) {
             calcSunriseSunset();
         }
         
@@ -101,7 +120,7 @@ void PartOfDay::loop()
 bool PartOfDay::isNextMinute()
 {
     long currentTime = millis();
-    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
+    if (currentTime < _lastPollTime + MILLIS_PER_MINUTE)
     {
         return false;
     }
@@ -111,13 +130,13 @@ bool PartOfDay::isNextMinute()
 
 bool PartOfDay::isNextDay()
 {
-//    long currentTime = millis();
-//    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
-//    {
-//        return false;
-//    }
-//    _lastPollTime = currentTime;
-//    return true;
+    long currentTime = millis();
+    if (currentTime < _lastPollDay + MILLIS_PER_DAY)
+    {
+        return false;
+    }
+    _lastPollDay = currentTime;
+    return true;
 }
 
 int PartOfDay::calcSunriseSunset()
@@ -134,90 +153,43 @@ int PartOfDay::calcSunriseSunset()
     bSunrise[4] = Time.month();
     bSunrise[5] = Time.year();
     timeLord.SunRise(bSunrise);
-    Period *sunRise = new Period(bSunrise[tl_hour], bSunrise[tl_minute], 2);
-
-    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), int(bSunrise[tl_hour]), int(bSunrise[tl_minute]));
     
     bSunset[3] = Time.day();
     bSunset[4] = Time.month();
     bSunset[5] = Time.year();
     timeLord.SunSet(bSunset);
-    Period *sunSet = new Period(bSunset[tl_hour], bSunset[tl_minute], 2);
     
-    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), int(bSunset[tl_hour]), int(bSunset[tl_minute]));
+    int sunriseHour = bSunrise[tl_hour];
+    int sunriseMinute = bSunrise[tl_minute];
+    int sunsetHour = bSunset[tl_hour];
+    int sunsetMinute = bSunset[tl_minute];
     
-    //TODO: set once each day using _periods array
-    Period dawn = Period(6,52,1);               // Dawn
-    Period sunrise = Period(7,22,2);            // Sunrise
-    Period morning = Period(7,23,3);            // Morning
-    Period noon = Period(12,0,4);               // Noon
-    Period afternoon = Period(12,1,5);          // Afternoon
-    Period sunset = Period(17,33,6);            // Sunset
-    Period dusk = Period(17,34,7);              // Dusk
-    Period night = Period(18,3,0);              // Night
+    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), sunriseHour, sunriseMinute);
 
-    Period current = Period(Time.hour(),Time.minute(), 0);
-    Log.info("PartOfDay determine: time now = " + String(Time.hour()) + ":" + String(Time.minute()));
-    
-    if (current > night) return 0;
-    if (current > dusk) return 7;
-    if (current > sunset) return 6;
-    if (current > afternoon) return 5;
-    if (current > noon) return 4;
-    if (current > morning) return 3;
-    if (current > sunrise) return 2;
-    if (current > dawn) return 1;
-    return 0;
+    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), sunsetHour, sunsetMinute);
+
+    _periods[SUNRISE].set(sunriseHour, sunriseMinute);
+    _periods[MORNING].set(sunriseHour, sunriseMinute+1);
+    _periods[NOON].set(12,0);
+    _periods[AFTERNOON].set(12,1);
+    _periods[SUNSET].set(sunsetHour, sunsetMinute);
+    _periods[DUSK].set(sunsetHour, sunsetMinute+1);
+    _periods[NIGHT].set(sunsetHour, sunsetMinute+30);
+    _periods[DAWN].set(sunriseHour, sunriseMinute - 30);
 }
 
 int PartOfDay::calcPartOfDay()
 {
-    byte bSunrise[] = {  0, 0, 12, 27, 12, 20 }; // store today's date (at noon) in an array for TimeLord to use
-    byte bSunset[] = { 0, 0, 12, 27, 12, 20 };
-
-    TimeLord tardis;
+    Period current(Time.hour(),Time.minute());
     
-    tardis.TimeZone(-6 * 60); // tell TimeLord what timezone your RTC is synchronized to. You can ignore DST
-                              // as long as the RTC never changes back and forth between DST and non-DST
-    tardis.Position(LATITUDE, LONGITUDE); // tell TimeLord where in the world we are
-
-    bSunrise[3] = Time.day();
-    bSunrise[4] = Time.month();
-    bSunrise[5] = Time.year();
-    tardis.SunRise(bSunrise);
-    Period *sunRise = new Period(bSunrise[tl_hour], bSunrise[tl_minute], 2);
-
-    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), int(bSunrise[tl_hour]), int(bSunrise[tl_minute]));
-    
-    bSunset[3] = Time.day();
-    bSunset[4] = Time.month();
-    bSunset[5] = Time.year();
-    tardis.SunSet(bSunset);
-    Period *sunSet = new Period(bSunset[tl_hour], bSunset[tl_minute], 2);
-    
-    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), int(bSunset[tl_hour]), int(bSunset[tl_minute]));
-    
-    //TODO: set once each day using _periods array
-    Period dawn = Period(6,52,1);               // Dawn
-    Period sunrise = Period(7,22,2);            // Sunrise
-    Period morning = Period(7,23,3);            // Morning
-    Period noon = Period(12,0,4);               // Noon
-    Period afternoon = Period(12,1,5);          // Afternoon
-    Period sunset = Period(17,33,6);            // Sunset
-    Period dusk = Period(17,34,7);              // Dusk
-    Period night = Period(18,3,0);              // Night
-
-    Period current = Period(Time.hour(),Time.minute(), 0);
-    Log.info("PartOfDay determine: time now = " + String(Time.hour()) + ":" + String(Time.minute()));
-    
-    if (current > night) return 0;
-    if (current > dusk) return 7;
-    if (current > sunset) return 6;
-    if (current > afternoon) return 5;
-    if (current > noon) return 4;
-    if (current > morning) return 3;
-    if (current > sunrise) return 2;
-    if (current > dawn) return 1;
+    if (current > _periods[NIGHT]) return 0;
+    if (current > _periods[DUSK]) return 7;
+    if (current > _periods[SUNSET]) return 6;
+    if (current > _periods[AFTERNOON]) return 5;
+    if (current > _periods[NOON]) return 4;
+    if (current > _periods[MORNING]) return 3;
+    if (current > _periods[SUNRISE]) return 2;
+    if (current > _periods[DAWN]) return 1;
     return 0;
 }
 
