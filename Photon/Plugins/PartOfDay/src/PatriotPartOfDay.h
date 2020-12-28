@@ -32,13 +32,23 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include "device.h"
 
+// PartOfDay
+#define SUNRISE 0
+#define MORNING 1
+#define NOON 2
+#define AFTERNOON 3
+#define SUNSET 4
+#define DUSK 5
+#define NIGHT 6
+#define DAWN 7
+
 class Period {
 private:
     int     _hour;
     int     _minute;
 
 public:
-    Period(int hour, int minute);
+    Period(int hour = 0, int minute = 0);
     
     // minute can be < 0 or > 59 and will be corrected
     void    set(int hour, int minute);
@@ -59,7 +69,7 @@ private:
     bool       isNextDay();
     void       calcSunriseSunset();
     int        calcPartOfDay();
-    void       publish(int partOfDay);
+    void       publishPOD(int partOfDay);
     
 public:
     int        _current;

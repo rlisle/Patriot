@@ -80,7 +80,7 @@ bool Period::operator <(const Period& period) {
  * Constructor
  */
 PartOfDay::PartOfDay()
-        : Device("PartOfDaySource", DeviceType::PartOfDay)
+        : Device("PartOfDaySource", DeviceType::PartOfDaySource)
 {
     _current = -1;
 }
@@ -106,11 +106,11 @@ void PartOfDay::loop()
             calcSunriseSunset();
         }
         
-        int now = determine();
+        int now = calcPartOfDay();
         if (now != _current) {
             Log.info("PartOfDay changed to %d", now);
             _current = now;
-            publishCurrent();
+            publishPOD(_current);
         }
     }
 }
@@ -139,7 +139,7 @@ bool PartOfDay::isNextDay()
     return true;
 }
 
-int PartOfDay::calcSunriseSunset()
+void PartOfDay::calcSunriseSunset()
 {
     // store today's date (at noon) in an array for TimeLord to use
     byte bSunrise[] = {  0, 0, 12, 27, 12, 20 };
@@ -193,7 +193,7 @@ int PartOfDay::calcPartOfDay()
     return 0;
 }
 
-void PartOfDay::publish(int partOfDay) {
+void PartOfDay::publishPOD(int partOfDay) {
     String topic = "patriot/partofday";
     String message = String(partOfDay);
     publish(topic,message);

@@ -118,7 +118,7 @@ void MQTTManager::parseMessage(String topic, String message)
         
         // Look for reserved names
         // LOG
-        } else if(subtopic.equals("log") || subtopic.startsWith("log/")) {
+        if(subtopic.equals("log") || subtopic.startsWith("log/")) {
             // Ignore it.
 
         // LOGLEVEL
@@ -135,7 +135,7 @@ void MQTTManager::parseMessage(String topic, String message)
             }
             
         // PING
-        if(subtopic.equals("ping")) {
+        } else if(subtopic.equals("ping")) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
                 Log.trace("Ping addressed to us");
