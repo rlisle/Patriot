@@ -46,10 +46,10 @@ State *State::addState(String name, int value) {
     if (state == NULL) {
         Log.info("States addState adding " + name + " = " + String(value));
         state = new State(name,value);
-        if(_states == NULL) {
-            _states = state;
+        if(_next == NULL) {
+            _next = state;
         } else {
-            State* ptr = _states;
+            State* ptr = this;
             while(ptr->_next != NULL) ptr = ptr->_next;
             ptr->_next = state;
         }

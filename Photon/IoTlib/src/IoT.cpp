@@ -208,21 +208,21 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  */
 
 bool IoT::handleLightSwitch(String name) {
-    Device *lightSwitch = getDeviceWithName(name+"Switch");
+    if(_devices == NULL) return false;
+    Device *lightSwitch = _devices->getDeviceWithName(name+"Switch");
     if( lightSwitch == NULL) {
         Log.error("handleLightSwitch: " + name + "Switch not found!");
         return false;
     }
     if( lightSwitch->hasChanged() ) {
         Log.info("handleLightSwitch hasChanged");
-        Device *light = getDeviceWithName(name);
+        Device *light = _devices->getDeviceWithName(name);
         if( light == NULL ) {
             Log.error("handleLightSwitch: light " + name + " not found!");
             return false;
         }
-        Log.info("Turning on light to %d", lightSwitch->value());
-        light->setPercent( lightSwitch->value() );
-        light->setValue( lightSwitch->value() );
+        Log.info("Turning on light to %d", lightSwitch->getPercent());
+        light->setPercent( lightSwitch->getPercent() );
         return true;
     }
     return false;

@@ -34,7 +34,7 @@ enum class DeviceType {
 
 class Devices;
 
-class Device : State {
+class Device {
     friend Devices;
 
  protected:
