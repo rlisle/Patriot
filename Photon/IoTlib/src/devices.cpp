@@ -65,17 +65,6 @@ void Devices::reset()
 }
 
 
-Device *Devices::getDeviceByNum(int deviceNum)
-{
-    Device *ptr = _devices;
-    for (int i = deviceNum; i > 0 && ptr->_next != NULL; i--) 
-    {
-        ptr = ptr->_next;
-    }
-    Log.trace("getDeviceByNum("+String(deviceNum)+" returning "+ptr->name());
-    return ptr;
-}
-
 Device *Devices::getDeviceWithName(String name)
 {
     Device *ptr = _devices;

@@ -41,6 +41,7 @@ class Device {
     String     _name;
     DeviceType _type;
     int        _percent;
+    int        _previous;
 
     Device*    _next;       // Linked list
 
@@ -76,6 +77,8 @@ public:
     virtual int getPercent() { return _percent; }
     virtual void setPercent(int percent) { _percent = percent; };
 
+    virtual bool hasChanged() { return _percent != _previous; };
+    
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
 };

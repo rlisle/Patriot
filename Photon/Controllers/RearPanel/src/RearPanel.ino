@@ -16,7 +16,7 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
-#include <PatriotPartOfDay.h>
+//#include <PatriotPartOfDay.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
@@ -30,9 +30,7 @@ void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
     iot->begin();
-    iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
-
-    iot->addDevice(new PartOfDay());
+    iot->connectMQTT(mqttServer, "PatriotRearPanel1", false);
 
     // Lights
     iot->addDevice(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));

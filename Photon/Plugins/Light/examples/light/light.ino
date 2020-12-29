@@ -21,32 +21,21 @@ All text above must be included in any redistribution.
 #include <IoT.h>
 #include <PatriotLight.h>
 
+String mqttServer = "192.168.10.184";
+
 IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("myPhoton");
-    iot->setPublishName("patriot");
     iot->begin();
+    iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);
 
-    // Create devices
-    Light *porch = new Light(A3, "Porch");
-    Light *table = new Light(RX, "Table");
-    Light *reading = new Light(TX, "Reading");
-    Light *sink = new Light(WKP, "Sink");
-
-    // Add local control switch pins D0 - D3
-    // These are simply tied to ground, normally open
-    porch->setLocalPin(D0, "Porch Switch");
-    porch->setLocalPin(D1, "Table Switch");
-    porch->setLocalPin(D2, "Reading Switch");
-    porch->setLocalPin(D3, "Sink Switch");
-
-    // Add them
-    iot->addDevice(porch);
-    iot->addDevice(table);
-    iot->addDevice(reading);
-    iot->addDevice(sink);
+    // Define devices
+    iot->addDevice(new Light(A3, "Porch"));
+    iot->addDevice(new Light(RX, "Table"));
+    iot->addDevice(new Light(TX, "Reading"));
+    iot->addDevice(new Light(WKP, "Sink"));
 }
 
 void loop() {

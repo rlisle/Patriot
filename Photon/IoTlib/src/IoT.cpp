@@ -19,6 +19,12 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 
 /**
+ * globalStatesVariable
+ * Lists all the currently active states names in CSV format.
+ */
+String globalStatesVariable;
+
+/**
  * Global Particle.io subscribe handler
  * Called by particle.io when events are published.
  *
@@ -91,7 +97,7 @@ void IoT::begin()
     //If MQTT won't work, initialize SerialLogHandler logHandler(LOG_LEVEL_ALL);
     //Serial.begin(57600);
 
-    _states = new States();
+    _states = NULL;
     _devices = new Devices();
 
     // Subscribe to events. There is a 1/second limit for events.
@@ -118,7 +124,9 @@ void IoT::mqttPublish(String topic, String message)
  */
 void IoT::loop()
 {
-    _states->syncPrevious();
+    if(_states != NULL) {
+        _states->syncPrevious();
+    }
     
     if(_devices != NULL) {
         _devices->loop();
@@ -138,8 +146,6 @@ void IoT::addDevice(Device *device)
     _devices->addDevice(device);
     device->publishPtr = globalPublish;
     device->begin();
-
-    _states->addState(device->name(), device->getPercent());
 }
 
 
@@ -181,6 +187,10 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
           _mqttManager->publish(topic, level);
       }
     }
+    
+    //TODO: If bridge isn't working, then handle directly
+    //...
+    
 }
 
 /**
@@ -198,21 +208,21 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  */
 
 bool IoT::handleLightSwitch(String name) {
-    State *lightSwitch = getState(name+"Switch");
+    if(_devices == NULL) return false;
+    Device *lightSwitch = _devices->getDeviceWithName(name+"Switch");
     if( lightSwitch == NULL) {
         Log.error("handleLightSwitch: " + name + "Switch not found!");
         return false;
     }
     if( lightSwitch->hasChanged() ) {
         Log.info("handleLightSwitch hasChanged");
-        State *light = getState(name);
+        Device *light = _devices->getDeviceWithName(name);
         if( light == NULL ) {
             Log.error("handleLightSwitch: light " + name + " not found!");
             return false;
         }
-        Log.info("Turning on light to %d", lightSwitch->value());
-        setDeviceValue(name, lightSwitch->value() );
-        light->setValue( lightSwitch->value() );
+        Log.info("Turning on light to %d", lightSwitch->getPercent());
+        light->setPercent( lightSwitch->getPercent() );
         return true;
     }
     return false;
@@ -244,6 +254,9 @@ bool IoT::didTurnOff(String name) {   // hasChanged && value == 0
  returns: pointer to State object or NULL if not found
  */
 State* IoT::getState(String name) {
+    if(_states == NULL) {
+        return NULL;
+    }
     return _states->getStateWithName(name);
 }
 
@@ -253,6 +266,8 @@ State* IoT::getState(String name) {
  returns 0-100 percent or -1 if name not found
  */
 int IoT::getStateValue(String name) {
+    if(_states == NULL) return -1;
+
     State* state = _states->getStateWithName(name);
     if( state == NULL) return -1;
     
@@ -265,7 +280,11 @@ int IoT::getStateValue(String name) {
  param: value to assign state
  */
 void IoT::setStateValue(String name, int value) {
-    _states->addState(name, value);
+    if(_states == NULL) {
+        _states = new State(name, value);
+    } else {
+        _states->addState(name, value);
+    }
 }
 
 /**

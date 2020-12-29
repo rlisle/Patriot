@@ -3,6 +3,8 @@ PatriotPartOfDay plugin
 
  Features:
  - Broadcasts the current part of the day
+ 
+ - _percent will be a value of 0 to 7 as listed below
   
   - Periods can be (in podNum order):
      0 Night
@@ -25,18 +27,39 @@ All text above must be included in any redistribution.
 
 */
 
+#include <TimeLord.h>
 #include "PatriotPartOfDay.h"
 
-#define MILLIS_PER_SECOND 1000
-// Update each minute
-#define POLL_INTERVAL_MILLIS 60000
+#define MILLIS_PER_MINUTE 60000
+#define MILLIS_PER_DAY 86400000
 
+// Austin lat/long: 30.2672° N, 97.7431° W
+float const LONGITUDE = -97.733330;
+float const LATITUDE =  30.266666;
 
-Period::Period(int hour, int minute, int podNum) {
+Period::Period(int hour, int minute) {
     _hour = hour;
     _minute = minute;
-    _podNum = podNum;
-    
+}
+
+// hour and minute can be < 0 or too big and will be corrected
+void Period::set(int hour, int minute) {
+    _hour = hour;
+    _minute = minute;
+    if(_minute < 0) {
+        _hour--;
+        _minute += 60;
+    }
+    if(_minute >= 60) {
+        _hour++;
+        _minute -= 60;
+    }
+    if(_hour >= 24) {
+        _hour -= 24;
+    }
+    if(_hour < 0) {
+        hour += 24;
+    }
 }
 
 bool Period::operator ==(const Period& period) {
@@ -59,18 +82,18 @@ bool Period::operator <(const Period& period) {
  * Constructor
  */
 PartOfDay::PartOfDay()
-        : Device("PartOfDaySource", DeviceType::PartOfDay)
+        : Device("PartOfDay", DeviceType::PartOfDay)
 {
-    _current = -1;
+    _percent = -1;
 }
 
 /**
  begin is called after publishPtr is set, so we can publish her but not in constructor
  */
 void PartOfDay::begin() {
-    _lastPollTime = millis();
-    _current = determine();
-    publishCurrent();
+    // Force next loop to perform both
+    _lastPollTime = 0;
+    _lastPollDay = 0;
 }
 
 /**
@@ -79,27 +102,27 @@ void PartOfDay::begin() {
  */
 void PartOfDay::loop()
 {
-    if (_current == -1 || isTimeToUpdate())
+    if(isNextMinute())
     {
-        int now = determine();
-        if (now != _current) {
+        if(isNextDay()) {
+            calcSunriseSunset();
+        }
+        
+        int now = calcPartOfDay();
+        if (now != _percent) {
             Log.info("PartOfDay changed to %d", now);
-            _current = now;
-            publishCurrent();
+            _percent = now;
+            publishPOD(_percent);
         }
     }
 }
 
 
 // Private Helper Methods
-/**
- * isTimeToUpdate()
- * @return bool if enough time has elapsed to sample switch again
- */
-bool PartOfDay::isTimeToUpdate()
+bool PartOfDay::isNextMinute()
 {
     long currentTime = millis();
-    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
+    if (currentTime < _lastPollTime + MILLIS_PER_MINUTE)
     {
         return false;
     }
@@ -107,38 +130,73 @@ bool PartOfDay::isTimeToUpdate()
     return true;
 }
 
-/**
- * publishinutes()
- * Publish current minutes
- */
-int PartOfDay::determine()
+bool PartOfDay::isNextDay()
 {
-    //TODO: set once each day using _periods array
-    Period dawn = Period(6,52,1);               // Dawn
-    Period sunrise = Period(7,22,2);            // Sunrise
-    Period morning = Period(7,23,3);            // Morning
-    Period noon = Period(12,0,4);               // Noon
-    Period afternoon = Period(12,1,5);          // Afternoon
-    Period sunset = Period(17,33,6);            // Sunset
-    Period dusk = Period(17,34,7);              // Dusk
-    Period night = Period(18,3,0);              // Night
+    long currentTime = millis();
+    if (currentTime < _lastPollDay + MILLIS_PER_DAY)
+    {
+        return false;
+    }
+    _lastPollDay = currentTime;
+    return true;
+}
 
-    Period current = Period(Time.hour(),Time.minute(), 0);
-    Log.info("PartOfDay determine: time now = " + String(Time.hour()) + ":" + String(Time.minute()));
+void PartOfDay::calcSunriseSunset()
+{
+    // store today's date (at noon) in an array for TimeLord to use
+    byte bSunrise[] = {  0, 0, 12, 27, 12, 20 };
+    byte bSunset[] = { 0, 0, 12, 27, 12, 20 };
+
+    TimeLord timeLord;
+    timeLord.TimeZone(-6 * 60);
+    timeLord.Position(LATITUDE, LONGITUDE);
+
+    bSunrise[3] = Time.day();
+    bSunrise[4] = Time.month();
+    bSunrise[5] = Time.year();
+    timeLord.SunRise(bSunrise);
     
-    if (current > night) return 0;
-    if (current > dusk) return 7;
-    if (current > sunset) return 6;
-    if (current > afternoon) return 5;
-    if (current > noon) return 4;
-    if (current > morning) return 3;
-    if (current > sunrise) return 2;
-    if (current > dawn) return 1;
+    bSunset[3] = Time.day();
+    bSunset[4] = Time.month();
+    bSunset[5] = Time.year();
+    timeLord.SunSet(bSunset);
+    
+    int sunriseHour = bSunrise[tl_hour];
+    int sunriseMinute = bSunrise[tl_minute];
+    int sunsetHour = bSunset[tl_hour];
+    int sunsetMinute = bSunset[tl_minute];
+    
+    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), sunriseHour, sunriseMinute);
+
+    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), sunsetHour, sunsetMinute);
+
+    _periods[SUNRISE].set(sunriseHour, sunriseMinute);
+    _periods[MORNING].set(sunriseHour, sunriseMinute+1);
+    _periods[NOON].set(12,0);
+    _periods[AFTERNOON].set(12,1);
+    _periods[SUNSET].set(sunsetHour, sunsetMinute);
+    _periods[DUSK].set(sunsetHour, sunsetMinute+1);
+    _periods[NIGHT].set(sunsetHour, sunsetMinute+30);
+    _periods[DAWN].set(sunriseHour, sunriseMinute - 30);
+}
+
+int PartOfDay::calcPartOfDay()
+{
+    Period current(Time.hour(),Time.minute());
+    
+    if (current > _periods[NIGHT]) return 0;
+    if (current > _periods[DUSK]) return 7;
+    if (current > _periods[SUNSET]) return 6;
+    if (current > _periods[AFTERNOON]) return 5;
+    if (current > _periods[NOON]) return 4;
+    if (current > _periods[MORNING]) return 3;
+    if (current > _periods[SUNRISE]) return 2;
+    if (current > _periods[DAWN]) return 1;
     return 0;
 }
 
-void PartOfDay::publishCurrent() {
+void PartOfDay::publishPOD(int partOfDay) {
     String topic = "patriot/partofday";
-    String message = String(_current);
+    String message = String(partOfDay);
     publish(topic,message);
 }

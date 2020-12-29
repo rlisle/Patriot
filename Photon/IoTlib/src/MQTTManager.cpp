@@ -117,19 +117,36 @@ void MQTTManager::parseMessage(String topic, String message)
         String subtopic = topic.substring(kPublishName.length()+1);
         
         // Look for reserved names
+        // LOG
+        if(subtopic.equals("log") || subtopic.startsWith("log/")) {
+            // Ignore it.
+
+        // LOGLEVEL
+        } else if(subtopic.startsWith("loglevel")) {
+            if(subtopic.equals("loglevel/"+_controllerName)) {
+                Log.info(_controllerName + " setting logLevel = " + message);
+                parseLogLevel(message);
+            }
+            
+        // MEMORY
+        } else if(subtopic.equals("memory")) {
+            if(message.equals(_controllerName)) {
+                Log.info( String::format("Free memory = %d", System.freeMemory()));
+            }
+            
         // PING
-        if(subtopic.equals("ping")) {
+        } else if(subtopic.equals("ping")) {
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
                 Log.trace("Ping addressed to us");
                 _mqtt->publish(kPublishName + "/pong", _controllerName);
             }
             
-            // PONG
+        // PONG
         } else if(subtopic.equals("pong")) {
             // Ignore it.
             
-            // RESET
+        // RESET
         } else if(subtopic.equals("reset")) {
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
@@ -137,23 +154,8 @@ void MQTTManager::parseMessage(String topic, String message)
                 _devices->reset();
                 System.reset(RESET_NO_WAIT);
             }
-            
-            // MEMORY
-        } else if(subtopic.equals("memory")) {
-            if(message.equals(_controllerName)) {
-                Log.info( String::format("Free memory = %d", System.freeMemory()));
-            }
-            
-        } else if(subtopic.equals("log") || subtopic.startsWith("log/")) {
-            // Ignore it.
-            
-        } else if(subtopic.startsWith("loglevel")) {
-            if(subtopic.equals("loglevel/"+_controllerName)) {
-                Log.info(_controllerName + " setting logLevel = " + message);
-                parseLogLevel(message);
-            }
-            
-            // UNKNOWN
+                
+        // UNKNOWN
         } else {
             
             int percent = parseValue(message);
@@ -163,9 +165,9 @@ void MQTTManager::parseMessage(String topic, String message)
             Device *device = _devices->getDeviceWithName(subtopic);
             if( device != NULL ) {
                 device->setPercent(percent);
+            } else {
+                iot->setStateValue(subtopic,percent);
             }
-            States *states = iot->_states;
-            states->addState(subtopic,percent);
         }
     } else {
         // Not addressed or recognized by us

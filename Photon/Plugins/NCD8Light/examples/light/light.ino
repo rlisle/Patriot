@@ -23,9 +23,7 @@ void setup() {
 
     byte address = 0x20;
     byte numLights = 8;
-    NCDLight *light1 = new NCDLight(address, numLights, 0, "light1");
-    iot->addDevice(light1);
-
+    iot->addDevice(new NCDLight(address, numLights, 0, "light1"));
 }
 
 void loop() {

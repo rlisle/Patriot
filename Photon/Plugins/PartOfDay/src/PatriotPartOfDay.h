@@ -32,14 +32,26 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include "device.h"
 
+// PartOfDay
+#define SUNRISE 0
+#define MORNING 1
+#define NOON 2
+#define AFTERNOON 3
+#define SUNSET 4
+#define DUSK 5
+#define NIGHT 6
+#define DAWN 7
+
 class Period {
 private:
     int     _hour;
     int     _minute;
-    int     _podNum;        //TODO: change to enum
 
 public:
-    Period(int hour, int minute, int podNum);
+    Period(int hour = 0, int minute = 0);
+    
+    // minute can be < 0 or > 59 and will be corrected
+    void    set(int hour, int minute);
     
     bool    operator ==(const Period& hm);
     bool    operator >(const Period& hm);
@@ -50,14 +62,17 @@ class PartOfDay : public Device
 {
 private:
     long       _lastPollTime;
-//    Period     _periods[8];
+    long       _lastPollDay;
+    Period     _periods[8];
 
-    bool       isTimeToUpdate();
-    int        determine();
-    void       publishCurrent();
+    bool       isNextMinute();
+    bool       isNextDay();
+    void       calcSunriseSunset();
+    int        calcPartOfDay();
+    void       publishPOD(int partOfDay);
     
 public:
-    int        _current;
+    int        _current;    // This should be _percent
     
     PartOfDay();
     

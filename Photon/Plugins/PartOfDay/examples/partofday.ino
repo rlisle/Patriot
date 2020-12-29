@@ -32,10 +32,7 @@ void setup() {
     iot->begin();
 
     // Create DateTime device
-    PartOfDay *partOfDay = new PartOfDay();
-
-    // Add it to IoT
-    iot->addDevice(partOfDay);
+    iot->addDevice(new PartOfDay());
 }
 
 void loop() {

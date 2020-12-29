@@ -19,7 +19,7 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 #include "constants.h"
-#include "states.h"
+#include "state.h"
 #include "devices.h"
 #include "MQTTManager.h"
 
@@ -105,7 +105,7 @@ private:
     bool         _isBridge;
     String       _controllerName;
     
-    States*      _states;
+    State*       _states;
     Devices*     _devices;
     MQTTManager* _mqttManager;
 

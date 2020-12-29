@@ -19,12 +19,13 @@ IoT *iot;
 
 void setup() {
     iot = IoT::getInstance();
+    iot->setControllerName("MyPhoton");
     iot->begin();
+    iot->connectMQTT(mqttServer, "PatriotPhoton1");
 
     byte address = 0x20;
     byte numRelays = 8;
-    Relay *relay1 = new Relay(address, numRelays, 0, "relay");
-    iot->addDevice(relay1);
+    iot->addDevice(new Relay(address, numRelays, 0, "relay"));
 }
 
 void loop() {
