@@ -30,9 +30,7 @@ void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
     iot->begin();
-    iot->connectMQTT(mqttServer, "PatriotRearPanel1", true);   // MQTT bridge enabled
-
-    iot->addDevice(new PartOfDay());
+    iot->connectMQTT(mqttServer, "PatriotRearPanel1", false);
 
     // Lights
     iot->addDevice(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));

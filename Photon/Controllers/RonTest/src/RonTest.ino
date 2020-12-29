@@ -14,6 +14,7 @@
  */
 
 #include <IoT.h>
+#include <PatriotSwitch.h>
 #include <PatriotLight.h>
 #include <PatriotActivity.h>
 #include <PatriotPartOfDay.h>
@@ -26,11 +27,10 @@ void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RonTest");
     iot->begin();
-    iot->connectMQTT(mqttServerIP, "patriotRonTest1", false);
+    iot->connectMQTT(mqttServerIP, "patriotRonTest1", true);    // Is bridge
 
     iot->addDevice(new PartOfDay());
 
-    iot->addDevice(new Light(2, "testLed"));        // Not connected to anything
     iot->addDevice(new Light(7, "blueLed", false, true));
 
     // Activities allow Alexa to control them
