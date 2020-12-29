@@ -179,6 +179,10 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
           _mqttManager->publish(topic, level);
       }
     }
+    
+    //TODO: If bridge isn't working, then handle directly
+    //...
+    
 }
 
 /**

@@ -24,7 +24,7 @@ enum class DeviceType {
     NCD8Relay,
     NCD8Switch,
     NCD16Switch,
-    PartOfDaySource,
+    PartOfDay,
     Presence,
     Relay,
     Switch,
