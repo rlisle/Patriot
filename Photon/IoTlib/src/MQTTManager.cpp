@@ -166,8 +166,7 @@ void MQTTManager::parseMessage(String topic, String message)
             if( device != NULL ) {
                 device->setPercent(percent);
             } else {
-                States *states = iot->_states;
-                states->addState(subtopic,percent);
+                iot->setStateValue(subtopic,percent);
             }
         }
     } else {
