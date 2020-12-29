@@ -72,7 +72,7 @@ private:
     void       publishPOD(int partOfDay);
     
 public:
-    int        _current;
+    int        _current;    // This should be _percent
     
     PartOfDay();
     
