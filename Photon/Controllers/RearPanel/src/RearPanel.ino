@@ -16,7 +16,7 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
-#include <PatriotPartOfDay.h>
+//#include <PatriotPartOfDay.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
