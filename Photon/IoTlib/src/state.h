@@ -3,13 +3,12 @@ State
 
 This class represents a state or condition, such as "watching tv",
 "night", or "backdooropen" where value = 0 off, 100 on.
-Or it could be a measurement such as KitchenTemp where the
+ It is also the parent class of Device
+ It can represent a binary entity using 0 and 100 (or > 0)
+It could be a measurement such as KitchenTemp where the
 value is 20 to +127, or a percentage 0 - 100.
 
-A state can receive a start, stop, on, off, or value message:
-<state>:0     (eg. tv:0)
-<state>:100   (was "on", eg. "Booth Lamp:On")
-<state>:value (eg. KitchenTemp:85
+A state has a previous value that is reset at the beginning of each loop.
 
 
 http://www.github.com/rlisle/Patriot
@@ -24,13 +23,9 @@ All text above must be included in any redistribution.
 
 #include "application.h"  // Defines String
 
-class States;
-
 class State
 {
-    friend    States;
-    
-private:
+protected:
     State*    _next;
     String    _name;
     int       _value;
@@ -43,4 +38,16 @@ public:
     void    setValue(int value);
     
     bool    hasChanged();
+    
+    // Collection methods (previously in States)
+    State*     addState(String name, int value);    // Add stated to linked list
+    State*     getStateWithName(String name);       // Find state in linked list
+    int        count();     // Number of State object in linked list
+    void syncPrevious();    // Set this and all linked states _previous == _value
+    
+    /**
+     Particle.io variable "States"
+     */
+    void buildStatesVariable();
+    void expose();
 };

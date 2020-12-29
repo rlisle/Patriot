@@ -10,6 +10,13 @@ All text above must be included in any redistribution.
 */
 
 #include "state.h"
+#include "constants.h"  // Needed for particle.io states variable
+
+/**
+ * globalStatesVariable
+ * Lists all the currently active states names in CSV format.
+ */
+extern String globalStatesVariable;
 
 State::State(String name, int value)
 {
@@ -29,4 +36,82 @@ void State::setValue(int value) {
 
 bool State::hasChanged() {
     return _value != _previous;
+}
+
+// States are added only once
+//TODO: how is the first state created?
+State *State::addState(String name, int value) {
+    // Update existing state if it exists
+    State *state = getStateWithName(name);
+    if (state == NULL) {
+        Log.info("States addState adding " + name + " = " + String(value));
+        state = new State(name,value);
+        if(_states == NULL) {
+            _states = state;
+        } else {
+            State* ptr = _states;
+            while(ptr->_next != NULL) ptr = ptr->_next;
+            ptr->_next = state;
+        }
+    } else {    // State already exists
+        Log.info("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
+        state->_value = value;
+    }
+    Log.info("addState state was added. Count = " + String(count()));
+    buildStatesVariable();
+    return state;
+}
+
+State *State::getStateWithName(String name) {
+    State *ptr = this;
+    while(ptr != NULL) {
+        if (ptr->_name.equalsIgnoreCase(name)) {
+            return ptr;
+        }
+        ptr = ptr->_next;
+    }
+    Log.info("getStateWithName " + name + " not found");
+    return NULL;
+}
+
+int State::count() {
+    int i = 0;
+    for(State* ptr = this; ptr != NULL; ptr = ptr->_next) i++;
+    return i;
+}
+
+void State::syncPrevious() {
+    for(State *ptr = this; ptr != NULL; ptr = ptr->_next) {
+        ptr->_previous = ptr->_value;
+    }
+}
+
+// Particle.io States variable
+
+void State::expose() {
+    globalStatesVariable = "";
+    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
+        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
+    }
+}
+
+void State::buildStatesVariable() {
+    String newVariable = "";
+    State *ptr = this;
+    while (ptr != NULL) {
+        newVariable += ptr->_name;
+        newVariable += ":";
+        newVariable += String(ptr->_value);
+        if (ptr->_next != NULL) {
+            newVariable += ",";
+        }
+        ptr = ptr->_next;
+    }
+    if (newVariable.length() < kMaxVariableStringLength) {
+        if (newVariable != globalStatesVariable) {
+            globalStatesVariable = newVariable;
+        }
+    } else {
+        Log.error("States variable is too long. Need to extend to a 2nd variable");
+    }
 }
