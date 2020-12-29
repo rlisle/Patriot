@@ -82,7 +82,7 @@ bool Period::operator <(const Period& period) {
  * Constructor
  */
 PartOfDay::PartOfDay()
-        : Device("PartOfDay", DeviceType::PartOfDaySource)
+        : Device("PartOfDay", DeviceType::PartOfDay)
 {
     _percent = -1;
 }
