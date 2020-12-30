@@ -15,7 +15,6 @@ Author: Ron Lisle
 #include <IoT.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
-#include <PatriotActivity.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
