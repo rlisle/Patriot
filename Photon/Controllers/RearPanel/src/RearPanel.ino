@@ -16,7 +16,6 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotActivity.h>
-//#include <PatriotPartOfDay.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
@@ -53,11 +52,7 @@ void setup() {
     iot->addDevice(new Switch(A5, "RearAwningSwitch"));
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
-    // Activities allow Alexa to control them directly or via routines
-    // These can be used by other panels also without them creating their own Activites.
-    iot->addDevice(new Activity("cleaning"));   // Turn on all main lights
-    iot->addDevice(new Activity("cooking"));     // Turn on lots of kitchen lights
-    iot->addDevice(new Activity("sleeping"));   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
+    // Note: Activities and PartOfDay are defined in RonTest instead of here
 }
 
 void loop() {
@@ -145,12 +140,12 @@ void loop() {
     }
 
     // SWITCHES
-    iot->handleLightSwitch("OfficeCeiling");
-    iot->handleLightSwitch("Loft");
-    iot->handleLightSwitch("RampPorch");
-    iot->handleLightSwitch("RampAwning");
-    iot->handleLightSwitch("RearPorch");
-    iot->handleLightSwitch("RearAwning");
+//    iot->handleLightSwitch("OfficeCeiling");
+//    iot->handleLightSwitch("Loft");
+//    iot->handleLightSwitch("RampPorch");
+//    iot->handleLightSwitch("RampAwning");
+//    iot->handleLightSwitch("RearPorch");
+//    iot->handleLightSwitch("RearAwning");
 }
 
 void setAllInsideLights(int level) {

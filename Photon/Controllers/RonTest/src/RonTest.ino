@@ -1,20 +1,15 @@
 /*
  * RonTest Controller
  *
- * Description: This sketch provides a test environment for Patriot testing.
- * Author: Ron Lisle
- * Date: 10/09/18
+ * Description: This sketch provides the bridge, PartOfDay, and Activities
  *
- * It simulates a controller using the built-in LED for testing.
+ * Author: Ron Lisle
  *
  * Hardware
- * - NCD Photon SCT board
  * - built-in blue LED     D7
- *
  */
 
 #include <IoT.h>
-#include <PatriotSwitch.h>
 #include <PatriotLight.h>
 #include <PatriotActivity.h>
 #include <PatriotPartOfDay.h>
@@ -37,6 +32,7 @@ void setup() {
     // and can also turn off other activities.
     iot->addDevice(new Activity("cooking"));
     iot->addDevice(new Activity("cleaning"));
+    iot->addDevice(new Activity("sleeping"));
 }
 
 void loop() {
