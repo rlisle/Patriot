@@ -19,12 +19,6 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 
 /**
- * globalStatesVariable
- * Lists all the currently active states names in CSV format.
- */
-String globalStatesVariable;
-
-/**
  * Global Particle.io subscribe handler
  * Called by particle.io when events are published.
  *
