@@ -43,7 +43,7 @@ bool State::hasChanged() {
 // Static State collection methods
 
 // States are added only once
-static State *State::addState(String name, int value) {
+State *State::addState(String name, int value) {
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
@@ -68,7 +68,7 @@ static State *State::addState(String name, int value) {
     return state;
 }
 
-static State *State::getStateWithName(String name) {
+State *State::getStateWithName(String name) {
     State *ptr = _states;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
@@ -80,13 +80,13 @@ static State *State::getStateWithName(String name) {
     return NULL;
 }
 
-static int State::count() {
+int State::count() {
     int i = 0;
     for(State* ptr = _states; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
 
-static void State::syncPrevious() {
+void State::syncPrevious() {
     for(State *ptr = _states; ptr != NULL; ptr = ptr->_next) {
         ptr->_previous = ptr->_value;
     }
@@ -94,14 +94,14 @@ static void State::syncPrevious() {
 
 // Particle.io States variable
 
-static void State::expose() {
+void State::expose() {
     globalStatesVariable = "";
     if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
         Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
     }
 }
 
-static void State::buildStatesVariable() {
+void State::buildStatesVariable() {
     String newVariable = "";
     State *ptr = _states;
     while (ptr != NULL) {

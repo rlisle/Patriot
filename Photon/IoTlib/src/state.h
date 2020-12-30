@@ -31,7 +31,6 @@ protected:
     int       _value;
     int       _previous;
 
-    static State* _states = NULL;
     
 public:
     State(String name, int value);
@@ -42,6 +41,8 @@ public:
     bool    hasChanged();
     
     // Collection methods (previously in States)
+    static State* _states;
+    
     static State* addState(String name, int value); // Add stated to linked list
     static State* getStateWithName(String name);    // Find state in linked list
     static int    count();                          // Number of State objects in linked list
