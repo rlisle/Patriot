@@ -124,6 +124,7 @@ void IoT::mqttPublish(String topic, String message)
 void IoT::loop()
 {
     State::syncPrevious();
+    Device::syncAllPrevious();
     Device::loopAll();
 
     if (_mqttManager != NULL) {

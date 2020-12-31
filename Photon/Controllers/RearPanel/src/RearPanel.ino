@@ -43,12 +43,12 @@ void setup() {
     // Switches
     // Switches provide backup control for when Alexa is not available.
     // This can happen when the internet is not available.
-//    iot->addDevice(new Switch(A0, "OfficeCeilingSwitch"));
-//    iot->addDevice(new Switch(A1, "LoftSwitch"));
-//    iot->addDevice(new Switch(A2, "RampPorchSwitch"));
-//    iot->addDevice(new Switch(A3, "RampAwningSwitch"));
-//    iot->addDevice(new Switch(A4, "RearPorchSwitch"));
-//    iot->addDevice(new Switch(A5, "RearAwningSwitch"));
+    iot->addDevice(new Switch(A0, "OfficeCeilingSwitch"));
+    iot->addDevice(new Switch(A1, "LoftSwitch"));
+    iot->addDevice(new Switch(A2, "RampPorchSwitch"));
+    iot->addDevice(new Switch(A3, "RampAwningSwitch"));
+    iot->addDevice(new Switch(A4, "RearPorchSwitch"));
+    iot->addDevice(new Switch(A5, "RearAwningSwitch"));
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Note: Activities and PartOfDay are defined in RonTest instead of here
@@ -139,12 +139,12 @@ void loop() {
 //    }
 
     // SWITCHES
-//    iot->handleLightSwitch("OfficeCeiling");
-//    iot->handleLightSwitch("Loft");
-//    iot->handleLightSwitch("RampPorch");
-//    iot->handleLightSwitch("RampAwning");
-//    iot->handleLightSwitch("RearPorch");
-//    iot->handleLightSwitch("RearAwning");
+    iot->handleLightSwitch("OfficeCeiling");
+    iot->handleLightSwitch("Loft");
+    iot->handleLightSwitch("RampPorch");
+    iot->handleLightSwitch("RampAwning");
+    iot->handleLightSwitch("RearPorch");
+    iot->handleLightSwitch("RearAwning");
 }
 
 void setAllInsideLights(int level) {

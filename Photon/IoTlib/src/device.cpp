@@ -49,9 +49,18 @@ void Device::resetAll()
 
 void Device::loopAll()
 {
+    syncAllPrevious();
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         ptr->loop();
+    }
+}
+
+void Device::syncAllPrevious()
+{
+    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
+    {
+        ptr->syncPrevious();
     }
 }
 
@@ -62,12 +71,12 @@ Device *Device::getDeviceWithName(String name)
     for (int i = 0; i < count() && ptr != NULL; i++)
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-            Log.info("getDeviceWithName "+name+" found.");
+            //Log.info("getDeviceWithName "+name+" found.");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    Log.info("Device "+name+" not found, returning NULL");
+    //Log.info("Device "+name+" not found, returning NULL");
     return NULL;
 }
 
