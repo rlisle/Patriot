@@ -20,10 +20,9 @@ All text above must be included in any redistribution.
 
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 
-MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName, Devices *devices)
+MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {
     _controllerName = controllerName;
-    _devices = devices;
     _logging = 0;
 //    _logLevel = LOG_LEVEL_ERROR;
     _logLevel = LOG_LEVEL_ALL;    // DEBUGGING ONLY!!!
@@ -151,7 +150,7 @@ void MQTTManager::parseMessage(String topic, String message)
             // Respond if reset is addressed to us
             if(message.equals(_controllerName)) {
                 Log.info("Reset addressed to us");
-                _devices->reset();
+                Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
                 
@@ -162,7 +161,7 @@ void MQTTManager::parseMessage(String topic, String message)
             Log.info("Parser setting state " + subtopic + " to " + message);
             IoT *iot = IoT::getInstance();
             // Is this a device name?
-            Device *device = _devices->getDeviceWithName(subtopic);
+            Device *device = Device::getDeviceWithName(subtopic);
             if( device != NULL ) {
                 device->setPercent(percent);
             } else {

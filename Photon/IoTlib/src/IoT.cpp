@@ -82,6 +82,7 @@ void IoT::setControllerName(String name)
 }
 
 State* State::_states = NULL;
+Device* Device::_devices = NULL;
 
 /**
  * Begin gets everything going.
@@ -106,7 +107,7 @@ void IoT::begin()
 void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
 {
     _isBridge = isBridge;
-    _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName, _devices);
+    _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName);
 }
 
 void IoT::mqttPublish(String topic, String message)
@@ -122,13 +123,8 @@ void IoT::mqttPublish(String topic, String message)
  */
 void IoT::loop()
 {
-    if(_states != NULL) {
-        _states->syncPrevious();
-    }
-    
-    if(_devices != NULL) {
-        _devices->loop();
-    }
+    State::syncPrevious();
+    Device::loopAll();
 
     if (_mqttManager != NULL) {
         _mqttManager->loop();
@@ -139,9 +135,9 @@ void IoT::loop()
 // 
 void IoT::addDevice(Device *device)
 {
-    Log.trace("addDevice: " + device->name());
+    Log.info("addDevice: " + device->name());
     
-    _devices->addDevice(device);
+    Device::addDevice(device);
     device->publishPtr = globalPublish;
     device->begin();
 }
@@ -206,20 +202,19 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  */
 
 bool IoT::handleLightSwitch(String name) {
-    if(_devices == NULL) return false;
-    Device *lightSwitch = _devices->getDeviceWithName(name+"Switch");
+    Device *lightSwitch = Device::getDeviceWithName(name+"Switch");
     if( lightSwitch == NULL) {
         Log.error("handleLightSwitch: " + name + "Switch not found!");
         return false;
     }
     if( lightSwitch->hasChanged() ) {
         Log.info("handleLightSwitch hasChanged");
-        Device *light = _devices->getDeviceWithName(name);
+        Device *light = Device::getDeviceWithName(name);
         if( light == NULL ) {
             Log.error("handleLightSwitch: light " + name + " not found!");
             return false;
         }
-        Log.info("Turning on light to %d", lightSwitch->getPercent());
+        Log.info("Setting light to %d", lightSwitch->getPercent());
         light->setPercent( lightSwitch->getPercent() );
         return true;
     }
@@ -252,10 +247,7 @@ bool IoT::didTurnOff(String name) {   // hasChanged && value == 0
  returns: pointer to State object or NULL if not found
  */
 State* IoT::getState(String name) {
-    if(_states == NULL) {
-        return NULL;
-    }
-    return _states->getStateWithName(name);
+    return State::getStateWithName(name);
 }
 
 /**
@@ -264,9 +256,7 @@ State* IoT::getState(String name) {
  returns 0-100 percent or -1 if name not found
  */
 int IoT::getStateValue(String name) {
-    if(_states == NULL) return -1;
-
-    State* state = _states->getStateWithName(name);
+    State* state = State::getStateWithName(name);
     if( state == NULL) return -1;
     
     return state->value();
@@ -278,11 +268,7 @@ int IoT::getStateValue(String name) {
  param: value to assign state
  */
 void IoT::setStateValue(String name, int value) {
-    if(_states == NULL) {
-        _states = new State(name, value);
-    } else {
-        _states->addState(name, value);
-    }
+    State::addState(name, value);
 }
 
 /**
@@ -306,7 +292,7 @@ int IoT::publishValue(String name, int value) {
  returns: 0 if success, -1 if device not found
  */
 int IoT::setDeviceValue(String name, int percent) {
-    Device* device = _devices->getDeviceWithName(name);
+    Device* device = Device::getDeviceWithName(name);
     if( device == NULL) return -1;
     device->setPercent(percent);
     return 0;
