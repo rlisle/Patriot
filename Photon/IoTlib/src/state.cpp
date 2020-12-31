@@ -16,7 +16,8 @@ All text above must be included in any redistribution.
  * globalStatesVariable
  * Lists all the currently active states names in CSV format.
  */
-extern String globalStatesVariable;
+String globalStatesVariable;
+
 
 State::State(String name, int value)
 {
@@ -38,22 +39,27 @@ bool State::hasChanged() {
     return _value != _previous;
 }
 
+
+// Static State collection methods
+
 // States are added only once
-//TODO: how is the first state created?
 State *State::addState(String name, int value) {
     // Update existing state if it exists
     State *state = getStateWithName(name);
     if (state == NULL) {
         Log.info("States addState adding " + name + " = " + String(value));
         state = new State(name,value);
-        if(_next == NULL) {
-            _next = state;
+        if(_states == NULL) {
+            _states = state;
+            expose();
         } else {
-            State* ptr = this;
+            State* ptr = _states;
             while(ptr->_next != NULL) ptr = ptr->_next;
             ptr->_next = state;
         }
-    } else {    // State already exists
+
+    // If state already exists, then just update it
+    } else {
         Log.info("States addState updating " + name + " = " + String(value) + ", was " + String(state->_value));
         state->_value = value;
     }
@@ -63,7 +69,7 @@ State *State::addState(String name, int value) {
 }
 
 State *State::getStateWithName(String name) {
-    State *ptr = this;
+    State *ptr = _states;
     while(ptr != NULL) {
         if (ptr->_name.equalsIgnoreCase(name)) {
             return ptr;
@@ -76,12 +82,12 @@ State *State::getStateWithName(String name) {
 
 int State::count() {
     int i = 0;
-    for(State* ptr = this; ptr != NULL; ptr = ptr->_next) i++;
+    for(State* ptr = _states; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
 
 void State::syncPrevious() {
-    for(State *ptr = this; ptr != NULL; ptr = ptr->_next) {
+    for(State *ptr = _states; ptr != NULL; ptr = ptr->_next) {
         ptr->_previous = ptr->_value;
     }
 }
@@ -97,7 +103,7 @@ void State::expose() {
 
 void State::buildStatesVariable() {
     String newVariable = "";
-    State *ptr = this;
+    State *ptr = _states;
     while (ptr != NULL) {
         newVariable += ptr->_name;
         newVariable += ":";

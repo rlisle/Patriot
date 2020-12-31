@@ -31,6 +31,7 @@ protected:
     int       _value;
     int       _previous;
 
+    
 public:
     State(String name, int value);
 
@@ -40,14 +41,16 @@ public:
     bool    hasChanged();
     
     // Collection methods (previously in States)
-    State*     addState(String name, int value);    // Add stated to linked list
-    State*     getStateWithName(String name);       // Find state in linked list
-    int        count();     // Number of State object in linked list
-    void syncPrevious();    // Set this and all linked states _previous == _value
+    static State* _states;
+    
+    static State* addState(String name, int value); // Add stated to linked list
+    static State* getStateWithName(String name);    // Find state in linked list
+    static int    count();                          // Number of State objects in linked list
+    static void   syncPrevious();                   // Set this and all linked states _previous == _value
     
     /**
      Particle.io variable "States"
      */
-    void buildStatesVariable();
-    void expose();
+    static void buildStatesVariable();
+    static void expose();
 };

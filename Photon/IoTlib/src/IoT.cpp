@@ -19,12 +19,6 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 
 /**
- * globalStatesVariable
- * Lists all the currently active states names in CSV format.
- */
-String globalStatesVariable;
-
-/**
  * Global Particle.io subscribe handler
  * Called by particle.io when events are published.
  *
@@ -87,6 +81,8 @@ void IoT::setControllerName(String name)
     _controllerName = name.toLowerCase();
 }
 
+State* State::_states = NULL;
+
 /**
  * Begin gets everything going.
  * It must be called exactly once by the sketch
@@ -97,7 +93,6 @@ void IoT::begin()
     //If MQTT won't work, initialize SerialLogHandler logHandler(LOG_LEVEL_ALL);
     //Serial.begin(57600);
 
-    _states = NULL;
     _devices = new Devices();
 
     // Subscribe to events. There is a 1/second limit for events.

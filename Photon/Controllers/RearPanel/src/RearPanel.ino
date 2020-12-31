@@ -15,8 +15,6 @@ Author: Ron Lisle
 #include <IoT.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
-#include <PatriotActivity.h>
-//#include <PatriotPartOfDay.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
@@ -45,19 +43,15 @@ void setup() {
     // Switches
     // Switches provide backup control for when Alexa is not available.
     // This can happen when the internet is not available.
-    iot->addDevice(new Switch(A0, "OfficeCeilingSwitch"));
-    iot->addDevice(new Switch(A1, "LoftSwitch"));
-    iot->addDevice(new Switch(A2, "RampPorchSwitch"));
-    iot->addDevice(new Switch(A3, "RampAwningSwitch"));
-    iot->addDevice(new Switch(A4, "RearPorchSwitch"));
-    iot->addDevice(new Switch(A5, "RearAwningSwitch"));
+//    iot->addDevice(new Switch(A0, "OfficeCeilingSwitch"));
+//    iot->addDevice(new Switch(A1, "LoftSwitch"));
+//    iot->addDevice(new Switch(A2, "RampPorchSwitch"));
+//    iot->addDevice(new Switch(A3, "RampAwningSwitch"));
+//    iot->addDevice(new Switch(A4, "RearPorchSwitch"));
+//    iot->addDevice(new Switch(A5, "RearAwningSwitch"));
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
-    // Activities allow Alexa to control them directly or via routines
-    // These can be used by other panels also without them creating their own Activites.
-    iot->addDevice(new Activity("cleaning"));   // Turn on all main lights
-    iot->addDevice(new Activity("cooking"));     // Turn on lots of kitchen lights
-    iot->addDevice(new Activity("sleeping"));   // 0=awake (good morning), 1=retiring (bedtime), 2=sleeping (good night)
+    // Note: Activities and PartOfDay are defined in RonTest instead of here
 }
 
 void loop() {
@@ -68,89 +62,89 @@ void loop() {
     // - update light dimming
     iot->loop();
     
-    State* sleeping = iot->getState("sleeping");
-    State* partOfDay = iot->getState("partofday");
-
-    if( sleeping != NULL && sleeping->hasChanged() ) {
-        
-        Log.info("sleeping has changed");
-        
-        // Alexa, Good morning
-        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
-            iot->setDeviceValue("OfficeCeiling", 30);
-        }
-        
-        // Alexa, Bedtime
-        if( sleeping->value() == RETIRING ) {
-            iot->publishValue("cleaning", 0);
-            iot->publishValue("cooking", 0);
-            
-            iot->setDeviceValue("OfficeCeiling", 30);
-            iot->setDeviceValue("Loft", 0);
-            iot->setDeviceValue("RampPorch", 0);
-            iot->setDeviceValue("RampAwning", 0);
-            iot->setDeviceValue("RearProch", 0);
-            iot->setDeviceValue("RearAwning", 0);
-            iot->setDeviceValue("Piano", 0);
-        }
-        
-        // Alexa, Goodnight
-        if( sleeping->value() == ASLEEP ) {
-            iot->publishValue("cleaning", 0);
-            iot->publishValue("cooking", 0);
-            
-            iot->setDeviceValue("OfficeCeiling", 0);
-            iot->setDeviceValue("Loft", 0);
-            iot->setDeviceValue("RampPorch", 0);
-            iot->setDeviceValue("RampAwning", 0);
-            iot->setDeviceValue("RearProch", 0);
-            iot->setDeviceValue("RearAwning", 0);
-            iot->setDeviceValue("Piano", 0);
-        }
-    }
-    
-    if( partOfDay != NULL && partOfDay->hasChanged() ) {
-
-        Log.info("partOfDay has changed");
-
-        if( partOfDay->value() == SUNRISE ) {
-            // Turn off lights at sunrise
-            iot->setDeviceValue("OfficeCeiling", 0);
-            iot->setDeviceValue("Loft", 0);
-            iot->setDeviceValue("RampPorch", 0);
-            iot->setDeviceValue("RampAwning", 0);
-            iot->setDeviceValue("RearProch", 0);
-            iot->setDeviceValue("RearAwning", 0);
-            iot->setDeviceValue("Piano", 0);
-        }
-        
-        if( partOfDay->value() == DUSK ) {
-            // Turn on lights after sunset
-            iot->setDeviceValue("OfficeCeiling", 50);
-            iot->setDeviceValue("Loft", 0);
-            iot->setDeviceValue("RampPorch", 50);
-            iot->setDeviceValue("RampAwning", 100);
-            iot->setDeviceValue("RearProch", 60);
-            iot->setDeviceValue("RearAwning", 100);
-            iot->setDeviceValue("Piano", 30);
-        }
-    }
-    
-    if( iot->didTurnOn("cleaning") ) {
-        Log.info("cleaning did turn on");
-        setAllInsideLights( 100 );
-    } else if( iot->didTurnOff("cleaning") ) {
-        Log.info("cleaning did turn off");
-        setAllInsideLights( 0 );
-    }
+//    State* sleeping = iot->getState("sleeping");
+//    State* partOfDay = iot->getState("partofday");
+//
+//    if( sleeping != NULL && sleeping->hasChanged() ) {
+//
+//        Log.info("sleeping has changed");
+//
+//        // Alexa, Good morning
+//        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
+//            iot->setDeviceValue("OfficeCeiling", 30);
+//        }
+//
+//        // Alexa, Bedtime
+//        if( sleeping->value() == RETIRING ) {
+//            iot->publishValue("cleaning", 0);
+//            iot->publishValue("cooking", 0);
+//
+//            iot->setDeviceValue("OfficeCeiling", 30);
+//            iot->setDeviceValue("Loft", 0);
+//            iot->setDeviceValue("RampPorch", 0);
+//            iot->setDeviceValue("RampAwning", 0);
+//            iot->setDeviceValue("RearProch", 0);
+//            iot->setDeviceValue("RearAwning", 0);
+//            iot->setDeviceValue("Piano", 0);
+//        }
+//
+//        // Alexa, Goodnight
+//        if( sleeping->value() == ASLEEP ) {
+//            iot->publishValue("cleaning", 0);
+//            iot->publishValue("cooking", 0);
+//
+//            iot->setDeviceValue("OfficeCeiling", 0);
+//            iot->setDeviceValue("Loft", 0);
+//            iot->setDeviceValue("RampPorch", 0);
+//            iot->setDeviceValue("RampAwning", 0);
+//            iot->setDeviceValue("RearProch", 0);
+//            iot->setDeviceValue("RearAwning", 0);
+//            iot->setDeviceValue("Piano", 0);
+//        }
+//    }
+//
+//    if( partOfDay != NULL && partOfDay->hasChanged() ) {
+//
+//        Log.info("partOfDay has changed");
+//
+//        if( partOfDay->value() == SUNRISE ) {
+//            // Turn off lights at sunrise
+//            iot->setDeviceValue("OfficeCeiling", 0);
+//            iot->setDeviceValue("Loft", 0);
+//            iot->setDeviceValue("RampPorch", 0);
+//            iot->setDeviceValue("RampAwning", 0);
+//            iot->setDeviceValue("RearProch", 0);
+//            iot->setDeviceValue("RearAwning", 0);
+//            iot->setDeviceValue("Piano", 0);
+//        }
+//
+//        if( partOfDay->value() == DUSK ) {
+//            // Turn on lights after sunset
+//            iot->setDeviceValue("OfficeCeiling", 50);
+//            iot->setDeviceValue("Loft", 0);
+//            iot->setDeviceValue("RampPorch", 50);
+//            iot->setDeviceValue("RampAwning", 100);
+//            iot->setDeviceValue("RearProch", 60);
+//            iot->setDeviceValue("RearAwning", 100);
+//            iot->setDeviceValue("Piano", 30);
+//        }
+//    }
+//
+//    if( iot->didTurnOn("cleaning") ) {
+//        Log.info("cleaning did turn on");
+//        setAllInsideLights( 100 );
+//    } else if( iot->didTurnOff("cleaning") ) {
+//        Log.info("cleaning did turn off");
+//        setAllInsideLights( 0 );
+//    }
 
     // SWITCHES
-    iot->handleLightSwitch("OfficeCeiling");
-    iot->handleLightSwitch("Loft");
-    iot->handleLightSwitch("RampPorch");
-    iot->handleLightSwitch("RampAwning");
-    iot->handleLightSwitch("RearPorch");
-    iot->handleLightSwitch("RearAwning");
+//    iot->handleLightSwitch("OfficeCeiling");
+//    iot->handleLightSwitch("Loft");
+//    iot->handleLightSwitch("RampPorch");
+//    iot->handleLightSwitch("RampAwning");
+//    iot->handleLightSwitch("RearPorch");
+//    iot->handleLightSwitch("RearAwning");
 }
 
 void setAllInsideLights(int level) {
