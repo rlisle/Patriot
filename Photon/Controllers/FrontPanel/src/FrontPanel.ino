@@ -113,16 +113,16 @@ void loop() {
         }
     }
     
-    iot->handleLightSwitch("Ceiling");
-    iot->handleLightSwitch("KitchenCeiling");
-    iot->handleLightSwitch("Sink");
-    iot->handleLightSwitch("Cabinets");
-    iot->handleLightSwitch("RightTrim");
-    iot->handleLightSwitch("LeftTrim");
-    iot->handleLightSwitch("DoorSide");
-    iot->handleLightSwitch("OtherSide");
-    iot->handleLightSwitch("FrontPorch");
-    iot->handleLightSwitch("FrontAwning");
+//    iot->handleLightSwitch("Ceiling");
+//    iot->handleLightSwitch("KitchenCeiling");
+//    iot->handleLightSwitch("Sink");
+//    iot->handleLightSwitch("Cabinets");
+//    iot->handleLightSwitch("RightTrim");
+//    iot->handleLightSwitch("LeftTrim");
+//    iot->handleLightSwitch("DoorSide");
+//    iot->handleLightSwitch("OtherSide");
+//    iot->handleLightSwitch("FrontPorch");
+//    iot->handleLightSwitch("FrontAwning");
 }
 
 void setMorningLights() {

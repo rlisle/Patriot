@@ -75,6 +75,7 @@ public:
     virtual void setPercent(int percent) { _percent = percent; };
 
     virtual bool hasChanged() { return _percent != _previous; };
+    virtual void syncPrevious() { _previous = _percent; };
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
@@ -86,11 +87,11 @@ public:
     
     static void resetAll();
     static void loopAll();
-    
-    static void addDevice(Device *device);
+    static void syncAllPrevious();
+
+    static void    addDevice(Device *device);
     static Device* getDeviceWithName(String name);
-    static int    count();
-    static void   syncPrevious();
+    static int     count();
     
     /**
      Particle.io variable "States"
