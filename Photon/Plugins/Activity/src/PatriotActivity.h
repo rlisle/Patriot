@@ -16,7 +16,7 @@ All text above must be included in any redistribution.
 #pragma once
 
 #include "Particle.h"
-#include "device.h"
+#include <IoT.h>
 
 class Activity : public Device
 {
