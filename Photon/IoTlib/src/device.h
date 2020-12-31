@@ -32,18 +32,13 @@ enum class DeviceType {
     Ultrasonic
 };
 
-class Devices;
-
 class Device {
-    friend Devices;
-
  protected:
+    Device*    _next;       // Linked list
     String     _name;
     DeviceType _type;
     int        _percent;
     int        _previous;
-
-    Device*    _next;       // Linked list
 
 public:
     // Pointer to MQTT publish method in IoT.
@@ -81,4 +76,22 @@ public:
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
+    
+    
+    // Collection methods (previously in States)
+    static Device* _devices;
+    
+    static void reset();
+    
+    static void addDevice(Device *device);
+    static Device* getDeviceWithName(String name);
+    static int    count();
+    static void   syncPrevious();
+    
+    /**
+     Particle.io variable "States"
+     */
+    static void buildDevicesVariable();
+    static void expose();
+
 };

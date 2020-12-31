@@ -97,6 +97,10 @@ void IoT::begin()
 
     // Subscribe to events. There is a 1/second limit for events.
     Particle.subscribe(kPublishName, globalSubscribeHandler, MY_DEVICES);
+
+    // Expose States variable
+    State::expose();
+
 }
 
 // MQTT 

@@ -25,8 +25,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _controllerName = controllerName;
     _devices = devices;
     _logging = 0;
-    _logLevel = LOG_LEVEL_ERROR;
-//    _logLevel = LOG_LEVEL_ALL;    // DEBUGGING ONLY!!!
+//    _logLevel = LOG_LEVEL_ERROR;
+    _logLevel = LOG_LEVEL_ALL;    // DEBUGGING ONLY!!!
 
     Time.zone(-6.0);
     

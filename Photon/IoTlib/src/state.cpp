@@ -51,7 +51,6 @@ State *State::addState(String name, int value) {
         state = new State(name,value);
         if(_states == NULL) {
             _states = state;
-            expose();
         } else {
             State* ptr = _states;
             while(ptr->_next != NULL) ptr = ptr->_next;
@@ -95,6 +94,7 @@ void State::syncPrevious() {
 // Particle.io States variable
 
 void State::expose() {
+    Log.info("Exposing States");
     globalStatesVariable = "";
     if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
         Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
@@ -114,6 +114,7 @@ void State::buildStatesVariable() {
         ptr = ptr->_next;
     }
     if (newVariable.length() < kMaxVariableStringLength) {
+        Log.info("Updating States variable");
         if (newVariable != globalStatesVariable) {
             globalStatesVariable = newVariable;
         }
