@@ -77,8 +77,9 @@ public:
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
     
-    
-    // Collection methods (previously in States)
+    //
+    // Collection methods (previously in Devices)
+    //
     static Device* _devices;
     
     static void reset();

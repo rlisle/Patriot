@@ -51,6 +51,7 @@ State *State::addState(String name, int value) {
         state = new State(name,value);
         if(_states == NULL) {
             _states = state;
+            expose();
         } else {
             State* ptr = _states;
             while(ptr->_next != NULL) ptr = ptr->_next;

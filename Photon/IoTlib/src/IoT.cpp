@@ -93,12 +93,11 @@ void IoT::begin()
     //If MQTT won't work, initialize SerialLogHandler logHandler(LOG_LEVEL_ALL);
     //Serial.begin(57600);
 
-    _devices = new Devices();
-
     // Subscribe to events. There is a 1/second limit for events.
     Particle.subscribe(kPublishName, globalSubscribeHandler, MY_DEVICES);
 
-    // Expose States variable
+    // Expose particle.io variables
+    Device::expose();
     State::expose();
 
 }
