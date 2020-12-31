@@ -14,6 +14,8 @@ All text above must be included in any redistribution.
 ******************************************************************/
 #pragma once
 
+#include "Particle.h"
+
 enum class DeviceType {
     Unknown,
     Activity,
@@ -32,18 +34,13 @@ enum class DeviceType {
     Ultrasonic
 };
 
-class Devices;
-
 class Device {
-    friend Devices;
-
  protected:
+    Device*    _next;       // Linked list
     String     _name;
     DeviceType _type;
     int        _percent;
     int        _previous;
-
-    Device*    _next;       // Linked list
 
 public:
     // Pointer to MQTT publish method in IoT.
@@ -52,7 +49,7 @@ public:
     // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
     //       for an explanation of how derived constructor member initialization works.
     Device(String name = "", DeviceType type = DeviceType::Unknown) 
-            : _name(name), _type(type), _percent(0), _next(NULL)
+            : _next(NULL), _name(name), _type(type), _percent(0)
     {
         // Do any setup work in begin()
     }
@@ -81,4 +78,24 @@ public:
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
+    
+    //
+    // Collection methods (previously in Devices)
+    //
+    static Device* _devices;
+    
+    static void resetAll();
+    static void loopAll();
+    
+    static void addDevice(Device *device);
+    static Device* getDeviceWithName(String name);
+    static int    count();
+    static void   syncPrevious();
+    
+    /**
+     Particle.io variable "States"
+     */
+    static void buildDevicesVariable();
+    static void expose();
+
 };

@@ -95,6 +95,7 @@ void State::syncPrevious() {
 // Particle.io States variable
 
 void State::expose() {
+    Log.info("Exposing States");
     globalStatesVariable = "";
     if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
         Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
@@ -114,6 +115,7 @@ void State::buildStatesVariable() {
         ptr = ptr->_next;
     }
     if (newVariable.length() < kMaxVariableStringLength) {
+        Log.info("Updating States variable");
         if (newVariable != globalStatesVariable) {
             globalStatesVariable = newVariable;
         }

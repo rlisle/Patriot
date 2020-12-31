@@ -1,7 +1,8 @@
 /**
-Devices collection
+Device parent class
 
-This object manages a collection of device objects.
+This is the parent class of all device classes.
+It provides static methods for managing the collection of devices.
 
 http://www.github.com/rlisle/Patriot
 
@@ -10,34 +11,24 @@ BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 */
-#include "devices.h"
-#include "constants.h"
 #include "IoT.h"
+#include "constants.h"
 
 String globalDevicesVariable;
 
-Devices::Devices()
-{
-    _devices = NULL;
-    expose();
-}
+//Device::Device()
+//{
+//    //Nothing to do here
+//}
 
-void Devices::expose()
+void Device::addDevice(Device *device)
 {
-    if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
-    {
-        Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
-    }
-}
-
-void Devices::addDevice(Device *device)
-{
-    Log.trace("addDevice name: "+String(device->name()));
+    Log.info("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
-        Log.trace("  first device");
+        Log.info("  first device");
         _devices = device;
     } else {
-        Log.trace("  adding device");
+        Log.info("  adding device");
         Device *ptr = _devices;
         while(ptr->_next != NULL) {
             ptr = ptr->_next;
@@ -47,15 +38,7 @@ void Devices::addDevice(Device *device)
     buildDevicesVariable();
 }
 
-void Devices::loop()
-{
-    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
-    {
-        ptr->loop();
-    }
-}
-
-void Devices::reset()
+void Device::resetAll()
 {
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
@@ -64,34 +47,48 @@ void Devices::reset()
     }
 }
 
+void Device::loopAll()
+{
+    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
+    {
+        ptr->loop();
+    }
+}
 
-Device *Devices::getDeviceWithName(String name)
+
+Device *Device::getDeviceWithName(String name)
 {
     Device *ptr = _devices;
-    for (int i = 0; i < numDevices() && ptr != NULL; i++) 
+    for (int i = 0; i < count() && ptr != NULL; i++)
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-            Log.trace("getDeviceWithName "+name+" found.");
+            Log.info("getDeviceWithName "+name+" found.");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    Log.trace("Device "+name+" not found, returning NULL");
+    Log.info("Device "+name+" not found, returning NULL");
     return NULL;
 }
 
-int Devices::numDevices()
+int Device::count()
 {
-    int i;
-    Device *ptr = _devices;
-    for (i = 0; ptr != NULL; i++) {
-        ptr = ptr->_next;
-    }
+    int i = 0;
+    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
 
-//TODO: combine with addDevice
-void Devices::buildDevicesVariable()
+// Particle.io Devices variable
+
+void Device::expose()
+{
+    if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
+    {
+        Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
+    }
+}
+
+void Device::buildDevicesVariable()
 {
     String newVariable = "";
     

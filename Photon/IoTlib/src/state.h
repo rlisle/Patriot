@@ -30,7 +30,6 @@ protected:
     String    _name;
     int       _value;
     int       _previous;
-
     
 public:
     State(String name, int value);

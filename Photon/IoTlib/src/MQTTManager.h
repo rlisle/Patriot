@@ -17,7 +17,7 @@
 #pragma once
 #include "Particle.h"
 #include "MQTT.h"
-#include "devices.h"
+#include "device.h"
 
 class Devices;
 
@@ -26,7 +26,7 @@ class MQTTManager : public LogHandler
 public:
     LogLevel    _logLevel;
 
-    MQTTManager(String brokerIP, String connectID, String controllerName, Devices* devices);
+    MQTTManager(String brokerIP, String connectID, String controllerName);
     
     bool        publish(String topic, String message);
     void        parseMessage(String topic, String message);
@@ -37,8 +37,6 @@ private:
     MQTT      *_mqtt;
     String    _controllerName;
     system_tick_t _lastMQTTtime;
-    
-    Devices   *_devices;
     
     int       _logging;        // a counting semaphore to prevent recursion
 

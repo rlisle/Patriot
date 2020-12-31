@@ -20,7 +20,7 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include "constants.h"
 #include "state.h"
-#include "devices.h"
+#include "device.h"
 #include "MQTTManager.h"
 
 // PartOfDay
@@ -105,8 +105,6 @@ private:
     bool         _isBridge;
     String       _controllerName;
     
-    State*       _states;
-    Devices*     _devices;
     MQTTManager* _mqttManager;
 
     /**
