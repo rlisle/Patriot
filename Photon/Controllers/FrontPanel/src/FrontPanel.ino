@@ -74,55 +74,55 @@ void loop() {
     // - update light dimming
     iot->loop();
     
-    State* sleeping = iot->getState("sleeping");
-    State* partOfDay = iot->getState("partofday");
+//    State* sleeping = iot->getState("sleeping");
+//    State* partOfDay = iot->getState("partofday");
 
-    if( sleeping != NULL && sleeping->hasChanged() ) {
-
-        Log.info("sleeping has changed: %d",sleeping->value());
-        
-        // Alexa, Good morning
-        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
-            setMorningLights();
-        }
-        
-        // Alexa, Bedtime
-        if( sleeping->value() == RETIRING ) {
-            setMorningLights();
-            setAllOutsideLights(0);
-        }
-        
-        // Alexa, Goodnight
-        if( sleeping->value() == ASLEEP ) {
-            setAllOutsideLights(0);
-            setAllInsideLights(0);
-        }
-    }
+//    if( sleeping != NULL && sleeping->hasChanged() ) {
+//
+//        Log.info("sleeping has changed: %d",sleeping->value());
+//
+//        // Alexa, Good morning
+//        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
+//            setMorningLights();
+//        }
+//
+//        // Alexa, Bedtime
+//        if( sleeping->value() == RETIRING ) {
+//            setMorningLights();
+//            setAllOutsideLights(0);
+//        }
+//
+//        // Alexa, Goodnight
+//        if( sleeping->value() == ASLEEP ) {
+//            setAllOutsideLights(0);
+//            setAllInsideLights(0);
+//        }
+//    }
+//
+//    if( partOfDay != NULL && partOfDay->hasChanged() ) {
+//
+//        Log.info("PartOfDay has changed: %d", partOfDay->value());
+//
+//        if( partOfDay->value() == SUNRISE ) {
+//            setAllOutsideLights(0);
+//            setAllInsideLights(0);
+//        }
+//
+//        if( partOfDay->value() == DUSK ) {
+//            setEveningLights();
+//        }
+//    }
     
-    if( partOfDay != NULL && partOfDay->hasChanged() ) {
-        
-        Log.info("PartOfDay has changed: %d", partOfDay->value());
-        
-        if( partOfDay->value() == SUNRISE ) {
-            setAllOutsideLights(0);
-            setAllInsideLights(0);
-        }
-        
-        if( partOfDay->value() == DUSK ) {
-            setEveningLights();
-        }
-    }
-    
-//    iot->handleLightSwitch("Ceiling");
-//    iot->handleLightSwitch("KitchenCeiling");
-//    iot->handleLightSwitch("Sink");
-//    iot->handleLightSwitch("Cabinets");
-//    iot->handleLightSwitch("RightTrim");
-//    iot->handleLightSwitch("LeftTrim");
-//    iot->handleLightSwitch("DoorSide");
-//    iot->handleLightSwitch("OtherSide");
-//    iot->handleLightSwitch("FrontPorch");
-//    iot->handleLightSwitch("FrontAwning");
+    iot->handleLightSwitch("Ceiling");
+    iot->handleLightSwitch("KitchenCeiling");
+    iot->handleLightSwitch("Sink");
+    iot->handleLightSwitch("Cabinets");
+    iot->handleLightSwitch("RightTrim");
+    iot->handleLightSwitch("LeftTrim");
+    iot->handleLightSwitch("DoorSide");
+    iot->handleLightSwitch("OtherSide");
+    iot->handleLightSwitch("FrontPorch");
+    iot->handleLightSwitch("FrontAwning");
 }
 
 void setMorningLights() {
