@@ -19,7 +19,7 @@
 #pragma once
 
 #include "Particle.h"
-#include "device.h"
+#include <device.h>
 
 class NCD8Light : public Device
 {

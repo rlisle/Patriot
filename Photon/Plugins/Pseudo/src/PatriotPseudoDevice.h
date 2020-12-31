@@ -16,7 +16,7 @@ All text above must be included in any redistribution.
 #pragma once
 
 #include "Particle.h"
-#include "device.h"
+#include <device.h>
 
 class PseudoDevice : public Device
 {
