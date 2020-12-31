@@ -140,11 +140,11 @@ void loop() {
 
     // SWITCHES
     iot->handleLightSwitch("OfficeCeiling");
-//    iot->handleLightSwitch("Loft");
-//    iot->handleLightSwitch("RampPorch");
-//    iot->handleLightSwitch("RampAwning");
-//    iot->handleLightSwitch("RearPorch");
-//    iot->handleLightSwitch("RearAwning");
+    iot->handleLightSwitch("Loft");
+    iot->handleLightSwitch("RampPorch");
+    iot->handleLightSwitch("RampAwning");
+    iot->handleLightSwitch("RearPorch");
+    iot->handleLightSwitch("RearAwning");
 }
 
 void setAllInsideLights(int level) {
