@@ -26,8 +26,7 @@ All text above must be included in any redistribution.
  * @param rawData
  */
 void globalSubscribeHandler(const char *eventName, const char *rawData) {
-    IoT* iot = IoT::getInstance();
-    iot->subscribeHandler(eventName,rawData);
+    IoT::subscribeHandler(eventName,rawData);
 }
 
 /**
@@ -38,50 +37,36 @@ void globalSubscribeHandler(const char *eventName, const char *rawData) {
  * @param rawData
  */
 void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
-    IoT* iot = IoT::getInstance();
-    iot->mqttHandler(topic, payload, length);
+    IoT::mqttHandler(topic, payload, length);
 }
 
 void globalPublish(String topic, String message) {
-    IoT* iot = IoT::getInstance();
-    iot->mqttPublish(topic, message);
+    IoT::mqttPublish(topic, message);
 }
 
-/**
- * Singleton IoT instance
- * Use getInstance() instead of constructor
- */
-IoT* IoT::getInstance()
-{
-    if(_instance == NULL)
-    {
-        _instance = new IoT();
-    }
-    return _instance;
-}
-IoT* IoT::_instance = NULL;
+// Static Variables
+Device*      Device::_devices = NULL;
+MQTTManager* IoT::_mqttManager = NULL;
 
 /**
  * Constructor.
  */
-IoT::IoT()
-{
-    // be sure not to call anything that requires hardware be initialized here, put those in begin()
-    _controllerName         = kDefaultControllerName;
-    _mqttManager            = NULL;
-}
+//IoT::IoT()
+//{
+//    // be sure not to call anything that requires hardware be initialized here, put those in begin()
+//    _controllerName         = kDefaultControllerName;
+//    _mqttManager            = NULL;
+//}
 
 /**
  * Specify the controller's name
  * 
  * @param controllerName
  */
-void IoT::setControllerName(String name)
-{
-    _controllerName = name.toLowerCase();
-}
-
-Device* Device::_devices = NULL;
+//void IoT::setControllerName(String name)
+//{
+//    _controllerName = name.toLowerCase();
+//}
 
 /**
  * Begin gets everything going.
@@ -103,9 +88,10 @@ void IoT::begin()
 }
 
 // MQTT 
-void IoT::connectMQTT(String brokerIP, String connectID)
+void IoT::connectMQTT(String brokerIP, String controllerName)
 {
-    _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName);
+    String connectID = controllerName + "Id";
+    _mqttManager = new MQTTManager(brokerIP, connectID, controllerName);
 }
 
 void IoT::mqttPublish(String topic, String message)

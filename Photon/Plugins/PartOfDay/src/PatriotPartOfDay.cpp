@@ -128,7 +128,7 @@ void PartOfDay::loop()
 // Private Helper Methods
 bool PartOfDay::isNextMinute()
 {
-    long currentTime = millis();
+    unsigned long currentTime = millis();
     if (currentTime < _lastPollTime + MILLIS_PER_MINUTE)
     {
         return false;

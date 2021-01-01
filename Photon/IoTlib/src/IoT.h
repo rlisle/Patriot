@@ -52,58 +52,58 @@ public:
      * Use getInstance instead of trying to use the constructor (private)
      * @return
      */
-    static IoT* getInstance();
+    //static IoT* getInstance();
 
     /**
      * Configuration methods
      * These are used to provide names and change defaults.
      * Only these methods may be called before begin()
      */
-    void        setControllerName(String controllerName);
+    //static void setControllerName(String controllerName);
 
     /**
      * begin
      * Call begin to initialize the object.
      * This is done here instead of the constructor to improve debugging.
      */
-    void        begin();
+    static void begin();
 
     /**
      * connectMQTT(byte * brokerIP, String connectID)
      * Connect to an MQTT broker with specified IP
      **/
-    void        connectMQTT(String brokerIP, String connectID);
+    static void connectMQTT(String brokerIP, String controllerName);
 
-    void        mqttPublish(String topic, String message);
+    static void mqttPublish(String topic, String message);
 
     /**
      * Loop needs to be called periodically
      */
-    void loop();
+    static void loop();
 
     /**
     Values used by loop programming
      */
-    bool handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
+    static bool handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
     
-    int  publishValue(String name, int value);  // Sends MQTT message
+    static int publishValue(String name, int value);  // Sends MQTT message
     
-    int  setDeviceValue(String name, int percent);   // returns 0 success else error code: -1 name not found
+    static int setDeviceValue(String name, int percent);   // returns 0 success else error code: -1 name not found
 
 private:
-    static IoT*  _instance;
+    //static IoT*  _instance;
     
-    String       _controllerName;
+    static String _controllerName;
     
-    MQTTManager* _mqttManager;
+    static MQTTManager* _mqttManager;
 
     /**
      * Constructor
      * Private because this is a singleton
      */
-    IoT();
+    //IoT();
 
-    void subscribeHandler(const char *eventName, const char *rawData);
-    void periodicReset();
-    void mqttHandler(char* topic, byte* payload, unsigned int length);
+    static void subscribeHandler(const char *eventName, const char *rawData);
+    static void periodicReset();
+    static void mqttHandler(char* topic, byte* payload, unsigned int length);
 };

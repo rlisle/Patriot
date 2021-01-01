@@ -15,13 +15,9 @@
 
 String mqttServerIP = "192.168.10.184";
 
-IoT     *iot;
-
 void setup() {
-    iot = IoT::getInstance();
-    iot->setControllerName("RonTest");
-    iot->connectMQTT(mqttServerIP, "patriotRonTest1");
-    iot->begin();
+    IoT::connectMQTT(mqttServerIP, "RonTest");
+    IoT::begin();       //TODO: combine with the above
 
     Device::add(new PartOfDay());
 
@@ -39,7 +35,7 @@ unsigned long lastTime = 0;
 void loop() {
     unsigned long currentTime;
     
-    iot->loop();
+    IoT::loop();
 
     // Do this every 15 seconds
     currentTime = millis();
