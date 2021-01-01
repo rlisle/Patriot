@@ -94,6 +94,7 @@ void PartOfDay::begin() {
     // Force next loop to perform both
     _lastPollTime = 0;
     _lastPollDay = 0;
+    calcSunriseSunset();
 }
 
 /**
@@ -104,7 +105,9 @@ void PartOfDay::loop()
 {
     if(isNextMinute())
     {
+        Log.info("PartOfDay next minute");
         if(isNextDay()) {
+            Log.info("PartOfDay next day");
             calcSunriseSunset();
         }
         
@@ -132,7 +135,7 @@ bool PartOfDay::isNextMinute()
 
 bool PartOfDay::isNextDay()
 {
-    long currentTime = millis();
+    unsigned long currentTime = millis();
     if (currentTime < _lastPollDay + MILLIS_PER_DAY)
     {
         return false;
