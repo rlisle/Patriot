@@ -164,9 +164,6 @@ void MQTTManager::parseMessage(String topic, String message)
             if( device != NULL ) {
                 Log.info("Parser setting device " + subtopic + " to " + percent);
                 device->setPercent(percent);
-            } else {
-                Log.info("Parser setting state " + subtopic + " to " + percent);
-                iot->setStateValue(subtopic,percent);
             }
         }
     } else {

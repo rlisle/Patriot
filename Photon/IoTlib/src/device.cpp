@@ -134,3 +134,33 @@ void Device::buildDevicesVariable()
         Log.error("Devices variable is too long. Need to extend to a 2nd variable");
     }
 }
+
+// Particle.io States variable
+
+void Device::exposeStates() {
+    Log.info("Exposing States");
+    globalStatesVariable = "";
+    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
+        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
+    }
+}
+
+void State::buildStatesVariable() {
+    String newVariable = "";
+    Device *ptr = _devices;
+    while (ptr != NULL) {
+        newVariable += ptr->_name;
+        newVariable += ":";
+        newVariable += String(ptr->_value);
+        if (ptr->_next != NULL) {
+            newVariable += ",";
+        }
+        ptr = ptr->_next;
+    }
+    if (newVariable.length() < kMaxVariableStringLength) {
+        Log.info("Updating States variable");
+        globalStatesVariable = newVariable;
+    } else {
+        Log.error("States variable is too long. Need to extend to a 2nd variable");
+    }
+}

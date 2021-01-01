@@ -121,7 +121,6 @@ void IoT::mqttPublish(String topic, String message)
  */
 void IoT::loop()
 {
-    State::syncPrevious();
     Device::syncAllPrevious();
     Device::loopAll();
 
@@ -129,18 +128,6 @@ void IoT::loop()
         _mqttManager->loop();
     }
 }
-
-// Add a Device - use Device::add(Device *device) instead
-// 
-//void IoT::addDevice(Device *device)
-//{
-//    Log.info("addDevice: " + device->name());
-//
-//    Device::addDevice(device);
-//    device->publishPtr = globalPublish;
-//    device->begin();
-//}
-
 
 /**
  * Particle.io Subscribe Handler
@@ -212,55 +199,55 @@ bool IoT::handleLightSwitch(String name) {
     return false;
 }
 
-bool IoT::didTurnOn(String name) { // hasChanged && value > 0
-    State *state = getState(name);
-    if( state != NULL ) {
-        if(state->hasChanged()) {
-            return state->value() > 0;
-        }
-    }
-    return false;
-}
+//bool IoT::didTurnOn(String name) { // hasChanged && value > 0
+//    State *state = getState(name);
+//    if( state != NULL ) {
+//        if(state->hasChanged()) {
+//            return state->value() > 0;
+//        }
+//    }
+//    return false;
+//}
+//
+//bool IoT::didTurnOff(String name) {   // hasChanged && value == 0
+//    State *state = getState(name);
+//    if( state != NULL ) {
+//        if(state->hasChanged()) {
+//            return state->value() == 0;
+//        }
+//    }
+//    return false;
+//}
 
-bool IoT::didTurnOff(String name) {   // hasChanged && value == 0
-    State *state = getState(name);
-    if( state != NULL ) {
-        if(state->hasChanged()) {
-            return state->value() == 0;
-        }
-    }
-    return false;
-}
-
-/**
- getState()
- param: name of state
- returns: pointer to State object or NULL if not found
- */
-State* IoT::getState(String name) {
-    return State::getStateWithName(name);
-}
-
-/**
- getStateValue()
- param: name of state
- returns 0-100 percent or -1 if name not found
- */
-int IoT::getStateValue(String name) {
-    State* state = State::getStateWithName(name);
-    if( state == NULL) return -1;
-    
-    return state->value();
-}
-
-/**
- setStateValue()
- param: name of state
- param: value to assign state
- */
-void IoT::setStateValue(String name, int value) {
-    State::addState(name, value);
-}
+///**
+// getState()
+// param: name of state
+// returns: pointer to State object or NULL if not found
+// */
+//State* IoT::getState(String name) {
+//    return State::getStateWithName(name);
+//}
+//
+///**
+// getStateValue()
+// param: name of state
+// returns 0-100 percent or -1 if name not found
+// */
+//int IoT::getStateValue(String name) {
+//    State* state = State::getStateWithName(name);
+//    if( state == NULL) return -1;
+//
+//    return state->value();
+//}
+//
+///**
+// setStateValue()
+// param: name of state
+// param: value to assign state
+// */
+//void IoT::setStateValue(String name, int value) {
+//    State::addState(name, value);
+//}
 
 /**
  publishValue()
@@ -276,15 +263,15 @@ int IoT::publishValue(String name, int value) {
     return -1;
 }
 
-/**
- setDeviceValue()
- param: name of device
- param: percent to set
- returns: 0 if success, -1 if device not found
- */
-int IoT::setDeviceValue(String name, int percent) {
-    Device* device = Device::get(name);
-    if( device == NULL) return -1;
-    device->setPercent(percent);
-    return 0;
-}
+///**
+// setDeviceValue()
+// param: name of device
+// param: percent to set
+// returns: 0 if success, -1 if device not found
+// */
+//int IoT::setDeviceValue(String name, int percent) {
+//    Device* device = Device::get(name);
+//    if( device == NULL) return -1;
+//    device->setPercent(percent);
+//    return 0;
+//}
