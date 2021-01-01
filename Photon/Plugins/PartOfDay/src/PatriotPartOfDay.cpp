@@ -78,6 +78,10 @@ bool Period::operator <(const Period& period) {
     return _minute < period._minute;
 }
 
+String Period::info() {
+    return String(_hour) + ":" + String(_minute);
+}
+
 /**
  * Constructor
  */
@@ -175,12 +179,16 @@ void PartOfDay::calcSunriseSunset()
 
     _periods[SUNRISE].set(sunriseHour, sunriseMinute);
     _periods[MORNING].set(sunriseHour, sunriseMinute+1);
+    Log.info("Morning is " + _periods[MORNING].info());
     _periods[NOON].set(12,0);
     _periods[AFTERNOON].set(12,1);
     _periods[SUNSET].set(sunsetHour, sunsetMinute);
     _periods[DUSK].set(sunsetHour, sunsetMinute+1);
+    Log.info("Dusk is " + _periods[DUSK].info());
     _periods[NIGHT].set(sunsetHour, sunsetMinute+30);
+    Log.info("Night is " + _periods[NIGHT].info());
     _periods[DAWN].set(sunriseHour, sunriseMinute - 30);
+    Log.info("Dawn is " + _periods[DAWN].info());
 }
 
 int PartOfDay::calcPartOfDay()
