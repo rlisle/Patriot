@@ -104,9 +104,8 @@ void IoT::begin()
 }
 
 // MQTT 
-void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
+void IoT::connectMQTT(String brokerIP, String connectID)
 {
-    _isBridge = isBridge;
     _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName);
 }
 
@@ -175,17 +174,9 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String level = data.substring(colonPosition+1).toLowerCase();
     String topic = kPublishName + "/" + name;
 
-    // Bridge events to MQTT if this is a Bridge
-    if(_isBridge)
-    {
       if (_mqttManager != NULL) {
-          _mqttManager->publish(topic, level);
+          _mqttManager->parseMessage(topic, level);
       }
-    }
-    
-    //TODO: If bridge isn't working, then handle directly
-    //...
-    
 }
 
 /**

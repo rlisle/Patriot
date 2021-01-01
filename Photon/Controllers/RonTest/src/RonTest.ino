@@ -21,7 +21,7 @@ IoT     *iot;
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RonTest");
-    iot->connectMQTT(mqttServerIP, "patriotRonTest1", true);    // Is bridge
+    iot->connectMQTT(mqttServerIP, "patriotRonTest1");
     iot->begin();
 
     iot->addDevice(new PartOfDay());

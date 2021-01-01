@@ -73,10 +73,10 @@ public:
     void        begin();
 
     /**
-     * connectMQTT(byte * brokerIP, String connectID, bool isBridge = false)
+     * connectMQTT(byte * brokerIP, String connectID)
      * Connect to an MQTT broker with specified IP
      **/
-    void        connectMQTT(String brokerIP, String connectID, bool isBridge = false);
+    void        connectMQTT(String brokerIP, String connectID);
 
     void        mqttPublish(String topic, String message);
     void        addDevice(Device *device);
@@ -102,7 +102,6 @@ public:
 private:
     static IoT*  _instance;
     
-    bool         _isBridge;
     String       _controllerName;
     
     MQTTManager* _mqttManager;
