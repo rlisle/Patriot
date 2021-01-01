@@ -18,10 +18,24 @@ extern void globalPublish(String topic, String message);
 
 String globalDevicesVariable;
 
-//Device::Device()
-//{
-//    //Nothing to do here
-//}
+Device::Device(String name)
+: _next(NULL), _name(name), _value(0), _previous(-1);
+{
+    // Do any setup work in begin() not here.
+}
+
+// Doesn't work if called in the constructor.
+// because publishPtr is set afterwards, but before begin()
+void publish(String topic, String message) {
+    if(publishPtr != NULL) {
+        publishPtr(topic, message);
+    }
+}
+
+void Device::setValue(int value) {
+    Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
+    _value = value;
+}
 
 void Device::add(Device *device)
 {

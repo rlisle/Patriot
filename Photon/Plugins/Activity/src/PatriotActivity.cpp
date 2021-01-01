@@ -23,8 +23,3 @@ Activity::Activity(String name) : Device(name, DeviceType::Activity)
 {
     // nothing to do
 }
-
-void Activity::setPercent(int percent) {
-    Log.info("Activity " + _name + " setPercent "+String(percent)+", was "+String(_percent));
-    _percent = percent;     // This is how we detect when it changes
-};

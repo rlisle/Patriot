@@ -28,5 +28,4 @@ public:
      */
     Activity(String name);
     
-    void setPercent(int percent);
 };

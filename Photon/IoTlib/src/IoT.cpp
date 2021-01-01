@@ -6,7 +6,7 @@ a common API for adding and configuring devices.
 
 This class coordinates realtime events.
 It subscribes to Particle.io notifications, and
-        distributes them to devices and states.
+        distributes them to devices.
 
 http://www.github.com/rlisle/Patriot
 
@@ -81,7 +81,6 @@ void IoT::setControllerName(String name)
     _controllerName = name.toLowerCase();
 }
 
-State* State::_states = NULL;
 Device* Device::_devices = NULL;
 
 /**
@@ -99,7 +98,7 @@ void IoT::begin()
 
     // Expose particle.io variables
     Device::expose();
-    State::expose();
+    Device::exposeState();
 
 }
 
