@@ -61,8 +61,8 @@ public:
 class PartOfDay : public Device
 {
 private:
-    long       _lastPollTime;
-    long       _lastPollDay;
+    unsigned long  _lastPollTime;
+    unsigned long  _lastPollDay;
     Period     _periods[8];
 
     bool       isNextMinute();
