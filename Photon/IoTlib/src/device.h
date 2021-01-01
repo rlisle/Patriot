@@ -60,7 +60,7 @@ public:
             publishPtr(topic, message);
         }
     }
-
+    
     // begin() is called automatically when device is added to IoT using addDevice() after the publishPtr has been set.
     // Do any heavy lifting or publishing here and not in constructor.
     virtual void begin() {};
@@ -70,6 +70,9 @@ public:
 
     virtual String name() { return _name; };
     virtual DeviceType type() { return _type; };
+    
+    // Allow similar code between States and Devices
+    int value() { return _percent; };
 
     virtual int getPercent() { return _percent; }
     virtual void setPercent(int percent) { _percent = percent; };
@@ -89,8 +92,8 @@ public:
     static void loopAll();
     static void syncAllPrevious();
 
-    static void    addDevice(Device *device);
-    static Device* getDeviceWithName(String name);
+    static void    add(Device *device);
+    static Device* get(String name);
     static int     count();
     
     /**

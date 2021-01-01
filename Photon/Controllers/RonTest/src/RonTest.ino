@@ -21,18 +21,18 @@ IoT     *iot;
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("RonTest");
-    iot->connectMQTT(mqttServerIP, "patriotRonTest1", true);    // Is bridge
+    iot->connectMQTT(mqttServerIP, "patriotRonTest1");
     iot->begin();
 
-    iot->addDevice(new PartOfDay());
+    Device::add(new PartOfDay());
 
-    iot->addDevice(new Light(7, "blueLed", false, true));
+    Device::add(new Light(7, "blueLed", false, true));
 
     // Activities allow Alexa to control them
     // and can also turn off other activities.
-    iot->addDevice(new Activity("cooking"));
-    iot->addDevice(new Activity("cleaning"));
-    iot->addDevice(new Activity("sleeping"));
+    Device::add(new Activity("cooking"));
+    Device::add(new Activity("cleaning"));
+    Device::add(new Activity("sleeping"));
     
     // Initialize any states we'll be testing in loop
     iot->setStateValue("sleeping", 0);
@@ -42,9 +42,10 @@ void setup() {
 void loop() {
     iot->loop();
     
-    
-    State* sleeping = iot->getState("sleeping");
-    State* partOfDay = iot->getState("partofday");
+    // Use device because we defined it in this controller.
+    // Otherwise would use state instead of device
+    Device* sleeping = Device::get("sleeping");
+    Device* partOfDay = Device::get("partofday");
 
     if( sleeping != NULL && sleeping->hasChanged() ) {
 

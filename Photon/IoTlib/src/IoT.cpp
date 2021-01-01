@@ -104,9 +104,8 @@ void IoT::begin()
 }
 
 // MQTT 
-void IoT::connectMQTT(String brokerIP, String connectID, bool isBridge)
+void IoT::connectMQTT(String brokerIP, String connectID)
 {
-    _isBridge = isBridge;
     _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName);
 }
 
@@ -132,16 +131,16 @@ void IoT::loop()
     }
 }
 
-// Add a Device
+// Add a Device - use Device::add(Device *device) instead
 // 
-void IoT::addDevice(Device *device)
-{
-    Log.info("addDevice: " + device->name());
-    
-    Device::addDevice(device);
-    device->publishPtr = globalPublish;
-    device->begin();
-}
+//void IoT::addDevice(Device *device)
+//{
+//    Log.info("addDevice: " + device->name());
+//
+//    Device::addDevice(device);
+//    device->publishPtr = globalPublish;
+//    device->begin();
+//}
 
 
 /**
@@ -175,17 +174,9 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String level = data.substring(colonPosition+1).toLowerCase();
     String topic = kPublishName + "/" + name;
 
-    // Bridge events to MQTT if this is a Bridge
-    if(_isBridge)
-    {
       if (_mqttManager != NULL) {
-          _mqttManager->publish(topic, level);
+          _mqttManager->parseMessage(topic, level);
       }
-    }
-    
-    //TODO: If bridge isn't working, then handle directly
-    //...
-    
 }
 
 /**
@@ -203,14 +194,14 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  */
 
 bool IoT::handleLightSwitch(String name) {
-    Device *lightSwitch = Device::getDeviceWithName(name+"Switch");
+    Device *lightSwitch = Device::get(name+"Switch");
     if( lightSwitch == NULL) {
         Log.error("handleLightSwitch: " + name + "Switch not found!");
         return false;
     }
     if( lightSwitch->hasChanged() ) {
         Log.info("handleLightSwitch hasChanged");
-        Device *light = Device::getDeviceWithName(name);
+        Device *light = Device::get(name);
         if( light == NULL ) {
             Log.error("handleLightSwitch: light " + name + " not found!");
             return false;
@@ -293,7 +284,7 @@ int IoT::publishValue(String name, int value) {
  returns: 0 if success, -1 if device not found
  */
 int IoT::setDeviceValue(String name, int percent) {
-    Device* device = Device::getDeviceWithName(name);
+    Device* device = Device::get(name);
     if( device == NULL) return -1;
     device->setPercent(percent);
     return 0;

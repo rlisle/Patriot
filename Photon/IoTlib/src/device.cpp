@@ -14,6 +14,8 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
+extern void globalPublish(String topic, String message);
+
 String globalDevicesVariable;
 
 //Device::Device()
@@ -21,20 +23,25 @@ String globalDevicesVariable;
 //    //Nothing to do here
 //}
 
-void Device::addDevice(Device *device)
+void Device::add(Device *device)
 {
     Log.info("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
         Log.info("  first device");
         _devices = device;
     } else {
-        Log.info("  adding device");
         Device *ptr = _devices;
+        int i = 1;
         while(ptr->_next != NULL) {
             ptr = ptr->_next;
+            i++;
         }
+        Log.info("  adding device "+String(i));
         ptr->_next = device;
     }
+    device->publishPtr = globalPublish;
+    device->begin();
+    
     buildDevicesVariable();
 }
 
@@ -65,7 +72,7 @@ void Device::syncAllPrevious()
 }
 
 
-Device *Device::getDeviceWithName(String name)
+Device *Device::get(String name)
 {
     Device *ptr = _devices;
     for (int i = 0; i < count() && ptr != NULL; i++)
