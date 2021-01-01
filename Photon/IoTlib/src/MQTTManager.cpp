@@ -160,7 +160,7 @@ void MQTTManager::parseMessage(String topic, String message)
             int percent = parseValue(message);
             IoT *iot = IoT::getInstance();
             // Is this a device name?
-            Device *device = Device::getDeviceWithName(subtopic);
+            Device *device = Device::get(subtopic);
             if( device != NULL ) {
                 Log.info("Parser setting device " + subtopic + " to " + percent);
                 device->setPercent(percent);

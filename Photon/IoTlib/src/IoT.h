@@ -79,7 +79,7 @@ public:
     void        connectMQTT(String brokerIP, String connectID);
 
     void        mqttPublish(String topic, String message);
-    void        addDevice(Device *device);
+//    void        addDevice(Device *device);
 
     /**
      * Loop needs to be called periodically
