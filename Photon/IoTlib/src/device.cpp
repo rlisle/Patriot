@@ -59,7 +59,7 @@ void Device::add(Device *device)
         Log.info("  adding device "+String(i));
         ptr->_next = device;
     }
-    device->publishPtr = globalPublish;
+    device->publishPtr = IoT::mqttPublish;
     device->begin();
     
     buildDevicesVariable();

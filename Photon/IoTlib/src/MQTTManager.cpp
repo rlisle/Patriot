@@ -3,9 +3,6 @@ MQTTManager.cpp
 
 This class handles all MQTT interactions.
 
-Note: to avoid making this a singleton, 
-the caller must provide global callback handlers (see externs).
-
 http://www.github.com/rlisle/Patriot
 
 Written by Ron Lisle
@@ -17,8 +14,7 @@ All text above must be included in any redistribution.
 #include "MQTTManager.h"
 #include "constants.h"
 #include "device.h"
-
-extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
+#include "IoT.h"
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {
@@ -32,7 +28,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     //TODO: do we need this, and what should we pass?
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
 
-    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, globalMQTTHandler);
+    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     connect(connectID);
 }
 

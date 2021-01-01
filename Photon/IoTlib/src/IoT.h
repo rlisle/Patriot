@@ -42,24 +42,15 @@ All text above must be included in any redistribution.
  */
 class IoT {
 
-    friend void globalSubscribeHandler(const char *eventName, const char *rawData);
-    friend void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
+    friend MQTTManager;
 
 public:
 
     /**
-     * Singleton pattern
-     * Use getInstance instead of trying to use the constructor (private)
-     * @return
-     */
-    //static IoT* getInstance();
-
-    /**
-     * Configuration methods
-     * These are used to provide names and change defaults.
-     * Only these methods may be called before begin()
-     */
-    //static void setControllerName(String controllerName);
+     * connectMQTT(byte * brokerIP, String connectID)
+     * Connect to an MQTT broker with specified IP
+     **/
+    static void connectMQTT(String brokerIP, String controllerName);
 
     /**
      * begin
@@ -67,12 +58,6 @@ public:
      * This is done here instead of the constructor to improve debugging.
      */
     static void begin();
-
-    /**
-     * connectMQTT(byte * brokerIP, String connectID)
-     * Connect to an MQTT broker with specified IP
-     **/
-    static void connectMQTT(String brokerIP, String controllerName);
 
     static void mqttPublish(String topic, String message);
 
@@ -91,17 +76,8 @@ public:
     static int setDeviceValue(String name, int percent);   // returns 0 success else error code: -1 name not found
 
 private:
-    //static IoT*  _instance;
-    
     static String _controllerName;
-    
     static MQTTManager* _mqttManager;
-
-    /**
-     * Constructor
-     * Private because this is a singleton
-     */
-    //IoT();
 
     static void subscribeHandler(const char *eventName, const char *rawData);
     static void periodicReset();

@@ -18,55 +18,9 @@ All text above must be included in any redistribution.
 */
 #include "IoT.h"
 
-/**
- * Global Particle.io subscribe handler
- * Called by particle.io when events are published.
- *
- * @param eventName
- * @param rawData
- */
-void globalSubscribeHandler(const char *eventName, const char *rawData) {
-    IoT::subscribeHandler(eventName,rawData);
-}
-
-/**
- * Global MQTT subscribe handler
- * Called by MQTT when events are published.
- *
- * @param eventName
- * @param rawData
- */
-void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
-    IoT::mqttHandler(topic, payload, length);
-}
-
-void globalPublish(String topic, String message) {
-    IoT::mqttPublish(topic, message);
-}
-
 // Static Variables
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
-
-/**
- * Constructor.
- */
-//IoT::IoT()
-//{
-//    // be sure not to call anything that requires hardware be initialized here, put those in begin()
-//    _controllerName         = kDefaultControllerName;
-//    _mqttManager            = NULL;
-//}
-
-/**
- * Specify the controller's name
- * 
- * @param controllerName
- */
-//void IoT::setControllerName(String name)
-//{
-//    _controllerName = name.toLowerCase();
-//}
 
 /**
  * Begin gets everything going.
@@ -79,11 +33,10 @@ void IoT::begin()
     //Serial.begin(57600);
 
     // Subscribe to events. There is a 1/second limit for events.
-    Particle.subscribe(kPublishName, globalSubscribeHandler, MY_DEVICES);
+    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
 
     // Expose particle.io variables
     Device::expose();
-    //Device::exposeStates();
 
 }
 
