@@ -40,6 +40,7 @@ void Device::publish(String topic, String message) {
 void Device::setValue(int value) {
     Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
+    //buildStatesVariable();
 }
 
 void Device::add(Device *device)
@@ -62,6 +63,7 @@ void Device::add(Device *device)
     device->begin();
     
     buildDevicesVariable();
+    //buildStatesVariable();
 }
 
 void Device::resetAll()
@@ -111,6 +113,7 @@ void Device::setValue(String name, int value) {
     if( ptr != NULL ) {
         ptr->setValue(value);
     }
+    //buildStatesVariable();
 }
 
 int Device::count()
@@ -159,8 +162,7 @@ void Device::exposeStates() {
 
 void Device::buildStatesVariable() {
     String newVariable = "";
-    Device *ptr = _devices;
-    while (ptr != NULL) {
+    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
         newVariable += ptr->_name;
         newVariable += ":";
         newVariable += String(ptr->_value);

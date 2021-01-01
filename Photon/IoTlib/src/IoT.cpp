@@ -98,7 +98,7 @@ void IoT::begin()
 
     // Expose particle.io variables
     Device::expose();
-    Device::exposeStates();
+    //Device::exposeStates();
 
 }
 
