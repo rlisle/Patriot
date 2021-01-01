@@ -98,7 +98,7 @@ void IoT::begin()
 
     // Expose particle.io variables
     Device::expose();
-    Device::exposeState();
+    Device::exposeStates();
 
 }
 
@@ -192,8 +192,8 @@ bool IoT::handleLightSwitch(String name) {
             Log.error("handleLightSwitch: light " + name + " not found!");
             return false;
         }
-        Log.info("Setting light to %d", lightSwitch->getPercent());
-        light->setPercent( lightSwitch->getPercent() );
+        Log.info("Setting light to %d", lightSwitch->value());
+        light->setValue( lightSwitch->value() );
         return true;
     }
     return false;

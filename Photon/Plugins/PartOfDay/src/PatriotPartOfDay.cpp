@@ -4,7 +4,7 @@ PatriotPartOfDay plugin
  Features:
  - Broadcasts the current part of the day
  
- - _percent will be a value of 0 to 7 as listed below
+ - _value will be a value of 0 to 7 as listed below
   
   - Periods can be (in podNum order):
      0 Night
@@ -82,9 +82,9 @@ bool Period::operator <(const Period& period) {
  * Constructor
  */
 PartOfDay::PartOfDay()
-        : Device("PartOfDay", DeviceType::PartOfDay)
+        : Device("PartOfDay")
 {
-    _percent = -1;
+    _value = -1;
 }
 
 /**
@@ -112,10 +112,10 @@ void PartOfDay::loop()
         }
         
         int now = calcPartOfDay();
-        if (now != _percent) {
+        if (now != _value) {
             Log.info("PartOfDay changed to %d", now);
-            _percent = now;
-            publishPOD(_percent);
+            _value = now;
+            publishPOD(_value);
         }
     }
 }

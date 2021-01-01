@@ -33,17 +33,11 @@ void setup() {
     Device::add(new Activity("cooking"));
     Device::add(new Activity("cleaning"));
     Device::add(new Activity("sleeping"));
-    
-    // Initialize any states we'll be testing in loop
-    iot->setStateValue("sleeping", 0);
-    iot->setStateValue("partofday", 0);
 }
 
 void loop() {
     iot->loop();
     
-    // Use device because we defined it in this controller.
-    // Otherwise would use state instead of device
     Device* sleeping = Device::get("sleeping");
     Device* partOfDay = Device::get("partofday");
 

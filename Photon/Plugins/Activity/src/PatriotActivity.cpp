@@ -19,7 +19,7 @@ All text above must be included in any redistribution.
 /**
  * Constructor
  */
-Activity::Activity(String name) : Device(name, DeviceType::Activity)
+Activity::Activity(String name) : Device(name)
 {
     // nothing to do
 }
