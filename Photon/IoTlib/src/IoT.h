@@ -87,11 +87,10 @@ public:
     /**
     Values used by loop programming
      */
-    bool didTurnOn(String name);                // hasChanged && value > 0
-    bool didTurnOff(String name);               // hasChanged && value == 0
     bool handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
     
     int  publishValue(String name, int value);  // Sends MQTT message
+    
     int  setDeviceValue(String name, int percent);   // returns 0 success else error code: -1 name not found
 
 private:

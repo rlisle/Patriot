@@ -77,18 +77,9 @@ void Device::resetAll()
 
 void Device::loopAll()
 {
-    syncAllPrevious();
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         ptr->loop();
-    }
-}
-
-void Device::syncAllPrevious()
-{
-    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
-    {
-        ptr->syncPrevious();
     }
 }
 

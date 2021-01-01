@@ -11,7 +11,6 @@
 
 #include <IoT.h>
 #include <PatriotLight.h>
-#include <PatriotActivity.h>
 #include <PatriotPartOfDay.h>
 
 String mqttServerIP = "192.168.10.184";
@@ -28,49 +27,67 @@ void setup() {
 
     Device::add(new Light(7, "blueLed", false, true));
 
-    // Activities allow Alexa to control them
+    // Basic devices allow Alexa to control the name
     // and can also turn off other activities.
-    Device::add(new Activity("cooking"));
-    Device::add(new Activity("cleaning"));
-    Device::add(new Activity("sleeping"));
+    Device::add(new Device("cooking"));
+    Device::add(new Device("cleaning"));
+    Device::add(new Device("sleeping"));
 }
 
+unsigned long lastTime = 0;
+
 void loop() {
-    iot->loop();
+    unsigned long currentTime;
     
-    Device* sleeping = Device::get("sleeping");
-    Device* partOfDay = Device::get("partofday");
+    iot->loop();
 
-    if( sleeping != NULL && sleeping->hasChanged() ) {
+    // Do this every 15 seconds
+    currentTime = millis();
+    if( currentTime > lastTime + 15000 ) {
+    
+        lastTime = currentTime;
+        
+        Device* sleeping = Device::get("sleeping");
+        Device* partOfDay = Device::get("partofday");
 
-        Log.info("sleeping has changed: %d",sleeping->value());
+        if( sleeping != NULL ) {
+            
+            if( sleeping->hasChanged() ) {
 
-        // Alexa, Good morning
-        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
-            setMorningLights();
+                Log.info("sleeping has changed: %d",sleeping->value());
+
+                // Alexa, Good morning
+                if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
+                    setMorningLights();
+                }
+
+                // Alexa, Bedtime
+                if( sleeping->value() == RETIRING ) {
+                    setMorningLights();
+                }
+
+                // Alexa, Goodnight
+                if( sleeping->value() == ASLEEP ) {
+                    setAllInsideLights(0);
+                }
+                
+                sleeping->syncPrevious();
+            }
         }
 
-        // Alexa, Bedtime
-        if( sleeping->value() == RETIRING ) {
-            setMorningLights();
-        }
+        if( partOfDay != NULL && partOfDay->hasChanged() ) {
 
-        // Alexa, Goodnight
-        if( sleeping->value() == ASLEEP ) {
-            setAllInsideLights(0);
-        }
-    }
+            Log.info("PartOfDay has changed: %d", partOfDay->value());
 
-    if( partOfDay != NULL && partOfDay->hasChanged() ) {
+            if( partOfDay->value() == SUNRISE ) {
+                setAllInsideLights(0);
+            }
 
-        Log.info("PartOfDay has changed: %d", partOfDay->value());
-
-        if( partOfDay->value() == SUNRISE ) {
-            setAllInsideLights(0);
-        }
-
-        if( partOfDay->value() == DUSK ) {
-            setEveningLights();
+            if( partOfDay->value() == DUSK ) {
+                setEveningLights();
+            }
+            
+            partOfDay->syncPrevious();
         }
     }
 }

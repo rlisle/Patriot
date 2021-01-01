@@ -33,12 +33,12 @@
  */
 
 NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration)
-                     : Device(name, DeviceType::NCD8Light)
+                     : Device(name)
 {
     _address = address;
     _lightNum   = lightNum;
     _dimmingDuration = duration;
-    _percent = 0;
+    _value = 0;
     _currentLevel = 0.0;
     _targetLevel = 0.0;
     _incrementPerMillisecond = 0.0;
@@ -103,14 +103,14 @@ void NCD8Light::reset() {
 }
 
 /**
- * Set percent
- * @param percent Int 0 to 100.
+ * Set value
+ * @param value Int 0 to 100.
  */
-void NCD8Light::setPercent(int percent) {
-    _currentLevel = scalePWM(_percent);
-    _percent = percent;
-    _targetLevel = scalePWM(percent);
-    Log.info("Dimmer " + String(_name) + " setPercent " + String(percent) + " scaled to " + String(_targetLevel));
+void NCD8Light::setValue(int value) {
+    _currentLevel = scalePWM(_value);
+    _value = value;
+    _targetLevel = scalePWM(value);
+    Log.info("Dimmer " + String(_name) + " setValue " + String(value) + " scaled to " + String(_targetLevel));
     if(_dimmingDuration == 0) {
         _currentLevel = _targetLevel;
         outputPWM();
@@ -122,7 +122,7 @@ void NCD8Light::setPercent(int percent) {
 
 /**
  * Start smooth dimming
- * Use float _currentPercent value to smoothly transition
+ * Use float _currentValue to smoothly transition
  * An alternative approach would be to calculate # msecs per step
  */
 void NCD8Light::startSmoothDimming() {
@@ -148,7 +148,7 @@ void NCD8Light::loop()
         return;
     }
     
-    //Log.trace("light loop percent: "+String(_percent)+", target: "+String(_targetPercent));
+    //Log.trace("light loop value: "+String(_value)+", target: "+String(_targetValue));
 
     // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
     
@@ -183,16 +183,16 @@ void NCD8Light::outputPWM() {
 }
 
 /**
- * Convert 0-100 percent to 0-255 exponential scale
+ * Convert 0-100 to 0-255 exponential scale
  * 0 = 0, 100 = 255
  */
-float NCD8Light::scalePWM(int percent) {
-    if (percent <= 0) return 0;
-    if (percent >= 100) return 255;
+float NCD8Light::scalePWM(int value) {
+    if (value <= 0) return 0;
+    if (value >= 100) return 255;
     
     //TODO: This is too extreme. Need to refine algorithm
     float base = 1.05697667;
-    float pwm = pow(base,percent);
+    float pwm = pow(base,value);
     if (pwm > 255) {
         return(255);
     }

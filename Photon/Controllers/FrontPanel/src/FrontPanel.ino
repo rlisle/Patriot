@@ -39,31 +39,31 @@ IoT *iot;
 void setup() {
     iot = IoT::getInstance();
     iot->setControllerName("FrontPanel");
-    iot->begin();
     iot->connectMQTT(mqttServer, "patriotFrontPanel1");
+    iot->begin();
 
-    iot->addDevice(new NCD8Light(ADDRESS, 0, "DoorSide", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 1, "KitchenCeiling", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 2, "Sink", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 3, "OtherSide", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 4, "RightTrim",2));
-    iot->addDevice(new NCD8Light(ADDRESS, 5, "LeftTrim",2));
-    iot->addDevice(new NCD8Light(ADDRESS, 6, "FrontAwning", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 7, "FrontPorch", 2));
+    Device::add(new NCD8Light(ADDRESS, 0, "DoorSide", 2));
+    Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", 2));
+    Device::add(new NCD8Light(ADDRESS, 2, "Sink", 2));
+    Device::add(new NCD8Light(ADDRESS, 3, "OtherSide", 2));
+    Device::add(new NCD8Light(ADDRESS, 4, "RightTrim",2));
+    Device::add(new NCD8Light(ADDRESS, 5, "LeftTrim",2));
+    Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", 2));
+    Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", 2));
 
-    iot->addDevice(new Light(D2, "Ceiling", 2));
-    iot->addDevice(new Light(D3, "Cabinets", 2));
+    Device::add(new Light(D2, "Ceiling", 2));
+    Device::add(new Light(D3, "Cabinets", 2));
 
-    iot->addDevice(new Switch(A5, "CabinetsSwitch"));
-    iot->addDevice(new Switch(A6, "RightTrimSwitch"));
-    iot->addDevice(new Switch(A7, "SinkSwitch"));
-    iot->addDevice(new Switch(RX, "KitchenCeilingSwitch"));
-    iot->addDevice(new Switch(TX, "LeftTrimSwitch"));
-    iot->addDevice(new Switch(A1, "CeilingSwitch"));
-    iot->addDevice(new Switch(A2, "DoorSideSwitch"));
-    iot->addDevice(new Switch(A3, "OtherSideSwitch"));
-    iot->addDevice(new Switch(A4, "FrontPorchSwitch"));
-    iot->addDevice(new Switch(A0, "FrontAwningSwitch"));
+    Device::add(new Switch(A5, "CabinetsSwitch"));
+    Device::add(new Switch(A6, "RightTrimSwitch"));
+    Device::add(new Switch(A7, "SinkSwitch"));
+    Device::add(new Switch(RX, "KitchenCeilingSwitch"));
+    Device::add(new Switch(TX, "LeftTrimSwitch"));
+    Device::add(new Switch(A1, "CeilingSwitch"));
+    Device::add(new Switch(A2, "DoorSideSwitch"));
+    Device::add(new Switch(A3, "OtherSideSwitch"));
+    Device::add(new Switch(A4, "FrontPorchSwitch"));
+    Device::add(new Switch(A0, "FrontAwningSwitch"));
 }
 
 void loop() {
