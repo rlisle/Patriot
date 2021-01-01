@@ -42,8 +42,6 @@ All text above must be included in any redistribution.
  */
 class IoT {
 
-    friend MQTTManager;
-
     friend void globalSubscribeHandler(const char *eventName, const char *rawData);
     friend void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 

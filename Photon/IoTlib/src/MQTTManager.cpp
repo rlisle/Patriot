@@ -16,7 +16,7 @@ All text above must be included in any redistribution.
 */
 #include "MQTTManager.h"
 #include "constants.h"
-#include "IoT.h"
+#include "device.h"
 
 extern void globalMQTTHandler(char *topic, byte* payload, unsigned int length);
 
