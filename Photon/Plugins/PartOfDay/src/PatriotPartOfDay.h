@@ -53,6 +53,8 @@ public:
     // minute can be < 0 or > 59 and will be corrected
     void    set(int hour, int minute);
     
+    String  info();
+    
     bool    operator ==(const Period& hm);
     bool    operator >(const Period& hm);
     bool    operator <(const Period& hm);

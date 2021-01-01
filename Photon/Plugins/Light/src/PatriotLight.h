@@ -26,9 +26,9 @@ class Light : public Device
  private:
     int       _pin;
 
-    int       _targetPercent;
+    int       _targetValue;
     float     _dimmingDuration;
-    float     _currentPercent;          // Use for smooth dimming transitions
+    float     _currentValue;          // Use for smooth dimming transitions
     float     _incrementPerMillisecond;
 
     long      _lastUpdateTime;
@@ -44,7 +44,7 @@ class Light : public Device
     Light(int pin, String name, bool isInverted=false, bool forceDigital=false);
     void      begin();
     
-    void      setPercent(int percent);      // Set light immediately
+    void      setValue(int value);      // Set light immediately
 
     void      setDimmingDuration(float duration);
     float     getDimmingDuration();

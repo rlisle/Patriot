@@ -27,28 +27,28 @@ void setup() {
     
     iot = IoT::getInstance();
     iot->setControllerName("RearPanel");
+    iot->connectMQTT(mqttServer, "PatriotRearPanel1");
     iot->begin();
-    iot->connectMQTT(mqttServer, "PatriotRearPanel1", false);
 
     // Lights
-    iot->addDevice(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 1, "Loft", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 2, "RampPorch", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 3, "RampAwning", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 4, "RearPorch", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 5, "RearAwning", 2));
-    iot->addDevice(new NCD8Light(ADDRESS, 6, "Piano", 2));
+    Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
+    Device::add(new NCD8Light(ADDRESS, 1, "Loft", 2));
+    Device::add(new NCD8Light(ADDRESS, 2, "RampPorch", 2));
+    Device::add(new NCD8Light(ADDRESS, 3, "RampAwning", 2));
+    Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", 2));
+    Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", 2));
+    Device::add(new NCD8Light(ADDRESS, 6, "Piano", 2));
     // one unused dimmer I/O
 
     // Switches
     // Switches provide backup control for when Alexa is not available.
     // This can happen when the internet is not available.
-    iot->addDevice(new Switch(A0, "OfficeCeilingSwitch"));
-    iot->addDevice(new Switch(A1, "LoftSwitch"));
-    iot->addDevice(new Switch(A2, "RampPorchSwitch"));
-    iot->addDevice(new Switch(A3, "RampAwningSwitch"));
-    iot->addDevice(new Switch(A4, "RearPorchSwitch"));
-    iot->addDevice(new Switch(A5, "RearAwningSwitch"));
+    Device::add(new Switch(A0, "OfficeCeilingSwitch"));
+    Device::add(new Switch(A1, "LoftSwitch"));
+    Device::add(new Switch(A2, "RampPorchSwitch"));
+    Device::add(new Switch(A3, "RampAwningSwitch"));
+    Device::add(new Switch(A4, "RearPorchSwitch"));
+    Device::add(new Switch(A5, "RearAwningSwitch"));
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Note: Activities and PartOfDay are defined in RonTest instead of here

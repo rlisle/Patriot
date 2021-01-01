@@ -34,5 +34,5 @@ public:
     void loop();
     
     // Override to prevent MQTT from setting _percent.
-    void setPercent(int percent) { return; };
+    void setValue(int percent) { return; };
 };

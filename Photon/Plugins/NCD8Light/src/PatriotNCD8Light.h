@@ -37,12 +37,12 @@ class NCD8Light : public Device
     int8_t  initializeBoard();
     void    outputPWM();
     void    startSmoothDimming();
-    float   scalePWM(int percent);
+    float   scalePWM(int value);
 
  public:
     NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration = 0);
     void    begin();
     void    reset();
-    void    setPercent(int percent);
+    void    setValue(int value);
     void    loop();
 };

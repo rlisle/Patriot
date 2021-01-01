@@ -5,8 +5,7 @@ It aggregates all the other classes, and provides
 a common API for adding and configuring devices.
 
 This class coordinates realtime events.
-It subscribes to Particle.io notifications, and
-        distributes them to devices and states.
+It subscribes to Particle.io notifications, and distributes them to devices.
 
 http://www.github.com/rlisle/Patriot
 
@@ -19,7 +18,6 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 #include "constants.h"
-#include "state.h"
 #include "device.h"
 #include "MQTTManager.h"
 
@@ -79,7 +77,6 @@ public:
     void        connectMQTT(String brokerIP, String connectID);
 
     void        mqttPublish(String topic, String message);
-//    void        addDevice(Device *device);
 
     /**
      * Loop needs to be called periodically
@@ -89,14 +86,10 @@ public:
     /**
     Values used by loop programming
      */
-    bool didTurnOn(String name);                // hasChanged && value > 0
-    bool didTurnOff(String name);               // hasChanged && value == 0
     bool handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
     
-    State *getState(String name);
-    int  getStateValue(String name);            // Returns percent or -1
-    void setStateValue(String name, int value); // Modifies existing, or adds new state with value
-    int  publishValue(String name, int value);  // Sends MQTT state message
+    int  publishValue(String name, int value);  // Sends MQTT message
+    
     int  setDeviceValue(String name, int percent);   // returns 0 success else error code: -1 name not found
 
 private:

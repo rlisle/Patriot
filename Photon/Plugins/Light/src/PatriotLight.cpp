@@ -26,13 +26,13 @@
  * @param forceDigital True if output On/Off only (even if pin supports PWM)
  */
 Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
-        : Device(name, DeviceType::Light),
+        : Device(name),
           _pin(pinNum),
           _isInverted(isInverted),
           _forceDigital(forceDigital)
 {
-    _targetPercent            = 0;
-    _currentPercent           = 0.0;
+    _targetValue            = 0;
+    _currentValue           = 0.0;
     _incrementPerMillisecond  = 0.0;
     _lastUpdateTime           = 0;
 }
@@ -44,16 +44,16 @@ void Light::begin() {
 }
 
 /**
- * Set percent
- * @param percent Int 0 to 100
+ * Set value
+ * @param value Int 0 to 100
  */
-void Light::setPercent(int percent) {
-    Log.info("Light " + _name + " setPercent: " + String(percent));
-    if(_targetPercent == percent) return;
+void Light::setValue(int value) {
+    Log.info("Light " + _name + " setValue: " + String(value));
+    if(_targetValue == value) return;
 
-    _targetPercent = percent;
+    _targetValue = value;
     if(_dimmingDuration == 0.0 || isPwmSupported() == false) {
-        _percent = percent;
+        _value = value;
         outputPWM();
 
     } else {
@@ -63,19 +63,19 @@ void Light::setPercent(int percent) {
 
 /**
  * Start smooth dimming
- * Use float _currentPercent value to smoothly transition
+ * Use float _currentValue to smoothly transition
  * An alternative approach would be to calculate # msecs per step
  */
 void Light::startSmoothDimming() {
-    if((int)_percent == _targetPercent){
+    if((int)_value == _targetValue){
         Log.info("Light " + _name + " startSmoothDimming equal");
         return;
     }
-    _currentPercent = _percent;
+    _currentValue = _value;
     _lastUpdateTime = millis();
-    float delta = _targetPercent - _percent;
+    float delta = _targetValue - _value;
     _incrementPerMillisecond = delta / (_dimmingDuration * 1000);
-    Log.info("Light " + _name + " startSmoothDimming target: " + String(_percent) + ", increment: " + String(_incrementPerMillisecond));
+    Log.info("Light " + _name + " startSmoothDimming target: " + String(_value) + ", increment: " + String(_incrementPerMillisecond));
 }
 
 /**
@@ -106,22 +106,22 @@ float Light::getDimmingDuration() {
 void Light::loop()
 {
     // Is fading transition underway?
-    if(_percent == _targetPercent) {
+    if(_value == _targetValue) {
         return;
     }
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
-    _currentPercent += _incrementPerMillisecond * millisSinceLastUpdate;
-    _percent = _currentPercent;
+    _currentValue += _incrementPerMillisecond * millisSinceLastUpdate;
+    _value = _currentValue;
     if(_incrementPerMillisecond > 0) {
-        if(_currentPercent > _targetPercent) {
-            _percent = _targetPercent;
+        if(_currentValue > _targetValue) {
+            _value = _targetValue;
             Log.info("Light "+_name+" loop: up done");
         }
     } else {
-        if(_currentPercent < _targetPercent) {
-            _percent = _targetPercent;
+        if(_currentValue < _targetValue) {
+            _value = _targetValue;
             Log.info("Light "+_name+" loop: down done");
         }
     }
@@ -130,30 +130,30 @@ void Light::loop()
 };
 
 /**
- * Set the output PWM value (0-255) based on 0-100 percent value
+ * Set the output PWM value (0-255) based on 0-100 value
  */
 void Light::outputPWM() {
     if(isPwmSupported()) {
-        int pwm = scalePWM(_percent);
+        int pwm = scalePWM(_value);
         analogWrite(_pin, pwm);
     } else {
-        bool isOn = _percent > 49;
+        bool isOn = _value > 49;
         bool isHigh = (isOn && !_isInverted) || (!isOn && _isInverted);
         digitalWrite(_pin, isHigh ? HIGH : LOW);
     }
 }
 
 /**
- * Convert 0-100 percent to 0-255 exponential scale
+ * Convert 0-100 to 0-255 exponential scale
  * 0 = 0, 100 = 255
  */
-int Light::scalePWM(int percent) {
+int Light::scalePWM(int value) {
     //TODO: This is too extreme. Adjust algorithm
-    if (percent == 0) return 0;
-    if (percent >= 100) return 255;
+    if (value == 0) return 0;
+    if (value >= 100) return 255;
     
     float base = 1.05697667;
-    float pwm = pow(base,percent);
+    float pwm = pow(base,value);
     if (pwm > 255) {
         return(255);
     }

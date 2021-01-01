@@ -1,7 +1,7 @@
 /******************************************************************
-Device abstract class
+Device class
 
-This virtual class provides a common header for all devices
+This class is the parent of all device classes
 such as Lights, Switches, Fans, etc.
 
 http://www.github.com/rlisle/Patriot
@@ -16,52 +16,25 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 
-enum class DeviceType {
-    Unknown,
-    Activity,
-    Fan,
-    Light,
-    Motor,
-    NCD8Light,
-    NCD8Relay,
-    NCD8Switch,
-    NCD16Switch,
-    PartOfDay,
-    Presence,
-    Relay,
-    Switch,
-    TempHumidity,
-    Ultrasonic
-};
-
 class Device {
  protected:
     Device*    _next;       // Linked list
-    String     _name;
-    DeviceType _type;
-    int        _percent;
-    int        _previous;
+    String     _name;       // Public name (used by Alexa)
+    int        _value;      // Typically percent 0-100
+    int        _previous;   // Value at start of loop
 
 public:
-    // Pointer to MQTT publish method in IoT.
+    // Pointer to MQTT publish method
     void (*publishPtr)(String topic, String message);
 
-    // Note: refer to http://www.learncpp.com/cpp-tutorial/114-constructors-and-initialization-of-derived-classes/
-    //       for an explanation of how derived constructor member initialization works.
-    Device(String name = "", DeviceType type = DeviceType::Unknown) 
-            : _next(NULL), _name(name), _type(type), _percent(0)
-    {
-        // Do any setup work in begin()
-    }
+    Device(String name);
 
-    // Can not be called in the constructor.
-    void publish(String topic, String message) {
-        if(publishPtr != NULL) {
-            publishPtr(topic, message);
-        }
-    }
+    // Doesn't work if called in the constructor.
+    // because publishPtr is set afterwards, but before begin()
+    void publish(String topic, String message);
     
-    // begin() is called automatically when device is added to IoT using addDevice() after the publishPtr has been set.
+    // begin() is called automatically when device is added.
+    // This occurs after publishPtr is set.
     // Do any heavy lifting or publishing here and not in constructor.
     virtual void begin() {};
     
@@ -69,37 +42,40 @@ public:
     virtual void reset() {};
 
     virtual String name() { return _name; };
-    virtual DeviceType type() { return _type; };
     
-    // Allow similar code between States and Devices
-    int value() { return _percent; };
+    virtual int value() { return _value; };
+    virtual void setValue(int value);
+    
+    int previous() { return _previous; };
 
-    virtual int getPercent() { return _percent; }
-    virtual void setPercent(int percent) { _percent = percent; };
-
-    virtual bool hasChanged() { return _percent != _previous; };
-    virtual void syncPrevious() { _previous = _percent; };
+    virtual bool hasChanged() { return _value != _previous; };
+    virtual void syncPrevious() {
+        Log.info("syncPrevious "+_name);
+        _previous = _value;
+    };
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
     
     //
-    // Collection methods (previously in Devices)
+    // Static Collection Methods (previously in Devices)
     //
     static Device* _devices;
     
     static void resetAll();
     static void loopAll();
-    static void syncAllPrevious();
 
     static void    add(Device *device);
     static Device* get(String name);
+    static void    setValue(String name, int value);
     static int     count();
     
     /**
      Particle.io variable "States"
      */
     static void buildDevicesVariable();
+    static void buildStatesVariable();
     static void expose();
+    static void exposeStates();
 
 };

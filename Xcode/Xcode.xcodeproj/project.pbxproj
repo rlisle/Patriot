@@ -29,9 +29,6 @@
 		E4256943256C47E6007D8450 /* PatriotPseudoDevice.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotPseudoDevice.cpp; path = ../Photon/Plugins/Pseudo/src/PatriotPseudoDevice.cpp; sourceTree = "<group>"; };
 		E4256944256C47E6007D8450 /* PatriotPseudoDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotPseudoDevice.h; path = ../Photon/Plugins/Pseudo/src/PatriotPseudoDevice.h; sourceTree = "<group>"; };
 		E4256945256C47F6007D8450 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Pseudo/library.properties; sourceTree = "<group>"; };
-		E4256947256C5294007D8450 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Activity/library.properties; sourceTree = "<group>"; };
-		E4256948256C52AF007D8450 /* PatriotActivity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotActivity.h; path = ../Photon/Plugins/Activity/src/PatriotActivity.h; sourceTree = "<group>"; };
-		E4256949256C52AF007D8450 /* PatriotActivity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotActivity.cpp; path = ../Photon/Plugins/Activity/src/PatriotActivity.cpp; sourceTree = "<group>"; };
 		E4530C14256A97B00021E5CB /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Switch/library.properties; sourceTree = "<group>"; };
 		E4530C15256A97C50021E5CB /* PatriotSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotSwitch.h; path = ../Photon/Plugins/Switch/src/PatriotSwitch.h; sourceTree = "<group>"; };
 		E4530C16256A97C50021E5CB /* PatriotSwitch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotSwitch.cpp; path = ../Photon/Plugins/Switch/src/PatriotSwitch.cpp; sourceTree = "<group>"; };
@@ -40,9 +37,7 @@
 		E4849C5A2566AB3C00A39734 /* IoT.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = IoT.cpp; path = ../Photon/IoTlib/src/IoT.cpp; sourceTree = "<group>"; };
 		E4849C5C2566AB3C00A39734 /* device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = device.h; path = ../Photon/IoTlib/src/device.h; sourceTree = "<group>"; };
 		E4849C622566AB3C00A39734 /* MQTTManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MQTTManager.cpp; path = ../Photon/IoTlib/src/MQTTManager.cpp; sourceTree = "<group>"; };
-		E4849C632566AB3C00A39734 /* state.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = state.h; path = ../Photon/IoTlib/src/state.h; sourceTree = "<group>"; };
 		E4849C662566AB3C00A39734 /* MQTTManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MQTTManager.h; path = ../Photon/IoTlib/src/MQTTManager.h; sourceTree = "<group>"; };
-		E4849C672566AB3C00A39734 /* state.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = state.cpp; path = ../Photon/IoTlib/src/state.cpp; sourceTree = "<group>"; };
 		E4849C6D2566ABFD00A39734 /* RonTest.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; name = RonTest.ino; path = ../Photon/Controllers/RonTest/src/RonTest.ino; sourceTree = "<group>"; };
 		E4849C722566B2AF00A39734 /* RearPanel.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; name = RearPanel.ino; path = ../Photon/Controllers/RearPanel/src/RearPanel.ino; sourceTree = "<group>"; };
 		E4849C732566B2E600A39734 /* FrontPanel.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; name = FrontPanel.ino; path = ../Photon/Controllers/FrontPanel/src/FrontPanel.ino; sourceTree = "<group>"; };
@@ -86,16 +81,6 @@
 			name = Pseudo;
 			sourceTree = "<group>";
 		};
-		E4256946256C527C007D8450 /* Activity */ = {
-			isa = PBXGroup;
-			children = (
-				E4256949256C52AF007D8450 /* PatriotActivity.cpp */,
-				E4256948256C52AF007D8450 /* PatriotActivity.h */,
-				E4256947256C5294007D8450 /* library.properties */,
-			);
-			name = Activity;
-			sourceTree = "<group>";
-		};
 		E4530C13256A97960021E5CB /* Switch */ = {
 			isa = PBXGroup;
 			children = (
@@ -126,8 +111,6 @@
 				E4849C552566AB3C00A39734 /* IoT.h */,
 				E4849C622566AB3C00A39734 /* MQTTManager.cpp */,
 				E4849C662566AB3C00A39734 /* MQTTManager.h */,
-				E4849C672566AB3C00A39734 /* state.cpp */,
-				E4849C632566AB3C00A39734 /* state.h */,
 			);
 			name = IoTlib;
 			sourceTree = "<group>";
@@ -174,7 +157,6 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				E4256946256C527C007D8450 /* Activity */,
 				E4927CBF257FB05F007B5FDD /* PartOfDay */,
 				E4849C772566B4BB00A39734 /* Light */,
 				E4849C762566B4B300A39734 /* NCD8Light */,

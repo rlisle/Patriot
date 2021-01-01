@@ -6,7 +6,7 @@ a common API for adding and configuring devices.
 
 This class coordinates realtime events.
 It subscribes to Particle.io notifications, and
-        distributes them to devices and states.
+        distributes them to devices.
 
 http://www.github.com/rlisle/Patriot
 
@@ -81,7 +81,6 @@ void IoT::setControllerName(String name)
     _controllerName = name.toLowerCase();
 }
 
-State* State::_states = NULL;
 Device* Device::_devices = NULL;
 
 /**
@@ -99,7 +98,7 @@ void IoT::begin()
 
     // Expose particle.io variables
     Device::expose();
-    State::expose();
+    //Device::exposeStates();
 
 }
 
@@ -122,26 +121,12 @@ void IoT::mqttPublish(String topic, String message)
  */
 void IoT::loop()
 {
-    State::syncPrevious();
-    Device::syncAllPrevious();
     Device::loopAll();
 
     if (_mqttManager != NULL) {
         _mqttManager->loop();
     }
 }
-
-// Add a Device - use Device::add(Device *device) instead
-// 
-//void IoT::addDevice(Device *device)
-//{
-//    Log.info("addDevice: " + device->name());
-//
-//    Device::addDevice(device);
-//    device->publishPtr = globalPublish;
-//    device->begin();
-//}
-
 
 /**
  * Particle.io Subscribe Handler
@@ -168,8 +153,6 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 
     Log.info("Particle.io subscribe received data: '"+data+"'");
     
-    // Convert to new protocol
-    // eg. t:patriot m:DeskLamp:100 -> t:patriot/desklamp m:100
     String name = data.substring(0,colonPosition).toLowerCase();
     String level = data.substring(colonPosition+1).toLowerCase();
     String topic = kPublishName + "/" + name;
@@ -200,67 +183,18 @@ bool IoT::handleLightSwitch(String name) {
         return false;
     }
     if( lightSwitch->hasChanged() ) {
+        lightSwitch->syncPrevious();
         Log.info("handleLightSwitch hasChanged");
         Device *light = Device::get(name);
         if( light == NULL ) {
             Log.error("handleLightSwitch: light " + name + " not found!");
             return false;
         }
-        Log.info("Setting light to %d", lightSwitch->getPercent());
-        light->setPercent( lightSwitch->getPercent() );
+        Log.info("Setting light to %d", lightSwitch->value());
+        light->setValue( lightSwitch->value() );
         return true;
     }
     return false;
-}
-
-bool IoT::didTurnOn(String name) { // hasChanged && value > 0
-    State *state = getState(name);
-    if( state != NULL ) {
-        if(state->hasChanged()) {
-            return state->value() > 0;
-        }
-    }
-    return false;
-}
-
-bool IoT::didTurnOff(String name) {   // hasChanged && value == 0
-    State *state = getState(name);
-    if( state != NULL ) {
-        if(state->hasChanged()) {
-            return state->value() == 0;
-        }
-    }
-    return false;
-}
-
-/**
- getState()
- param: name of state
- returns: pointer to State object or NULL if not found
- */
-State* IoT::getState(String name) {
-    return State::getStateWithName(name);
-}
-
-/**
- getStateValue()
- param: name of state
- returns 0-100 percent or -1 if name not found
- */
-int IoT::getStateValue(String name) {
-    State* state = State::getStateWithName(name);
-    if( state == NULL) return -1;
-    
-    return state->value();
-}
-
-/**
- setStateValue()
- param: name of state
- param: value to assign state
- */
-void IoT::setStateValue(String name, int value) {
-    State::addState(name, value);
 }
 
 /**
@@ -275,17 +209,4 @@ int IoT::publishValue(String name, int value) {
         return 0;
     }
     return -1;
-}
-
-/**
- setDeviceValue()
- param: name of device
- param: percent to set
- returns: 0 if success, -1 if device not found
- */
-int IoT::setDeviceValue(String name, int percent) {
-    Device* device = Device::get(name);
-    if( device == NULL) return -1;
-    device->setPercent(percent);
-    return 0;
 }

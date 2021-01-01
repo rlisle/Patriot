@@ -16,12 +16,32 @@ All text above must be included in any redistribution.
 
 extern void globalPublish(String topic, String message);
 
+/**
+ * globalStatesVariable and globalDevicesVariable
+ * Lists all the currently active devices and their states names in CSV format.
+ */
+String globalStatesVariable;
 String globalDevicesVariable;
 
-//Device::Device()
-//{
-//    //Nothing to do here
-//}
+Device::Device(String name)
+: _next(NULL), _name(name), _value(0), _previous(-1)
+{
+    // Do any setup work in begin() not here.
+}
+
+// Doesn't work if called in the constructor.
+// because publishPtr is set afterwards, but before begin()
+void Device::publish(String topic, String message) {
+    if(publishPtr != NULL) {
+        publishPtr(topic, message);
+    }
+}
+
+void Device::setValue(int value) {
+    Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
+    _value = value;
+    //buildStatesVariable();
+}
 
 void Device::add(Device *device)
 {
@@ -43,6 +63,7 @@ void Device::add(Device *device)
     device->begin();
     
     buildDevicesVariable();
+    //buildStatesVariable();
 }
 
 void Device::resetAll()
@@ -56,18 +77,9 @@ void Device::resetAll()
 
 void Device::loopAll()
 {
-    syncAllPrevious();
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         ptr->loop();
-    }
-}
-
-void Device::syncAllPrevious()
-{
-    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
-    {
-        ptr->syncPrevious();
     }
 }
 
@@ -85,6 +97,14 @@ Device *Device::get(String name)
     }
     //Log.info("Device "+name+" not found, returning NULL");
     return NULL;
+}
+
+void Device::setValue(String name, int value) {
+    Device *ptr = get(name);
+    if( ptr != NULL ) {
+        ptr->setValue(value);
+    }
+    //buildStatesVariable();
 }
 
 int Device::count()
@@ -118,5 +138,34 @@ void Device::buildDevicesVariable()
         globalDevicesVariable = newVariable;
     } else {
         Log.error("Devices variable is too long. Need to extend to a 2nd variable");
+    }
+}
+
+// Particle.io States variable
+
+void Device::exposeStates() {
+    Log.info("Exposing States");
+    globalStatesVariable = "";
+    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
+        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
+    }
+}
+
+void Device::buildStatesVariable() {
+    String newVariable = "";
+    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
+        newVariable += ptr->_name;
+        newVariable += ":";
+        newVariable += String(ptr->_value);
+        if (ptr->_next != NULL) {
+            newVariable += ",";
+        }
+        ptr = ptr->_next;
+    }
+    if (newVariable.length() < kMaxVariableStringLength) {
+        Log.info("Updating States variable");
+        globalStatesVariable = newVariable;
+    } else {
+        Log.error("States variable is too long. Need to extend to a 2nd variable");
     }
 }

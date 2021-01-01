@@ -4,17 +4,17 @@ PatriotPartOfDay plugin
  Features:
  - Broadcasts the current part of the day
  
- - _percent will be a value of 0 to 7 as listed below
+ - _value will be a value of 0 to 7 as listed below
   
   - Periods can be (in podNum order):
-     0 Night
-     1 Dawn
-     2 Sunrise
-     3 Morning
-     4 Noon
-     5 Afternoon
-     6 Sunset
-     7 Dusk
+    0 Sunrise
+    1 Morning
+    2 Noon
+    3 Afternoon
+    4 Sunset
+    5 Dusk
+    6 Night
+    7 Dawn
 
   Sunrise, noon, and sunset only occur for 1 minute
   
@@ -78,13 +78,17 @@ bool Period::operator <(const Period& period) {
     return _minute < period._minute;
 }
 
+String Period::info() {
+    return String(_hour) + ":" + String(_minute);
+}
+
 /**
  * Constructor
  */
 PartOfDay::PartOfDay()
-        : Device("PartOfDay", DeviceType::PartOfDay)
+        : Device("PartOfDay")
 {
-    _percent = -1;
+    _value = -1;
 }
 
 /**
@@ -112,10 +116,10 @@ void PartOfDay::loop()
         }
         
         int now = calcPartOfDay();
-        if (now != _percent) {
+        if (now != _value) {
             Log.info("PartOfDay changed to %d", now);
-            _percent = now;
-            publishPOD(_percent);
+            _value = now;
+            publishPOD(_value);
         }
     }
 }
@@ -174,28 +178,37 @@ void PartOfDay::calcSunriseSunset()
     Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), sunsetHour, sunsetMinute);
 
     _periods[SUNRISE].set(sunriseHour, sunriseMinute);
+    Log.info("Sunrise is " + _periods[SUNRISE].info());
     _periods[MORNING].set(sunriseHour, sunriseMinute+1);
+    Log.info("Morning is " + _periods[MORNING].info());
     _periods[NOON].set(12,0);
+    Log.info("Noon is " + _periods[NOON].info());
     _periods[AFTERNOON].set(12,1);
+    Log.info("Afternoon is " + _periods[AFTERNOON].info());
     _periods[SUNSET].set(sunsetHour, sunsetMinute);
+    Log.info("Sunset is " + _periods[SUNSET].info());
     _periods[DUSK].set(sunsetHour, sunsetMinute+1);
+    Log.info("Dusk is " + _periods[DUSK].info());
     _periods[NIGHT].set(sunsetHour, sunsetMinute+30);
+    Log.info("Night is " + _periods[NIGHT].info());
     _periods[DAWN].set(sunriseHour, sunriseMinute - 30);
+    Log.info("Dawn is " + _periods[DAWN].info());
 }
 
 int PartOfDay::calcPartOfDay()
 {
     Period current(Time.hour(),Time.minute());
+    Log("The time now is " + String(current.info()));
     
-    if (current > _periods[NIGHT]) return 0;
-    if (current > _periods[DUSK]) return 7;
-    if (current > _periods[SUNSET]) return 6;
-    if (current > _periods[AFTERNOON]) return 5;
-    if (current > _periods[NOON]) return 4;
-    if (current > _periods[MORNING]) return 3;
-    if (current > _periods[SUNRISE]) return 2;
-    if (current > _periods[DAWN]) return 1;
-    return 0;
+    if (current > _periods[NIGHT]) return NIGHT;
+    if (current > _periods[DUSK]) return DUSK;
+    if (current > _periods[SUNSET]) return SUNSET;
+    if (current > _periods[AFTERNOON]) return AFTERNOON;
+    if (current > _periods[NOON]) return NOON;
+    if (current > _periods[MORNING]) return MORNING;
+    if (current > _periods[SUNRISE]) return SUNRISE;
+    if (current > _periods[DAWN]) return DAWN;
+    return NIGHT;
 }
 
 void PartOfDay::publishPOD(int partOfDay) {

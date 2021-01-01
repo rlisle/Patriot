@@ -24,10 +24,10 @@ All text above must be included in any redistribution.
  * @param name  String name of the event to send when switch changes
  */
 Switch::Switch(int pinNum, String name)
-        : Device(name, DeviceType::Switch),
+        : Device(name),
         _pin(pinNum)
 {
-    _percent = 0;
+    _value = 0;
 }
 
 void Switch::begin() {
@@ -76,12 +76,12 @@ bool Switch::didSwitchChange()
 {
     int pinState = digitalRead(_pin);   // Inverted: 0 is on, 1 is off
     bool newState = (pinState == 0);
-    bool oldState = (_percent != 0);
+    bool oldState = (_value != 0);
     if (newState == oldState)
     {
         return false;
     }
-    _percent = newState ? 100 : 0;
+    _value = newState ? 100 : 0;
     return true;
 }
 
@@ -93,6 +93,6 @@ bool Switch::didSwitchChange()
 void Switch::notify()
 {
     String topic = "patriot/" + _name;
-    String message = String(_percent);
+    String message = String(_value);
     publish(topic,message);
 }
