@@ -63,6 +63,7 @@ public:
 
     static void    add(Device *device);
     static Device* get(String name);
+    static void    setValue(String name, int value);
     static int     count();
     
     /**

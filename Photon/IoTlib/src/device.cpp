@@ -16,6 +16,11 @@ All text above must be included in any redistribution.
 
 extern void globalPublish(String topic, String message);
 
+/**
+ * globalStatesVariable and globalDevicesVariable
+ * Lists all the currently active devices and their states names in CSV format.
+ */
+String globalStatesVariable;
 String globalDevicesVariable;
 
 Device::Device(String name)
@@ -101,6 +106,13 @@ Device *Device::get(String name)
     return NULL;
 }
 
+void Device::setValue(String name, int value) {
+    Device *ptr = get(name);
+    if( ptr != NULL ) {
+        ptr->setValue(value);
+    }
+}
+
 int Device::count()
 {
     int i = 0;
@@ -145,7 +157,7 @@ void Device::exposeStates() {
     }
 }
 
-void State::buildStatesVariable() {
+void Device::buildStatesVariable() {
     String newVariable = "";
     Device *ptr = _devices;
     while (ptr != NULL) {

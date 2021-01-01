@@ -76,13 +76,13 @@ void loop() {
 }
 
 void setMorningLights() {
-    iot->setDeviceValue("BlueLED", 100);
+    Device::setValue("BlueLED", 100);
 }
 
 void setEveningLights() {
-    iot->setDeviceValue("BlueLED", 0);
+    Device::setValue("BlueLED", 0);
 }
 
-void setAllInsideLights(int level) {
-    iot->setDeviceValue("BlueLED", level);
+void setAllInsideLights(int value) {
+    Device::setValue("BlueLED", value);
 }

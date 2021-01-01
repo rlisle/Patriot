@@ -157,13 +157,11 @@ void MQTTManager::parseMessage(String topic, String message)
         // UNKNOWN
         } else {
             
-            int percent = parseValue(message);
-            IoT *iot = IoT::getInstance();
-            // Is this a device name?
+            int value = parseValue(message);
             Device *device = Device::get(subtopic);
             if( device != NULL ) {
-                Log.info("Parser setting device " + subtopic + " to " + percent);
-                device->setPercent(percent);
+                Log.info("Parser setting device " + subtopic + " to " + value);
+                device->setValue(value);
             }
         }
     } else {
