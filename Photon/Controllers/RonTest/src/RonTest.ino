@@ -50,39 +50,38 @@ void loop() {
         Device* sleeping = Device::get("sleeping");
         Device* partOfDay = Device::get("partofday");
 
-        if( sleeping != NULL ) {
-            
-            if( sleeping->hasChanged() ) {
+        if( sleeping != NULL && sleeping->hasChanged() ) {
 
-                Log.info("sleeping has changed: %d",sleeping->value());
+            Log.info("sleeping has changed: %d",sleeping->value());
 
-                // Alexa, Good morning
-                if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
-                    setMorningLights();
-                }
-
-                // Alexa, Bedtime
-                if( sleeping->value() == RETIRING ) {
-                    setMorningLights();
-                }
-
-                // Alexa, Goodnight
-                if( sleeping->value() == ASLEEP ) {
-                    setAllInsideLights(0);
-                }
-                
-                sleeping->syncPrevious();
+            // Alexa, Good morning
+            if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
+                setMorningLights();
             }
+
+            // Alexa, Bedtime
+            if( sleeping->value() == RETIRING ) {
+                setMorningLights();
+            }
+
+            // Alexa, Goodnight
+            if( sleeping->value() == ASLEEP ) {
+                setAllInsideLights(0);
+            }
+            
+            sleeping->syncPrevious();
         }
 
         if( partOfDay != NULL && partOfDay->hasChanged() ) {
 
             Log.info("PartOfDay has changed: %d", partOfDay->value());
 
+            // Turn off lights at sunrise
             if( partOfDay->value() == SUNRISE ) {
                 setAllInsideLights(0);
             }
 
+            // Turn on lights in the evening
             if( partOfDay->value() == DUSK ) {
                 setEveningLights();
             }
@@ -93,13 +92,16 @@ void loop() {
 }
 
 void setMorningLights() {
+    Log.info("setMorningLights");
     Device::setValue("BlueLED", 100);
 }
 
 void setEveningLights() {
-    Device::setValue("BlueLED", 0);
+    Log.info("setEveningLights");
+    Device::setValue("BlueLED", 100);
 }
 
 void setAllInsideLights(int value) {
+    Log.info("setAllInsideLights %d",value);
     Device::setValue("BlueLED", value);
 }
