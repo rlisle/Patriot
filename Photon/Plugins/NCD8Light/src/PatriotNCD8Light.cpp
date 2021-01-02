@@ -175,11 +175,12 @@ void NCD8Light::outputPWM() {
     int reg = 2 + _lightNum;
     
     int retryCount = 3;
+    byte status;
     do {
         Wire.beginTransmission(_address);
         Wire.write(reg);
         Wire.write(int(_currentLevel));
-        byte status = Wire.endTransmission();
+        status = Wire.endTransmission();
         retryCount--;
     } while(status != 0 && retryCount > 0);
     
