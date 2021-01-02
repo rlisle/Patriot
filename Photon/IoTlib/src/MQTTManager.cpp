@@ -101,7 +101,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
 //Mark - Parser
 
-// topic and messages are already lowercase
+// topic and messages are already lowercase, or are they???
 void MQTTManager::parseMessage(String topic, String message)
 {
     // This creates an infinite loop. Don't do it.
@@ -125,8 +125,8 @@ void MQTTManager::parseMessage(String topic, String message)
             
         // MEMORY
         } else if(subtopic.equals("memory")) {
-            if(message.equals(_controllerName)) {
-                Log.info( String::format("Free memory = %d", System.freeMemory()));
+            if(message.equalsIgnoreCase(_controllerName)) {
+                publish( "debug/"+_controllerName+"/states", String::format("Free memory = %d", System.freeMemory()));
             }
             
         // PING
@@ -134,7 +134,7 @@ void MQTTManager::parseMessage(String topic, String message)
             // Respond if ping is addressed to us
             if(message.equals(_controllerName)) {
                 Log.trace("Ping addressed to us");
-                _mqtt->publish(kPublishName + "/pong", _controllerName);
+                publish(kPublishName + "/pong", _controllerName);
             }
             
         // PONG
@@ -150,6 +150,14 @@ void MQTTManager::parseMessage(String topic, String message)
                 System.reset(RESET_NO_WAIT);
             }
                 
+        // STATES
+        } else if(subtopic.equals("states")) {
+            if(message.equalsIgnoreCase(_controllerName)) {
+                Log.info("Received states addressed to us");
+                String states = Device::buildStatesVariable();
+                publish("debug/"+_controllerName+"/states", states);
+            }
+            
         // UNKNOWN
         } else {
             

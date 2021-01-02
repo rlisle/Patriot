@@ -14,7 +14,7 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
-extern void globalPublish(String topic, String message);
+//extern void globalPublish(String topic, String message);
 
 /**
  * globalStatesVariable and globalDevicesVariable
@@ -30,12 +30,12 @@ Device::Device(String name)
 }
 
 // Doesn't work if called in the constructor.
-// because publishPtr is set afterwards, but before begin()
-void Device::publish(String topic, String message) {
-    if(publishPtr != NULL) {
-        publishPtr(topic, message);
-    }
-}
+// because MQTT not started until begin()
+//void Device::publish(String topic, String message) {
+//    if(publishPtr != NULL) {
+//        publishPtr(topic, message);
+//    }
+//}
 
 void Device::setValue(int value) {
     Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
@@ -68,7 +68,7 @@ void Device::add(Device *device)
         Log.info("  adding device "+String(i));
         ptr->_next = device;
     }
-    device->publishPtr = IoT::mqttPublish;
+//    device->publishPtr = IoT::mqttPublish;
     device->begin();
     
     buildDevicesVariable();
@@ -170,7 +170,7 @@ void Device::exposeStates() {
     }
 }
 
-void Device::buildStatesVariable() {
+String Device::buildStatesVariable() {
     String newVariable = "";
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
         newVariable += ptr->_name;
@@ -179,12 +179,6 @@ void Device::buildStatesVariable() {
         if (ptr->_next != NULL) {
             newVariable += ",";
         }
-        ptr = ptr->_next;
     }
-    if (newVariable.length() < kMaxVariableStringLength) {
-        Log.info("Updating States variable");
-        globalStatesVariable = newVariable;
-    } else {
-        Log.error("States variable is too long. Need to extend to a 2nd variable");
-    }
+    return newVariable;
 }

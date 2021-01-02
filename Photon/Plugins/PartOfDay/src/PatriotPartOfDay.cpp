@@ -29,6 +29,7 @@ All text above must be included in any redistribution.
 
 #include <TimeLord.h>
 #include "PatriotPartOfDay.h"
+#include "IoT.h"
 
 #define MILLIS_PER_MINUTE 60000
 #define MILLIS_PER_DAY 86400000
@@ -203,7 +204,5 @@ int PartOfDay::calcPartOfDay()
 }
 
 void PartOfDay::publishPOD(int partOfDay) {
-    String topic = "patriot/partofday";
-    String message = String(partOfDay);
-    publish(topic,message);
+    IoT::publishValue("partofday",partOfDay);
 }
