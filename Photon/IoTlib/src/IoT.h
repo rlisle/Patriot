@@ -63,6 +63,8 @@ public:
     /**
     Values used by loop programming
      */
+    static int  getChangedValue(String name);   // -1 if not changed
+    
     static bool handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
     
     static int publishValue(String name, int value);  // Sends MQTT message

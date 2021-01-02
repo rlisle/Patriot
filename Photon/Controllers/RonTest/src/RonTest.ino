@@ -27,59 +27,45 @@ void setup() {
     Device::add(new Device("sleeping"));
 }
 
-unsigned long lastTime = 0;
-
 void loop() {
-    unsigned long currentTime;
     
     IoT::loop();
 
-    // Do this every 15 seconds
-    currentTime = millis();
-    if( currentTime > lastTime + 15000 ) {
-    
-        lastTime = currentTime;
-        
-        Device* sleeping = Device::get("sleeping");
-        Device* partOfDay = Device::get("partofday");
+    int sleeping = IoT::getChangedValue("sleeping");
+    int partOfDay = IoT::getChangedValue("partofday");
 
-        if( sleeping != NULL && sleeping->hasChanged() ) {
+    if( sleeping != -1 ) {
 
-            Log.info("sleeping has changed: %d",sleeping->value());
+        Log.info("sleeping has changed: %d",sleeping->value());
 
-            // Alexa, Good morning
-            if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
-                setMorningLights();
-            }
-
-            // Alexa, Bedtime
-            if( sleeping->value() == RETIRING ) {
-                setMorningLights();
-            }
-
-            // Alexa, Goodnight
-            if( sleeping->value() == ASLEEP ) {
-                setAllInsideLights(0);
-            }
-            
-            sleeping->syncPrevious();
+        // Alexa, Good morning
+        if( sleeping == AWAKE && partOfDay > SUNSET ) {
+            setMorningLights();
         }
 
-        if( partOfDay != NULL && partOfDay->hasChanged() ) {
+        // Alexa, Bedtime
+        if( sleeping == RETIRING ) {
+            setMorningLights();
+        }
 
-            Log.info("PartOfDay has changed: %d", partOfDay->value());
+        // Alexa, Goodnight
+        if( sleeping == ASLEEP ) {
+            setAllInsideLights(0);
+        }
+    }
 
-            // Turn off lights at sunrise
-            if( partOfDay->value() == SUNRISE ) {
-                setAllInsideLights(0);
-            }
+    if( partOfDay != -1 ) {
 
-            // Turn on lights in the evening
-            if( partOfDay->value() == DUSK ) {
-                setEveningLights();
-            }
-            
-            partOfDay->syncPrevious();
+        Log.info("PartOfDay has changed: %d", partOfDay);
+
+        // Turn off lights at sunrise
+        if( partOfDay == SUNRISE ) {
+            setAllInsideLights(0);
+        }
+
+        // Turn on lights in the evening
+        if( partOfDay == DUSK ) {
+            setEveningLights();
         }
     }
 }
