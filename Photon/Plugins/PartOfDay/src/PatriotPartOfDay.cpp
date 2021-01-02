@@ -16,6 +16,8 @@ PatriotPartOfDay plugin
     6 Night
     7 Dawn
 
+ - podNum values are defined in IoT.h
+ 
   Sunrise, noon, and sunset only occur for 1 minute
   
 http://www.github.com/rlisle/Patriot
