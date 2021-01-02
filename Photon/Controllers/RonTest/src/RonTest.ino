@@ -36,7 +36,7 @@ void loop() {
 
     if( sleeping != -1 ) {
 
-        Log.info("sleeping has changed: %d",sleeping->value());
+        Log.info("sleeping has changed: %d",sleeping);
 
         // Alexa, Good morning
         if( sleeping == AWAKE && partOfDay > SUNSET ) {

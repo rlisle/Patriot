@@ -108,7 +108,7 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
 // Check if device has changed and return new value or -1
 // If changed, return value and set previous
-int  getChangedValue(String name) {
+int  IoT::getChangedValue(String name) {
     Device *device = Device::get(name);
     if( device == NULL ) {
         Log.error("getChangedValue: " + name + " not found");
