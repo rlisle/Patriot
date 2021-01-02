@@ -50,9 +50,9 @@ void loop() {
 
     IoT::loop();
     
-    int sleeping = IoT::getChangedValue("sleeping");
-    int partOfDay = IoT::getChangedValue("partofday");
-    int cleaning = IoT::getChangedValue("cleaning");
+    int sleeping = Device::getChangedValue("sleeping");
+    int partOfDay = Device::getChangedValue("partofday");
+    int cleaning = Device::getChangedValue("cleaning");
 
     if( sleeping != -1 ) {
 

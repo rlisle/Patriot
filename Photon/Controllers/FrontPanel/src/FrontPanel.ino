@@ -75,10 +75,10 @@ void loop() {
     // - update light dimming
     IoT::loop();
     
-    int sleeping  = IoT::getChangedValue("sleeping");
-    int partOfDay = IoT::getChangedValue("partofday");
-    int cleaning  = IoT::getChangedValue("cleaning");
-    int cooking   = IoT::getChangedValue("cooking");
+    int sleeping  = Device::getChangedValue("sleeping");
+    int partOfDay = Device::getChangedValue("partofday");
+    int cleaning  = Device::getChangedValue("cleaning");
+    int cooking   = Device::getChangedValue("cooking");
 
     if( sleeping != -1 ) {
 
