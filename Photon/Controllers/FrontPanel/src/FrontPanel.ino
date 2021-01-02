@@ -75,48 +75,46 @@ void loop() {
     // - update light dimming
     IoT::loop();
     
-    Device* sleeping  = Device::get("sleeping");
-    Device* partOfDay = Device::get("partofday");
-    Device* cleaning  = Device::get("cleaning");
-    Device* cooking   = Device::get("cooking");
+    int sleeping  = IoT::getChangedValue("sleeping");
+    int partOfDay = IoT::getChangedValue("partofday");
+    int cleaning  = IoT::getChangedValue("cleaning");
+    int cooking   = IoT::getChangedValue("cooking");
 
-    if( sleeping != NULL && sleeping->hasChanged() ) {
+    if( sleeping != -1 ) {
 
-        Log.info("sleeping has changed: %d",sleeping->value());
+        Log.info("sleeping has changed: %d",sleeping);
 
         // Alexa, Good morning
-        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
+        if( sleeping == AWAKE && partOfDay > SUNSET ) {
             setMorningLights();
         }
 
         // Alexa, Bedtime
-        if( sleeping->value() == RETIRING ) {
+        if( sleeping == RETIRING ) {
             setBedtimeLights();
         }
 
         // Alexa, Goodnight
-        if( sleeping->value() == ASLEEP ) {
+        if( sleeping == ASLEEP ) {
             setSleepingLights();
         }
-        sleeping->syncPrevious();
     }
 
-    if( partOfDay != NULL && partOfDay->hasChanged() ) {
+    if( partOfDay != -1 ) {
 
-        Log.info("PartOfDay has changed: %d", partOfDay->value());
+        Log.info("PartOfDay has changed: %d", partOfDay);
 
-        if( partOfDay->value() == SUNRISE ) {
+        if( partOfDay == SUNRISE ) {
             setSunriseLights();
         }
 
-        if( partOfDay->value() == DUSK ) {
+        if( partOfDay == DUSK ) {
             setEveningLights();
         }
-        partOfDay->syncPrevious();
     }
     
-    if( cooking != NULL && cooking->hasChanged() ) {
-        if( cooking->value() > 0 ) {
+    if( cooking != -1 ) {
+        if( cooking > 0 ) {
             Log.info("cooking did turn on");
             setCookingLights(100);
         } else {
@@ -124,11 +122,10 @@ void loop() {
             Log.info("cooking did turn off");
             setCookingLights(0);
         }
-        cooking->syncPrevious();
     }
 
-    if( cleaning != NULL && cleaning->hasChanged() ) {
-        if( cleaning->value() > 0 ) {
+    if( cleaning != -1 ) {
+        if( cleaning > 0 ) {
             Log.info("cleaning did turn on");
             setAllInsideLights( 100 );
         } else {
@@ -136,7 +133,6 @@ void loop() {
             Log.info("cleaning did turn off");
             setAllInsideLights( 0 );
         }
-        cleaning->syncPrevious();
     }
 
     IoT::handleLightSwitch("Ceiling");
