@@ -14,8 +14,8 @@ All text above must be included in any redistribution.
 ******************************************************************/
 
 #include "PatriotSwitch.h"
+#include "IoT.h"
 
-#define MILLIS_PER_SECOND 1000
 #define POLL_INTERVAL_MILLIS 100
 
 /**
@@ -94,5 +94,5 @@ void Switch::notify()
 {
     String topic = "patriot/" + _name;
     String message = String(_value);
-    publish(topic,message);
+    IoT::mqttPublish(topic,message);
 }

@@ -32,16 +32,6 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include <device.h>
 
-// PartOfDay
-#define SUNRISE 0
-#define MORNING 1
-#define NOON 2
-#define AFTERNOON 3
-#define SUNSET 4
-#define DUSK 5
-#define NIGHT 6
-#define DAWN 7
-
 class Period {
 private:
     int     _hour;

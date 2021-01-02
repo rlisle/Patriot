@@ -14,8 +14,6 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
-extern void globalPublish(String topic, String message);
-
 /**
  * globalStatesVariable and globalDevicesVariable
  * Lists all the currently active devices and their states names in CSV format.
@@ -29,18 +27,9 @@ Device::Device(String name)
     // Do any setup work in begin() not here.
 }
 
-// Doesn't work if called in the constructor.
-// because publishPtr is set afterwards, but before begin()
-void Device::publish(String topic, String message) {
-    if(publishPtr != NULL) {
-        publishPtr(topic, message);
-    }
-}
-
 void Device::setValue(int value) {
     Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
-    //buildStatesVariable();
 }
 
 // Check if device has changed and return new value or -1
@@ -68,11 +57,9 @@ void Device::add(Device *device)
         Log.info("  adding device "+String(i));
         ptr->_next = device;
     }
-    device->publishPtr = IoT::mqttPublish;
     device->begin();
     
     buildDevicesVariable();
-    //buildStatesVariable();
 }
 
 void Device::resetAll()
@@ -112,7 +99,6 @@ int Device::setValue(String name, int value) {
     Device *ptr = get(name);
     if( ptr == NULL ) return -1;
     ptr->setValue(value);
-    //buildStatesVariable();
     return 0;
 }
 
@@ -160,17 +146,8 @@ void Device::buildDevicesVariable()
     }
 }
 
-// Particle.io States variable
-
-void Device::exposeStates() {
-    Log.info("Exposing States");
-    globalStatesVariable = "";
-    if (!Particle.variable(kStatesVariableName, globalStatesVariable)) {
-        Log.error("Unable to expose " + String(kStatesVariableName) + " variable");
-    }
-}
-
-void Device::buildStatesVariable() {
+// Build list of current device states for MQTT query
+String Device::buildStatesVariable() {
     String newVariable = "";
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
         newVariable += ptr->_name;
@@ -179,12 +156,6 @@ void Device::buildStatesVariable() {
         if (ptr->_next != NULL) {
             newVariable += ",";
         }
-        ptr = ptr->_next;
     }
-    if (newVariable.length() < kMaxVariableStringLength) {
-        Log.info("Updating States variable");
-        globalStatesVariable = newVariable;
-    } else {
-        Log.error("States variable is too long. Need to extend to a 2nd variable");
-    }
+    return newVariable;
 }

@@ -24,17 +24,10 @@ class Device {
     int        _previous;   // Value at start of loop
 
 public:
-    // Pointer to MQTT publish method
-    void (*publishPtr)(String topic, String message);
 
     Device(String name);
 
-    // Doesn't work if called in the constructor.
-    // because publishPtr is set afterwards, but before begin()
-    void publish(String topic, String message);
-    
     // begin() is called automatically when device is added.
-    // This occurs after publishPtr is set.
     // Do any heavy lifting or publishing here and not in constructor.
     virtual void begin() {};
     
@@ -69,7 +62,7 @@ public:
      Particle.io variable "States"
      */
     static void buildDevicesVariable();
-    static void buildStatesVariable();
+    static String buildStatesVariable();
     static void expose();
     static void exposeStates();
 
