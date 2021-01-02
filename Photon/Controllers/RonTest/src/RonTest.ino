@@ -16,8 +16,7 @@
 String mqttServerIP = "192.168.10.184";
 
 void setup() {
-    IoT::connectMQTT(mqttServerIP, "RonTest");
-    IoT::begin();       //TODO: combine with the above
+    IoT::begin(mqttServerIP, "RonTest");
 
     Device::add(new PartOfDay());
 
