@@ -43,6 +43,15 @@ void Device::setValue(int value) {
     //buildStatesVariable();
 }
 
+// Check if device has changed and return new value or -1
+int  Device::getChangedValue() {
+    if( _value == _previous ) return -1;
+    _previous = _value;
+    return _value;
+}
+
+// Static Methods
+
 void Device::add(Device *device)
 {
     Log.info("addDevice name: "+String(device->name()));
@@ -99,12 +108,22 @@ Device *Device::get(String name)
     return NULL;
 }
 
-void Device::setValue(String name, int value) {
+int Device::setValue(String name, int value) {
     Device *ptr = get(name);
-    if( ptr != NULL ) {
-        ptr->setValue(value);
-    }
+    if( ptr == NULL ) return -1;
+    ptr->setValue(value);
     //buildStatesVariable();
+    return 0;
+}
+
+// Check if device has changed and return new value or -1
+int  Device::getChangedValue(String name) {
+    Device *device = get(name);
+    if( device == NULL ) {
+        Log.error("getChangedValue: " + name + " not found");
+        return -1;
+    }
+    return device->getChangedValue();
 }
 
 int Device::count()

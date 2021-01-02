@@ -106,36 +106,11 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  Sketch Programming Support
  */
 
-// Check if device has changed and return new value or -1
-// If changed, return value and set previous
-int  IoT::getChangedValue(String name) {
-    Device *device = Device::get(name);
-    if( device == NULL ) {
-        Log.error("getChangedValue: " + name + " not found");
-        return -1;
-    }
-    int value = device->value();
-    if( value == device->previous() ) return -1;
-    device->syncPrevious();
-    return value;
-}
-
 int IoT::handleLightSwitch(String name) {
-    int lightSwitch = getChangedValue(name+"Switch");
+    int lightSwitch = Device::getChangedValue(name+"Switch");
     if( lightSwitch == -1) return -1;
     Log.info("handleLightSwitch hasChanged");
-    return setDeviceValue(name, lightSwitch);
-}
-
-int IoT::setDeviceValue(String name, int value) {
-    Device *device = Device::get(name);
-    if( device == NULL ) {
-        Log.error("setDeviceValue " + name + " not found!");
-        return -1;
-    }
-    Log.info("Setting device " + name + " to %d", value);
-    device->setValue( value );
-    return 0;
+    return Device::setValue(name, lightSwitch);
 }
 
 /**

@@ -31,8 +31,8 @@ void loop() {
     
     IoT::loop();
 
-    int sleeping = IoT::getChangedValue("sleeping");
-    int partOfDay = IoT::getChangedValue("partofday");
+    int sleeping = Device::getChangedValue("sleeping");
+    int partOfDay = Device::getChangedValue("partofday");
 
     if( sleeping != -1 ) {
 
