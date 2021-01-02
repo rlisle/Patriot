@@ -19,7 +19,7 @@ Author: Ron Lisle
 #define ADDRESS 1   // PWM board address A0 jumper set
 
 void setup() {
-    iot::begin("192.168.10.184", "RearPanel");
+    IoT::begin("192.168.10.184", "RearPanel");
 
     // Lights
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
@@ -53,7 +53,6 @@ void loop() {
     // TODO: move out of loop; make global
     Device* sleeping = Device::get("sleeping");
     Device* partOfDay = Device::get("partofday");
-    Device* cooking = Device::get("cooking");
     Device* cleaning = Device::get("cleaning");
 
     if( sleeping != NULL && sleeping->hasChanged() ) {
@@ -137,7 +136,7 @@ void setEveningLights() {
 }
 
 void setBedtimeLights() {
-    Log.info("setBedtimeLights",value);
+    Log.info("setBedtimeLights");
     setAllActivities(0);
     Device::setValue("OfficeCeiling", 80);
     Device::setValue("Loft", 0);
@@ -146,9 +145,9 @@ void setBedtimeLights() {
 }
 
 void setSleepingLights() {
-    Log.info("setSleepingLights",value);
+    Log.info("setSleepingLights");
     setAllActivities(0);
-    setAllIndoorLights(0);
+    setAllInsideLights(0);
     setAllOutsideLights(0);
 }
 
