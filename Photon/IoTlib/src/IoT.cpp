@@ -116,6 +116,7 @@ int  IoT::getChangedValue(String name) {
     }
     int value = device->value();
     if( value == device->previous() ) return -1;
+    device->syncPrevious();
     return value;
 }
 

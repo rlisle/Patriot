@@ -50,50 +50,47 @@ void loop() {
 
     IoT::loop();
     
-    // TODO: move out of loop; make global
-    Device* sleeping = Device::get("sleeping");
-    Device* partOfDay = Device::get("partofday");
-    Device* cleaning = Device::get("cleaning");
+    int sleeping = IoT::getChangedValue("sleeping");
+    int partOfDay = IoT::getChangedValue("partofday");
+    int cleaning = IoT::getChangedValue("cleaning");
 
-    if( sleeping != NULL && sleeping->hasChanged() ) {
+    if( sleeping != -1 ) {
 
         Log.info("sleeping has changed %d",sleeping->value());
 
         // Alexa, Good morning
-        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
+        if( sleeping == AWAKE && partOfDay > SUNSET ) {
             setMorningLights();
         }
 
         // Alexa, Bedtime
-        if( sleeping->value() == RETIRING ) {
+        if( sleeping == RETIRING ) {
             setBedtimeLights();
         }
 
         // Alexa, Goodnight
-        if( sleeping->value() == ASLEEP ) {
+        if( sleeping == ASLEEP ) {
             setSleepingLights();
         }
-        sleeping->syncPrevious();
     }
 
-    if( partOfDay != NULL && partOfDay->hasChanged() ) {
+    if( partOfDay != -1 ) {
 
         Log.info("partOfDay has changed: %d", partOfDay->value());
 
-        if( partOfDay->value() == SUNRISE ) {
+        if( partOfDay == SUNRISE ) {
             // Turn off lights at sunrise
             setSunriseLights();
         }
 
-        if( partOfDay->value() == DUSK ) {
+        if( partOfDay == DUSK ) {
             // Turn on lights after sunset
             setEveningLights();
         }
-        partOfDay->syncPrevious();
     }
 
-    if( cleaning != NULL && cleaning->hasChanged() ) {
-        if( cleaning->value() > 0 ) {
+    if( cleaning != -1 ) {
+        if( cleaning > 0 ) {
             Log.info("cleaning did turn on");
             setAllInsideLights( 100 );
         } else {
@@ -101,7 +98,6 @@ void loop() {
             Log.info("cleaning did turn off");
             setAllInsideLights( 0 );
         }
-        cleaning->syncPrevious();
     }
 
     // SWITCHES
