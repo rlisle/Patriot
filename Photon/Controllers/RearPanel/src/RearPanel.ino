@@ -100,6 +100,7 @@ void loop() {
             Log.info("cleaning did turn off");
             setAllInsideLights( 0 );
         }
+        cleaning->syncPrevious();
     }
 
     // SWITCHES
