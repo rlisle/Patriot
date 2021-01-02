@@ -46,11 +46,7 @@ public:
     virtual int value() { return _value; };
     virtual void setValue(int value);
     
-//    int previous() { return _previous; };
-
     virtual int  getChangedValue();
-//    virtual bool hasChanged() { return _value != _previous; };
-//    virtual void syncPrevious() { _previous = _value; };
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
