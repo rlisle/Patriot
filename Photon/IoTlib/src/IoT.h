@@ -47,17 +47,11 @@ class IoT {
 public:
 
     /**
-     * connectMQTT(byte * brokerIP, String connectID)
-     * Connect to an MQTT broker with specified IP
-     **/
-    static void connectMQTT(String brokerIP, String controllerName);
-
-    /**
-     * begin
+     * begin(byte * brokerIP, String connectID)
      * Call begin to initialize the object.
      * This is done here instead of the constructor to improve debugging.
-     */
-    static void begin();
+     **/
+    static void begin(String brokerIP, String controllerName);
 
     static void mqttPublish(String topic, String message);
 
