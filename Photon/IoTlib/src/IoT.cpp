@@ -120,25 +120,22 @@ int  IoT::getChangedValue(String name) {
     return value;
 }
 
-bool IoT::handleLightSwitch(String name) {
-    Device *lightSwitch = Device::get(name+"Switch");
-    if( lightSwitch == NULL) {
-        Log.error("handleLightSwitch: " + name + "Switch not found!");
-        return false;
+int IoT::handleLightSwitch(String name) {
+    int lightSwitch = getChangedValue(name+"Switch");
+    if( lightSwitch == -1) return -1;
+    Log.info("handleLightSwitch hasChanged");
+    return setDeviceValue(name, lightSwitch);
+}
+
+int IoT::setDeviceValue(String name, int value) {
+    Device *device = Device::get(name);
+    if( device == NULL ) {
+        Log.error("setDeviceValue " + name + " not found!");
+        return -1;
     }
-    if( lightSwitch->hasChanged() ) {
-        lightSwitch->syncPrevious();
-        Log.info("handleLightSwitch hasChanged");
-        Device *light = Device::get(name);
-        if( light == NULL ) {
-            Log.error("handleLightSwitch: light " + name + " not found!");
-            return false;
-        }
-        Log.info("Setting light to %d", lightSwitch->value());
-        light->setValue( lightSwitch->value() );
-        return true;
-    }
-    return false;
+    Log.info("Setting device " + name + " to %d", value);
+    device->setValue( value );
+    return 0;
 }
 
 /**

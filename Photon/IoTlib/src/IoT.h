@@ -65,12 +65,12 @@ public:
      */
     static int  getChangedValue(String name);   // -1 if not changed
     
-    static bool handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
+    static int setDeviceValue(String name, int value);
+    
+    static int handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
     
     static int publishValue(String name, int value);  // Sends MQTT message
     
-    static int setDeviceValue(String name, int percent);   // returns 0 success else error code: -1 name not found
-
 private:
     static String _controllerName;
     static MQTTManager* _mqttManager;
