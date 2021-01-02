@@ -46,13 +46,7 @@ public:
     virtual int value() { return _value; };
     virtual void setValue(int value);
     
-    int previous() { return _previous; };
-
-    virtual bool hasChanged() { return _value != _previous; };
-    virtual void syncPrevious() {
-        Log.info("syncPrevious "+_name);
-        _previous = _value;
-    };
+    virtual int  getChangedValue();
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
@@ -67,7 +61,8 @@ public:
 
     static void    add(Device *device);
     static Device* get(String name);
-    static void    setValue(String name, int value);
+    static int     setValue(String name, int value);
+    static int     getChangedValue(String name);
     static int     count();
     
     /**

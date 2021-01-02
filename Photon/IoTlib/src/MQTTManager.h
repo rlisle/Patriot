@@ -17,9 +17,6 @@
 #pragma once
 #include "Particle.h"
 #include "MQTT.h"
-#include "device.h"
-
-class Devices;
 
 class MQTTManager : public LogHandler
 {

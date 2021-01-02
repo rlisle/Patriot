@@ -18,94 +18,24 @@ All text above must be included in any redistribution.
 */
 #include "IoT.h"
 
-/**
- * Global Particle.io subscribe handler
- * Called by particle.io when events are published.
- *
- * @param eventName
- * @param rawData
- */
-void globalSubscribeHandler(const char *eventName, const char *rawData) {
-    IoT* iot = IoT::getInstance();
-    iot->subscribeHandler(eventName,rawData);
-}
-
-/**
- * Global MQTT subscribe handler
- * Called by MQTT when events are published.
- *
- * @param eventName
- * @param rawData
- */
-void globalMQTTHandler(char *topic, byte* payload, unsigned int length) {
-    IoT* iot = IoT::getInstance();
-    iot->mqttHandler(topic, payload, length);
-}
-
-void globalPublish(String topic, String message) {
-    IoT* iot = IoT::getInstance();
-    iot->mqttPublish(topic, message);
-}
-
-/**
- * Singleton IoT instance
- * Use getInstance() instead of constructor
- */
-IoT* IoT::getInstance()
-{
-    if(_instance == NULL)
-    {
-        _instance = new IoT();
-    }
-    return _instance;
-}
-IoT* IoT::_instance = NULL;
-
-/**
- * Constructor.
- */
-IoT::IoT()
-{
-    // be sure not to call anything that requires hardware be initialized here, put those in begin()
-    _controllerName         = kDefaultControllerName;
-    _mqttManager            = NULL;
-}
-
-/**
- * Specify the controller's name
- * 
- * @param controllerName
- */
-void IoT::setControllerName(String name)
-{
-    _controllerName = name.toLowerCase();
-}
-
-Device* Device::_devices = NULL;
+// Static Variables
+Device*      Device::_devices = NULL;
+MQTTManager* IoT::_mqttManager = NULL;
 
 /**
  * Begin gets everything going.
  * It must be called exactly once by the sketch
  */
-void IoT::begin()
+void IoT::begin(String brokerIP, String controllerName)
 {
-    //Use Log instead of Serial. MQTT will receive log messages.
-    //If MQTT won't work, initialize SerialLogHandler logHandler(LOG_LEVEL_ALL);
-    //Serial.begin(57600);
-
+    String connectID = controllerName + "Id";
+    _mqttManager = new MQTTManager(brokerIP, connectID, controllerName);
+    
     // Subscribe to events. There is a 1/second limit for events.
-    Particle.subscribe(kPublishName, globalSubscribeHandler, MY_DEVICES);
+    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
 
     // Expose particle.io variables
     Device::expose();
-    //Device::exposeStates();
-
-}
-
-// MQTT 
-void IoT::connectMQTT(String brokerIP, String connectID)
-{
-    _mqttManager = new MQTTManager(brokerIP, connectID, _controllerName);
 }
 
 void IoT::mqttPublish(String topic, String message)
@@ -176,25 +106,11 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
  Sketch Programming Support
  */
 
-bool IoT::handleLightSwitch(String name) {
-    Device *lightSwitch = Device::get(name+"Switch");
-    if( lightSwitch == NULL) {
-        Log.error("handleLightSwitch: " + name + "Switch not found!");
-        return false;
-    }
-    if( lightSwitch->hasChanged() ) {
-        lightSwitch->syncPrevious();
-        Log.info("handleLightSwitch hasChanged");
-        Device *light = Device::get(name);
-        if( light == NULL ) {
-            Log.error("handleLightSwitch: light " + name + " not found!");
-            return false;
-        }
-        Log.info("Setting light to %d", lightSwitch->value());
-        light->setValue( lightSwitch->value() );
-        return true;
-    }
-    return false;
+int IoT::handleLightSwitch(String name) {
+    int lightSwitch = Device::getChangedValue(name+"Switch");
+    if( lightSwitch == -1) return -1;
+    Log.info("handleLightSwitch hasChanged");
+    return Device::setValue(name, lightSwitch);
 }
 
 /**

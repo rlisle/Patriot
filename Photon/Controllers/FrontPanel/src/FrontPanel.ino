@@ -31,16 +31,11 @@
 
 #define ADDRESS 1      // PWM board switches low switch on
 
-String mqttServer = "192.168.10.184";
-
 IoT *iot;
 
               
 void setup() {
-    iot = IoT::getInstance();
-    iot->setControllerName("FrontPanel");
-    iot->connectMQTT(mqttServer, "patriotFrontPanel1");
-    iot->begin();
+    IoT::begin("192.168.10.184", "FrontPanel");
 
     Device::add(new NCD8Light(ADDRESS, 0, "DoorSide", 2));
     Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", 2));
@@ -64,6 +59,12 @@ void setup() {
     Device::add(new Switch(A3, "OtherSideSwitch"));
     Device::add(new Switch(A4, "FrontPorchSwitch"));
     Device::add(new Switch(A0, "FrontAwningSwitch"));
+    
+    // Activities/States
+    Device::add(new Device("sleeping"));
+    Device::add(new Device("partofday"));
+    Device::add(new Device("cleaning"));
+    Device::add(new Device("cooking"));
 }
 
 void loop() {
@@ -72,91 +73,149 @@ void loop() {
     // - set all previous levels
     // - read switches and update levels
     // - update light dimming
-    iot->loop();
+    IoT::loop();
     
-//    State* sleeping = iot->getState("sleeping");
-//    State* partOfDay = iot->getState("partofday");
+    int sleeping  = Device::getChangedValue("sleeping");
+    int partOfDay = Device::getChangedValue("partofday");
+    int cleaning  = Device::getChangedValue("cleaning");
+    int cooking   = Device::getChangedValue("cooking");
 
-//    if( sleeping != NULL && sleeping->hasChanged() ) {
-//
-//        Log.info("sleeping has changed: %d",sleeping->value());
-//
-//        // Alexa, Good morning
-//        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
-//            setMorningLights();
-//        }
-//
-//        // Alexa, Bedtime
-//        if( sleeping->value() == RETIRING ) {
-//            setMorningLights();
-//            setAllOutsideLights(0);
-//        }
-//
-//        // Alexa, Goodnight
-//        if( sleeping->value() == ASLEEP ) {
-//            setAllOutsideLights(0);
-//            setAllInsideLights(0);
-//        }
-//    }
-//
-//    if( partOfDay != NULL && partOfDay->hasChanged() ) {
-//
-//        Log.info("PartOfDay has changed: %d", partOfDay->value());
-//
-//        if( partOfDay->value() == SUNRISE ) {
-//            setAllOutsideLights(0);
-//            setAllInsideLights(0);
-//        }
-//
-//        if( partOfDay->value() == DUSK ) {
-//            setEveningLights();
-//        }
-//    }
+    if( sleeping != -1 ) {
+
+        Log.info("sleeping has changed: %d",sleeping);
+
+        // Alexa, Good morning
+        if( sleeping == AWAKE && partOfDay > SUNSET ) {
+            setMorningLights();
+        }
+
+        // Alexa, Bedtime
+        if( sleeping == RETIRING ) {
+            setBedtimeLights();
+        }
+
+        // Alexa, Goodnight
+        if( sleeping == ASLEEP ) {
+            setSleepingLights();
+        }
+    }
+
+    if( partOfDay != -1 ) {
+
+        Log.info("PartOfDay has changed: %d", partOfDay);
+
+        if( partOfDay == SUNRISE ) {
+            setSunriseLights();
+        }
+
+        if( partOfDay == DUSK ) {
+            setEveningLights();
+        }
+    }
     
-    iot->handleLightSwitch("Ceiling");
-    iot->handleLightSwitch("KitchenCeiling");
-    iot->handleLightSwitch("Sink");
-    iot->handleLightSwitch("Cabinets");
-    iot->handleLightSwitch("RightTrim");
-    iot->handleLightSwitch("LeftTrim");
-    iot->handleLightSwitch("DoorSide");
-    iot->handleLightSwitch("OtherSide");
-    iot->handleLightSwitch("FrontPorch");
-    iot->handleLightSwitch("FrontAwning");
+    if( cooking != -1 ) {
+        if( cooking > 0 ) {
+            Log.info("cooking did turn on");
+            setCookingLights(100);
+        } else {
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("cooking did turn off");
+            setCookingLights(0);
+        }
+    }
+
+    if( cleaning != -1 ) {
+        if( cleaning > 0 ) {
+            Log.info("cleaning did turn on");
+            setAllInsideLights( 100 );
+        } else {
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("cleaning did turn off");
+            setAllInsideLights( 0 );
+        }
+    }
+
+    IoT::handleLightSwitch("Ceiling");
+    IoT::handleLightSwitch("KitchenCeiling");
+    IoT::handleLightSwitch("Sink");
+    IoT::handleLightSwitch("Cabinets");
+    IoT::handleLightSwitch("RightTrim");
+    IoT::handleLightSwitch("LeftTrim");
+    IoT::handleLightSwitch("DoorSide");
+    IoT::handleLightSwitch("OtherSide");
+    IoT::handleLightSwitch("FrontPorch");
+    IoT::handleLightSwitch("FrontAwning");
 }
 
+void setAllActivities(int value) {
+    Device::setValue("cooking", value);
+    Device::setValue("cleaning", value);
+}
+
+
 void setMorningLights() {
-    iot->setDeviceValue("KitchenCeiling", 50);
-    iot->setDeviceValue("Sink", 50);
-    iot->setDeviceValue("RightTrim", 0);
-    iot->setDeviceValue("LeftTrim", 0);
-    iot->setDeviceValue("Ceiling", 0);
-    iot->setDeviceValue("Cabinets", 50);
+    Log.info("setMorningLights");
+    Device::setValue("Cabinets", 50);
+}
+
+void setSunriseLights() {
+    Log.info("setSunriseLights");
+    setAllOutsideLights(0);
+    setAllInsideLights(0);
 }
 
 void setEveningLights() {
-    iot->setDeviceValue("KitchenCeiling", 50);
-    iot->setDeviceValue("Sink", 50);
-    iot->setDeviceValue("RightTrim", 0);
-    iot->setDeviceValue("LeftTrim", 100);
-    iot->setDeviceValue("Ceiling", 50);
-    iot->setDeviceValue("Cabinets", 50);
+    Log.info("setEveningLights");
+    Device::setValue("KitchenCeiling", 50);
+    Device::setValue("Sink", 50);
+    Device::setValue("RightTrim", 0);
+    Device::setValue("LeftTrim", 100);
+    Device::setValue("Ceiling", 50);
+    Device::setValue("Cabinets", 50);
     
     setAllOutsideLights(100);
 }
 
+void setBedtimeLights() {
+    Log.info("setBedtimeLights");
+    setAllActivities(0);
+    Device::setValue("KitchenCeiling", 50);
+    Device::setValue("Sink", 0);
+    Device::setValue("RightTrim", 0);
+    Device::setValue("LeftTrim", 0);
+    Device::setValue("Ceiling", 50);
+    Device::setValue("Cabinets", 0);
+    setAllOutsideLights(0);
+}
+
+void setSleepingLights() {
+    Log.info("setSleepingLights");
+    setAllActivities(0);
+    setAllInsideLights(0);
+    setAllOutsideLights(0);
+}
+
+void setCookingLights(int value) {
+    Log.info("setCookingLights %d", value);
+    Device::setValue("KitchenCeiling", value);
+    Device::setValue("Sink", value);
+    Device::setValue("Cabinets", value);
+}
+
 void setAllInsideLights(int level) {
-    iot->setDeviceValue("KitchenCeiling", level);
-    iot->setDeviceValue("Sink", level);
-    iot->setDeviceValue("RightTrim", level);
-    iot->setDeviceValue("LeftTrim", level);
-    iot->setDeviceValue("Ceiling", level);
-    iot->setDeviceValue("Cabinets", level);
+    Log.info("setAllInsideLights");
+    Device::setValue("KitchenCeiling", level);
+    Device::setValue("Sink", level);
+    Device::setValue("RightTrim", level);
+    Device::setValue("LeftTrim", level);
+    Device::setValue("Ceiling", level);
+    Device::setValue("Cabinets", level);
 }
 
 void setAllOutsideLights(int level) {
-    iot->setDeviceValue("DoorSide", level);
-    iot->setDeviceValue("OtherSide", level);
-    iot->setDeviceValue("FrontAwning", level);
-    iot->setDeviceValue("FrontPorch", level);
+    Log.info("setAllOutsideLights");
+    Device::setValue("DoorSide", level);
+    Device::setValue("OtherSide", level);
+    Device::setValue("FrontAwning", level);
+    Device::setValue("FrontPorch", level);
 }
