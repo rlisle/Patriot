@@ -109,7 +109,6 @@ void PartOfDay::loop()
 {
     if(isNextMinute())
     {
-        Log.info("PartOfDay next minute");
         if(isNextDay()) {
             Log.info("PartOfDay next day");
             calcSunriseSunset();
@@ -178,21 +177,13 @@ void PartOfDay::calcSunriseSunset()
     Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), sunsetHour, sunsetMinute);
 
     _periods[SUNRISE].set(sunriseHour, sunriseMinute);
-    Log.info("Sunrise is " + _periods[SUNRISE].info());
     _periods[MORNING].set(sunriseHour, sunriseMinute+1);
-    Log.info("Morning is " + _periods[MORNING].info());
     _periods[NOON].set(12,0);
-    Log.info("Noon is " + _periods[NOON].info());
     _periods[AFTERNOON].set(12,1);
-    Log.info("Afternoon is " + _periods[AFTERNOON].info());
     _periods[SUNSET].set(sunsetHour, sunsetMinute);
-    Log.info("Sunset is " + _periods[SUNSET].info());
     _periods[DUSK].set(sunsetHour, sunsetMinute+1);
-    Log.info("Dusk is " + _periods[DUSK].info());
     _periods[NIGHT].set(sunsetHour, sunsetMinute+30);
-    Log.info("Night is " + _periods[NIGHT].info());
     _periods[DAWN].set(sunriseHour, sunriseMinute - 30);
-    Log.info("Dawn is " + _periods[DAWN].info());
 }
 
 int PartOfDay::calcPartOfDay()
