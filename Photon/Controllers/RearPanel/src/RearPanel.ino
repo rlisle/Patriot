@@ -41,9 +41,9 @@ void setup() {
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities/States
-    Device::add(new Switch(A5, "sleeping"));
-    Device::add(new Switch(A5, "partofday"));
-    Device::add(new Switch(A5, "cleaning"));
+    Device::add(new Device("sleeping"));
+    Device::add(new Device("partofday"));
+    Device::add(new Device("cleaning"));
 }
 
 void loop() {
@@ -78,7 +78,7 @@ void loop() {
 
     if( partOfDay != NULL && partOfDay->hasChanged() ) {
 
-        Log.info("partOfDay has changed");
+        Log.info("partOfDay has changed: %d", partOfDay->value()");
 
         if( partOfDay->value() == SUNRISE ) {
             // Turn off lights at sunrise
@@ -97,6 +97,7 @@ void loop() {
             Log.info("cleaning did turn on");
             setAllInsideLights( 100 );
         } else {
+            //TODO: check if evening lights s/b on, etc.
             Log.info("cleaning did turn off");
             setAllInsideLights( 0 );
         }
