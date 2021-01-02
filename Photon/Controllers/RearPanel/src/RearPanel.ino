@@ -18,17 +18,8 @@ Author: Ron Lisle
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
-String mqttServer = "192.168.10.184";
-
-IoT *iot;
-
-
 void setup() {
-    
-    iot = IoT::getInstance();
-    iot->setControllerName("RearPanel");
-    iot->connectMQTT(mqttServer, "PatriotRearPanel1");
-    iot->begin();
+    iot::begin("192.168.10.184", "RearPanel");
 
     // Lights
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
@@ -41,8 +32,6 @@ void setup() {
     // one unused dimmer I/O
 
     // Switches
-    // Switches provide backup control for when Alexa is not available.
-    // This can happen when the internet is not available.
     Device::add(new Switch(A0, "OfficeCeilingSwitch"));
     Device::add(new Switch(A1, "LoftSwitch"));
     Device::add(new Switch(A2, "RampPorchSwitch"));
@@ -51,114 +40,129 @@ void setup() {
     Device::add(new Switch(A5, "RearAwningSwitch"));
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
-    // Note: Activities and PartOfDay are defined in RonTest instead of here
+    // Activities/States
+    Device::add(new Switch(A5, "sleeping"));
+    Device::add(new Switch(A5, "partofday"));
+    Device::add(new Switch(A5, "cleaning"));
 }
 
 void loop() {
 
-    // When IoT loop() is call, it will
-    // - set all previous levels
-    // - read switches and update levels
-    // - update light dimming
-    iot->loop();
+    IoT::loop();
     
-//    State* sleeping = iot->getState("sleeping");
-//    State* partOfDay = iot->getState("partofday");
-//
-//    if( sleeping != NULL && sleeping->hasChanged() ) {
-//
-//        Log.info("sleeping has changed");
-//
-//        // Alexa, Good morning
-//        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
-//            iot->setDeviceValue("OfficeCeiling", 30);
-//        }
-//
-//        // Alexa, Bedtime
-//        if( sleeping->value() == RETIRING ) {
-//            iot->publishValue("cleaning", 0);
-//            iot->publishValue("cooking", 0);
-//
-//            iot->setDeviceValue("OfficeCeiling", 30);
-//            iot->setDeviceValue("Loft", 0);
-//            iot->setDeviceValue("RampPorch", 0);
-//            iot->setDeviceValue("RampAwning", 0);
-//            iot->setDeviceValue("RearProch", 0);
-//            iot->setDeviceValue("RearAwning", 0);
-//            iot->setDeviceValue("Piano", 0);
-//        }
-//
-//        // Alexa, Goodnight
-//        if( sleeping->value() == ASLEEP ) {
-//            iot->publishValue("cleaning", 0);
-//            iot->publishValue("cooking", 0);
-//
-//            iot->setDeviceValue("OfficeCeiling", 0);
-//            iot->setDeviceValue("Loft", 0);
-//            iot->setDeviceValue("RampPorch", 0);
-//            iot->setDeviceValue("RampAwning", 0);
-//            iot->setDeviceValue("RearProch", 0);
-//            iot->setDeviceValue("RearAwning", 0);
-//            iot->setDeviceValue("Piano", 0);
-//        }
-//    }
-//
-//    if( partOfDay != NULL && partOfDay->hasChanged() ) {
-//
-//        Log.info("partOfDay has changed");
-//
-//        if( partOfDay->value() == SUNRISE ) {
-//            // Turn off lights at sunrise
-//            iot->setDeviceValue("OfficeCeiling", 0);
-//            iot->setDeviceValue("Loft", 0);
-//            iot->setDeviceValue("RampPorch", 0);
-//            iot->setDeviceValue("RampAwning", 0);
-//            iot->setDeviceValue("RearProch", 0);
-//            iot->setDeviceValue("RearAwning", 0);
-//            iot->setDeviceValue("Piano", 0);
-//        }
-//
-//        if( partOfDay->value() == DUSK ) {
-//            // Turn on lights after sunset
-//            iot->setDeviceValue("OfficeCeiling", 50);
-//            iot->setDeviceValue("Loft", 0);
-//            iot->setDeviceValue("RampPorch", 50);
-//            iot->setDeviceValue("RampAwning", 100);
-//            iot->setDeviceValue("RearProch", 60);
-//            iot->setDeviceValue("RearAwning", 100);
-//            iot->setDeviceValue("Piano", 30);
-//        }
-//    }
-//
-//    if( iot->didTurnOn("cleaning") ) {
-//        Log.info("cleaning did turn on");
-//        setAllInsideLights( 100 );
-//    } else if( iot->didTurnOff("cleaning") ) {
-//        Log.info("cleaning did turn off");
-//        setAllInsideLights( 0 );
-//    }
+    // TODO: move out of loop; make global
+    Device* sleeping = Device::get("sleeping");
+    Device* partOfDay = Device::get("partofday");
+    Device* cooking = Device::get("cooking");
+    Device* cleaning = Device::get("cleaning");
+
+    if( sleeping != NULL && sleeping->hasChanged() ) {
+
+        Log.info("sleeping has changed %d",sleeping->value());
+
+        // Alexa, Good morning
+        if( sleeping->value() == AWAKE && partOfDay->value() > SUNSET ) {
+            setMorningLights();
+        }
+
+        // Alexa, Bedtime
+        if( sleeping->value() == RETIRING ) {
+            setBedtimeLights();
+        }
+
+        // Alexa, Goodnight
+        if( sleeping->value() == ASLEEP ) {
+            setSleepingLights();
+        }
+        sleeping->syncPrevious();
+    }
+
+    if( partOfDay != NULL && partOfDay->hasChanged() ) {
+
+        Log.info("partOfDay has changed");
+
+        if( partOfDay->value() == SUNRISE ) {
+            // Turn off lights at sunrise
+            setSunriseLights();
+        }
+
+        if( partOfDay->value() == DUSK ) {
+            // Turn on lights after sunset
+            setEveningLights();
+        }
+        partOfDay->syncPrevious();
+    }
+
+    if( cleaning != NULL && cleaning->hasChanged() ) {
+        if( cleaning->value() > 0 ) {
+            Log.info("cleaning did turn on");
+            setAllInsideLights( 100 );
+        } else {
+            Log.info("cleaning did turn off");
+            setAllInsideLights( 0 );
+        }
+    }
 
     // SWITCHES
-    iot->handleLightSwitch("OfficeCeiling");
-    iot->handleLightSwitch("Loft");
-    iot->handleLightSwitch("RampPorch");
-    iot->handleLightSwitch("RampAwning");
-    iot->handleLightSwitch("RearPorch");
-    iot->handleLightSwitch("RearAwning");
+    IoT::handleLightSwitch("OfficeCeiling");
+    IoT::handleLightSwitch("Loft");
+    IoT::handleLightSwitch("RampPorch");
+    IoT::handleLightSwitch("RampAwning");
+    IoT::handleLightSwitch("RearPorch");
+    IoT::handleLightSwitch("RearAwning");
 }
 
-void setAllInsideLights(int level) {
-    Log.info("setAllInsideLights %d",level);
-    iot->setDeviceValue("OfficeCeiling", level);
-    iot->setDeviceValue("Loft", level);
-    iot->setDeviceValue("Piano", level);
+void setAllActivities(int value) {
+    Device::setValue("cooking", value);
+    Device::setValue("cleaning", value);
 }
 
-void setAllOutsideLights(int level) {
-    Log.info("setAllOutsideLights %d",level);
-    iot->setDeviceValue("RampPorch", level);
-    iot->setDeviceValue("RampAwning", level);
-    iot->setDeviceValue("RearProch", level);
-    iot->setDeviceValue("RearAwning", level);
+void setMorningLights() {
+    Log.info("setMorningLights");
+    Device::setValue("piano", 50);
+    Device::setValue("officeceiling",80);
+}
 
+void setSunriseLights() {
+    Log.info("setSunriseLights");
+    setAllOutsideLights(0);
+    setAllInsideLights(0);
+}
+
+void setEveningLights() {
+    Log.info("setEveningLights");
+    Device::setValue("piano", 50);
+    Device::setValue("officeceiling",80);
+    setAllOutsideLights(100);
+}
+
+void setBedtimeLights() {
+    Log.info("setBedtimeLights",value);
+    setAllActivities(0);
+    Device::setValue("OfficeCeiling", 80);
+    Device::setValue("Loft", 0);
+    Device::setValue("piano", 50);
+    setAllOutsideLights(0);
+}
+
+void setSleepingLights() {
+    Log.info("setSleepingLights",value);
+    setAllActivities(0);
+    setAllIndoorLights(0);
+    setAllOutsideLights(0);
+}
+
+void setAllInsideLights(int value) {
+    Log.info("setAllInsideLights %d",value);
+    Device::setValue("OfficeCeiling", value);
+    Device::setValue("Loft", value);
+    Device::setValue("Piano", value);
+}
+
+void setAllOutsideLights(int value) {
+    Log.info("setAllInsideLights %d",value);
+    Device::setValue("RampPorch", value);
+    Device::setValue("RampAwning", value);
+    Device::setValue("RearPorch", value);
+    Device::setValue("RearAwning", value);
 }

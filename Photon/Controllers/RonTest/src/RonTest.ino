@@ -13,10 +13,8 @@
 #include <PatriotLight.h>
 #include <PatriotPartOfDay.h>
 
-String mqttServerIP = "192.168.10.184";
-
 void setup() {
-    IoT::begin(mqttServerIP, "RonTest");
+    IoT::begin("192.168.10.184", "RonTest");
 
     Device::add(new PartOfDay());
 
