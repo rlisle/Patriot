@@ -78,7 +78,7 @@ void loop() {
 
     if( partOfDay != NULL && partOfDay->hasChanged() ) {
 
-        Log.info("partOfDay has changed: %d", partOfDay->value()");
+        Log.info("partOfDay has changed: %d", partOfDay->value());
 
         if( partOfDay->value() == SUNRISE ) {
             // Turn off lights at sunrise
