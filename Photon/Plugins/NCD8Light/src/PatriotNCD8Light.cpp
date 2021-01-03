@@ -89,6 +89,7 @@ int8_t NCD8Light::initializeBoard() {
 }
 
 void NCD8Light::reset() {
+    Log.error("Resetting board");
     // Issue PCA9634 SWRST
     Wire.beginTransmission(_address);
     Wire.write(0x06);
@@ -96,8 +97,8 @@ void NCD8Light::reset() {
     Wire.write(0x5a);
     byte status = Wire.endTransmission();
     if(status != 0){
-        Log.error("NCD8Light reset write failed for light "+String(_lightNum));
-        return;
+        Log.error("NCD8Light reset write failed for light "+String(_lightNum)+", reseting Wire");
+        Wire.reset();
     }
     initializeBoard();
 }
@@ -186,7 +187,6 @@ void NCD8Light::outputPWM() {
     
     if(status != 0){
         Log.error("NCD8Light outputPWM write failed for light "+String(_lightNum)+", level = "+String(_currentLevel));
-        Log.error("Resetting board");
         reset();
     }
 }
