@@ -8,9 +8,7 @@ Author: Ron Lisle
     2. Update IoT and plugins if needed
     3. "particle flash LeftSlide"
  
- Hardware
- 1. NCD Photon Screw Terminal board
-    I/Os selected to all be on the same side
+    I/Os selected to be all on the same side
      2 switch connections:
        A0 Watch TV
        A1 Reading
@@ -21,33 +19,118 @@ Author: Ron Lisle
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotSwitch.h>
-#include <PatriotActivity.h>
 
 String mqttServer = "192.168.1.10";
 
 IoT *iot;
 
-Light couch(TX, "Couch");
-Light vertical(RX, "LeftVertical");
 
 // Switch control functional sets of lights, not individual lights
-Switch couchSwitch1(A0, "CouchSwitch1");
-Switch couchSwitch2(A1, "CouchSwitch2");
 
 void setup() {
-  iot = IoT::getInstance();
-  iot->setControllerName("LeftSlide");
-  iot->begin();
-  iot->connectMQTT(mqttServer, "patriotLeftSlide");
+    IoT::begin("192.168.1.10","LeftSlide");
 
-  // Devices
-  iot->addDevice(&couch);
-  iot->addDevice(&vertical);
-  iot->addDevice(&couchSwitch1);
-  iot->addDevice(&couchSwitch2);
-
+    // Lights
+    Device::add(new Light(TX, "Couch"));
+    Device::add(new Light(RX, "LeftVertical"));
+    
+    // Switches
+    Device::add(new Switch(A0, "CouchSwitch"));
+    Device::add(new Switch(A1, "LeftVerticalSwitch"));
+    
+    // Activities/States
+    Device::add(new Device("sleeping"));
+    Device::add(new Device("partofday"));
+    Device::add(new Device("cleaning"));
 }
 
 void loop() {
-  iot->loop();
+
+    IoT::loop();
+
+    int sleeping = Device::getChangedValue("sleeping");
+    int partOfDay = Device::getChangedValue("partofday");
+    int cleaning = Device::getChangedValue("cleaning");
+
+    if( sleeping != -1 ) {
+
+        Log.info("sleeping has changed %d",sleeping);
+
+        // Alexa, Good morning
+        if( sleeping == AWAKE && partOfDay > SUNSET ) {
+            setMorningLights();
+        }
+
+        // Alexa, Bedtime
+        if( sleeping == RETIRING ) {
+            setBedtimeLights();
+        }
+
+        // Alexa, Goodnight
+        if( sleeping == ASLEEP ) {
+            setSleepingLights();
+        }
+    }
+
+    if( partOfDay != -1 ) {
+
+        Log.info("partOfDay has changed: %d", partOfDay);
+
+        if( partOfDay == SUNRISE ) {
+            // Turn off lights at sunrise
+            setSunriseLights();
+        }
+
+        if( partOfDay == DUSK ) {
+            // Turn on lights after sunset
+            setEveningLights();
+        }
+    }
+
+    if( cleaning != -1 ) {
+        if( cleaning > 0 ) {
+            Log.info("cleaning did turn on");
+            setAllInsideLights( 100 );
+        } else {
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("cleaning did turn off");
+            setAllInsideLights( 0 );
+        }
+    }
+
+    // SWITCHES
+    IoT::handleLightSwitch("Couch");
+    IoT::handleLightSwitch("LeftVertical");
+}
+
+void setAllActivities(int value) {
+    Device::setValue("cleaning", value);
+}
+
+void setMorningLights() {
+    Log.info("setMorningLights");
+}
+
+void setSunriseLights() {
+    Log.info("setSunriseLights");
+}
+
+void setEveningLights() {
+    Log.info("setEveningLights");
+    Device::setValue("Couch", 50);
+    Device::setValue("LeftVertical",50);
+}
+
+void setBedtimeLights() {
+    Log.info("setBedtimeLights");
+    setAllActivities(0);
+    Device::setValue("Couch", 0);
+    Device::setValue("LeftVertical", 0);
+}
+
+void setSleepingLights() {
+    Log.info("setSleepingLights");
+    setAllActivities(0);
+    Device::setValue("Couch", 0);
+    Device::setValue("LeftVertical", 0);
 }
