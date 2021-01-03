@@ -144,7 +144,7 @@ void MQTTManager::parseMessage(String topic, String message)
         // RESET
         } else if(subtopic.equals("reset")) {
             // Respond if reset is addressed to us
-            if(message.equals(_controllerName)) {
+            if(message.equalsIgnoreCase(_controllerName)) {
                 Log.info("Reset addressed to us");
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
