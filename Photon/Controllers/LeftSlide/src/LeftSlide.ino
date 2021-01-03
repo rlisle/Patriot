@@ -28,7 +28,7 @@ IoT *iot;
 // Switch control functional sets of lights, not individual lights
 
 void setup() {
-    IoT::begin("192.168.1.10","LeftSlide");
+    IoT::begin("192.168.10.184","LeftSlide");
 
     // Lights
     Device::add(new Light(TX, "Couch"));
