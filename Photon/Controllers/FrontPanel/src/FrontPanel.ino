@@ -81,58 +81,19 @@ void loop() {
     int cooking   = Device::getChangedValue("cooking");
 
     if( sleeping != -1 ) {
-
-        Log.info("sleeping has changed: %d",sleeping);
-
-        // Alexa, Good morning
-        if( sleeping == AWAKE && partOfDay > SUNSET ) {
-            setMorningLights();
-        }
-
-        // Alexa, Bedtime
-        if( sleeping == RETIRING ) {
-            setBedtimeLights();
-        }
-
-        // Alexa, Goodnight
-        if( sleeping == ASLEEP ) {
-            setSleepingLights();
-        }
+        handleSleepingChange(sleeping);
     }
 
     if( partOfDay != -1 ) {
-
-        Log.info("PartOfDay has changed: %d", partOfDay);
-
-        if( partOfDay == SUNRISE ) {
-            setSunriseLights();
-        }
-
-        if( partOfDay == DUSK ) {
-            setEveningLights();
-        }
+        handlePartOfDayChange(partOfDay);
     }
     
     if( cooking != -1 ) {
-        if( cooking > 0 ) {
-            Log.info("cooking did turn on");
-            setCookingLights(100);
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("cooking did turn off");
-            setCookingLights(0);
-        }
+        handleCookingChange(cooking);
     }
 
     if( cleaning != -1 ) {
-        if( cleaning > 0 ) {
-            Log.info("cleaning did turn on");
-            setAllInsideLights( 100 );
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("cleaning did turn off");
-            setAllInsideLights( 0 );
-        }
+        handleCleaningChange(cleaning);
     }
 
     handleLightSwitches()
@@ -149,6 +110,60 @@ void handleLightSwitches() {
     IoT::handleLightSwitch("OtherSide");
     IoT::handleLightSwitch("FrontPorch");
     IoT::handleLightSwitch("FrontAwning");
+}
+
+void handleSleepingChange(int sleeping) {
+    Log.info("sleeping has changed: %d",sleeping);
+
+    // Alexa, Good morning
+    if( sleeping == AWAKE && partOfDay > SUNSET ) {
+        setMorningLights();
+    }
+
+    // Alexa, Bedtime
+    if( sleeping == RETIRING ) {
+        setBedtimeLights();
+    }
+
+    // Alexa, Goodnight
+    if( sleeping == ASLEEP ) {
+        setSleepingLights();
+    }
+}
+
+void handlePartOfDayChange(int partOfDay) {
+
+    Log.info("PartOfDay has changed: %d", partOfDay);
+
+    if( partOfDay == SUNRISE ) {
+        setSunriseLights();
+    }
+
+    if( partOfDay == DUSK ) {
+        setEveningLights();
+    }
+}
+
+void handleCookingChange(int cooking) {
+    if( cooking > 0 ) {
+        Log.info("cooking did turn on");
+        setCookingLights(100);
+    } else {
+        //TODO: check if evening lights s/b on, etc.
+        Log.info("cooking did turn off");
+        setCookingLights(0);
+    }
+}
+
+void handleCleaningChange(int cleaning) {
+    if( cleaning > 0 ) {
+        Log.info("cleaning did turn on");
+        setAllInsideLights( 100 );
+    } else {
+        //TODO: check if evening lights s/b on, etc.
+        Log.info("cleaning did turn off");
+        setAllInsideLights( 0 );
+    }
 }
 
 void setAllActivities(int value) {
