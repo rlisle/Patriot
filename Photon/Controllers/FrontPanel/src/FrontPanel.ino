@@ -135,6 +135,10 @@ void loop() {
         }
     }
 
+    handleLightSwitches()
+}
+
+void handleLightSwitches() {
     IoT::handleLightSwitch("Ceiling");
     IoT::handleLightSwitch("KitchenCeiling");
     IoT::handleLightSwitch("Sink");
