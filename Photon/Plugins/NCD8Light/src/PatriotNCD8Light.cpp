@@ -90,6 +90,10 @@ int8_t NCD8Light::initializeBoard() {
 
 void NCD8Light::reset() {
     Log.error("Resetting board");
+    Wire.reset();
+    // Do we need any delay here?
+    Wire.begin();
+
     // Issue PCA9634 SWRST
     Wire.beginTransmission(_address);
     Wire.write(0x06);
@@ -98,7 +102,6 @@ void NCD8Light::reset() {
     byte status = Wire.endTransmission();
     if(status != 0){
         Log.error("NCD8Light reset write failed for light "+String(_lightNum)+", reseting Wire");
-        Wire.reset();
     }
     initializeBoard();
 }

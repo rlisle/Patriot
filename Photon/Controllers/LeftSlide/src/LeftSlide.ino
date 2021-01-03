@@ -90,11 +90,11 @@ void loop() {
     if( cleaning != -1 ) {
         if( cleaning > 0 ) {
             Log.info("cleaning did turn on");
-            setAllInsideLights( 100 );
+            setAllLights( 100 );
         } else {
             //TODO: check if evening lights s/b on, etc.
             Log.info("cleaning did turn off");
-            setAllInsideLights( 0 );
+            setAllLights( 0 );
         }
     }
 
@@ -107,30 +107,35 @@ void setAllActivities(int value) {
     Device::setValue("cleaning", value);
 }
 
+void setAllLights(int value) {
+    Log.info("setAllLights %d",value);
+    Device::setValue("Couch", value);
+    Device::setValue("LeftVertical", value);
+}
+
 void setMorningLights() {
     Log.info("setMorningLights");
+    setAllLights(30);
 }
 
 void setSunriseLights() {
     Log.info("setSunriseLights");
+    setAllLights(0);
 }
 
 void setEveningLights() {
     Log.info("setEveningLights");
-    Device::setValue("Couch", 50);
-    Device::setValue("LeftVertical",50);
+    setAllLights(50);
 }
 
 void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
-    Device::setValue("Couch", 0);
-    Device::setValue("LeftVertical", 0);
+    setAllLights(0);
 }
 
 void setSleepingLights() {
     Log.info("setSleepingLights");
     setAllActivities(0);
-    Device::setValue("Couch", 0);
-    Device::setValue("LeftVertical", 0);
+    setAllLights(0);
 }
