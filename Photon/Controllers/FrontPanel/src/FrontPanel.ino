@@ -81,7 +81,7 @@ void loop() {
     int cooking   = Device::getChangedValue("cooking");
 
     if( sleeping != -1 ) {
-        handleSleepingChange(sleeping);
+        handleSleepingChange(sleeping, partOfDay);
     }
 
     if( partOfDay != -1 ) {
@@ -96,7 +96,7 @@ void loop() {
         handleCleaningChange(cleaning);
     }
 
-    handleLightSwitches()
+    handleLightSwitches();
 }
 
 void handleLightSwitches() {
@@ -112,7 +112,7 @@ void handleLightSwitches() {
     IoT::handleLightSwitch("FrontAwning");
 }
 
-void handleSleepingChange(int sleeping) {
+void handleSleepingChange(int sleeping, int partOfDay) {
     Log.info("sleeping has changed: %d",sleeping);
 
     // Alexa, Good morning
