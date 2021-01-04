@@ -20,8 +20,10 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 {
     _controllerName = controllerName;
     _logging = 0;
-//    _logLevel = LOG_LEVEL_ERROR;
-    _logLevel = LOG_LEVEL_ALL;    // DEBUGGING ONLY!!!
+
+    // We'll want to start with ALL whenever modifying code.
+    // Use MQTT to switch to error when done testing
+    _logLevel = LOG_LEVEL_ALL;
 
     Time.zone(-6.0);
     
