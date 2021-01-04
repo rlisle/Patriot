@@ -79,7 +79,6 @@ void Device::loopAll()
     }
 }
 
-
 Device *Device::get(String name)
 {
     Device *ptr = _devices;
@@ -93,6 +92,12 @@ Device *Device::get(String name)
     }
     //Log.info("Device "+name+" not found, returning NULL");
     return NULL;
+}
+
+int Device::value(String name) {
+    Device *ptr = get(name);
+    if( ptr == NULL ) return -1;
+    return( ptr->value() );
 }
 
 int Device::setValue(String name, int value) {

@@ -33,8 +33,8 @@ void loop() {
 
     int changedSleeping = Device::getChangedValue("sleeping");
     int changedPartOfDay = Device::getChangedValue("partofday");
-    int sleeping = Device::getValue("sleeping");
-    int partOfDay = Device::getValue("partofday");
+    int sleeping = Device::value("sleeping");
+    int partOfDay = Device::value("partofday");
 
     if( changedSleeping != -1 ) {
         
