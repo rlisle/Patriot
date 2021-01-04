@@ -100,8 +100,8 @@ PartOfDay::PartOfDay()
 void PartOfDay::begin() {
     // Force next loop to perform both
     _lastPollTime = 0;
-    _lastPollDay = 0;
-    calcSunriseSunset();
+    _month 0;
+    _day = 0;
 }
 
 /**
@@ -141,12 +141,11 @@ bool PartOfDay::isNextMinute()
 
 bool PartOfDay::isNextDay()
 {
-    unsigned long currentTime = millis();
-    if (currentTime < _lastPollDay + MILLIS_PER_DAY)
-    {
-        return false;
-    }
-    _lastPollDay = currentTime;
+    if( Time.day() == _day && Time.month() == _month ) return false;
+    
+    _month = Time.month();
+    _day = Time.day();
+
     return true;
 }
 
