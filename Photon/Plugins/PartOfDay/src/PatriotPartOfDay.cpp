@@ -100,7 +100,7 @@ PartOfDay::PartOfDay()
 void PartOfDay::begin() {
     // Force next loop to perform both
     _lastPollTime = 0;
-    _month 0;
+    _month = 0;
     _day = 0;
 }
 
