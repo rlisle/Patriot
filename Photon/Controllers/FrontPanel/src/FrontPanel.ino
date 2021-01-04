@@ -158,9 +158,10 @@ void handleCookingChange(int cooking) {
 void handleCleaningChange(int cleaning) {
     if( cleaning > 0 ) {
         Log.info("cleaning did turn on");
+        //TODO: save/restore previous states
         setAllInsideLights( 100 );
     } else {
-        //TODO: check if evening lights s/b on, etc.
+        //TODO: save/restore previous states
         Log.info("cleaning did turn off");
         setAllInsideLights( 0 );
     }
@@ -216,6 +217,7 @@ void setSleepingLights() {
 
 void setCookingLights(int value) {
     Log.info("setCookingLights %d", value);
+    //TODO: save/restore previous states
     Device::setValue("KitchenCeiling", value);
     Device::setValue("Sink", value);
     Device::setValue("Cabinets", value);
