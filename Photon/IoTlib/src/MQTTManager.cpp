@@ -18,7 +18,7 @@ All text above must be included in any redistribution.
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {
-    _controllerName = controllerName;
+    _controllerName = controllerName.toLowerCase();
     _logging = 0;
 
     // We'll want to start with ALL whenever modifying code.
@@ -56,7 +56,7 @@ void MQTTManager::connect(String connectID) {
     } else {
         Log.error("MQTT is NOT connected! Check MQTT IP address");
     }
-    // Looks good, not register our MQTT LogHandler
+    // Looks good, now register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
     Log.info("MQTT Connected");
@@ -103,7 +103,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
 //Mark - Parser
 
-// topic and messages are already lowercase, or are they???
+// topic and messages are already lowercase
 void MQTTManager::parseMessage(String topic, String message)
 {
     // This creates an infinite loop. Don't do it.
@@ -115,46 +115,46 @@ void MQTTManager::parseMessage(String topic, String message)
         
         // Look for reserved names
         // LOG
-        if(subtopic.equals("log") || subtopic.startsWith("log/")) {
+        if(subtopic == "log" || subtopic.startsWith("log/")) {
             // Ignore it.
 
         // LOGLEVEL
         } else if(subtopic.startsWith("loglevel")) {
-            if(subtopic.equals("loglevel/"+_controllerName)) {
+            if(subtopic == "loglevel/"+_controllerName) {
                 Log.info(_controllerName + " setting logLevel = " + message);
                 parseLogLevel(message);
             }
             
         // MEMORY
-        } else if(subtopic.equals("memory")) {
-            if(message.equalsIgnoreCase(_controllerName)) {
+        } else if(subtopic == "memory") {
+            if(message == _controllerName) {
                 publish( "debug/"+_controllerName, String::format("Free memory = %d", System.freeMemory()));
             }
             
         // PING
-        } else if(subtopic.equals("ping")) {
+        } else if(subtopic == "ping") {
             // Respond if ping is addressed to us
-            if(message.equals(_controllerName)) {
+            if(message == _controllerName) {
                 Log.trace("Ping addressed to us");
                 publish(kPublishName + "/pong", _controllerName);
             }
             
         // PONG
-        } else if(subtopic.equals("pong")) {
+        } else if(subtopic == "pong") {
             // Ignore it.
             
         // RESET
-        } else if(subtopic.equals("reset")) {
+        } else if(subtopic == "reset") {
             // Respond if reset is addressed to us
-            if(message.equalsIgnoreCase(_controllerName)) {
+            if(message == _controllerName) {
                 Log.info("Reset addressed to us");
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
                 
         // STATES
-        } else if(subtopic.equals("states")) {
-            if(message.equalsIgnoreCase(_controllerName)) {
+        } else if(subtopic == "states") {
+            if(message == _controllerName) {
                 Log.info("Received states addressed to us");
                 String states = Device::buildStatesVariable();
                 publish("debug/"+_controllerName+"/states", states);
@@ -178,9 +178,9 @@ void MQTTManager::parseMessage(String topic, String message)
 
 int MQTTManager::parseValue(String message)
 {
-    if(message.equals("on")) {
+    if(message == "on") {
         return 100;
-    } else if(message.equals("off")) {
+    } else if(message == "off") {
         return 0;
     }
     return message.toInt();
@@ -188,12 +188,12 @@ int MQTTManager::parseValue(String message)
 
 void MQTTManager::parseLogLevel(String message) {
     LogLevel level = LOG_LEVEL_ERROR;
-    if (message.equals("none")) level = LOG_LEVEL_NONE;         // 70
-    else if (message.equals("error")) level = LOG_LEVEL_ERROR;  // 50
-    else if (message.equals("warn")) level = LOG_LEVEL_WARN;    // 40
-    else if (message.equals("info")) level = LOG_LEVEL_INFO;    // 30
-    else if (message.equals("trace")) level = LOG_LEVEL_TRACE;  // 1
-    else if (message.equals("all")) level = LOG_LEVEL_ALL;      // 1
+    if (message == "none") level = LOG_LEVEL_NONE;         // 70
+    else if (message == "error") level = LOG_LEVEL_ERROR;  // 50
+    else if (message == "warn") level = LOG_LEVEL_WARN;    // 40
+    else if (message == "info") level = LOG_LEVEL_INFO;    // 30
+    else if (message == "trace") level = LOG_LEVEL_TRACE;  // 1
+    else if (message == "all") level = LOG_LEVEL_ALL;      // 1
     else return;
 
     _logLevel = level;
