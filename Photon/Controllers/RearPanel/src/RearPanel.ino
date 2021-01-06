@@ -61,7 +61,9 @@ void loop() {
         int partOfDay = Device::value("PartOfDay");
 
         // Alexa, Good morning
+        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE && partOfDay > SUNSET ) {
+            Log.info("It is good morning");
             setMorningLights();
         }
 
@@ -82,11 +84,13 @@ void loop() {
 
         if( partOfDayChanged == SUNRISE ) {
             // Turn off lights at sunrise
+            Log.info("It is sunrise");
             setSunriseLights();
         }
 
         if( partOfDayChanged == DUSK ) {
             // Turn on lights after sunset
+            Log.info("It is dusk");
             setEveningLights();
         }
     }
@@ -118,7 +122,7 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("piano", 50);
+    Device::setValue("piano", 20);
     Device::setValue("officeceiling",80);
 }
 
