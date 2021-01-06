@@ -31,15 +31,19 @@ void loop() {
     
     IoT::loop();
 
-    int sleeping = Device::getChangedValue("sleeping");
-    int partOfDay = Device::getChangedValue("partofday");
+    int changedSleeping = Device::getChangedValue("sleeping");
+    int changedPartOfDay = Device::getChangedValue("partofday");
+    int sleeping = Device::value("sleeping");
+    int partOfDay = Device::value("partofday");
 
-    if( sleeping != -1 ) {
-
+    if( changedSleeping != -1 ) {
+        
         Log.info("sleeping has changed: %d",sleeping);
 
         // Alexa, Good morning
+        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
         if( sleeping == AWAKE && partOfDay > SUNSET ) {
+            Log.info("It is good morning");
             setMorningLights();
         }
 
@@ -54,7 +58,7 @@ void loop() {
         }
     }
 
-    if( partOfDay != -1 ) {
+    if( changedPartOfDay != -1 ) {
 
         Log.info("PartOfDay has changed: %d", partOfDay);
 

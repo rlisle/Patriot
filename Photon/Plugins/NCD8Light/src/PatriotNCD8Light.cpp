@@ -111,10 +111,17 @@ void NCD8Light::reset() {
  * @param value Int 0 to 100.
  */
 void NCD8Light::setValue(int value) {
-    _currentLevel = scalePWM(_value);
+    if( value == _value ) {
+        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
+        _currentLevel = scalePWM(_value);
+        outputPWM();
+        return;
+    }
+    
+    _currentLevel = scalePWM(_value);   // previous value
     _value = value;
-    _targetLevel = scalePWM(value);
-    Log.info("Dimmer " + String(_name) + " setValue " + String(value) + " scaled to " + String(_targetLevel));
+    _targetLevel = scalePWM(value);     // new value
+    Log.info("Dimmer " + _name + " setValue " + String(value) + " scaled to " + String(_targetLevel));
     if(_dimmingDuration == 0) {
         _currentLevel = _targetLevel;
         outputPWM();

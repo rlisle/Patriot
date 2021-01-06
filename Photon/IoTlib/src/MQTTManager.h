@@ -42,7 +42,7 @@ private:
     void      reconnectCheck();
     int       parseValue(String message);
     void      parseLogLevel(String message);
-
+    
     // LogHandler methods
     const char* extractFileName(const char *s);
     const char* extractFuncName(const char *s, size_t *size);

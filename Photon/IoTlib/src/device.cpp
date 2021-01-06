@@ -79,7 +79,6 @@ void Device::loopAll()
     }
 }
 
-
 Device *Device::get(String name)
 {
     Device *ptr = _devices;
@@ -93,6 +92,12 @@ Device *Device::get(String name)
     }
     //Log.info("Device "+name+" not found, returning NULL");
     return NULL;
+}
+
+int Device::value(String name) {
+    Device *ptr = get(name);
+    if( ptr == NULL ) return -1;
+    return( ptr->value() );
 }
 
 int Device::setValue(String name, int value) {
@@ -146,16 +151,9 @@ void Device::buildDevicesVariable()
     }
 }
 
-// Build list of current device states for MQTT query
-String Device::buildStatesVariable() {
-    String newVariable = "";
+// Publish each device name and its value
+void Device::publishStates(String controllerName) {
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-        newVariable += ptr->_name;
-        newVariable += ":";
-        newVariable += String(ptr->_value);
-        if (ptr->_next != NULL) {
-            newVariable += ",";
-        }
+        IoT::mqttPublish("debug/"+controllerName+"/"+ptr->name()+"/state", String(ptr->_value));
     }
-    return newVariable;
 }

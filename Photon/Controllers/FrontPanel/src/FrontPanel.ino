@@ -75,66 +75,31 @@ void loop() {
     // - update light dimming
     IoT::loop();
     
-    int sleeping  = Device::getChangedValue("sleeping");
-    int partOfDay = Device::getChangedValue("partofday");
-    int cleaning  = Device::getChangedValue("cleaning");
-    int cooking   = Device::getChangedValue("cooking");
+    int sleepingChanged  = Device::getChangedValue("sleeping");
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    int cleaningChanged  = Device::getChangedValue("cleaning");
+    int cookingChanged   = Device::getChangedValue("cooking");
 
-    if( sleeping != -1 ) {
-
-        Log.info("sleeping has changed: %d",sleeping);
-
-        // Alexa, Good morning
-        if( sleeping == AWAKE && partOfDay > SUNSET ) {
-            setMorningLights();
-        }
-
-        // Alexa, Bedtime
-        if( sleeping == RETIRING ) {
-            setBedtimeLights();
-        }
-
-        // Alexa, Goodnight
-        if( sleeping == ASLEEP ) {
-            setSleepingLights();
-        }
+    if( sleepingChanged != -1 ) {
+        handleSleepingChange(sleepingChanged);
     }
 
-    if( partOfDay != -1 ) {
-
-        Log.info("PartOfDay has changed: %d", partOfDay);
-
-        if( partOfDay == SUNRISE ) {
-            setSunriseLights();
-        }
-
-        if( partOfDay == DUSK ) {
-            setEveningLights();
-        }
+    if( partOfDayChanged != -1 ) {
+        handlePartOfDayChange(partOfDayChanged);
     }
     
-    if( cooking != -1 ) {
-        if( cooking > 0 ) {
-            Log.info("cooking did turn on");
-            setCookingLights(100);
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("cooking did turn off");
-            setCookingLights(0);
-        }
+    if( cookingChanged != -1 ) {
+        handleCookingChange(cookingChanged);
     }
 
-    if( cleaning != -1 ) {
-        if( cleaning > 0 ) {
-            Log.info("cleaning did turn on");
-            setAllInsideLights( 100 );
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("cleaning did turn off");
-            setAllInsideLights( 0 );
-        }
+    if( cleaningChanged != -1 ) {
+        handleCleaningChange(cleaningChanged);
     }
 
+    handleLightSwitches();
+}
+
+void handleLightSwitches() {
     IoT::handleLightSwitch("Ceiling");
     IoT::handleLightSwitch("KitchenCeiling");
     IoT::handleLightSwitch("Sink");
@@ -147,6 +112,66 @@ void loop() {
     IoT::handleLightSwitch("FrontAwning");
 }
 
+void handleSleepingChange(int sleeping) {
+    Log.info("sleeping has changed: %d",sleeping);
+
+    int partOfDay = Device::value("PartOfDay");
+    
+    // Alexa, Good morning
+    Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
+    if( sleeping == AWAKE && partOfDay > SUNSET ) {
+        Log.info("It is good morning");
+        setMorningLights();
+    }
+
+    // Alexa, Bedtime
+    if( sleeping == RETIRING ) {
+        setBedtimeLights();
+    }
+
+    // Alexa, Goodnight
+    if( sleeping == ASLEEP ) {
+        setSleepingLights();
+    }
+}
+
+void handlePartOfDayChange(int partOfDay) {
+
+    Log.info("PartOfDay has changed: %d", partOfDay);
+
+    //TODO: handle startup to other periods
+    if( partOfDay == SUNRISE ) {
+        setSunriseLights();
+    }
+
+    if( partOfDay == DUSK ) {
+        setEveningLights();
+    }
+}
+
+void handleCookingChange(int cooking) {
+    if( cooking > 0 ) {
+        Log.info("cooking did turn on");
+        setCookingLights(100);
+    } else {
+        //TODO: check if evening lights s/b on, etc.
+        Log.info("cooking did turn off");
+        setCookingLights(0);
+    }
+}
+
+void handleCleaningChange(int cleaning) {
+    if( cleaning > 0 ) {
+        Log.info("cleaning did turn on");
+        //TODO: save/restore previous states
+        setAllInsideLights( 100 );
+    } else {
+        //TODO: save/restore previous states
+        Log.info("cleaning did turn off");
+        setAllInsideLights( 0 );
+    }
+}
+
 void setAllActivities(int value) {
     Device::setValue("cooking", value);
     Device::setValue("cleaning", value);
@@ -155,7 +180,8 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("Cabinets", 50);
+    Device::setValue("Cabinets", 60);
+    Device::setValue("Sink", 50);
 }
 
 void setSunriseLights() {
@@ -166,12 +192,12 @@ void setSunriseLights() {
 
 void setEveningLights() {
     Log.info("setEveningLights");
-    Device::setValue("KitchenCeiling", 50);
-    Device::setValue("Sink", 50);
+    Device::setValue("KitchenCeiling", 70);
+    Device::setValue("Sink", 60);
     Device::setValue("RightTrim", 0);
     Device::setValue("LeftTrim", 100);
-    Device::setValue("Ceiling", 50);
-    Device::setValue("Cabinets", 50);
+    Device::setValue("Ceiling", 70);
+    Device::setValue("Cabinets", 60);
     
     setAllOutsideLights(100);
 }
@@ -179,11 +205,11 @@ void setEveningLights() {
 void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
-    Device::setValue("KitchenCeiling", 50);
+    Device::setValue("KitchenCeiling", 60);
     Device::setValue("Sink", 0);
     Device::setValue("RightTrim", 0);
     Device::setValue("LeftTrim", 0);
-    Device::setValue("Ceiling", 50);
+    Device::setValue("Ceiling", 60);
     Device::setValue("Cabinets", 0);
     setAllOutsideLights(0);
 }
@@ -197,13 +223,15 @@ void setSleepingLights() {
 
 void setCookingLights(int value) {
     Log.info("setCookingLights %d", value);
+    //TODO: save/restore previous states
     Device::setValue("KitchenCeiling", value);
     Device::setValue("Sink", value);
     Device::setValue("Cabinets", value);
 }
 
+
 void setAllInsideLights(int level) {
-    Log.info("setAllInsideLights");
+    Log.info("setAllInsideLights level %d", level);
     Device::setValue("KitchenCeiling", level);
     Device::setValue("Sink", level);
     Device::setValue("RightTrim", level);

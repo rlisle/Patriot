@@ -49,7 +49,11 @@ void Light::begin() {
  */
 void Light::setValue(int value) {
     Log.info("Light " + _name + " setValue: " + String(value));
-    if(_targetValue == value) return;
+    if(_targetValue == value) {
+        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
+        outputPWM();
+        return;
+    }
 
     _targetValue = value;
     if(_dimmingDuration == 0.0 || isPwmSupported() == false) {
@@ -68,9 +72,10 @@ void Light::setValue(int value) {
  */
 void Light::startSmoothDimming() {
     if((int)_value == _targetValue){
-        Log.info("Light " + _name + " startSmoothDimming equal");
+        Log.error("Light " + _name + " startSmoothDimming equal");
         return;
     }
+    //TODO: something wrong here. _value wasn't set in setValue
     _currentValue = _value;
     _lastUpdateTime = millis();
     float delta = _targetValue - _value;

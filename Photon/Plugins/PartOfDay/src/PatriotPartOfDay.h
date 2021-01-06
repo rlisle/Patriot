@@ -54,8 +54,9 @@ class PartOfDay : public Device
 {
 private:
     unsigned long  _lastPollTime;
-    unsigned long  _lastPollDay;
     Period     _periods[8];
+    int        _month;
+    int        _day;
 
     bool       isNextMinute();
     bool       isNextDay();
@@ -64,8 +65,7 @@ private:
     void       publishPOD(int partOfDay);
     
 public:
-    int        _current;    // This should be _percent
-    
+
     PartOfDay();
     
     void begin();
