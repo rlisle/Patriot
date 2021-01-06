@@ -81,7 +81,7 @@ void loop() {
     int cooking   = Device::getChangedValue("cooking");
 
     if( sleeping != -1 ) {
-        handleSleepingChange(sleeping, partOfDay);
+        handleSleepingChange(sleeping);
     }
 
     if( partOfDay != -1 ) {
@@ -112,9 +112,11 @@ void handleLightSwitches() {
     IoT::handleLightSwitch("FrontAwning");
 }
 
-void handleSleepingChange(int sleeping, int partOfDay) {
+void handleSleepingChange(int sleeping) {
     Log.info("sleeping has changed: %d",sleeping);
 
+    int partOfDay = Device::value("PartOfDay");
+    
     // Alexa, Good morning
     if( sleeping == AWAKE && partOfDay > SUNSET ) {
         setMorningLights();
@@ -135,6 +137,7 @@ void handlePartOfDayChange(int partOfDay) {
 
     Log.info("PartOfDay has changed: %d", partOfDay);
 
+    //TODO: handle startup to other periods
     if( partOfDay == SUNRISE ) {
         setSunriseLights();
     }
@@ -223,8 +226,9 @@ void setCookingLights(int value) {
     Device::setValue("Cabinets", value);
 }
 
+
 void setAllInsideLights(int level) {
-    Log.info("setAllInsideLights");
+    Log.info("setAllInsideLights level %d", level);
     Device::setValue("KitchenCeiling", level);
     Device::setValue("Sink", level);
     Device::setValue("RightTrim", level);

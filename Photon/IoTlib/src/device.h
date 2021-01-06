@@ -65,6 +65,5 @@ public:
     static void buildDevicesVariable();
     static String buildStatesVariable();
     static void expose();
-    static void exposeStates();
 
 };
