@@ -42,7 +42,6 @@ private:
     void      reconnectCheck();
     int       parseValue(String message);
     void      parseLogLevel(String message);
-    void      publishStates();
     
     // LogHandler methods
     const char* extractFileName(const char *s);

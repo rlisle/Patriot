@@ -156,7 +156,7 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic == "states") {
             if(message == _controllerName) {
                 Log.info("Received states addressed to us");
-                publishStates();
+                Device::publishStates(_controllerName);
             }
             
         // UNKNOWN
@@ -173,11 +173,6 @@ void MQTTManager::parseMessage(String topic, String message)
         // Not addressed or recognized by us
         Log.error("Parser: Not our message: "+String(topic)+" "+String(message));
     }
-}
-
-void MQTTManager::publishStates() {
-    String states = Device::buildStatesVariable();
-    publish("debug/"+_controllerName+"/states", states);
 }
 
 int MQTTManager::parseValue(String message)
