@@ -75,25 +75,25 @@ void loop() {
     // - update light dimming
     IoT::loop();
     
-    int sleeping  = Device::getChangedValue("sleeping");
-    int partOfDay = Device::getChangedValue("partofday");
-    int cleaning  = Device::getChangedValue("cleaning");
-    int cooking   = Device::getChangedValue("cooking");
+    int sleepingChanged  = Device::getChangedValue("sleeping");
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    int cleaningChanged  = Device::getChangedValue("cleaning");
+    int cookingChanged   = Device::getChangedValue("cooking");
 
-    if( sleeping != -1 ) {
-        handleSleepingChange(sleeping);
+    if( sleepingChanged != -1 ) {
+        handleSleepingChange(sleepingChanged);
     }
 
-    if( partOfDay != -1 ) {
-        handlePartOfDayChange(partOfDay);
+    if( partOfDayChanged != -1 ) {
+        handlePartOfDayChange(partOfDayChanged);
     }
     
-    if( cooking != -1 ) {
-        handleCookingChange(cooking);
+    if( cookingChanged != -1 ) {
+        handleCookingChange(cookingChanged);
     }
 
-    if( cleaning != -1 ) {
-        handleCleaningChange(cleaning);
+    if( cleaningChanged != -1 ) {
+        handleCleaningChange(cleaningChanged);
     }
 
     handleLightSwitches();
@@ -118,7 +118,9 @@ void handleSleepingChange(int sleeping) {
     int partOfDay = Device::value("PartOfDay");
     
     // Alexa, Good morning
+    Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
     if( sleeping == AWAKE && partOfDay > SUNSET ) {
+        Log.info("It is good morning");
         setMorningLights();
     }
 

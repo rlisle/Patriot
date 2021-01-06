@@ -43,7 +43,7 @@ void loop() {
         // Alexa, Good morning
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
         if( sleeping == AWAKE && partOfDay > SUNSET ) {
-            Log.info("it is good morning");
+            Log.info("It is good morning");
             setMorningLights();
         }
 
