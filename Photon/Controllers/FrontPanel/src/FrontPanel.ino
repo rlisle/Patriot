@@ -180,7 +180,8 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("Cabinets", 50);
+    Device::setValue("Cabinets", 60);
+    Device::setValue("Sink", 50);
 }
 
 void setSunriseLights() {
@@ -191,12 +192,12 @@ void setSunriseLights() {
 
 void setEveningLights() {
     Log.info("setEveningLights");
-    Device::setValue("KitchenCeiling", 50);
-    Device::setValue("Sink", 50);
+    Device::setValue("KitchenCeiling", 70);
+    Device::setValue("Sink", 60);
     Device::setValue("RightTrim", 0);
     Device::setValue("LeftTrim", 100);
-    Device::setValue("Ceiling", 50);
-    Device::setValue("Cabinets", 50);
+    Device::setValue("Ceiling", 70);
+    Device::setValue("Cabinets", 60);
     
     setAllOutsideLights(100);
 }
@@ -204,11 +205,11 @@ void setEveningLights() {
 void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
-    Device::setValue("KitchenCeiling", 50);
+    Device::setValue("KitchenCeiling", 60);
     Device::setValue("Sink", 0);
     Device::setValue("RightTrim", 0);
     Device::setValue("LeftTrim", 0);
-    Device::setValue("Ceiling", 50);
+    Device::setValue("Ceiling", 60);
     Device::setValue("Cabinets", 0);
     setAllOutsideLights(0);
 }
