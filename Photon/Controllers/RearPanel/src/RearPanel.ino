@@ -50,47 +50,49 @@ void loop() {
 
     IoT::loop();
     
-    int sleeping = Device::getChangedValue("sleeping");
-    int partOfDay = Device::getChangedValue("partofday");
-    int cleaning = Device::getChangedValue("cleaning");
+    int sleepingChanged = Device::getChangedValue("sleeping");
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    int cleaningChanged = Device::getChangedValue("cleaning");
 
-    if( sleeping != -1 ) {
+    if( sleepingChanged != -1 ) {
 
-        Log.info("sleeping has changed %d",sleeping);
+        Log.info("sleeping has changed %d",sleepingChanged);
+        
+        int partOfDay = Device::value("PartOfDay");
 
         // Alexa, Good morning
-        if( sleeping == AWAKE && partOfDay > SUNSET ) {
+        if( sleepingChanged == AWAKE && partOfDay > SUNSET ) {
             setMorningLights();
         }
 
         // Alexa, Bedtime
-        if( sleeping == RETIRING ) {
+        if( sleepingChanged == RETIRING ) {
             setBedtimeLights();
         }
 
         // Alexa, Goodnight
-        if( sleeping == ASLEEP ) {
+        if( sleepingChanged == ASLEEP ) {
             setSleepingLights();
         }
     }
 
-    if( partOfDay != -1 ) {
+    if( partOfDayChanged != -1 ) {
 
-        Log.info("partOfDay has changed: %d", partOfDay);
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
 
-        if( partOfDay == SUNRISE ) {
+        if( partOfDayChanged == SUNRISE ) {
             // Turn off lights at sunrise
             setSunriseLights();
         }
 
-        if( partOfDay == DUSK ) {
+        if( partOfDayChanged == DUSK ) {
             // Turn on lights after sunset
             setEveningLights();
         }
     }
 
-    if( cleaning != -1 ) {
-        if( cleaning > 0 ) {
+    if( cleaningChanged != -1 ) {
+        if( cleaningChanged > 0 ) {
             Log.info("cleaning did turn on");
             setAllInsideLights( 100 );
         } else {
