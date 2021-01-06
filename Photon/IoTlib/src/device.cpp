@@ -151,16 +151,10 @@ void Device::buildDevicesVariable()
     }
 }
 
-// Build list of current device states for MQTT query
-String Device::buildStatesVariable() {
-    String newVariable = "";
+// Publish each device name and its value
+String Device::publishStates(String controllerName) {
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-        newVariable += ptr->_name;
-        newVariable += ":";
-        newVariable += String(ptr->_value);
-        if (ptr->_next != NULL) {
-            newVariable += ",";
-        }
+        publish("debug/"+controllerName+"/"+ptr->name()+"/state", String(ptr->_value));
     }
     return newVariable;
 }
