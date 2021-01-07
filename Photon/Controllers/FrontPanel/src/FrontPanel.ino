@@ -220,13 +220,20 @@ void setSleepingLights() {
     setAllOutsideLights(0);
 }
 
-void setTheaterLights(int value) {
+void setTheaterLights(int value) {  // 0 = Off, else On
     Log.info("setTheaterLights %d", value);
-    Device::setValue("KitchenCeiling", value);
-    Device::setValue("Sink", value);
-    Device::setValue("Ceiling", value);
+    
+    if( value > 0 ) {   // Turn on TV lights
+        Device::setValue("KitchenCeiling", 60);
+        Device::setValue("Sink", 50);
+        Device::setValue("Ceiling", 70);
+        
+    } else {    // Turn off TV lights
+        Device::setValue("KitchenCeiling", 0);
+        Device::setValue("Sink", 0);
+        Device::setValue("Ceiling", 0);
+    }
 }
-
 
 void setAllInsideLights(int level) {
     Log.info("setAllInsideLights level %d", level);

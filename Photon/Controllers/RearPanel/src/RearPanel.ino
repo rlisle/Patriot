@@ -53,6 +53,7 @@ void loop() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
+    int theaterChanged = Device::getChangedValue("theater");
 
     if( sleepingChanged != -1 ) {
 
@@ -106,6 +107,17 @@ void loop() {
         }
     }
 
+    if( theaterChanged != -1 ) {
+        if( theaterChanged > 0 ) {
+            Log.info("theater did turn on");
+            setTheaterLights( 100 );
+        } else {
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("theater did turn off");
+            setTheaterLights( 0 );
+        }
+    }
+
     // SWITCHES
     IoT::handleLightSwitch("OfficeCeiling");
     IoT::handleLightSwitch("Loft");
@@ -153,6 +165,11 @@ void setSleepingLights() {
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
+}
+
+void setTheaterLights(int level) {
+    Log.info("setTheaterLights %d", level);
+    // Nothing to do
 }
 
 void setAllInsideLights(int value) {
