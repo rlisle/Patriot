@@ -64,7 +64,7 @@ void setup() {
     Device::add(new Device("sleeping"));
     Device::add(new Device("partofday"));
     Device::add(new Device("cleaning"));
-    Device::add(new Device("cooking"));
+    Device::add(new Device("theater"));
 }
 
 void loop() {
@@ -78,7 +78,7 @@ void loop() {
     int sleepingChanged  = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged  = Device::getChangedValue("cleaning");
-    int cookingChanged   = Device::getChangedValue("cooking");
+    int theaterChanged   = Device::getChangedValue("theater");
 
     if( sleepingChanged != -1 ) {
         handleSleepingChange(sleepingChanged);
@@ -88,12 +88,12 @@ void loop() {
         handlePartOfDayChange(partOfDayChanged);
     }
     
-    if( cookingChanged != -1 ) {
-        handleCookingChange(cookingChanged);
-    }
-
     if( cleaningChanged != -1 ) {
         handleCleaningChange(cleaningChanged);
+    }
+
+    if( theaterChanged != -1 ) {
+        handleTheaterChange(theaterChanged);
     }
 
     handleLightSwitches();
@@ -149,14 +149,13 @@ void handlePartOfDayChange(int partOfDay) {
     }
 }
 
-void handleCookingChange(int cooking) {
-    if( cooking > 0 ) {
-        Log.info("cooking did turn on");
-        setCookingLights(100);
+void handleTheaterChange(int theater) {
+    if( theater > 0 ) {
+        Log.info("theater did turn on");
+        setTheaterLights(100);
     } else {
-        //TODO: check if evening lights s/b on, etc.
-        Log.info("cooking did turn off");
-        setCookingLights(0);
+        Log.info("theater did turn off");
+        setTheaterLights(0);
     }
 }
 
@@ -173,7 +172,7 @@ void handleCleaningChange(int cleaning) {
 }
 
 void setAllActivities(int value) {
-    Device::setValue("cooking", value);
+    Device::setValue("theater", value);
     Device::setValue("cleaning", value);
 }
 
@@ -221,12 +220,11 @@ void setSleepingLights() {
     setAllOutsideLights(0);
 }
 
-void setCookingLights(int value) {
-    Log.info("setCookingLights %d", value);
-    //TODO: save/restore previous states
+void setTheaterLights(int value) {
+    Log.info("setTheaterLights %d", value);
     Device::setValue("KitchenCeiling", value);
     Device::setValue("Sink", value);
-    Device::setValue("Cabinets", value);
+    Device::setValue("Ceiling", value);
 }
 
 
