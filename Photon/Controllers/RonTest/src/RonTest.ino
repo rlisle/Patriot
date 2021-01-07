@@ -3,6 +3,16 @@
  *
  * Description: This sketch provides the bridge, PartOfDay, and Activities
  *
+ * PartOfDay Values
+ * 0 SUNRISE
+ * 1 MORNING
+ * 2 NOON
+ * 3 AFTERNOON
+ * 4 SUNSET
+ * 5 DUSK
+ * 6 NIGHT
+ * 7 DAWN
+
  * Author: Ron Lisle
  *
  * Hardware
@@ -22,7 +32,6 @@ void setup() {
 
     // Basic devices allow Alexa to control the name
     // and can also turn off other activities.
-    Device::add(new Device("cooking"));
     Device::add(new Device("cleaning"));
     Device::add(new Device("sleeping"));
 }
@@ -42,18 +51,18 @@ void loop() {
 
         // Alexa, Good morning
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
-        if( sleeping == AWAKE && partOfDay > SUNSET ) {
+        if( changedSleeping == AWAKE && partOfDay > SUNSET ) {
             Log.info("It is good morning");
             setMorningLights();
         }
 
         // Alexa, Bedtime
-        if( sleeping == RETIRING ) {
+        if( changedSleeping == RETIRING ) {
             setMorningLights();
         }
 
         // Alexa, Goodnight
-        if( sleeping == ASLEEP ) {
+        if( changedSleeping == ASLEEP ) {
             setAllInsideLights(0);
         }
     }
@@ -63,12 +72,12 @@ void loop() {
         Log.info("PartOfDay has changed: %d", partOfDay);
 
         // Turn off lights at sunrise
-        if( partOfDay == SUNRISE ) {
+        if( changedPartOfDay == SUNRISE ) {
             setAllInsideLights(0);
         }
 
         // Turn on lights in the evening
-        if( partOfDay == DUSK ) {
+        if( changedPartOfDay == DUSK ) {
             setEveningLights();
         }
     }
