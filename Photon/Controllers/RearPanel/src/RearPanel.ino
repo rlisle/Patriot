@@ -2,10 +2,20 @@
 RearPanel Controller
 Description: This sketch controls all the switches in the Cyclone 4005 rear control panel.
 Author: Ron Lisle
+
+ The controller is located in the office above the piano.
+ It includes the PartOfDay plugin.
  
- This is the bridge controller, so all activities should be added here.
- This controller will then repeat them to MQTT.
- 
+ PartOfDay Values
+  0 SUNRISE
+  1 MORNING
+  2 NOON
+  3 AFTERNOON
+  4 SUNSET
+  5 DUSK
+  6 NIGHT
+  7 DAWN
+
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
@@ -15,11 +25,15 @@ Author: Ron Lisle
 #include <IoT.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
+#include <PatriotPartOfDay.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
 void setup() {
     IoT::begin("192.168.10.184", "RearPanel");
+
+    // PartOfDay
+    Device::add(new PartOfDay());
 
     // Lights
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));

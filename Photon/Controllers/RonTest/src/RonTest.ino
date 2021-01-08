@@ -21,12 +21,9 @@
 
 #include <IoT.h>
 #include <PatriotLight.h>
-#include <PatriotPartOfDay.h>
 
 void setup() {
     IoT::begin("192.168.10.184", "RonTest");
-
-    Device::add(new PartOfDay());
 
     Device::add(new Light(7, "blueLed", false, true));
 
