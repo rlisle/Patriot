@@ -31,6 +31,7 @@ void setup() {
     // and can also turn off other activities.
     Device::add(new Device("cleaning"));
     Device::add(new Device("sleeping"));
+    Device::add(new Device("partofday"));
 }
 
 void loop() {
