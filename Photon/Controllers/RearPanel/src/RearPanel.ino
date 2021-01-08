@@ -56,7 +56,6 @@ void setup() {
 
     // Activities/States - define for every other state
     Device::add(new Device("sleeping"));
-    Device::add(new Device("partofday"));
     Device::add(new Device("cleaning"));
     Device::add(new Device("theater"));
 }
