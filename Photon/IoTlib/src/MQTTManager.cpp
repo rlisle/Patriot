@@ -159,14 +159,24 @@ void MQTTManager::parseMessage(String topic, String message)
                 Device::publishStates(_controllerName);
             }
             
-        // UNKNOWN
+        // DEVICE
         } else {
             
             int value = parseValue(message);
             Device *device = Device::get(subtopic);
             if( device != NULL ) {
+                
+                // Handle save/restore value
                 Log.info("Parser setting device " + subtopic + " to " + value);
-                device->setValue(value);
+                if( value > 0 ) {
+                    device->saveToPrevious();
+                    device->setValue(value);
+                } else {
+                    device->restorePrevious();
+                }
+                
+            } else {
+                Log.info("Parsed unknown subtopic "+subtopic);
             }
         }
     } else {

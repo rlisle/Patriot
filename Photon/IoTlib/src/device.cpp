@@ -44,8 +44,13 @@ void Device::saveToPrevious() {
 }
 
 int Device::restorePrevious() {
-    setValue(_previous);
-    return _previous;
+    int newValue = _previous;
+    _previous = 0;
+    if( newValue == _value ) {
+        newValue = 0;
+    }
+    setValue(newValue);
+    return newValue;
 }
 
 // Static Methods
