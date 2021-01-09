@@ -64,7 +64,7 @@ void setup() {
     Device::add(new Device("sleeping"));
     Device::add(new Device("partofday"));
     Device::add(new Device("cleaning"));
-    Device::add(new Device("cooking"));
+    Device::add(new Device("telly"));
 }
 
 void loop() {
@@ -78,7 +78,7 @@ void loop() {
     int sleepingChanged  = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged  = Device::getChangedValue("cleaning");
-    int cookingChanged   = Device::getChangedValue("cooking");
+    int tellyChanged   = Device::getChangedValue("telly");
 
     if( sleepingChanged != -1 ) {
         handleSleepingChange(sleepingChanged);
@@ -88,12 +88,12 @@ void loop() {
         handlePartOfDayChange(partOfDayChanged);
     }
     
-    if( cookingChanged != -1 ) {
-        handleCookingChange(cookingChanged);
-    }
-
     if( cleaningChanged != -1 ) {
         handleCleaningChange(cleaningChanged);
+    }
+
+    if( tellyChanged != -1 ) {
+        handleTellyChange(tellyChanged);
     }
 
     handleLightSwitches();
@@ -149,14 +149,13 @@ void handlePartOfDayChange(int partOfDay) {
     }
 }
 
-void handleCookingChange(int cooking) {
-    if( cooking > 0 ) {
-        Log.info("cooking did turn on");
-        setCookingLights(100);
+void handleTellyChange(int telly) {
+    if( telly > 0 ) {
+        Log.info("telly did turn on");
+        setTellyLights(100);
     } else {
-        //TODO: check if evening lights s/b on, etc.
-        Log.info("cooking did turn off");
-        setCookingLights(0);
+        Log.info("telly did turn off");
+        setTellyLights(0);
     }
 }
 
@@ -173,7 +172,7 @@ void handleCleaningChange(int cleaning) {
 }
 
 void setAllActivities(int value) {
-    Device::setValue("cooking", value);
+    Device::setValue("telly", value);
     Device::setValue("cleaning", value);
 }
 
@@ -221,14 +220,20 @@ void setSleepingLights() {
     setAllOutsideLights(0);
 }
 
-void setCookingLights(int value) {
-    Log.info("setCookingLights %d", value);
-    //TODO: save/restore previous states
-    Device::setValue("KitchenCeiling", value);
-    Device::setValue("Sink", value);
-    Device::setValue("Cabinets", value);
+void setTellyLights(int value) {  // 0 = Off, else On
+    Log.info("setTellyLights %d", value);
+    
+    if( value > 0 ) {   // Turn on TV lights
+        Device::setValue("KitchenCeiling", 60);
+        Device::setValue("Sink", 50);
+        Device::setValue("Ceiling", 70);
+        
+    } else {    // Turn off TV lights
+        Device::setValue("KitchenCeiling", 0);
+        Device::setValue("Sink", 0);
+        Device::setValue("Ceiling", 0);
+    }
 }
-
 
 void setAllInsideLights(int level) {
     Log.info("setAllInsideLights level %d", level);

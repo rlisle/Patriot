@@ -2,10 +2,20 @@
 RearPanel Controller
 Description: This sketch controls all the switches in the Cyclone 4005 rear control panel.
 Author: Ron Lisle
+
+ The controller is located in the office above the piano.
+ It includes the PartOfDay plugin.
  
- This is the bridge controller, so all activities should be added here.
- This controller will then repeat them to MQTT.
- 
+ PartOfDay Values
+  0 SUNRISE
+  1 MORNING
+  2 NOON
+  3 AFTERNOON
+  4 SUNSET
+  5 DUSK
+  6 NIGHT
+  7 DAWN
+
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
@@ -15,11 +25,15 @@ Author: Ron Lisle
 #include <IoT.h>
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
+#include <PatriotPartOfDay.h>
 
 #define ADDRESS 1   // PWM board address A0 jumper set
 
 void setup() {
     IoT::begin("192.168.10.184", "RearPanel");
+
+    // PartOfDay
+    Device::add(new PartOfDay());
 
     // Lights
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
@@ -40,10 +54,10 @@ void setup() {
     Device::add(new Switch(A5, "RearAwningSwitch"));
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
-    // Activities/States
+    // Activities/States - define for every other state
     Device::add(new Device("sleeping"));
-    Device::add(new Device("partofday"));
     Device::add(new Device("cleaning"));
+    Device::add(new Device("telly"));
 }
 
 void loop() {
@@ -53,6 +67,7 @@ void loop() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
+    int tellyChanged = Device::getChangedValue("telly");
 
     if( sleepingChanged != -1 ) {
 
@@ -106,6 +121,17 @@ void loop() {
         }
     }
 
+    if( tellyChanged != -1 ) {
+        if( tellyChanged > 0 ) {
+            Log.info("telly did turn on");
+            setTellyLights( 100 );
+        } else {
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("telly did turn off");
+            setTellyLights( 0 );
+        }
+    }
+
     // SWITCHES
     IoT::handleLightSwitch("OfficeCeiling");
     IoT::handleLightSwitch("Loft");
@@ -153,6 +179,11 @@ void setSleepingLights() {
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
+}
+
+void setTellyLights(int level) {
+    Log.info("setTellyLights %d", level);
+    // Nothing to do
 }
 
 void setAllInsideLights(int value) {
