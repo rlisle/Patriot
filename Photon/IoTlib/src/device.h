@@ -21,7 +21,7 @@ class Device {
     Device*    _next;       // Linked list
     String     _name;       // Public name (used by Alexa)
     int        _value;      // Typically percent 0-100
-    int        _previous;   // Value at start of loop
+    int        _previous;   // Value before getChanged called
 
 public:
 
@@ -40,6 +40,9 @@ public:
     virtual void setValue(int value);
     
     virtual int  getChangedValue();
+    
+    virtual void saveToPrevious();
+    virtual void restorePrevious();
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
