@@ -64,7 +64,7 @@ void setup() {
     Device::add(new Device("sleeping"));
     Device::add(new Device("partofday"));
     Device::add(new Device("cleaning"));
-    Device::add(new Device("theater"));
+    Device::add(new Device("telly"));
 }
 
 void loop() {
@@ -78,7 +78,7 @@ void loop() {
     int sleepingChanged  = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged  = Device::getChangedValue("cleaning");
-    int theaterChanged   = Device::getChangedValue("theater");
+    int tellyChanged   = Device::getChangedValue("telly");
 
     if( sleepingChanged != -1 ) {
         handleSleepingChange(sleepingChanged);
@@ -92,8 +92,8 @@ void loop() {
         handleCleaningChange(cleaningChanged);
     }
 
-    if( theaterChanged != -1 ) {
-        handleTheaterChange(theaterChanged);
+    if( tellyChanged != -1 ) {
+        handleTellyChange(tellyChanged);
     }
 
     handleLightSwitches();
@@ -149,13 +149,13 @@ void handlePartOfDayChange(int partOfDay) {
     }
 }
 
-void handleTheaterChange(int theater) {
-    if( theater > 0 ) {
-        Log.info("theater did turn on");
-        setTheaterLights(100);
+void handleTellyChange(int telly) {
+    if( telly > 0 ) {
+        Log.info("telly did turn on");
+        setTellyLights(100);
     } else {
-        Log.info("theater did turn off");
-        setTheaterLights(0);
+        Log.info("telly did turn off");
+        setTellyLights(0);
     }
 }
 
@@ -172,7 +172,7 @@ void handleCleaningChange(int cleaning) {
 }
 
 void setAllActivities(int value) {
-    Device::setValue("theater", value);
+    Device::setValue("telly", value);
     Device::setValue("cleaning", value);
 }
 
@@ -220,8 +220,8 @@ void setSleepingLights() {
     setAllOutsideLights(0);
 }
 
-void setTheaterLights(int value) {  // 0 = Off, else On
-    Log.info("setTheaterLights %d", value);
+void setTellyLights(int value) {  // 0 = Off, else On
+    Log.info("setTellyLights %d", value);
     
     if( value > 0 ) {   // Turn on TV lights
         Device::setValue("KitchenCeiling", 60);

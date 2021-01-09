@@ -57,7 +57,7 @@ void setup() {
     // Activities/States - define for every other state
     Device::add(new Device("sleeping"));
     Device::add(new Device("cleaning"));
-    Device::add(new Device("theater"));
+    Device::add(new Device("telly"));
 }
 
 void loop() {
@@ -67,7 +67,7 @@ void loop() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
-    int theaterChanged = Device::getChangedValue("theater");
+    int tellyChanged = Device::getChangedValue("telly");
 
     if( sleepingChanged != -1 ) {
 
@@ -121,14 +121,14 @@ void loop() {
         }
     }
 
-    if( theaterChanged != -1 ) {
-        if( theaterChanged > 0 ) {
-            Log.info("theater did turn on");
-            setTheaterLights( 100 );
+    if( tellyChanged != -1 ) {
+        if( tellyChanged > 0 ) {
+            Log.info("telly did turn on");
+            setTellyLights( 100 );
         } else {
             //TODO: check if evening lights s/b on, etc.
-            Log.info("theater did turn off");
-            setTheaterLights( 0 );
+            Log.info("telly did turn off");
+            setTellyLights( 0 );
         }
     }
 
@@ -181,8 +181,8 @@ void setSleepingLights() {
     setAllOutsideLights(0);
 }
 
-void setTheaterLights(int level) {
-    Log.info("setTheaterLights %d", level);
+void setTellyLights(int level) {
+    Log.info("setTellyLights %d", level);
     // Nothing to do
 }
 
