@@ -113,9 +113,10 @@ int IoT::handleLightSwitch(String name) {
     Device *device = Device::get(name);
     if( lightSwitch > 0 ) {
         device->saveToPrevious();
-        return device->setValue(lightSwitch);
+        device->setValue(lightSwitch);
+        return lightSwitch;
     }
-    return device->restorePrevious(name, lightSwitch);
+    return device->restorePrevious();
 }
 
 /**

@@ -39,12 +39,13 @@ int  Device::getChangedValue() {
     return _value;
 }
 
-void saveToPrevious() {
+void Device::saveToPrevious() {
     _previous = _value;
 }
 
-void restorePrevious() {
+int Device::restorePrevious() {
     setValue(_previous);
+    return _previous;
 }
 
 // Static Methods

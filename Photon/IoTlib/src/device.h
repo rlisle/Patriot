@@ -42,7 +42,7 @@ public:
     virtual int  getChangedValue();
     
     virtual void saveToPrevious();
-    virtual void restorePrevious();
+    virtual int  restorePrevious();
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
