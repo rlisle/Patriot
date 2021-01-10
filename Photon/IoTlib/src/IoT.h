@@ -21,20 +21,23 @@ All text above must be included in any redistribution.
 #include "device.h"
 #include "MQTTManager.h"
 
+// Do NOT use 0 for this type value
+// because 0 will invoke previous restoration
+
 // PartOfDay
-#define SUNRISE 0
-#define MORNING 1
-#define NOON 2
-#define AFTERNOON 3
-#define SUNSET 4
-#define DUSK 5
-#define NIGHT 6
-#define DAWN 7
+#define SUNRISE 1
+#define MORNING 2
+#define NOON 3
+#define AFTERNOON 4
+#define SUNSET 5
+#define DUSK 6
+#define NIGHT 7
+#define DAWN 8
 
 // Sleeping
-#define AWAKE 0
-#define RETIRING 1
-#define ASLEEP 2
+#define AWAKE 1
+#define RETIRING 2
+#define ASLEEP 3
 
 /**
  * Main IoT object.
