@@ -34,21 +34,27 @@ void Device::setValue(int value) {
 
 // Check if device has changed and return new value or -1
 int  Device::getChangedValue() {
-    if( _value == _previous ) return -1;
+    if( _value == _previous ) {
+        //Log.info("Device "+_name+" getChangedValue() same");
+        return -1;
+    }
+    Log.info("Device "+_name+" getChangedValue() changed");
     _previous = _value;
     return _value;
 }
 
 void Device::saveToPrevious() {
+    Log.info("Device "+_name+" saveToPrevious %d, %d",_value,_previous);
     _previous = _value;
 }
 
 int Device::restorePrevious() {
     int newValue = _previous;
-    _previous = 0;
-    if( newValue == _value ) {
+    _previous = _value;
+    if( newValue > 0 && newValue == _value ) {
         newValue = 0;
     }
+    Log.info("restorePrevious %d",newValue);
     setValue(newValue);
     return newValue;
 }
