@@ -7,14 +7,14 @@ PatriotPartOfDay plugin
  - _value will be a value of 0 to 7 as listed below
   
   - Periods can be (in podNum order):
-    0 Sunrise
-    1 Morning
-    2 Noon
-    3 Afternoon
-    4 Sunset
-    5 Dusk
-    6 Night
-    7 Dawn
+    1 Sunrise
+    2 Morning
+    3 Noon
+    4 Afternoon
+    5 Sunset
+    6 Dusk
+    7 Night
+    8 Dawn
 
  - podNum values are defined in IoT.h
  
@@ -39,51 +39,6 @@ All text above must be included in any redistribution.
 // Austin lat/long: 30.2672° N, 97.7431° W
 float const LONGITUDE = -97.733330;
 float const LATITUDE =  30.266666;
-
-Period::Period(int hour, int minute) {
-    _hour = hour;
-    _minute = minute;
-}
-
-// hour and minute can be < 0 or too big and will be corrected
-void Period::set(int hour, int minute) {
-    _hour = hour;
-    _minute = minute;
-    if(_minute < 0) {
-        _hour--;
-        _minute += 60;
-    }
-    if(_minute >= 60) {
-        _hour++;
-        _minute -= 60;
-    }
-    if(_hour >= 24) {
-        _hour -= 24;
-    }
-    if(_hour < 0) {
-        hour += 24;
-    }
-}
-
-bool Period::operator ==(const Period& period) {
-    return period._hour == _hour && period._minute == _minute;
-}
-
-bool Period::operator >(const Period& period) {
-    if(_hour > period._hour) return true;
-    if(_hour < period._hour) return false;
-    return _minute > period._minute;
-}
-
-bool Period::operator <(const Period& period) {
-    if(_hour < period._hour) return true;
-    if(_hour > period._hour) return false;
-    return _minute < period._minute;
-}
-
-String Period::info() {
-    return String(_hour) + ":" + String(_minute);
-}
 
 /**
  * Constructor

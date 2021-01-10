@@ -5,14 +5,14 @@ Features:
 - Broadcasts the current part of the day
  
  - Periods can be (in order):
-    Sunrise
-    Morning
-    Noon
-    Afternoon
-    Sunset
-    Dusk
-    Night
-    Dawn
+    1 Sunrise
+    2 Morning
+    3 Noon
+    4 Afternoon
+    5 Sunset
+    6 Dusk
+    7 Night
+    8 Dawn
  
  So dark out is PartOfDay > Sunset
  and light out is PartOfDay < Dusk
@@ -31,24 +31,7 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 #include <device.h>
-
-class Period {
-private:
-    int     _hour;
-    int     _minute;
-
-public:
-    Period(int hour = 0, int minute = 0);
-    
-    // minute can be < 0 or > 59 and will be corrected
-    void    set(int hour, int minute);
-    
-    String  info();
-    
-    bool    operator ==(const Period& hm);
-    bool    operator >(const Period& hm);
-    bool    operator <(const Period& hm);
-};
+#include "Period.h"
 
 class PartOfDay : public Device
 {
