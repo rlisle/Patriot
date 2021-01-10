@@ -13,6 +13,8 @@ All text above must be included in any redistribution.
 */
 #pragma once
 
+#include "Particle.h"
+
 class Period {
 private:
     int     _hour;
