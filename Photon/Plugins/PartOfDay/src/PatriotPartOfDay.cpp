@@ -117,6 +117,10 @@ void PartOfDay::loop()
             calcSunriseSunset();
         }
         
+        if( Time.minute() % 15 == 0 ) {
+            Log("The time now is %d:%d",Time.hour(),Time.minute());
+        }
+
         int now = calcPartOfDay();
         if (now != _value) {
             Log.info("PartOfDay changed to %d", now);
@@ -191,7 +195,6 @@ void PartOfDay::calcSunriseSunset()
 int PartOfDay::calcPartOfDay()
 {
     Period current(Time.hour(),Time.minute());
-    Log("The time now is " + String(current.info()));
     
     if (current > _periods[NIGHT]) return NIGHT;
     if (current > _periods[DUSK]) return DUSK;
