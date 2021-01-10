@@ -39,6 +39,20 @@ int  Device::getChangedValue() {
     return _value;
 }
 
+void Device::saveToPrevious() {
+    _previous = _value;
+}
+
+int Device::restorePrevious() {
+    int newValue = _previous;
+    _previous = 0;
+    if( newValue == _value ) {
+        newValue = 0;
+    }
+    setValue(newValue);
+    return newValue;
+}
+
 // Static Methods
 
 void Device::add(Device *device)
