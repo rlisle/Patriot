@@ -35,9 +35,10 @@ void Device::setValue(int value) {
 // Check if device has changed and return new value or -1
 int  Device::getChangedValue() {
     if( _value == _previous ) {
-        //Log.info("Device "+_name+" getChangedValue() same");
+        //Don't put a log here. It is called every loop.
         return -1;
     }
+    // Log here is ok because it only occurs when value changes
     Log.info("Device "+_name+" getChangedValue() changed");
     _previous = _value;
     return _value;
