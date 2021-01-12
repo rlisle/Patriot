@@ -22,6 +22,7 @@ class Device {
     String     _name;       // Public name (used by Alexa)
     int        _value;      // Typically percent 0-100
     int        _previous;   // Value before getChanged called
+    int        _restore;    // Used to restore previous dimming level
 
 public:
 
@@ -41,8 +42,8 @@ public:
     
     virtual int  getChangedValue();
     
-    virtual void saveToPrevious();
-    virtual int  restorePrevious();
+    virtual void saveRestoreValue();
+    virtual void restoreSavedValue();
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
