@@ -109,14 +109,15 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 int IoT::handleLightSwitch(String name) {
     int lightSwitch = Device::getChangedValue(name+"Switch");
     if( lightSwitch == -1) return -1;
-    Log.info("handleLightSwitch hasChanged");
+    Log.info("handleLightSwitch hasChanged: %d",lightSwitch);
     Device *device = Device::get(name);
     if( lightSwitch > 0 ) {
-        device->saveToPrevious();
-        device->setValue(lightSwitch);
-        return lightSwitch;
+        device->saveRestoreValue();
+        device->setValue(100);
+    } else {
+        device->restoreSavedValue();
     }
-    return device->restorePrevious();
+    return lightSwitch;
 }
 
 /**

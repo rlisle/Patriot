@@ -22,7 +22,7 @@ String globalStatesVariable;
 String globalDevicesVariable;
 
 Device::Device(String name)
-: _next(NULL), _name(name), _value(0), _previous(-1)
+: _next(NULL), _name(name), _value(0), _previous(-1), _restore(0)
 {
     // Do any setup work in begin() not here.
 }
@@ -35,7 +35,7 @@ void Device::setValue(int value) {
 // Check if device has changed and return new value or -1
 int  Device::getChangedValue() {
     if( _value == _previous ) {
-        //Don't put a log here. It is called every loop.
+        //Don't put a log here. This is called almost every loop.
         return -1;
     }
     // Log here is ok because it only occurs when value changes
@@ -44,20 +44,19 @@ int  Device::getChangedValue() {
     return _value;
 }
 
-void Device::saveToPrevious() {
-    Log.info("Device "+_name+" saveToPrevious %d, %d",_value,_previous);
-    _previous = _value;
+void Device::saveRestoreValue() {
+    if( _value == 100 ) {
+        Log.info("Device "+_name+" not saving restore value becuase its 100");
+        return;
+    }
+    Log.info("Device "+_name+" saveRestoreValue %d, prev %d",_value,_restore);
+    _restore = _value;
 }
 
-int Device::restorePrevious() {
-    int newValue = _previous;
-    _previous = _value;
-    if( newValue > 0 && newValue == _value ) {
-        newValue = 0;
-    }
-    Log.info("restorePrevious %d",newValue);
-    setValue(newValue);
-    return newValue;
+void Device::restoreSavedValue() {
+    Log.info("restorePrevious %d", _restore);
+    setValue(_restore);
+    _restore = 0;
 }
 
 // Static Methods
