@@ -6,16 +6,6 @@ Author: Ron Lisle
  The controller is located in the office above the piano.
  It includes the PartOfDay plugin.
  
- PartOfDay Values
-  0 SUNRISE
-  1 MORNING
-  2 NOON
-  3 AFTERNOON
-  4 SUNSET
-  5 DUSK
-  6 NIGHT
-  7 DAWN
-
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed

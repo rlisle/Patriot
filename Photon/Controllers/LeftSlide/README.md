@@ -17,6 +17,7 @@ It is accessible by removing the iPhone 6+
 This project uses the published Patriot libraries:
 * PatriotIoT (IoT)
 * PatriotLight
+* PatriotSwitch
 
 When any library is updated, rerun "particle library add <name>" from the project directory.
 
