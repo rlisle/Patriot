@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		2733855E25AF25930032BB1F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RightSlide/README.md; sourceTree = "<group>"; };
+		2733855F25AF25930032BB1F /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RightSlide/project.properties; sourceTree = "<group>"; };
+		2733856025AF25A50032BB1F /* RightSlide.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; name = RightSlide.ino; path = ../Photon/Controllers/RightSlide/src/RightSlide.ino; sourceTree = "<group>"; };
 		2755DBE4259DFA3900971ABA /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = device.cpp; path = ../Photon/IoTlib/src/device.cpp; sourceTree = "<group>"; };
 		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
@@ -62,6 +65,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		2733855D25AF256F0032BB1F /* RightSlide */ = {
+			isa = PBXGroup;
+			children = (
+				2733856025AF25A50032BB1F /* RightSlide.ino */,
+				2733855F25AF25930032BB1F /* project.properties */,
+				2733855E25AF25930032BB1F /* README.md */,
+			);
+			name = RightSlide;
+			sourceTree = "<group>";
+		};
 		E410859525688BE000EFBE84 /* NCD8LightTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -118,6 +131,7 @@
 		E4849C6E2566AC0F00A39734 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				2733855D25AF256F0032BB1F /* RightSlide */,
 				E4E61716257D285400D7AA04 /* LeftSlide */,
 				E410859525688BE000EFBE84 /* NCD8LightTest */,
 				E4849C712566B28800A39734 /* RearPanel */,

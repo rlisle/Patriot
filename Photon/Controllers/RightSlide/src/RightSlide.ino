@@ -1,12 +1,12 @@
 /**
-Left Slide Controller
-Description: This sketch controls the 2 lights and switches in the left slide.
+Right Slide Controller
+Description: This sketch controls the 2 lights and switches in the right slide.
 Author: Ron Lisle
  
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
-    3. "particle flash LeftSlide"
+    3. "particle flash RightSlide"
  
     I/Os selected to be all on the same side
      2 switch connections:
@@ -21,15 +21,15 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 
 void setup() {
-    IoT::begin("192.168.10.184","LeftSlide");
+    IoT::begin("192.168.10.184","RightSlide");
 
     // Lights
-    Device::add(new Light(TX, "Couch"));
-    Device::add(new Light(RX, "LeftVertical"));
+    Device::add(new Light(TX, "Loveseat"));
+    Device::add(new Light(RX, "RightVertical"));
     
     // Switches
-    Device::add(new Switch(A0, "CouchSwitch"));
-    Device::add(new Switch(A1, "LeftVerticalSwitch"));
+    Device::add(new Switch(A0, "LoveseatSwitch"));
+    Device::add(new Switch(A1, "RightVerticalSwitch"));
     
     // Activities/States
     Device::add(new Device("sleeping"));
@@ -71,7 +71,7 @@ void loop() {
 
     if( partOfDayChanged != -1 ) {
 
-        Log.info("partOfDay has changed: %d", partOfDay);
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
             // Turn off lights at sunrise
@@ -98,8 +98,8 @@ void loop() {
     }
 
     // SWITCHES
-    IoT::handleLightSwitch("Couch");
-    IoT::handleLightSwitch("LeftVertical");
+    IoT::handleLightSwitch("Loveseat");
+    IoT::handleLightSwitch("RightVertical");
 }
 
 void setAllActivities(int value) {
@@ -108,8 +108,8 @@ void setAllActivities(int value) {
 
 void setAllLights(int value) {
     Log.info("setAllLights %d",value);
-    Device::setValue("Couch", value);
-    Device::setValue("LeftVertical", value);
+    Device::setValue("Loveseat", value);
+    Device::setValue("RightVertical", value);
 }
 
 void setMorningLights() {
