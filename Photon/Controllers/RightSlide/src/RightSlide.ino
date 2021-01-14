@@ -71,7 +71,7 @@ void loop() {
 
     if( partOfDayChanged != -1 ) {
 
-        Log.info("partOfDay has changed: %d", partOfDay);
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
             // Turn off lights at sunrise
