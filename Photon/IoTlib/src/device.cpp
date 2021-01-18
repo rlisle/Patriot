@@ -22,7 +22,7 @@ String globalStatesVariable;
 String globalDevicesVariable;
 
 Device::Device(String name)
-: _next(NULL), _name(name), _value(0), _previous(-1), _restore(0)
+: _next(NULL), _name(name), _value(0), _previous(0), _restore(0)
 {
     // Do any setup work in begin() not here.
 }

@@ -3,16 +3,6 @@
  *
  * Description: This sketch provides the bridge, PartOfDay, and Activities
  *
- * PartOfDay Values
- * 0 SUNRISE
- * 1 MORNING
- * 2 NOON
- * 3 AFTERNOON
- * 4 SUNSET
- * 5 DUSK
- * 6 NIGHT
- * 7 DAWN
-
  * Author: Ron Lisle
  *
  * Hardware
