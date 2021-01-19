@@ -18,6 +18,7 @@
  */
 
 #include "PatriotNCD4Switch.h"
+#include "IoT.h"
 
 #define POLL_INTERVAL_MILLIS 100
 
@@ -101,15 +102,15 @@ void NCD4Switch::reset() {
     Wire.begin();
 
     // Issue PCA9634 SWRST
-    Wire.beginTransmission(_address);
+    Wire.beginTransmission(_boardAddress);
     Wire.write(0x06);
     Wire.write(0xa5);
     Wire.write(0x5a);
     byte status = Wire.endTransmission();
     if(status != 0){
-        Log.error("NCD4Switch reset write failed for light "+String(_lightNum)+", re-initializing board");
+        Log.error("NCD4Switch reset write failed for switch bitmap: "+String(_switchBitmap)+", re-initializing board");
     }
-    initializeBoard();
+    begin();
 }
 
 
