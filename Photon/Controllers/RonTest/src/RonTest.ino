@@ -12,7 +12,7 @@
 #include <IoT.h>
 #include <PatriotLight.h>
 //#include <PatriotCurtain.h>
-#include <NCD4Switch.h>
+#include <PatriotNCD4Switch.h>
 
 void setup() {
     IoT::begin("192.168.10.184", "RonTest");
