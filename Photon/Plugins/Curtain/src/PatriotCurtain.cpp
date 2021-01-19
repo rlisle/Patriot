@@ -154,7 +154,7 @@ void Curtain::loop()
             _stage = 0;
             break;
         default:
-            // Nothing to do
+            Log.error("Invalid _stage %d",_stage);
         }
     }
 };

@@ -18,6 +18,8 @@ void setup() {
     IoT::begin("192.168.10.184", "RonTest");
 
     Device::add(new Light(7, "blueLed", false, true));
+    
+    Device::add(new Curtain(0x20,0,"Curtain"));
 
     // Basic devices allow Alexa to control the name
     // and can also turn off other activities.
