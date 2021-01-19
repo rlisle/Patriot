@@ -45,7 +45,9 @@ class Curtain : public Device
     int8_t  _stage; //1 = start pulse, 2=running, 3=stop pulse
     
     void    pulse(bool start);
-
+    bool    isCurtainRunning();
+    bool    isTimeToChangePulse();
+    
  public:
     Curtain(int8_t boardAddress, int8_t relayIndex, String name);
     

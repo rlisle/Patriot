@@ -11,7 +11,7 @@
 
 #include <IoT.h>
 #include <PatriotLight.h>
-//#include <PatriotCurtain.h>
+#include <PatriotCurtain.h>
 #include <PatriotNCD4Switch.h>
 
 void setup() {

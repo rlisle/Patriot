@@ -90,17 +90,17 @@ void Curtain::begin() {
  */
 void Curtain::setValue(int percent) {
 
-    _previous = value;
+    _previous = _value;
     _value = percent;
     
     if(_value > _previous) {
-        _mode = OPEN_CURTAIN
+        _mode = OPEN_CURTAIN;
     } else {
         _mode = CLOSE_CURTAIN;
     }
 
     _stage = 1;
-    _stopMillis = Millis() + PULSE_MILLIS;
+    _stopMillis = millis() + PULSE_MILLIS;
     pulse(true);
 }
 
@@ -109,7 +109,7 @@ void Curtain::setValue(int percent) {
  */
 void Curtain::pulse(bool start) {
     
-    byte bitmap = relay << _mode;
+    byte bitmap = _relayIndex << _mode;
     if(start) {
         _currentState |= bitmap;    // Set relay's bit
     } else {
@@ -141,7 +141,7 @@ void Curtain::loop()
     switch(_stage) {
         case 1:
             pulse(false);
-            _stopMillis = millis() + (FULL_TIME_MILLIS * 100 / abs(delta)) - PULSE_MILLIS;
+            _stopMillis = millis() + (FULL_TIME_MILLIS * 100 / abs(_previous - _value)) - PULSE_MILLIS;
             _stage = 2;
             break;
         case 2:
@@ -159,10 +159,10 @@ void Curtain::loop()
     }
 };
 
-bool isCurtainRunning() {
+bool Curtain::isCurtainRunning() {
     return(_stage != 0);
 }
 
-bool isTimeToChangePulse() {
+bool Curtain::isTimeToChangePulse() {
     return(millis() >= _stopMillis);
 }
