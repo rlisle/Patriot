@@ -15,8 +15,8 @@
 		2733856425B29C790032BB1F /* PatriotCurtain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotCurtain.h; path = ../Photon/Plugins/Curtain/src/PatriotCurtain.h; sourceTree = "<group>"; };
 		2733856525B29C930032BB1F /* curtain.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; name = curtain.ino; path = ../Photon/Plugins/Curtain/examples/curtain.ino; sourceTree = "<group>"; };
 		2733856725B5C5AB0032BB1F /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Switch/library.properties; sourceTree = "<group>"; };
-		2733856825B5C5C20032BB1F /* NCD4Switch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NCD4Switch.cpp; path = ../Photon/Plugins/NCD4Switch/src/NCD4Switch.cpp; sourceTree = "<group>"; };
-		2733856925B5C5C20032BB1F /* NCD4Switch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NCD4Switch.h; path = ../Photon/Plugins/NCD4Switch/src/NCD4Switch.h; sourceTree = "<group>"; };
+		2733856825B5C5C20032BB1F /* PatriotNCD4Switch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD4Switch.cpp; path = ../Photon/Plugins/NCD4Switch/src/PatriotNCD4Switch.cpp; sourceTree = "<group>"; };
+		2733856925B5C5C20032BB1F /* PatriotNCD4Switch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotNCD4Switch.h; path = ../Photon/Plugins/NCD4Switch/src/PatriotNCD4Switch.h; sourceTree = "<group>"; };
 		2755DBE4259DFA3900971ABA /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = device.cpp; path = ../Photon/IoTlib/src/device.cpp; sourceTree = "<group>"; };
 		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
@@ -96,8 +96,8 @@
 		2733856625B5C5850032BB1F /* NCD4Switch */ = {
 			isa = PBXGroup;
 			children = (
-				2733856825B5C5C20032BB1F /* NCD4Switch.cpp */,
-				2733856925B5C5C20032BB1F /* NCD4Switch.h */,
+				2733856825B5C5C20032BB1F /* PatriotNCD4Switch.cpp */,
+				2733856925B5C5C20032BB1F /* PatriotNCD4Switch.h */,
 				2733856725B5C5AB0032BB1F /* library.properties */,
 			);
 			name = NCD4Switch;
