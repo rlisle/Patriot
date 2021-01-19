@@ -166,3 +166,22 @@ bool Curtain::isCurtainRunning() {
 bool Curtain::isTimeToChangePulse() {
     return(millis() >= _stopMillis);
 }
+
+void Curtain::reset() {
+    Log.error("Resetting board");
+    Wire.reset();
+    // Do we need any delay here?
+    Wire.begin();
+
+    // Issue PCA9634 SWRST
+    Wire.beginTransmission(_boardAddress);
+    Wire.write(0x06);
+    Wire.write(0xa5);
+    Wire.write(0x5a);
+    byte status = Wire.endTransmission();
+    if(status != 0){
+        Log.error("Curtain reset write failed for relayIndex: "+String(_relayIndex)+", re-initializing board");
+    }
+    begin();
+}
+
