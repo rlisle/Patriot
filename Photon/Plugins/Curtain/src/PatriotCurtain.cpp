@@ -46,7 +46,7 @@
  * @param name String name used to address the relay.
  */
 Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name)
-    : Device(name, DeviceType::Curtain)
+    : Device(name)
 {
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _relayIndex  = relayIndex;

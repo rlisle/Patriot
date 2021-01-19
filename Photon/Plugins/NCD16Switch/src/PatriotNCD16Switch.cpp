@@ -35,7 +35,7 @@
  * @param name String name used in MQTT messages
  */
 NCD16Switch::NCD16Switch(int address, int switchNum, String name)
-                : Device(name, DeviceType::NCD16Switch)
+                : Device(name)
 {
     _address = address;
     _lastPollTime = 0;

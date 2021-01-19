@@ -28,12 +28,12 @@
  * @param name String name used to address the relay.
  */
 NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name)
-    : Device(name, DeviceType::NCD4Switch)
+    : Device(name)
 {
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _lastPollTime = 0;
     
-    if(_switchIndex > 0 && switchIndex <= 3) {
+    if(switchIndex > 0 && switchIndex <= 3) {
         _switchBitmap = 0x10 << switchIndex;
     } else {
         _switchBitmap = 0x10;   // If invalid, set to first switch
@@ -71,7 +71,7 @@ void NCD4Switch::begin() {
  * isSwitchOn
  * Return state of switch (inverted: low = 100, high = 0)
  */
-bool NCD4witch::isSwitchOn() {
+bool NCD4Switch::isSwitchOn() {
     int retries = 0;
     int status;
     do {
