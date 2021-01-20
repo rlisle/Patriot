@@ -90,6 +90,8 @@ void Curtain::begin() {
  */
 void Curtain::setValue(int percent) {
 
+    Log.info("Curtain setValue %d",percent);
+    
     _previous = _value;
     _value = percent;
     
@@ -109,6 +111,8 @@ void Curtain::setValue(int percent) {
  */
 void Curtain::pulse(bool start) {
     
+    Log.info("Curtain pulse %d",start);
+
     byte bitmap = _relayIndex << _mode;
     if(start) {
         _currentState |= bitmap;    // Set relay's bit
@@ -128,7 +132,7 @@ void Curtain::pulse(bool start) {
 
     if(status != 0) {
         //TODO: handle any errors, retry, etc.
-        Log.error("Error turning on relays");
+        Log.error("Error pulsing relay %d %d", bitmap, start);
     }
 }
 
@@ -140,16 +144,19 @@ void Curtain::loop()
     if(isCurtainRunning() && isTimeToChangePulse()) {
     switch(_stage) {
         case 1:
+            Log.info("Curtain end-of-start pulse");
             pulse(false);
             _stopMillis = millis() + (FULL_TIME_MILLIS * 100 / abs(_previous - _value)) - PULSE_MILLIS;
             _stage = 2;
             break;
         case 2:
+            Log.info("Curtain start-of-end pulse");
             pulse(true);
             _stopMillis = millis() + PULSE_MILLIS;
             _stage = 3;
             break;
         case 3:
+            Log.info("Curtain end-of-end pulse");
             pulse(false);
             _stage = 0;
             break;
