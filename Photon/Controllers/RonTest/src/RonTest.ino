@@ -19,7 +19,9 @@ void setup() {
 
     Device::add(new Light(7, "blueLed", false, true));
     
-    Device::add(new Curtain(0x20,0,"Curtain"));
+    Device::add(new Curtain(0x20, 0, "Curtain"));
+    
+    Device::add(new NCD4Switch(0x20, 0, "OfficeDoor"));
 
     // Basic devices allow Alexa to control the name
     // and can also turn off other activities.
@@ -28,8 +30,8 @@ void setup() {
     Device::add(new Device("partofday"));
 }
 
-unsigned long scanInterval = 15000;
-unsigned long lastScan;
+//unsigned long scanInterval = 15000;
+//unsigned long lastScan;
 
 void loop() {
 
@@ -63,9 +65,15 @@ void loop() {
 
     int changedSleeping = Device::getChangedValue("sleeping");
     int changedPartOfDay = Device::getChangedValue("partofday");
+    int changedOfficeDoor = Device::getChangedValue("OfficeDoor");
     int sleeping = Device::value("sleeping");
     int partOfDay = Device::value("partofday");
+    int officeDoor = Device::value("OfficeDoor");
 
+    if( changedOfficeDoor != -1 ) {
+        Log.info("Office door changed %d", officeDoor);
+    }
+    
     if( changedSleeping != -1 ) {
         
         Log.info("sleeping has changed: %d",sleeping);
