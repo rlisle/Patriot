@@ -33,7 +33,7 @@
  * @param name String name used in MQTT messages
  */
 NCD8Switch::NCD8Switch(int address, int switchNum, String name)
-                : Device(name, DeviceType::NCD8Switch)
+                : Device(name)
 {
     _address = address;
     _lastPollTime = 0;

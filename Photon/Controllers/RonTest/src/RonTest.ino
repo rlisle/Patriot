@@ -3,16 +3,6 @@
  *
  * Description: This sketch provides the bridge, PartOfDay, and Activities
  *
- * PartOfDay Values
- * 0 SUNRISE
- * 1 MORNING
- * 2 NOON
- * 3 AFTERNOON
- * 4 SUNSET
- * 5 DUSK
- * 6 NIGHT
- * 7 DAWN
-
  * Author: Ron Lisle
  *
  * Hardware
@@ -21,11 +11,17 @@
 
 #include <IoT.h>
 #include <PatriotLight.h>
+#include <PatriotCurtain.h>
+#include <PatriotNCD4Switch.h>
 
 void setup() {
     IoT::begin("192.168.10.184", "RonTest");
 
     Device::add(new Light(7, "blueLed", false, true));
+    
+    Device::add(new Curtain(0x20, 0, "Curtain"));
+    
+    Device::add(new NCD4Switch(0x20, 0, "OfficeDoor"));
 
     // Basic devices allow Alexa to control the name
     // and can also turn off other activities.
@@ -34,15 +30,50 @@ void setup() {
     Device::add(new Device("partofday"));
 }
 
+//unsigned long scanInterval = 15000;
+//unsigned long lastScan;
+
 void loop() {
-    
+
+    // Search all I2C addresses every 15 seconds - leave this here commented out for future use
+//     if(millis() > lastScan + scanInterval){
+//         lastScan = millis();
+//
+//         bool devicesFound = false;
+//         String newDevices = "Devices at: ";
+//         //Step through all 127 possible I2C addresses to scan for devices on the I2C bus.
+//         for(int i = 1; i < 128; i++){
+//             //Make a general call to device at the current address to see if anything responds.
+//             Wire.beginTransmission(i);
+//             byte status = Wire.endTransmission();
+//             if(status == 0){
+//                 //Device found so append it to our device list event string
+//                 newDevices.concat(i);
+//                 newDevices.concat(", ");
+//                 devicesFound = true;
+//             }
+//
+//         }
+//         if(devicesFound){
+//             Log.info(newDevices);
+//         }else{
+//             Log.info("No Devices Found");
+//         }
+//     }
+
     IoT::loop();
 
     int changedSleeping = Device::getChangedValue("sleeping");
     int changedPartOfDay = Device::getChangedValue("partofday");
+    int changedOfficeDoor = Device::getChangedValue("OfficeDoor");
     int sleeping = Device::value("sleeping");
     int partOfDay = Device::value("partofday");
+    int officeDoor = Device::value("OfficeDoor");
 
+    if( changedOfficeDoor != -1 ) {
+        Log.info("Office door changed %d", officeDoor);
+    }
+    
     if( changedSleeping != -1 ) {
         
         Log.info("sleeping has changed: %d",sleeping);

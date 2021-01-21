@@ -106,7 +106,7 @@ bool PartOfDay::isNextDay()
     _month = Time.month();
     _day = Time.day();
 
-    Log.info("PartOfDay is next day %d:%d",_month,_day);
+    Log.info("PartOfDay is next day %d/%d",_month,_day);
     
     return true;
 }
