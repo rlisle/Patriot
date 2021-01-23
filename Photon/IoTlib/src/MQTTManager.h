@@ -31,11 +31,12 @@ public:
     void        mqttHandler(char* topic, byte* payload, unsigned int length);
         
 private:
-    MQTT      *_mqtt;
-    String    _controllerName;
+    MQTT          *_mqtt;
+    String        _controllerName;
     system_tick_t _lastMQTTtime;
+    String        _connectID;       // Used when reconnecting
     
-    int       _logging;        // a counting semaphore to prevent recursion
+    int       _logging; // a counting semaphore to prevent recursion
 
     void      (*_callback)(char*,uint8_t*,unsigned int);
     void      connect(String connectID);

@@ -37,6 +37,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 //TODO: If MQTT doesn't connect, then start 
 void MQTTManager::connect(String connectID) {
 
+    _connectID = connectID;
     _lastMQTTtime = Time.now();
 
     if(_mqtt == NULL) {
@@ -85,8 +86,8 @@ void MQTTManager::loop()
 void MQTTManager::reconnectCheck() {
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > 20 * 60) {
-        log("WARNING: connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-        connect();
+        Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
+        connect(_connectID);
     }
 }
 
