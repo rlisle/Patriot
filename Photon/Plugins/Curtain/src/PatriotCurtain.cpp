@@ -59,27 +59,33 @@ Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name)
 void Curtain::begin() {
 
     byte status;
+    int  retries;
 
     // Only the first device on the I2C link needs to enable it
     if(!Wire.isEnabled()) {
         Wire.begin();
     }
 
-    int retries = 0;
+    retries = 0;
     do {
         Wire.beginTransmission(_boardAddress);
-        Wire.write(0x00);                   // Select IO Direction register
-        Wire.write(0xf0);                   // 0-3 out, 4-7 in
-        status = Wire.endTransmission();    // Write 'em, Dano
+        Wire.write(0x00);                 // Select IO Direction register
+        Wire.write(0xf0);                 // 0-3 out, 4-7 in
+        status = Wire.endTransmission();  // Write 'em, Dano
+    } while( status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Set IODIR failed");
+    }
 
-        Wire.write(0x06);                   // Select pull-up resistor register
-        Wire.write(0xf0);                   // pull-ups enabled on inputs
+    retries = 0;
+    do {
+        Wire.beginTransmission(_boardAddress);
+        Wire.write(0x06);        // Select pull-up resistor register
+        Wire.write(0xf0);        // pull-ups enabled on inputs
         status = Wire.endTransmission();
     } while( status != 0 && retries++ < 3);
-
     if(status != 0) {
-        Log.error("Set address failed");
-        //TODO: handle error
+        Log.error("Set GPPU failed");
     }
 }
 
