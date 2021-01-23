@@ -45,6 +45,7 @@ void MQTTManager::connect(String connectID) {
 
     if(_mqtt->isConnected()) {
         Log.info("MQTT is connected, so reconnecting...");
+        LogManager::instance()->removeHandler(this);
         _mqtt->disconnect();
     }
 
@@ -54,6 +55,7 @@ void MQTTManager::connect(String connectID) {
             Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
     } else {
+        // This won't do anything because our handler isn't connected yet.
         Log.error("MQTT is NOT connected! Check MQTT IP address");
     }
     // Looks good, now register our MQTT LogHandler
@@ -81,11 +83,11 @@ void MQTTManager::loop()
 }
 
 void MQTTManager::reconnectCheck() {
-//    system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
-//    if(secondsSinceLastMessage > 5 * 60) {
-//        log("WARNING: connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-//        connect();
-//    }
+    system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
+    if(secondsSinceLastMessage > 20 * 60) {
+        log("WARNING: connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
+        connect();
+    }
 }
 
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
