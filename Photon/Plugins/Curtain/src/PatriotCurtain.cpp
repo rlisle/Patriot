@@ -109,7 +109,7 @@ void Curtain::setValue(int percent) {
 
     // We only need a single pulse if opening or closing all the way
     if(_value == 0 || _value == 100) {
-        _state = 3;
+        _stage = 3;
     } else {
         _stage = 1;
     }
