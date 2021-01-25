@@ -39,7 +39,7 @@ void setup() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", 2));
-    Device::add(new NCD8Light(ADDRESS, 7, "RightCornice", 2));
+    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", 2));
 
     // Switches
     Device::add(new Switch(A0, "OfficeCeilingSwitch"));
@@ -157,7 +157,7 @@ void setMorningLights() {
     Log.info("setMorningLights");
     Device::setValue("piano", 20);
     Device::setValue("officeceiling",80);
-    Device::setValue("RightCornice", 100);
+    Device::setValue("OfficeTrim", 100);
 }
 
 void setSunriseLights() {
@@ -170,7 +170,7 @@ void setEveningLights() {
     Log.info("setEveningLights");
     Device::setValue("piano", 50);
     Device::setValue("officeceiling",80);
-    Device::setValue("RightCornice", 100);
+    Device::setValue("OfficeTrim", 100);
     setAllOutsideLights(100);
 }
 
@@ -180,7 +180,7 @@ void setBedtimeLights() {
     Device::setValue("OfficeCeiling", 80);
     Device::setValue("Loft", 0);
     Device::setValue("piano", 0);
-    Device::setValue("RightCornice", 50);
+    Device::setValue("OfficeTrim", 0);
     setAllOutsideLights(0);
     Device::setValue("Curtain",0);
 }
@@ -203,7 +203,7 @@ void setAllInsideLights(int value) {
     Device::setValue("OfficeCeiling", value);
     Device::setValue("Loft", value);
     Device::setValue("Piano", value);
-    Device::setValue("RightCornice", value);
+    Device::setValue("OfficeTrim", value);
 }
 
 void setAllOutsideLights(int value) {
