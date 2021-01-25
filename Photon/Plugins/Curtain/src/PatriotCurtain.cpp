@@ -49,7 +49,7 @@ Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name)
     : Device(name)
 {
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
-    _relayIndex  = relayIndex;
+    _relayIndex  = relayIndex;      // 0 (first 2 relays)
     _currentState = 0;
     _stopMillis = 0;
     _mode = 0;
@@ -103,14 +103,18 @@ void Curtain::setValue(int percent) {
     
     if(_value > _previous) {
         _mode = OPEN_CURTAIN;
+        Log.info("opening curtain");
     } else {
+        Log.info("closing curtain");
         _mode = CLOSE_CURTAIN;
     }
 
     // We only need a single pulse if opening or closing all the way
     if(_value == 0 || _value == 100) {
+        Log.info("Single pulse only");
         _stage = 3;
     } else {
+        Log.info("Double pulse");
         _stage = 1;
     }
     _stopMillis = millis() + PULSE_MILLIS;
@@ -124,13 +128,15 @@ void Curtain::pulse(bool start) {
     
     Log.info("Curtain pulse %d",start);
 
-    byte bitmap = _relayIndex << _mode;
+    byte bitmap = 0x01 << (_relayIndex + _mode - 1);
+    Log.info("Curtain bitmap=0x%2x",bitmap);
     if(start) {
         _currentState |= bitmap;    // Set relay's bit
     } else {
         bitmap = 0xff ^ bitmap;
         _currentState &= bitmap;
     }
+    Log.info("_currentState=0x%2x",_currentState);
 
     byte status;
     int retries = 0;
