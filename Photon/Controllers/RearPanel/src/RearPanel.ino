@@ -16,14 +16,20 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotPartOfDay.h>
+#include <PatriotCurtain.h>
+#include <PatriotNCD4Switch.h>
 
-#define ADDRESS 1   // PWM board address A0 jumper set
+#define ADDRESS 1      // PWM board address A0 jumper set
+#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
 void setup() {
     IoT::begin("192.168.10.184", "RearPanel");
 
     // PartOfDay
     Device::add(new PartOfDay());
+
+    Device::add(new Curtain(I2CR4IO4, 0, "Curtain"));
+    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor"));
 
     // Lights
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
@@ -33,7 +39,7 @@ void setup() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", 2));
-    // one unused dimmer I/O
+    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", 2));
 
     // Switches
     Device::add(new Switch(A0, "OfficeCeilingSwitch"));
@@ -58,12 +64,12 @@ void loop() {
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
     int tellyChanged = Device::getChangedValue("telly");
+    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
+    int partOfDay = Device::value("PartOfDay");
 
     if( sleepingChanged != -1 ) {
 
         Log.info("sleeping has changed %d",sleepingChanged);
-        
-        int partOfDay = Device::value("PartOfDay");
 
         // Alexa, Good morning
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
@@ -122,6 +128,17 @@ void loop() {
         }
     }
 
+    if( officeDoorChanged != -1) {
+        if( officeDoorChanged > 0 ) {   // Door opened
+            if( partOfDay > SUNSET ) {
+                Device::setValue("RearPorch", 100);
+            }
+            //TODO: chime?
+        } else {                        // Door closed
+            // Nothing to do when door closes
+        }
+    }
+    
     // SWITCHES
     IoT::handleLightSwitch("OfficeCeiling");
     IoT::handleLightSwitch("Loft");
@@ -140,6 +157,7 @@ void setMorningLights() {
     Log.info("setMorningLights");
     Device::setValue("piano", 20);
     Device::setValue("officeceiling",80);
+    Device::setValue("OfficeTrim", 100);
 }
 
 void setSunriseLights() {
@@ -152,6 +170,7 @@ void setEveningLights() {
     Log.info("setEveningLights");
     Device::setValue("piano", 50);
     Device::setValue("officeceiling",80);
+    Device::setValue("OfficeTrim", 100);
     setAllOutsideLights(100);
 }
 
@@ -160,8 +179,10 @@ void setBedtimeLights() {
     setAllActivities(0);
     Device::setValue("OfficeCeiling", 80);
     Device::setValue("Loft", 0);
-    Device::setValue("piano", 50);
+    Device::setValue("piano", 0);
+    Device::setValue("OfficeTrim", 0);
     setAllOutsideLights(0);
+    Device::setValue("Curtain",0);
 }
 
 void setSleepingLights() {
@@ -169,6 +190,7 @@ void setSleepingLights() {
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
+    Device::setValue("Curtain",0);
 }
 
 void setTellyLights(int level) {
@@ -181,6 +203,7 @@ void setAllInsideLights(int value) {
     Device::setValue("OfficeCeiling", value);
     Device::setValue("Loft", value);
     Device::setValue("Piano", value);
+    Device::setValue("OfficeTrim", value);
 }
 
 void setAllOutsideLights(int value) {

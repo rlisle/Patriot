@@ -32,8 +32,8 @@
 
 #define MILLIS_PER_SECOND 1000
 // Adjust this to match length of time to open/close curtains
-#define FULL_TIME_MILLIS 10000
-#define PULSE_MILLIS 200
+#define FULL_TIME_MILLIS 6000
+#define PULSE_MILLIS 100
 
 // Mode (relay bit)
 #define OPEN_CURTAIN 2
@@ -49,7 +49,7 @@ Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name)
     : Device(name)
 {
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
-    _relayIndex  = relayIndex;
+    _relayIndex  = relayIndex;      // 0 (first 2 relays)
     _currentState = 0;
     _stopMillis = 0;
     _mode = 0;
@@ -107,7 +107,12 @@ void Curtain::setValue(int percent) {
         _mode = CLOSE_CURTAIN;
     }
 
-    _stage = 1;
+    // We only need a single pulse if opening or closing all the way
+    if(_value == 0 || _value == 100) {
+        _stage = 3;
+    } else {
+        _stage = 1;
+    }
     _stopMillis = millis() + PULSE_MILLIS;
     pulse(true);
 }
@@ -119,7 +124,7 @@ void Curtain::pulse(bool start) {
     
     Log.info("Curtain pulse %d",start);
 
-    byte bitmap = _relayIndex << _mode;
+    byte bitmap = 0x01 << (_relayIndex + _mode - 1);
     if(start) {
         _currentState |= bitmap;    // Set relay's bit
     } else {
@@ -137,7 +142,6 @@ void Curtain::pulse(bool start) {
     } while(status != 0 && retries++ < 3);
 
     if(status != 0) {
-        //TODO: handle any errors, retry, etc.
         Log.error("Error pulsing relay %d %d", bitmap, start);
     }
 }
@@ -152,7 +156,9 @@ void Curtain::loop()
         case 1:
             Log.info("Curtain end-of-start pulse");
             pulse(false);
-            _stopMillis = millis() + (FULL_TIME_MILLIS * 100 / abs(_previous - _value)) - PULSE_MILLIS;
+            
+            _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_previous - _value)) / 100) - PULSE_MILLIS;
+            
             _stage = 2;
             break;
         case 2:
