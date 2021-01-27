@@ -1,5 +1,5 @@
 /**
- * This file contains configuration information neededd for runtime.
+ * This file contains configuration information needed for runtime.
  * These values might be changed during testing.
  */
 'use strict';
