@@ -17,6 +17,18 @@
 		2733856725B5C5AB0032BB1F /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Switch/library.properties; sourceTree = "<group>"; };
 		2733856825B5C5C20032BB1F /* PatriotNCD4Switch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD4Switch.cpp; path = ../Photon/Plugins/NCD4Switch/src/PatriotNCD4Switch.cpp; sourceTree = "<group>"; };
 		2733856925B5C5C20032BB1F /* PatriotNCD4Switch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotNCD4Switch.h; path = ../Photon/Plugins/NCD4Switch/src/PatriotNCD4Switch.h; sourceTree = "<group>"; };
+		2733856C25C047570032BB1F /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		2733856D25C047570032BB1F /* package-lock.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "package-lock.json"; sourceTree = "<group>"; };
+		2733856E25C047570032BB1F /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
+		2733856F25C047570032BB1F /* Configuration.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.txt; sourceTree = "<group>"; };
+		2733857025C047570032BB1F /* constants.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = constants.js; sourceTree = "<group>"; };
+		2733857125C047570032BB1F /* device */ = {isa = PBXFileReference; lastKnownFileType = folder; path = device; sourceTree = "<group>"; };
+		2733857225C047570032BB1F /* test */ = {isa = PBXFileReference; lastKnownFileType = folder; path = test; sourceTree = "<group>"; };
+		2733857325C047570032BB1F /* config.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = config.js; sourceTree = "<group>"; };
+		2733857425C047570032BB1F /* upload.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = upload.sh; sourceTree = "<group>"; };
+		2733857525C047570032BB1F /* package.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = package.json; sourceTree = "<group>"; };
+		2733857625C047570032BB1F /* project.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = project.json; sourceTree = "<group>"; };
+		2733857725C047570032BB1F /* testConfig.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = testConfig.js; sourceTree = "<group>"; };
 		2755DBE4259DFA3900971ABA /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = device.cpp; path = ../Photon/IoTlib/src/device.cpp; sourceTree = "<group>"; };
 		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
@@ -103,6 +115,25 @@
 			name = NCD4Switch;
 			sourceTree = "<group>";
 		};
+		2733856B25C0472D0032BB1F /* Alexa */ = {
+			isa = PBXGroup;
+			children = (
+				2733857325C047570032BB1F /* config.js */,
+				2733856F25C047570032BB1F /* Configuration.txt */,
+				2733857025C047570032BB1F /* constants.js */,
+				2733857125C047570032BB1F /* device */,
+				2733856C25C047570032BB1F /* index.js */,
+				2733856D25C047570032BB1F /* package-lock.json */,
+				2733857525C047570032BB1F /* package.json */,
+				2733857625C047570032BB1F /* project.json */,
+				2733856E25C047570032BB1F /* src */,
+				2733857225C047570032BB1F /* test */,
+				2733857725C047570032BB1F /* testConfig.js */,
+				2733857425C047570032BB1F /* upload.sh */,
+			);
+			name = Alexa;
+			sourceTree = "<group>";
+		};
 		E410859525688BE000EFBE84 /* NCD8LightTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -135,6 +166,7 @@
 		E4849C492566A90700A39734 = {
 			isa = PBXGroup;
 			children = (
+				2733856B25C0472D0032BB1F /* Alexa */,
 				E4849C742566B48000A39734 /* Plugins */,
 				E4849C6E2566AC0F00A39734 /* Controllers */,
 				E4849C502566A93E00A39734 /* IoTlib */,
