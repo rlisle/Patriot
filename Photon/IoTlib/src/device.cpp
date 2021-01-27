@@ -20,6 +20,7 @@ All text above must be included in any redistribution.
  */
 String globalStatesVariable;
 String globalDevicesVariable;
+String globalSupportedVariable;
 
 Device::Device(String name)
 : _next(NULL), _name(name), _value(0), _previous(0), _restore(0)
@@ -151,6 +152,10 @@ void Device::expose()
     if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
     {
         Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
+    }
+    if(!Particle.variable(kSupportedVariableName, globalSupportedVariable))
+    {
+        Log.error("Error: Unable to expose " + kSupportedVariableName + " variable");
     }
 }
 

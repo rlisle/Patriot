@@ -39,7 +39,8 @@ void setup() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", 2));
-    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", 2));
+    // Fading OfficeTrim results in door toggling
+    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", 0));
 
     // Switches
     Device::add(new Switch(A0, "OfficeCeilingSwitch"));
