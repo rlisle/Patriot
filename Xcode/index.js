@@ -3,9 +3,6 @@
  *
  * Updated for V3 API changes 9/28/17
  *
- * Note that per Amazon V2 must continue to be supported until
- * all devices have been updated to V3.
- *
  * This module sets up the production dependencies then calls main.
  *
  */

@@ -36,27 +36,11 @@ function controlOn(event, context, config) {
     });
 }
 
-function controlOnV2(event, context, config) {
-    let command = event.payload.appliance.additionalApplianceDetails.command;
-    let data = command+":100";
-    return publish(config.EventName, data, config.AccessToken).then(function(result) {
-        return result;
-    });
-}
-
 function controlOff(event, context, config) {
     let command = event.directive.endpoint.cookie.command;  // use endpointId instead?
     var data = command+":0"
     let accessToken = event.directive.endpoint.scope.token;
     return publish(config.EventName, data, accessToken).then(function(result) {
-        return result;
-    });
-}
-
-function controlOffV2(event, context, config) {
-    var command = event.payload.appliance.additionalApplianceDetails.command;
-    var data = command+":0"
-    return publish(config.EventName, data, config.AccessToken).then(function(result) {
         return result;
     });
 }
@@ -159,7 +143,7 @@ function getEndpoints(token) {
                     });
                 promises.push(p1);
 
-                let p2 = getVariable(name, 'Supported', token).then(function (supported) {
+/*                let p2 = getVariable(name, 'Supported', token).then(function (supported) {
                             let supportedStrings = supported.split(',');
                             supportedStrings.forEach(function (item) {
                                 if(item) {
@@ -171,6 +155,7 @@ function getEndpoints(token) {
                             console.log("Error reading Supported variable for " + name);
                         });
                 promises.push(p2);
+ */
             });
 
             return Promise.all(promises).then(values => {
@@ -183,67 +168,6 @@ function getEndpoints(token) {
         });
 }
 
-
-/**
- * getAppliances
- * @param token
- * @returns {Promise}
- */
-function getAppliancesV2(token) {
-
-    helper.log("getAppliances",token);
-
-    // Get list of active Photons
-    return particle.listDevices({ auth: token}).then(function(result) {
-
-        helper.log("getAppliances result",result);
-        
-        let statusCode = result.statusCode; // s/b 200
-        if(statusCode != 200) {
-            console.log("Error listing devices: "+statusCode);
-            return [];
-        }
-
-        let photonNames = result.body.filter(function(item) {
-            return item.connected;
-        }).map(function(item){
-            return item.name;
-        });
-
-        // Read list of devices from each Photon
-        // Use promises to wait until all are done'
-        let appliances = [];
-        let promises = [];
-        photonNames.forEach(function(name) {
-            let p2 = Promise.race([
-                getVariable(name, 'Supported', token).then(function (supported) {
-                    let supportedStrings = supported.split(',');  //Split string into array of individual strings
-                    supportedStrings.forEach(function (item) {
-                        if(item) {
-                            appliances.push(discoveryScene(item));
-                        }
-                    });
-                    return 0;
-                },
-                function (err) {
-                    console.log("Error reading Supported variable for " + name);
-                    return 1;
-                }),
-                new Promise(function(resolve,reject){
-                    setTimeout(function() { resolve('[]'); }, 5000);
-                })
-            ]);
-            promises.push(p2);
-        });
-        return Promise.all(promises).then(values => {
-            return appliances;
-        }).timeout(5000,"timeout");
-    },
-    function(err){
-        console.log("Error listing devices. Returning appliances = "+JSON.stringify(appliances));
-        return appliances;
-    });
-}
 
 /** Define a device or scene
  *      The name can be multiple words and should be exactly what the user
@@ -271,33 +195,6 @@ function discoveryScene(name) {
     return scene;
 }
 
-function applianceInfo(name) {          // V2
-    // I believe that applianceId must not contain spaces
-    let id = name.replace(/\s/g,'').toLocaleLowerCase();
-
-    let friendlyName = name.toLocaleLowerCase();
-    let description = name + ' connected via Particle.io';
-    var appliance = {
-        applianceId: id,
-        manufacturerName: 'PatriotHobbyist',
-        modelName: 'Photon',
-        version: 'VER01',
-        friendlyName: friendlyName,
-        friendlyDescription: description,
-        isReachable: 'true',
-        actions:[
-            "turnOn",
-            "turnOff"
-        ],
-        // This can be anything we want, and will be passed back
-        additionalApplianceDetails: {
-            "name":     name,         // This is the mixed case name
-            "command":  friendlyName  // Currently using lower case with spaces
-        }
-    };
-    return appliance;
-}
-
 // This function will create the endpoint JSON for each device or activity
 // The name argument is used for the friendlyName.
 // It will be lower-cased and spaces removed for the endpointId
@@ -311,7 +208,7 @@ function endpointInfo(name) {          // V3
         "endpointId": id,
         "friendlyName": friendlyName,
         "description": description,
-        "manufacturerName": 'PatriotHobbyist',
+        "manufacturerName": 'RvSmartHome',
         "displayCategories": [          // LIGHT, SMARTPLUG, SWITCH, CAMERA, DOOR, TEMPERATURE_SENSOR,
             "LIGHT"                     // THERMOSTAT, SMARTLOCK, SCENE_TRIGGER, ACTIVITY_TRIGGER, OTHER
         ],
@@ -393,16 +290,13 @@ function sceneEndpointInfo(name) {          // V3
 
 module.exports = {
     controlOn:controlOn,
-    controlOnV2:controlOnV2,
     controlOff:controlOff,
-    controlOffV2:controlOffV2,
     percentage:percentage,
     adjust:adjust,
     login:login,
     getVariable:getVariable,
     callFunction:callFunction,
     publish:publish,
-    getAppliancesV2:getAppliancesV2,
     getEndpoints:getEndpoints,
     discoveryDevice:discoveryDevice,
     discoveryScene:discoveryScene

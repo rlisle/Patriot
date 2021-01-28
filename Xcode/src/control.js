@@ -11,7 +11,6 @@
 var constants   = require('../constants');
 var helper      = require('./helper');
 
-// Updated V3 control handler
 function handler(request, context, config) {
 
     var requestedName = request.directive.header.name;
@@ -167,67 +166,7 @@ function handler(request, context, config) {
      */
 }
 
-function handlerV2(event, context, config) {
-
-    var requestedName = event.header.name;
-
-    // helper.log('Control',requestedName);
-
-    switch (requestedName) {
-        case constants.REQUEST_TURN_ON:
-            config.Device.controlOn(event, context, config).then(function(result){
-                    //helper.log("Control turn on then",result);
-                    let header = helper.createHeader(constants.NAMESPACE_CONTROL,constants.RESPONSE_TURN_ON);
-                    let payload = {};
-                    //var messageId = event.header.messageId; // Is this needed?
-                    context.succeed(helper.createDirective(header,payload));
-                },
-                function(error) {
-                    helper.log("Control turn on error",error);
-                    context.fail(helper.createError(constants.NAMESPACE_CONTROL, error, constants.ERROR_DRIVER_INTERNAL, "Unknown exception"));
-                });
-            break;
-
-        case constants.REQUEST_TURN_OFF:
-            config.Device.controlOff(event, context, config).then(function(result) {
-                    //helper.log("Control turn off then",result);
-                    let header = helper.createHeader(constants.NAMESPACE_CONTROL,constants.RESPONSE_TURN_OFF);
-                    let payload = {};
-                    //var messageId = event.header.messageId; // Is this needed?
-                    context.succeed(helper.createDirective(header,payload));
-                },
-                function(error) {
-                    helper.log("Control turn off error",error);
-                    context.fail(helper.createError(constants.NAMESPACE_CONTROL, error, constants.ERROR_DRIVER_INTERNAL, "Unknown exception"));
-                });
-            break;
-
-        case constants.REQUEST_SET_PERCENT:
-            config.Device.percentage(event, context, config).then(function(result){
-                    //helper.log("Control percentage then",result);
-                    let header = helper.createHeader(constants.NAMESPACE_CONTROL,constants.RESPONSE_SET_PERCENT);
-                    let payload = {};
-                    //var messageId = event.header.messageId; // Is this needed?
-                    context.succeed(helper.createDirective(header,payload));
-                },
-                function(error) {
-                    helper.log("Control percentage error",error);
-                    context.fail(helper.createError(constants.NAMESPACE_CONTROL, error, constants.ERROR_DRIVER_INTERNAL, "Unknown exception"));
-                });
-            break;
-
-        default:
-            helper.log("Control unsupported operation",requestedName);
-            context.fail(helper.createError(constants.NAMESPACE_CONTROL, 'Unsupported operation', constants.ERROR_UNSUPPORTED_OPERATION, "Unsupported operation"));
-    }
-    /*
-     Note: No return value or promise.
-           Device methods will call context.succeed(result) or context.fail(controllError)
-     */
-}
-
 /* Export our public functions */
 module.exports = {
     handler:handler,
-    handlerV2:handlerV2
 };
