@@ -153,6 +153,8 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
     }
+    // This is test only, not currently used.
+    globalSupportedVariable = "testSupported";
     if(!Particle.variable(kSupportedVariableName, globalSupportedVariable))
     {
         Log.error("Error: Unable to expose " + kSupportedVariableName + " variable");
@@ -166,7 +168,7 @@ void Device::buildDevicesVariable()
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
         newVariable += ptr->_name;
         if (ptr->_next != NULL) {
-            newVariable += ", ";
+            newVariable += ",";     // Removed extra space to see if that is breaking discovery
         }
     }
     if(newVariable.length() < kMaxVariableStringLength) {

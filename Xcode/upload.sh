@@ -17,6 +17,6 @@ echo "Uploading Archive.zip to US, UK, and AU AWS Lambdas";
 #aws lambda update-function-code --function-name PatriotSmartHomeAU --zip-file fileb://Archive.zip --profile au
 
 # Dev/test lambda
-aws lambda update-function-code --function-name patriotSmartHome --zip-file fileb://Archive.zip
+aws lambda update-function-code --function-name rvSmartHome --zip-file fileb://Archive.zip
 
 echo Remember to version the Lambdas after testing and before submitting.
