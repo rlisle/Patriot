@@ -4,6 +4,7 @@
   "description": "Alexa RV Smart Home Skill",
   "main": "index.js",
   "dependencies": {
+    "ask-sdk": "^2.10.0",
     "bluebird": "^3.5.0",
     "particle-api-js": "^6.4.3"
   },
