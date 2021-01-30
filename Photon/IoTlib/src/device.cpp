@@ -132,7 +132,7 @@ int Device::setValue(String name, int value) {
 int  Device::getChangedValue(String name) {
     Device *device = get(name);
     if( device == NULL ) {
-        Log.error("getChangedValue: " + name + " not found");
+        //Log.info("getChangedValue: " + name + " not found");
         return -1;
     }
     return device->getChangedValue();

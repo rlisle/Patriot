@@ -52,9 +52,9 @@ void setup() {
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities/States - define for every other state
-    Device::add(new Device("sleeping"));
-    Device::add(new Device("cleaning"));
-    Device::add(new Device("telly"));
+//    Device::add(new Device("sleeping"));
+//    Device::add(new Device("cleaning"));
+//    Device::add(new Device("telly"));
 }
 
 void loop() {

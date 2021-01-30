@@ -131,8 +131,12 @@ function getEndpoints(token) {
             photonNames.forEach(function(name) {
 
                 let p1 = getVariable(name, 'Devices', token).then(function (devices) {
+
+                    helper.log("getEndpoints devices", devices);
+
                         let deviceStrings = devices.split(',');     //Split string into array of individual name:type strings
                         deviceStrings.forEach(function (item) {
+                            helper.log("getEndpoints device", item);
                             if(item) {
                                 endpoints.push(endpointInfo(item))
                             }
@@ -159,6 +163,7 @@ function getEndpoints(token) {
             });
 
             return Promise.all(promises).then(values => {
+                helper.log("getEndpoints endpoints", endpoints);
                 return endpoints;
             }).timeout(5000,"timeout");
         },
@@ -168,7 +173,7 @@ function getEndpoints(token) {
         });
 }
 
-
+/* I think these are V2 methods */
 /** Define a device or scene
  *      The name can be multiple words and should be exactly what the user
  *      will speak (eg. "Table lamp").
@@ -178,6 +183,7 @@ function getEndpoints(token) {
  *      Note that a space in the ID causes the device to not appear.
  */
 function discoveryDevice(name, controllerId) {
+    helper.log("discoveryDevice", name);
     let device = applianceInfo(name);
     device.actions.push('setPercentage');
     device.additionalApplianceDetails.controllerId = controllerId;
@@ -191,6 +197,7 @@ function discoveryDevice(name, controllerId) {
  *    description will also have " scene" appended.
  */
 function discoveryScene(name) {
+    helper.log("discoveryScene", name);
     let scene = applianceInfo(name);
     return scene;
 }
@@ -232,7 +239,6 @@ function endpointInfo(name) {          // V3
                             "name": "powerState"
                         }
                     ],
-                    "proactivelyReported": true,    // Is it ...Reportable or ...Reported?
                     "retrievable": true
                 }
             },
@@ -252,6 +258,7 @@ function endpointInfo(name) {          // V3
             }
         ]
     };
+    helper.log("Device endpoint info returning", endpoint);
     return endpoint;
 }
 
