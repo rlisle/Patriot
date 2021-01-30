@@ -14,13 +14,6 @@ var constants = {
     RESPONSE_ACTIVATE          : "ActivationStarted",
     RESPONSE_DEACTIVATE        : "DeactivationStarted",
 
-    // Previous Constants
-    NAMESPACE_CONTROL_V2    : "Alexa.ConnectedHome.Control",
-    NAMESPACE_DISCOVERY_V2  : "Alexa.ConnectedHome.Discovery",
-    RESPONSE_DISCOVER_V2    : "DiscoverAppliancesResponse",
-
-    PAYLOAD_VERSION_V2      : 2,
-
     // Discovered Appliances Actions
     INCREMENT_ACTION      : "incrementPercentage",
     DECREMENT_ACTION      : "decrementPercentage",

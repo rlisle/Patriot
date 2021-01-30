@@ -14,6 +14,7 @@ const constants     = require('../constants');
 var helper          = require('./helper');
 var control         = require('./control');
 var discovery       = require('./discovery');
+var reportState     = require('./report');
 
 /**
  */
@@ -42,8 +43,7 @@ function handler(event, context, config) {
         switch (requestedNamespace) {
 
             case constants.NAMESPACE_ALEXA:
-//                reportState.handler(event, context, config);
-                helper.log("MAIN","V3 Alexa namespace");
+                reportState.handler(event, context, config);
                 break;
 
             case constants.NAMESPACE_DISCOVERY:

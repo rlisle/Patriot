@@ -21,7 +21,7 @@ var particle = new Particle();
 var token;
 
 /**
- * Handle control On (updated for V3)
+ * Handle control On
  * @param event
  * @param context
  * @param config
@@ -101,7 +101,7 @@ function publish(name, data, token) {
 }
 
 /**
- * getEndpoints (V3)
+ * getEndpoints
  * @param token
  * @returns {Promise}
  */
@@ -206,18 +206,39 @@ function discoveryScene(name) {
 // The name argument is used for the friendlyName.
 // It will be lower-cased and spaces removed for the endpointId
 // TODO: support different device types
-function endpointInfo(name) {          // V3
+function endpointInfo(name) {
     helper.log('Device endpoint info:',name);
+    //TODO: Strip off prefix and use to determine device type: Curtain, Door, Fan, Light, Motion, Switch, Temp
+    let dispCategory = "LIGHT";
+    if(name.charAt(1)==':') {
+        var devType = name.charAt(0);
+        name = name.substring(2);
+        if(devType=='C') {
+            dispCategory = "INTERIOR_BLIND"; // Best fit for Curtain
+        } else if(devType=='D') {
+            dispCategory = "DOOR";
+        } else if(devType=='F') {
+            dispCategory = "FAN";
+        } else if(devType=='L') {
+            dispCategory = "LIGHT"; // redundant
+        } else if(devType=='M') {
+            dispCategory = "MOTION_SENSOR";
+        } else if(devType=='S') {
+            dispCategory = "SWITCH";
+        } else if(devType=='T') {
+            dispCategory = "TEMPERATURE_SENSOR";
+        }
+    }
     let id = name.replace(/\s/g,'').toLocaleLowerCase();    // Remove spaces. Numbers, letters, _-=#;:?@& only
     let friendlyName = name.toLocaleLowerCase();            // Name lower case to simplify compares. No special chars
-    let description = name + ' connected via Particle.io';  //
+    let description = name + ' RvSmartHome';  //
     var endpoint = {
         "endpointId": id,
         "friendlyName": friendlyName,
         "description": description,
-        "manufacturerName": 'RvSmartHome',
+        "manufacturerName": 'Ron Lisle',
         "displayCategories": [          // LIGHT, SMARTPLUG, SWITCH, CAMERA, DOOR, TEMPERATURE_SENSOR,
-            "LIGHT"                     // THERMOSTAT, SMARTLOCK, SCENE_TRIGGER, ACTIVITY_TRIGGER, OTHER
+            dispCategory                // THERMOSTAT, SMARTLOCK, SCENE_TRIGGER, ACTIVITY_TRIGGER, OTHER
         ],
         "cookie": {                     // This can be anything we want, and will be passed back
             "name":     name,           // This is the mixed case name
@@ -228,7 +249,7 @@ function endpointInfo(name) {          // V3
                 "type": "AlexaInterface",
                 "interface": "Alexa",
                 "version": "3"
-            },
+            },                          // TODO: use devType to determine capabilities
             {
                 "type": "AlexaInterface",              // Is . needed? Doc shows both ways
                 "interface": "Alexa.PowerController",
@@ -252,7 +273,6 @@ function endpointInfo(name) {          // V3
                             "name": "powerLevel"
                         }
                     ],
-                    "proactivelyReported": true,
                     "retrievable": true
                 }
             }
@@ -265,7 +285,7 @@ function endpointInfo(name) {          // V3
 // This function will create the endpoint JSON for each supported activity (scene)
 // The name argument is used for the friendlyName.
 // It will be lower-cased and spaces removed for the endpointId
-function sceneEndpointInfo(name) {          // V3
+function sceneEndpointInfo(name) {
     helper.log('Scene endpoint info:',name);
     let id = name.replace(/\s/g,'').toLocaleLowerCase();    // Remove spaces. Numbers, letters, _-=#;:?@& only
     let friendlyName = name.toLocaleLowerCase();            // Name lower case to simplify compares. No special chars
@@ -274,7 +294,7 @@ function sceneEndpointInfo(name) {          // V3
         "endpointId": id,
         "friendlyName": friendlyName,
         "description": description,
-        "manufacturerName": 'PatriotHobbyist',
+        "manufacturerName": 'Ron Lisle',
         "displayCategories": [          // LIGHT, SMARTPLUG, SWITCH, CAMERA, DOOR, TEMPERATURE_SENSOR,
             "SCENE_TRIGGER"             // THERMOSTAT, SMARTLOCK, SCENE_TRIGGER, ACTIVITY_TRIGGER, OTHER
         ],
