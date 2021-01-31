@@ -41,3 +41,6 @@ CMakeLists.txt
 *.xcuserstate
 xcuserdata/
 xcshareddate/
+
+# Alexa archive
+Archive.zip

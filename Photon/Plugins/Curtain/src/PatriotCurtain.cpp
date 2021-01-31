@@ -54,6 +54,7 @@ Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name)
     _stopMillis = 0;
     _mode = 0;
     _stage = 0;
+    _type  = 'C';
 }
 
 void Curtain::begin() {

@@ -22,7 +22,7 @@ String globalStatesVariable;
 String globalDevicesVariable;
 
 Device::Device(String name)
-: _next(NULL), _name(name), _value(0), _previous(0), _restore(0)
+: _next(NULL), _name(name), _value(0), _previous(0), _restore(0), _type('L')
 {
     // Do any setup work in begin() not here.
 }
@@ -124,6 +124,7 @@ int Device::setValue(String name, int value) {
     Device *ptr = get(name);
     if( ptr == NULL ) return -1;
     ptr->setValue(value);
+    buildDevicesVariable();
     return 0;
 }
 
@@ -131,7 +132,7 @@ int Device::setValue(String name, int value) {
 int  Device::getChangedValue(String name) {
     Device *device = get(name);
     if( device == NULL ) {
-        Log.error("getChangedValue: " + name + " not found");
+        //Log.info("getChangedValue: " + name + " not found");
         return -1;
     }
     return device->getChangedValue();
@@ -154,14 +155,18 @@ void Device::expose()
     }
 }
 
+// The Devices variable is used by Alexa discovery and ReportState
+// It is a comma delimited list of <T>:<Name>=<value>
 void Device::buildDevicesVariable()
 {
     String newVariable = "";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
+        newVariable += String(ptr->_type)+":";
         newVariable += ptr->_name;
+        newVariable += "="+String(ptr->_value);
         if (ptr->_next != NULL) {
-            newVariable += ", ";
+            newVariable += ",";     // Removed extra space to see if that is breaking discovery
         }
     }
     if(newVariable.length() < kMaxVariableStringLength) {

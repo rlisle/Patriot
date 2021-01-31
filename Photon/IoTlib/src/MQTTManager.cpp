@@ -22,8 +22,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     _logging = 0;
 
     // We'll want to start with ALL whenever modifying code.
-    // Use MQTT to switch to error when done testing
-    _logLevel = LOG_LEVEL_ALL;
+    // Use MQTT to switch to error when done testing or vs. a vs.
+    _logLevel = LOG_LEVEL_ERROR;
 
     Time.zone(-6.0);
     
@@ -179,6 +179,7 @@ void MQTTManager::parseMessage(String topic, String message)
                 } else {
                     device->setValue(value);
                 }
+                Device::buildDevicesVariable();
                 
             } else {
                 Log.info("Parsed unknown subtopic "+subtopic);

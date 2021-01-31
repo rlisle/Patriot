@@ -61,10 +61,10 @@ void setup() {
     Device::add(new Switch(A0, "FrontAwningSwitch"));
     
     // Activities/States
-    Device::add(new Device("sleeping"));
-    Device::add(new Device("partofday"));
-    Device::add(new Device("cleaning"));
-    Device::add(new Device("blueled"));
+//    Device::add(new Device("sleeping"));
+//    Device::add(new Device("partofday"));
+//    Device::add(new Device("cleaning"));
+//    Device::add(new Device("blueled"));
 }
 
 void loop() {

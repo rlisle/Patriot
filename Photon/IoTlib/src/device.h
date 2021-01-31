@@ -23,6 +23,7 @@ class Device {
     int        _value;      // Typically percent 0-100
     int        _previous;   // Value before getChanged called
     int        _restore;    // Used to restore previous dimming level
+    char       _type;       // Character designating device type: L, S, etc.
 
 public:
 

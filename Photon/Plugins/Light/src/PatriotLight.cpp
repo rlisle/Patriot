@@ -31,10 +31,11 @@ Light::Light(int pinNum, String name, bool isInverted, bool forceDigital)
           _isInverted(isInverted),
           _forceDigital(forceDigital)
 {
-    _targetValue            = 0;
-    _currentValue           = 0.0;
-    _incrementPerMillisecond  = 0.0;
-    _lastUpdateTime           = 0;
+    _targetValue             = 0;
+    _currentValue            = 0.0;
+    _incrementPerMillisecond = 0.0;
+    _lastUpdateTime          = 0;
+    _type                    = 'L';
 }
 
 void Light::begin() {

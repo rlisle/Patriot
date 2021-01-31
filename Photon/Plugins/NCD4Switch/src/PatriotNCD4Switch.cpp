@@ -33,6 +33,7 @@ NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name)
 {
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _lastPollTime = 0;
+    _type         = 'S';
     
     if(switchIndex > 0 && switchIndex <= 3) {
         _switchBitmap = 0x10 << switchIndex;

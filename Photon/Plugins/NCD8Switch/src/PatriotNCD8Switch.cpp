@@ -39,6 +39,7 @@ NCD8Switch::NCD8Switch(int address, int switchNum, String name)
     _lastPollTime = 0;
     _lastState    = 0;
     _switchBitmap = 0;
+    _type         = 'S';
     
     if(_switchNum > 0 && switchNum <= 8) {
         _switchBitmap = 0x01 << (switchNum-1);
