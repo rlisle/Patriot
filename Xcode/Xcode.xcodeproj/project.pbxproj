@@ -20,7 +20,6 @@
 		2733856C25C047570032BB1F /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		2733856D25C047570032BB1F /* package-lock.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "package-lock.json"; sourceTree = "<group>"; };
 		2733856E25C047570032BB1F /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
-		2733856F25C047570032BB1F /* Configuration.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.txt; sourceTree = "<group>"; };
 		2733857025C047570032BB1F /* constants.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = constants.js; sourceTree = "<group>"; };
 		2733857125C047570032BB1F /* device */ = {isa = PBXFileReference; lastKnownFileType = folder; path = device; sourceTree = "<group>"; };
 		2733857225C047570032BB1F /* test */ = {isa = PBXFileReference; lastKnownFileType = folder; path = test; sourceTree = "<group>"; };
@@ -119,7 +118,6 @@
 			isa = PBXGroup;
 			children = (
 				2733857325C047570032BB1F /* config.js */,
-				2733856F25C047570032BB1F /* Configuration.txt */,
 				2733857025C047570032BB1F /* constants.js */,
 				2733857125C047570032BB1F /* device */,
 				2733856C25C047570032BB1F /* index.js */,
