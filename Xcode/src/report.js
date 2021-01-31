@@ -19,7 +19,7 @@ function handler(request, context, config) {
     var correlation = request.directive.header.correlationToken;
     var endpoint = request.directive.endpoint;
 
-    helper.log('Control',requestedName);
+    helper.log('ReportState',requestedName);
 
     switch (requestedName) {
         case "ReportState":
@@ -29,7 +29,7 @@ function handler(request, context, config) {
                     "properties": [{
                         "namespace": "Alexa.PowerController",
                         "name": "powerState",
-                        "value": "ON",
+                        "value": "OFF",                         //TODO: set this appropriately
                         "timeOfSample": timestamp,
                         "uncertaintyInMilliseconds": 50
                     }]
@@ -50,43 +50,9 @@ function handler(request, context, config) {
                 context.succeed(response);
             },
             function(error) {
-                helper.log("Control turn on error",error);
-                context.fail("Control - turn on error: "+error);
+                helper.log("ReportState error",error);
+                context.fail("ReportState error: "+error);
             });
-            break;
-
-        case "SetPowerLevel":
-            var percent = request.directive.payload.powerLevel;
-            config.Device.percentage(request, context, config).then(function(result){
-                    // For now, hard code the entire response. Refactor later after its understood better.
-                    let contextResult = {
-                        "properties": [{
-                            "namespace": "Alexa.PowerLevelController",
-                            "name": "powerLevel",
-                            "value": percent,
-                            "timeOfSample": timestamp,
-                            "uncertaintyInMilliseconds": 50
-                        }]
-                    };
-                    var responseHeader = request.directive.header;
-                    responseHeader.namespace = "Alexa";
-                    responseHeader.name = "Response";
-                    responseHeader.messageId = responseHeader.messageId + "-R";
-                    var response = {
-                        "context": contextResult,
-                        "event": {
-                            "header": responseHeader,
-                            "endpoint": endpoint,
-                            "payload": {}
-                        }
-                    };
-                    helper.log("Returning response: ", response);
-                    context.succeed(response);
-                },
-                function(error) {
-                    helper.log("Control power level error",error);
-                    context.fail("Control - power level error: "+error);
-                });
             break;
 
         default:

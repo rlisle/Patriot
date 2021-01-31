@@ -68,7 +68,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String data = String(rawData).trim();
     String event(eventName);
     
-//    Log.info("Particle.io subscribe received data: '"+event+"', '"+data+"'");
+    Log.info("Particle.io subscribe received data: '"+event+"', '"+data+"'");
     
     if (_mqttManager != NULL) {
         _mqttManager->parseMessage(event.toLowerCase(), data.toLowerCase());

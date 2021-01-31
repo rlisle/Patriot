@@ -190,7 +190,12 @@ function endpointInfo(name,controller) {
         }
     }
     //TODO: Strip off trailing =## (current value)
-    //
+    let splitValues = name.split('=');
+    var value = 0;
+    if(splitValues.length > 1) {
+        name = splitValues[0];
+        value = splitValues[1];
+    }
     
     let id = name.replace(/\s/g,'').toLocaleLowerCase();    // Remove spaces. Numbers, letters, _-=#;:?@& only
     let friendlyName = name.toLocaleLowerCase();            // Name lower case to simplify compares. No special chars
