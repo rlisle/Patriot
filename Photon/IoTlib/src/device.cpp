@@ -124,6 +124,7 @@ int Device::setValue(String name, int value) {
     Device *ptr = get(name);
     if( ptr == NULL ) return -1;
     ptr->setValue(value);
+    buildDevicesVariable();
     return 0;
 }
 

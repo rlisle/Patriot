@@ -179,6 +179,7 @@ void MQTTManager::parseMessage(String topic, String message)
                 } else {
                     device->setValue(value);
                 }
+                Device::buildDevicesVariable();
                 
             } else {
                 Log.info("Parsed unknown subtopic "+subtopic);
