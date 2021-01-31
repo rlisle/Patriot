@@ -58,9 +58,9 @@ describe("Particle", function () {
 
         it('returns test value',function() {
 
-            return device.getVariable(testDeviceName, 'Supported', testAccessToken)
+            return device.getVariable(testDeviceName, 'Devices', testAccessToken)
                 .then(function(data) {
-                    expect(data).to.be.equal('photon');
+                    expect(data).to.be.equal('blueled');
                 })
         })
     });

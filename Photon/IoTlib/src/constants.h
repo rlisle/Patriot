@@ -13,7 +13,6 @@ All text above must be included in any redistribution.
 */
 #pragma once
 
-static const String kSupportedVariableName     = "Supported";
 static const int    kMaxVariableStringLength   = 622;
 static const String kDevicesVariableName       = "Devices";
 static const String kPublishName               = "patriot";
