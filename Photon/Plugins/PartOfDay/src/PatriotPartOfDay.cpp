@@ -47,6 +47,7 @@ PartOfDay::PartOfDay()
         : Device("PartOfDay")
 {
     _value = -1;
+    _type  = 'P';
 }
 
 /**

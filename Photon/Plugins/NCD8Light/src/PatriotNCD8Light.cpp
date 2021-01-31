@@ -43,6 +43,7 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t durati
     _targetLevel = 0.0;
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
+    _type = 'L';
 }
 
 void NCD8Light::begin() {

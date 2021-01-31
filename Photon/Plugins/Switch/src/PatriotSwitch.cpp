@@ -28,6 +28,7 @@ Switch::Switch(int pinNum, String name)
         _pin(pinNum)
 {
     _value = 0;
+    _type  = 'S';
 }
 
 void Switch::begin() {
