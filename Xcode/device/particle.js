@@ -2,11 +2,6 @@
  * Particle.io API
  * This function interfaces with the particle.io REST server.
  * It returns a promise to simplify asynchronous handling.
- *
- * Publish/Subscribe Model
- * curl https://api.particle.io/v1/devices/events -d "name=lislerv" -d "data=BoothSw3:On" -d access_token=3030a462f44ce7c80b2eabadd4a0f7f3c3fc6233
- *
- * Updated: 2/3/18 use devices only, not supported.
  */
 'use strict';
 
@@ -20,47 +15,43 @@ var Particle = require('particle-api-js');
 var particle = new Particle();
 var token;
 
+/* TODO: refactor to a common method if cookie.command == endpoingId always */
 /**
  * Handle control On
- * @param event
- * @param context
- * @param config
  * @returns {Promise} success or fail
  */
 function controlOn(event, context, config) {
-    let command = event.directive.endpoint.cookie.command;
-    let data = command+":100";
+    let topic = config.EventName+"/"+event.directive.endpoint.cookie.command;
+    let message = "100";
     let accessToken = event.directive.endpoint.scope.token;
-    return publish(config.EventName, data, accessToken).then(function(result) {
+    return publish(topic, message, accessToken).then(function(result) {
         return result;
     });
 }
 
 function controlOff(event, context, config) {
-    let command = event.directive.endpoint.cookie.command;  // use endpointId instead?
-    var data = command+":0"
+    let topic = config.EventName+"/"+event.directive.endpoint.cookie.command;
+    let message = "0";
     let accessToken = event.directive.endpoint.scope.token;
-    return publish(config.EventName, data, accessToken).then(function(result) {
+    return publish(topic, message, accessToken).then(function(result) {
         return result;
     });
 }
 
 function percentage(event, context, config) {
-    var command = event.directive.endpoint.endpointId;
-    var percentage = event.directive.payload.powerLevel;
-    var data = command+":"+percentage;
+    let topic = config.EventName+"/"+event.directive.endpoint.endpointId;   // Different?
+    let message = event.directive.payload.powerLevel;
     let accessToken = event.directive.endpoint.scope.token;
-    return publish(config.EventName, data, accessToken).then(function(result) {
+    return publish(topic, message, accessToken).then(function(result) {
         return result;
     });
 }
 
 function adjust(event, context, config) {
-    var command = event.directive.endpoint.endpointId;
-    var delta = event.directive.payload.powerLevelDelta;
-    var data = command+"+"+delta;
+    let topic = config.EventName+"/"+event.directive.endpoint.endpointId;
+    let message = "+"+event.directive.payload.powerLevelDelta;  //TODO: handle +n messages
     let accessToken = event.directive.endpoint.scope.token;
-    return publish(config.EventName, data, accessToken).then(function(result) {
+    return publish(topic, message, accessToken).then(function(result) {
         return result;
     });
 }
@@ -138,7 +129,7 @@ function getEndpoints(token) {
                         deviceStrings.forEach(function (item) {
                             helper.log("getEndpoints device", item);
                             if(item) {
-                                endpoints.push(endpointInfo(item))
+                                endpoints.push(endpointInfo(item,name))
                             }
                         });
                     },
@@ -151,7 +142,7 @@ function getEndpoints(token) {
                             let supportedStrings = supported.split(',');
                             supportedStrings.forEach(function (item) {
                                 if(item) {
-                                    endpoints.push(sceneEndpointInfo(item));
+                                    endpoints.push(sceneEndpointInfo(item,name));
                                 }
                             });
                         },
@@ -173,42 +164,11 @@ function getEndpoints(token) {
         });
 }
 
-/* I think these are V2 methods */
-/** Define a device or scene
- *      The name can be multiple words and should be exactly what the user
- *      will speak (eg. "Table lamp").
- *      The appliance ID will be the name with spaces removed and converted to lower case.
- *      It is what is specified in the event.
- *
- *      Note that a space in the ID causes the device to not appear.
- */
-function discoveryDevice(name, controllerId) {
-    helper.log("discoveryDevice", name);
-    let device = applianceInfo(name);
-    device.actions.push('setPercentage');
-    device.additionalApplianceDetails.controllerId = controllerId;
-    return device;
-}
-
-/** Define a scene
- *    id is the data that will be passed to particle
- *       Note that a space causes the device to not appear.
- *    name is the word(s) spoken to control it. " scene" will be appended.
- *    description will also have " scene" appended.
- */
-function discoveryScene(name) {
-    helper.log("discoveryScene", name);
-    let scene = applianceInfo(name);
-    return scene;
-}
-
 // This function will create the endpoint JSON for each device or activity
 // The name argument is used for the friendlyName.
 // It will be lower-cased and spaces removed for the endpointId
-// TODO: support different device types
-function endpointInfo(name) {
-    helper.log('Device endpoint info:',name);
-    //TODO: Strip off prefix and use to determine device type: Curtain, Door, Fan, Light, Motion, Switch, Temp
+function endpointInfo(name,controller) {
+    helper.log('Device endpoint info: '+controller+':'+name);
     let dispCategory = "LIGHT";
     if(name.charAt(1)==':') {
         var devType = name.charAt(0);
@@ -229,6 +189,9 @@ function endpointInfo(name) {
             dispCategory = "TEMPERATURE_SENSOR";
         }
     }
+    //TODO: Strip off trailing =## (current value)
+    //
+    
     let id = name.replace(/\s/g,'').toLocaleLowerCase();    // Remove spaces. Numbers, letters, _-=#;:?@& only
     let friendlyName = name.toLocaleLowerCase();            // Name lower case to simplify compares. No special chars
     let description = name + ' RvSmartHome';  //
@@ -242,7 +205,8 @@ function endpointInfo(name) {
         ],
         "cookie": {                     // This can be anything we want, and will be passed back
             "name":     name,           // This is the mixed case name
-            "command":  friendlyName    // Currently using lower case with spaces
+            "command":  friendlyName,   // Currently using lower case with spaces
+            "controller": controller    // Photon name (eg. "RearPanel")
         },
         "capabilities":[
             {
@@ -285,35 +249,36 @@ function endpointInfo(name) {
 // This function will create the endpoint JSON for each supported activity (scene)
 // The name argument is used for the friendlyName.
 // It will be lower-cased and spaces removed for the endpointId
-function sceneEndpointInfo(name) {
-    helper.log('Scene endpoint info:',name);
-    let id = name.replace(/\s/g,'').toLocaleLowerCase();    // Remove spaces. Numbers, letters, _-=#;:?@& only
-    let friendlyName = name.toLocaleLowerCase();            // Name lower case to simplify compares. No special chars
-    let description = name + ' connected via Particle.io';  //
-    var endpoint = {
-        "endpointId": id,
-        "friendlyName": friendlyName,
-        "description": description,
-        "manufacturerName": 'Ron Lisle',
-        "displayCategories": [          // LIGHT, SMARTPLUG, SWITCH, CAMERA, DOOR, TEMPERATURE_SENSOR,
-            "SCENE_TRIGGER"             // THERMOSTAT, SMARTLOCK, SCENE_TRIGGER, ACTIVITY_TRIGGER, OTHER
-        ],
-        "cookie": {                     // This can be anything we want, and will be passed back
-            "name":     name,           // This is the mixed case name
-            "command":  friendlyName    // Currently using lower case with spaces
-        },
-        "capabilities":[
-            {
-                "type": "AlexaInterface",              // Is . needed? Doc shows both ways
-                "interface": "Alexa.SceneController",
-                "version": "3",
-                "supportsDeactivation": true,   // Example shows not enclosed in "properties" like the devices code
-                "proactivelyReported": true
-            }
-        ]
-    };
-    return endpoint;
-}
+//function sceneEndpointInfo(name,controller) {
+//    helper.log('Scene endpoint info:',name);
+//    let id = name.replace(/\s/g,'').toLocaleLowerCase();    // Remove spaces. Numbers, letters, _-=#;:?@& only
+//    let friendlyName = name.toLocaleLowerCase();            // Name lower case to simplify compares. No special chars
+//    let description = name + ' connected via Particle.io';  //
+//    var endpoint = {
+//        "endpointId": id,
+//        "friendlyName": friendlyName,
+//        "description": description,
+//        "manufacturerName": 'Ron Lisle',
+//        "displayCategories": [          // LIGHT, SMARTPLUG, SWITCH, CAMERA, DOOR, TEMPERATURE_SENSOR,
+//            "SCENE_TRIGGER"             // THERMOSTAT, SMARTLOCK, SCENE_TRIGGER, ACTIVITY_TRIGGER, OTHER
+//        ],
+//        "cookie": {                     // This can be anything we want, and will be passed back
+//            "name":     name,           // This is the mixed case name
+//            "command":  friendlyName,   // Currently using lower case with spaces
+//            "controller": controller    // Photon name
+//        },
+//        "capabilities":[
+//            {
+//                "type": "AlexaInterface",              // Is . needed? Doc shows both ways
+//                "interface": "Alexa.SceneController",
+//                "version": "3",
+//                "supportsDeactivation": true,   // Example shows not enclosed in "properties" like the devices code
+//                "proactivelyReported": true
+//            }
+//        ]
+//    };
+//    return endpoint;
+//}
 
 module.exports = {
     controlOn:controlOn,
@@ -324,7 +289,5 @@ module.exports = {
     getVariable:getVariable,
     callFunction:callFunction,
     publish:publish,
-    getEndpoints:getEndpoints,
-    discoveryDevice:discoveryDevice,
-    discoveryScene:discoveryScene
+    getEndpoints:getEndpoints
 };

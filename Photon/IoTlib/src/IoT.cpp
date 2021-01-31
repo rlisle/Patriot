@@ -68,28 +68,33 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String data = String(rawData).trim();
     String event(eventName);
     
-    if(event.equalsIgnoreCase(kPublishName) == false) {
-        Log.warn("IoT received unexpected particle.io topic: " + event);
-        return;
-    }
+//    Log.info("Particle.io subscribe received data: '"+event+"', '"+data+"'");
     
-    // Legacy commands will include a colon
-    // t:patriot m:<eventName>:<msg>
-    int colonPosition = data.indexOf(':');
-    if(colonPosition == -1) {
-        Log.error("IoT received invalid particle message: " + data);
-        return;
+    if (_mqttManager != NULL) {
+        _mqttManager->parseMessage(event.toLowerCase(), data.toLowerCase());
     }
-
-    Log.info("Particle.io subscribe received data: '"+data+"'");
-    
-    String name = data.substring(0,colonPosition).toLowerCase();
-    String level = data.substring(colonPosition+1).toLowerCase();
-    String topic = kPublishName + "/" + name;
-
-      if (_mqttManager != NULL) {
-          _mqttManager->parseMessage(topic, level);
-      }
+//    if(event.equalsIgnoreCase(kPublishName) == false) {
+//        Log.warn("IoT received unexpected particle.io topic: " + event);
+//        return;
+//    }
+//
+//    // Legacy commands will include a colon
+//    // t:patriot m:<eventName>:<msg>
+//    int colonPosition = data.indexOf(':');
+//    if(colonPosition == -1) {
+//        Log.error("IoT received invalid particle message: " + data);
+//        return;
+//    }
+//
+//    Log.info("Particle.io subscribe received data: '"+data+"'");
+//
+//    String name = data.substring(0,colonPosition).toLowerCase();
+//    String level = data.substring(colonPosition+1).toLowerCase();
+//    String topic = kPublishName + "/" + name;
+//
+//      if (_mqttManager != NULL) {
+//          _mqttManager->parseMessage(topic, level);
+//      }
 }
 
 /**

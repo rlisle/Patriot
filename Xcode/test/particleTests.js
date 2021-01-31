@@ -113,44 +113,44 @@ describe("Particle", function () {
     });
 
     // V2 Legacy
-    describe("getAppliancesV2", function () {
-
-        this.timeout(3000);
-
-        it("returns list of appliances", function () {
-            return device.getAppliancesV2(testAccessToken).then((appliances) => {
-                    expect(appliances).to.not.be.null;
-            })
-        });
-
-        it("returns only the test action", function () {
-            return device.getAppliancesV2(testAccessToken).then((appliances) => {
-                    let testDevices = appliances.filter(function (item) {
-                        let applianceId = item.applianceId;
-                        return applianceId === testApplianceId;
-                    });
-                    //helper.log('getAppliancesV2',appliances);
-                    // The device name should not be exposed, only the behavior name
-                    expect(appliances).to.have.length(1);
-                    //helper.log('testDevices',testDevices);
-                    let testDevice = testDevices[0];
-                    expect(testDevice.friendlyName).to.equal(testFriendlyName);
-            });
-        });
-    })
-
-    describe('discoveryDevice',function(){
-        let result = device.discoveryDevice("My Device Name", "MyController");
-        describe('returns formatted object',function() {
-            it('formats ID to lowercase without spaces',function() {
-                expect(result.applianceId).to.equal('mydevicename');
-            });
-            it('leaves spaces in friendly name lowercase',function() {
-                expect(result.friendlyName).to.equal('my device name');
-            });
-            it('creates description',function() {
-                expect(result.friendlyDescription).to.equal('My Device Name connected via Particle.io');
-            })
-        })
-    })
+//    describe("getAppliancesV2", function () {
+//
+//        this.timeout(3000);
+//
+//        it("returns list of appliances", function () {
+//            return device.getAppliancesV2(testAccessToken).then((appliances) => {
+//                    expect(appliances).to.not.be.null;
+//            })
+//        });
+//
+//        it("returns only the test action", function () {
+//            return device.getAppliancesV2(testAccessToken).then((appliances) => {
+//                    let testDevices = appliances.filter(function (item) {
+//                        let applianceId = item.applianceId;
+//                        return applianceId === testApplianceId;
+//                    });
+//                    //helper.log('getAppliancesV2',appliances);
+//                    // The device name should not be exposed, only the behavior name
+//                    expect(appliances).to.have.length(1);
+//                    //helper.log('testDevices',testDevices);
+//                    let testDevice = testDevices[0];
+//                    expect(testDevice.friendlyName).to.equal(testFriendlyName);
+//            });
+//        });
+//    })
+//
+//    describe('discoveryDevice',function(){
+//        let result = device.discoveryDevice("My Device Name", "MyController");
+//        describe('returns formatted object',function() {
+//            it('formats ID to lowercase without spaces',function() {
+//                expect(result.applianceId).to.equal('mydevicename');
+//            });
+//            it('leaves spaces in friendly name lowercase',function() {
+//                expect(result.friendlyName).to.equal('my device name');
+//            });
+//            it('creates description',function() {
+//                expect(result.friendlyDescription).to.equal('My Device Name connected via Particle.io');
+//            })
+//        })
+//    })
 })

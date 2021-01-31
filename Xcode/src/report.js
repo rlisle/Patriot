@@ -23,7 +23,7 @@ function handler(request, context, config) {
 
     switch (requestedName) {
         case "ReportState":
-            config.Device.controlOn(request, context, config).then(function(result){
+            config.Device.reportState(request, context, config).then(function(result){
                 // For now, hard code the entire response. Refactor later after its understood better.
                 let contextResult = {
                     "properties": [{
