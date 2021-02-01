@@ -5,7 +5,7 @@ var constants = require('../constants');
 var helper      = require('./helper');
 
 /**
- * Discovery Handler (Alexa V3 API)
+ * Discovery Handler
  * @param event
  * @param context
  * @param config
@@ -18,7 +18,7 @@ function handler(event, context, config) {
 
     config.Device.getEndpoints(accessToken).then(function (endpoints) {
 
-        helper.log('V3 Discovery endpoints',endpoints);
+        helper.log('Discovery endpoints',endpoints);
 
         var payload = {
             "endpoints": endpoints

@@ -11,10 +11,17 @@
 var constants   = require('../constants');
 var helper      = require('./helper');
 
+/**
+ * ReportState Handler
+ * @param request
+ * @param context
+ * @param config
+ * @return Nothing. Context.succeed() or fail() will be called.
+ */
 function handler(request, context, config) {
 
     var requestedName = request.directive.header.name;
-    var token = request.directive.endpoint.scope.token;  // example says payload, but its endpoint
+    var token = request.directive.endpoint.scope.token;
     var timestamp = new Date().toISOString();
     var correlation = request.directive.header.correlationToken;
     var endpoint = request.directive.endpoint;
@@ -29,14 +36,14 @@ function handler(request, context, config) {
                     "properties": [{
                         "namespace": "Alexa.PowerController",
                         "name": "powerState",
-                        "value": "OFF",                         //TODO: set this appropriately
+                        "value": "OFF",                         //TODO: set this appropriately from result
                         "timeOfSample": timestamp,
                         "uncertaintyInMilliseconds": 50
                     }]
                 };
                 var responseHeader = request.directive.header;
                 responseHeader.namespace = "Alexa";
-                responseHeader.name = "Response";
+                responseHeader.name = "StateReport";
                 responseHeader.messageId = responseHeader.messageId + "-R";
                 var response = {
                     "context": contextResult,
