@@ -306,8 +306,13 @@ function reportState(event, context, config) {
             let itemEnd = item.substr(2);
             // Now split device name and value
             let stringParts = itemEnd.split('=');
-            if(stringParts[0].localCompare(device) === 0) {
-                return(stringParts[1])
+            if(stringParts[0].localeCompare(device, 'en', { sensitivity: 'base' }) === 0) {
+                helper.log("match",stringParts[0]);
+                helper.log("returning",stringParts[1]);
+                return(stringParts[1]);
+            } else {
+                helper.log("Device",device);
+                helper.log("does not match",stringParts[0]);
             }
         });
     },
