@@ -303,7 +303,7 @@ function reportState(event, context, config) {
         deviceStrings.forEach(function (item) {
             helper.log("reportState device", item);
             // Skip over first 2 chars "T:"
-            itemEnd = item.substr(2);
+            let itemEnd = item.substr(2);
             // Now split device name and value
             let stringParts = itemEnd.split('=');
             if(stringParts[0].localCompare(device) === 0) {

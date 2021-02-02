@@ -30,7 +30,7 @@ function handler(request, context, config) {
 
     switch (requestedName) {    // This better be ReportState or we shouldn't be here.
         case "ReportState":
-            helper.log("Calling device reportState");
+            helper.log("Calling device",requestedName);
             config.Device.reportState(request, context, config).then(function(result){
                 
                 helper.log("Result from device reportState", result);
