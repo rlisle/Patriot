@@ -301,7 +301,6 @@ function reportState(event, context, config) {
 
         let deviceStrings = devices.split(',');
         deviceStrings.forEach(function (item) {
-            helper.log("reportState device", item);
             // Skip over first 2 chars "T:"
             let itemEnd = item.substr(2);
             // Now split device name and value
@@ -310,9 +309,6 @@ function reportState(event, context, config) {
                 helper.log("match",stringParts[0]);
                 helper.log("returning",stringParts[1]);
                 return(stringParts[1]);
-            } else {
-                helper.log("Device",device);
-                helper.log("does not match",stringParts[0]);
             }
         });
     },
