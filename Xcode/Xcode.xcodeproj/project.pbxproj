@@ -28,6 +28,8 @@
 		2733857525C047570032BB1F /* package.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = package.json; sourceTree = "<group>"; };
 		2733857625C047570032BB1F /* project.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = project.json; sourceTree = "<group>"; };
 		2733857725C047570032BB1F /* testConfig.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = testConfig.js; sourceTree = "<group>"; };
+		2755615325CC1FAA00FEE0FF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		2755615425CC1FAA00FEE0FF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		2755DBE4259DFA3900971ABA /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = device.cpp; path = ../Photon/IoTlib/src/device.cpp; sourceTree = "<group>"; };
 		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
@@ -164,6 +166,8 @@
 		E4849C492566A90700A39734 = {
 			isa = PBXGroup;
 			children = (
+				2755615325CC1FAA00FEE0FF /* LICENSE */,
+				2755615425CC1FAA00FEE0FF /* README.md */,
 				2733856B25C0472D0032BB1F /* Alexa */,
 				E4849C742566B48000A39734 /* Plugins */,
 				E4849C6E2566AC0F00A39734 /* Controllers */,
