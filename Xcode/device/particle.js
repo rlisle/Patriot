@@ -136,6 +136,8 @@ function getEndpoints(token) {
                             if(lcNames.includes(lcName) == false) {
                                 lcNames.push(lcName);
                                 endpoints.push(endpointInfo(item,name));
+                            } else {
+                                helper.log("getEndpoints skipping duplicate",item);
                             }
                         }
                     });
