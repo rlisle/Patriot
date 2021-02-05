@@ -11,32 +11,43 @@
 var constants   = require('../constants');
 var helper      = require('./helper');
 
+/**
+ * ReportState Handler
+ * @param request
+ * @param context
+ * @param config
+ * @return Nothing. Context.succeed() or fail() will be called.
+ */
 function handler(request, context, config) {
 
     var requestedName = request.directive.header.name;
-    var token = request.directive.endpoint.scope.token;  // example says payload, but its endpoint
+    var token = request.directive.endpoint.scope.token;
     var timestamp = new Date().toISOString();
     var correlation = request.directive.header.correlationToken;
     var endpoint = request.directive.endpoint;
 
-    helper.log('ReportState',requestedName);
+    helper.log('ReportState', request);
 
-    switch (requestedName) {
+    switch (requestedName) {    // This better be ReportState or we shouldn't be here.
         case "ReportState":
+            helper.log("Calling device",requestedName);
             config.Device.reportState(request, context, config).then(function(result){
+                
+                helper.log("Result from device reportState", result);
+
                 // For now, hard code the entire response. Refactor later after its understood better.
                 let contextResult = {
                     "properties": [{
                         "namespace": "Alexa.PowerController",
                         "name": "powerState",
-                        "value": "OFF",                         //TODO: set this appropriately
+                        "value": (result ? "ON" : "OFF"),
                         "timeOfSample": timestamp,
                         "uncertaintyInMilliseconds": 50
                     }]
                 };
                 var responseHeader = request.directive.header;
                 responseHeader.namespace = "Alexa";
-                responseHeader.name = "Response";
+                responseHeader.name = "StateReport";
                 responseHeader.messageId = responseHeader.messageId + "-R";
                 var response = {
                     "context": contextResult,

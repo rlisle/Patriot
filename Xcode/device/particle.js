@@ -125,17 +125,17 @@ function getEndpoints(token) {
 
                     helper.log("getEndpoints devices", devices);
 
-                        let deviceStrings = devices.split(',');     //Split string into array of individual name:type strings
-                        deviceStrings.forEach(function (item) {
-                            helper.log("getEndpoints device", item);
-                            if(item) {
-                                endpoints.push(endpointInfo(item,name))
-                            }
-                        });
-                    },
-                    function (err) {
-                        console.log("Error reading Devices variable for " + name);
+                    let deviceStrings = devices.split(',');     //Split string into array of individual name:type strings
+                    deviceStrings.forEach(function (item) {
+                        helper.log("getEndpoints device", item);
+                        if(item) { // This looks wrong.
+                            endpoints.push(endpointInfo(item,name))
+                        }
                     });
+                },
+                function (err) {
+                    console.log("Error reading Devices variable for " + name);
+                });
                 promises.push(p1);
 
 /*                let p2 = getVariable(name, 'Supported', token).then(function (supported) {
@@ -233,7 +233,7 @@ function endpointInfo(name,controller) {
                 }
             },
             {
-                "type": "AlexaInterface",              // Is . needed? Doc shows both ways
+                "type": "AlexaInterface",
                 "interface": "Alexa.PowerLevelController",
                 "version": "3",
                 "properties": {
@@ -285,6 +285,44 @@ function endpointInfo(name,controller) {
 //    return endpoint;
 //}
 
+/**
+ * Handle Report State
+ * @returns {Promise} success or fail
+ */
+function reportState(event, context, config) {
+    let device = event.directive.endpoint.cookie.command;
+    let photon = event.directive.endpoint.cookie.controller;
+    let token = event.directive.endpoint.scope.token;
+
+    // Read Devices variable
+    let p1 = getVariable(photon, 'Devices', token).then(function(devices) {
+
+        helper.log("reportState devices", devices);
+
+        let deviceStrings = devices.split(',');
+        deviceStrings.forEach(function (item) {
+            // Skip over first 2 chars "T:"
+            let itemEnd = item.substr(2);
+            // Now split device name and value
+            let stringParts = itemEnd.split('=');
+            if(stringParts[0].localeCompare(device, 'en', { sensitivity: 'base' }) === 0) {
+                helper.log("match",stringParts[0]);
+                helper.log("returning",stringParts[1]);
+                return(stringParts[1]);
+            }
+        });
+    },
+    function (err) {
+        console.log("Error reading Devices variable for " + photon);
+    });
+
+    // Return the value in a promise (Do we need this?)
+    return p1.then(function(result) {
+        return result;
+    });
+}
+
+
 module.exports = {
     controlOn:controlOn,
     controlOff:controlOff,
@@ -294,5 +332,6 @@ module.exports = {
     getVariable:getVariable,
     callFunction:callFunction,
     publish:publish,
-    getEndpoints:getEndpoints
+    getEndpoints:getEndpoints,
+    reportState:reportState
 };

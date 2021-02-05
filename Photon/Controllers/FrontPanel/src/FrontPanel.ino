@@ -60,16 +60,18 @@ void setup() {
     Device::add(new Switch(A4, "FrontPorchSwitch"));
     Device::add(new Switch(A0, "FrontAwningSwitch"));
     
-    // Activities/States
+    // These Activities/States are defined in RearPanel
+    // Do not also define them here or discovery will fail
 //    Device::add(new Device("sleeping"));
 //    Device::add(new Device("partofday"));
 //    Device::add(new Device("cleaning"));
 //    Device::add(new Device("blueled"));
+//    Device::add(new Device("watching"));
 }
 
 void loop() {
     
-    // When IoT loop() is call, it will
+    // When IoT loop() is called, it will
     // - set all previous levels
     // - read switches and update levels
     // - update light dimming
@@ -79,6 +81,7 @@ void loop() {
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged  = Device::getChangedValue("cleaning");
     int blueledChanged   = Device::getChangedValue("blueled");
+    int watchingChanged  = Device::getChangedValue("watching");
 
     if( sleepingChanged != -1 ) {
         handleSleepingChange(sleepingChanged);
@@ -96,6 +99,10 @@ void loop() {
         handleBlueledChange(blueledChanged);
     }
 
+    if( watchingChanged != -1 ) {
+        handleWatchingChange(watchingChanged);
+    }
+    
     handleLightSwitches();
 }
 
@@ -171,16 +178,28 @@ void handleCleaningChange(int cleaning) {
     }
 }
 
+void handleWatchingChange(int watching) {
+    if( watching > 0 ) {
+        Log.info("watching did turn on");
+        //TODO: save/restore previous states
+        setWatchingLights( 100 );
+    } else {
+        //TODO: save/restore previous states
+        Log.info("watching did turn off");
+        setWatchingLights( 0 );
+    }
+}
+
 void setAllActivities(int value) {
     Device::setValue("blueled", value);
     Device::setValue("cleaning", value);
+    Device::setValue("watching", value);
 }
 
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("Cabinets", 60);
-    Device::setValue("Sink", 40);
+    Device::setValue("Sink", 50);
 }
 
 void setSunriseLights() {
@@ -233,6 +252,20 @@ void setBlueledLights(int value) {  // 0 = Off, else On
         Device::setValue("KitchenCeiling", 0);
         Device::setValue("Sink", 0);
         Device::setValue("Ceiling", 0);
+    }
+}
+
+void setWatchingLights(int value) {
+    Log.info("setWatchingLights %d", value);
+
+    // TODO: What if watching TV while also washing dishes, etc?
+    if( value > 0 ) {   // Turn on "watching TV" lights
+        Device::setValue("KitchenCeiling", 50);
+        Device::setValue("Sink", 50);
+        Device::setValue("RightTrim", 0);
+        Device::setValue("LeftTrim", 100);
+        Device::setValue("Ceiling", 65);
+        Device::setValue("Cabinets", 0);
     }
 }
 

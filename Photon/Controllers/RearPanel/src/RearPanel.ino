@@ -52,9 +52,10 @@ void setup() {
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities/States - define for every other state
-//    Device::add(new Device("sleeping"));
-//    Device::add(new Device("cleaning"));
-//    Device::add(new Device("telly"));
+    // Be careful to only define in 1 (this) controller
+    Device::add(new Device("sleeping"));
+    Device::add(new Device("cleaning"));
+    Device::add(new Device("watching"));
 }
 
 void loop() {
@@ -64,7 +65,7 @@ void loop() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
-    int tellyChanged = Device::getChangedValue("telly");
+    int watchingChanged = Device::getChangedValue("watching");
     int officeDoorChanged = Device::getChangedValue("OfficeDoor");
     int partOfDay = Device::value("PartOfDay");
 
@@ -118,14 +119,14 @@ void loop() {
         }
     }
 
-    if( tellyChanged != -1 ) {
-        if( tellyChanged > 0 ) {
-            Log.info("telly did turn on");
-            setTellyLights( 100 );
+    if( watchingChanged != -1 ) {
+        if( watchingChanged > 0 ) {
+            Log.info("watching did turn on");
+            setWatchingLights( 100 );
         } else {
             //TODO: check if evening lights s/b on, etc.
-            Log.info("telly did turn off");
-            setTellyLights( 0 );
+            Log.info("watching did turn off");
+            setWatchingLights( 0 );
         }
     }
 
@@ -194,8 +195,8 @@ void setSleepingLights() {
     Device::setValue("Curtain",0);
 }
 
-void setTellyLights(int level) {
-    Log.info("setTellyLights %d", level);
+void setWatchingLights(int level) {
+    Log.info("setWatchingLights %d", level);
     // Nothing to do
 }
 
