@@ -118,6 +118,7 @@ function getEndpoints(token) {
             // Read list of devices from each Photon
             // Use promises to wait until all are done'
             let endpoints = [];
+            let lcNames = [];
             let promises = [];
             photonNames.forEach(function(name) {
 
@@ -128,8 +129,14 @@ function getEndpoints(token) {
                     let deviceStrings = devices.split(',');     //Split string into array of individual name:type strings
                     deviceStrings.forEach(function (item) {
                         helper.log("getEndpoints device", item);
-                        if(item) { // This looks wrong.
-                            endpoints.push(endpointInfo(item,name))
+                        
+                        if(item) { // Not sure why this would be needed.
+                            // Don't include duplicates
+                            let lcName = item.toLocaleLowerCase();
+                            if(lcNames.includes(lcName) == false) {
+                                lcNames.push(lcName);
+                                endpoints.push(endpointInfo(item,name));
+                            }
                         }
                     });
                 },
