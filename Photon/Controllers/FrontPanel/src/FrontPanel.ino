@@ -59,14 +59,14 @@ void setup() {
     Device::add(new Switch(A3, "OtherSideSwitch"));
     Device::add(new Switch(A4, "FrontPorchSwitch"));
     Device::add(new Switch(A0, "FrontAwningSwitch"));
-    
-    // These Activities/States are defined in RearPanel
-    // Do not also define them here or discovery will fail
-//    Device::add(new Device("sleeping"));
-//    Device::add(new Device("partofday"));
-//    Device::add(new Device("cleaning"));
-//    Device::add(new Device("blueled"));
-//    Device::add(new Device("watching"));
+
+    // Other devices we monitor
+    // TODO: could we define these automatically when getChangedValue is called?
+    Device::add(new Device("sleeping"));
+    Device::add(new Device("partofday"));
+    Device::add(new Device("cleaning"));
+    Device::add(new Device("blueled"));
+    Device::add(new Device("watching"));
 }
 
 void loop() {
