@@ -2,8 +2,10 @@
  * Particle Tests
  *
  * These tests use a particle.io test account
- * and a dedicated test Photon named 'myPhoton'
- * running the starter.ino sketch.
+ * and a dedicated test Photon named 'RonTest'
+ * running the RonTest.ino sketch.
+ *
+ * It includes a blueLed device.
  *
  */
 'use strict';
@@ -20,7 +22,7 @@ var helper = require('../src/helper');
 var config = require('../config');
 var Particle = require('particle-api-js');
 
-const testDeviceName   = 'UnitTest';
+const testDeviceName   = 'RonTest';
 const testFriendlyName = 'photon';
 //const testAccessToken  = process.env.PARTICLE_TEST_TOKEN; // Test account token. Update and use when publishing
 const testAccessToken = process.env.PARTICLE_ACCESS_TOKEN;  // PRIVATE! Keep account keys in env
@@ -59,7 +61,8 @@ describe("Particle", function () {
 
             return device.getVariable(testDeviceName, 'Devices', testAccessToken)
                 .then(function(data) {
-                    expect(data).to.be.equal('blueled');
+                    expect(data).to.contain('blueLed');
+                    //expect(data).to.be.equal('blueled');
                 })
         })
     });
