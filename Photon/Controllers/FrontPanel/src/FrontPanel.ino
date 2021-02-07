@@ -146,7 +146,6 @@ void handlePartOfDayChange(int partOfDay) {
 
     Log.info("PartOfDay has changed: %d", partOfDay);
 
-    //TODO: handle startup to other periods
     if( partOfDay == SUNRISE ) {
         setSunriseLights();
     }

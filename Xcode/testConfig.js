@@ -4,7 +4,7 @@ exports.good = {
    * This is Ron's particle.io account information
    * Do NOT share or publish this.
    */
-    accessToken          : "3030a462f44ce7c80b2eabadd4a0f7f3c3fc6233",
+    accessToken          : process.env.PARTICLE_ACCESS_TOKEN,
 
     NAMESPACE_CONTROL    : "Alexa.ConnectedHome.Control",
     NAMESPACE_DISCOVERY  : "Alexa.ConnectedHome.Discovery",
@@ -75,7 +75,7 @@ exports.badAccessToken = {
 };
 
 exports.badURL = {
-  accessToken            : "3030a462f44ce7c80b2eabadd4a0f7f3c3fc6233",
+  accessToken            : process.env.PARTICLE_ACCESS_TOKEN,
   REMOTE_CLOUD_BASE_PATH : '/v1/devices/events',
   REMOTE_CLOUD_HOSTNAME  : 'bogus.bad',
   PUBLISHENDPOINT        : 'https://api.bogus.bad/v1/devices/events'
