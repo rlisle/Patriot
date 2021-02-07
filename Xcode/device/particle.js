@@ -312,6 +312,7 @@ function reportState(event, context, config) {
         console.log("Error reading Devices variable for " + photon);
     });
 
+//    return p1;
     // Return the value in a promise (Do we need this?)
     return p1.then(function(result) {
         return result;
