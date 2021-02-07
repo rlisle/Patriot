@@ -14,14 +14,14 @@ function controlOn(event, context, config) {
 
 function controlOff(event, context, config) {
     this.controlReceived = 'controlOff';
-    this.deviceNameReceived = event.payload.appliance.applianceId;
+    this.deviceNameReceived = event.directive.header.name;
     return Promise.resolve(this);
 }
 
 function percentage(event, context, config) {
     this.controlReceived     = 'percentage';
-    this.deviceNameReceived  = event.payload.appliance.applianceId;
-    this.valueReceived       = event.payload.percentageState.value;
+    this.deviceNameReceived  = event.directive.header.name;
+    this.valueReceived       = event.directive.payload.powerLevel.value;
     return Promise.resolve(this);
 }
 

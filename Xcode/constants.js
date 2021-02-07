@@ -13,6 +13,7 @@ var constants = {
     REQUEST_TURN_OFF           : "TurnOff",
     RESPONSE_ACTIVATE          : "ActivationStarted",
     RESPONSE_DEACTIVATE        : "DeactivationStarted",
+    REQUEST_SET_POWERLEVEL     : "SetPowerLevel",
 
     // Discovered Appliances Actions
     INCREMENT_ACTION      : "incrementPercentage",
