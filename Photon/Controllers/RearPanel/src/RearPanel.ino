@@ -159,7 +159,6 @@ void setMorningLights() {
     Log.info("setMorningLights");
     Device::setValue("piano", 20);
     Device::setValue("officeceiling",80);
-    Device::setValue("OfficeTrim", 100);
 }
 
 void setSunriseLights() {
@@ -172,7 +171,6 @@ void setEveningLights() {
     Log.info("setEveningLights");
     Device::setValue("piano", 50);
     Device::setValue("officeceiling",80);
-    Device::setValue("OfficeTrim", 100);
     setAllOutsideLights(100);
 }
 
