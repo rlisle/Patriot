@@ -44,3 +44,6 @@ xcshareddate/
 
 # Alexa archive
 Archive.zip
+
+# Node modules
+node_modules/
