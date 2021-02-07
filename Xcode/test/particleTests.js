@@ -7,6 +7,7 @@
  *
  * It includes a blueLed device.
  *
+ * To run just these tests: "npm test -- -g Particle"
  */
 'use strict';
 
@@ -23,7 +24,7 @@ var config = require('../config');
 var Particle = require('particle-api-js');
 
 const testDeviceName   = 'RonTest';
-const testFriendlyName = 'photon';
+const testFriendlyName = 'blueLed';
 //const testAccessToken  = process.env.PARTICLE_TEST_TOKEN; // Test account token. Update and use when publishing
 const testAccessToken = process.env.PARTICLE_ACCESS_TOKEN;  // PRIVATE! Keep account keys in env
 
@@ -83,7 +84,7 @@ describe("Particle", function () {
 
         it("returns ok", function () {
 
-            return device.publish('patriot', 'photon:100', testAccessToken)
+            return device.publish('patriot/blueLed', '100', testAccessToken)
                 .then(function (status) {
                     expect(status).to.be.true;
                 });
