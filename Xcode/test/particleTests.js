@@ -21,7 +21,6 @@ var config = require('../config');
 var Particle = require('particle-api-js');
 
 const testDeviceName   = 'UnitTest';
-const testApplianceId  = 'photon';      // V2
 const testFriendlyName = 'photon';
 //const testAccessToken  = process.env.PARTICLE_TEST_TOKEN; // Test account token. Update and use when publishing
 const testAccessToken = process.env.PARTICLE_ACCESS_TOKEN;  // PRIVATE! Keep account keys in env

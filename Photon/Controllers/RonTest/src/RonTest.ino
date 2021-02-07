@@ -11,17 +11,12 @@
 
 #include <IoT.h>
 #include <PatriotLight.h>
-//#include <PatriotCurtain.h>
-//#include <PatriotNCD4Switch.h>
 
 void setup() {
     IoT::begin("192.168.10.184", "RonTest");
 
     Device::add(new Light(7, "blueLed", false, true));
     
-//    Device::add(new Curtain(0x20, 0, "Curtain"));
-//    Device::add(new NCD4Switch(0x20, 0, "OfficeDoor"));
-
     // Basic devices allow Alexa to control the name
     // and can also turn off other activities.
     Device::add(new Device("cleaning"));
@@ -64,14 +59,8 @@ void loop() {
 
     int changedSleeping = Device::getChangedValue("sleeping");
     int changedPartOfDay = Device::getChangedValue("partofday");
-//    int changedOfficeDoor = Device::getChangedValue("OfficeDoor");
     int sleeping = Device::value("sleeping");
     int partOfDay = Device::value("partofday");
-//    int officeDoor = Device::value("OfficeDoor");
-
-//    if( changedOfficeDoor != -1 ) {
-//        Log.info("Office door changed %d", officeDoor);
-//    }
     
     if( changedSleeping != -1 ) {
         
