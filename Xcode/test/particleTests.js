@@ -36,26 +36,6 @@ describe("Particle", function () {
         expect(particle).to.not.be.undefined;
     });
 
-    // Not testing Login on test account since only token exposed, not id and pw.
-    // describe("login", function () {
-    //
-    //     it('through direct SDK call returns 40 char token for valid username and password', function () {
-    //         return particle.login({username: config.UserName, password: config.Password})
-    //             .then(function (data) {
-    //                 var token = data.body.access_token;
-    //                 expect(token).to.be.lengthOf(40);
-    //             });
-    //     });
-    //
-    //     it('returns 40 char token for valid username and password', function () {
-    //
-    //         return device.login(config)
-    //             .then(function (token) {
-    //                 expect(token).to.be.lengthOf(40);
-    //             });
-    //     })
-    // });
-
     describe('getVariable',function() {
 
         it('returns test value',function() {

@@ -56,19 +56,6 @@ function adjust(event, context, config) {
     });
 }
 
-function login(config) {
-    return particle.login({username: config.UserName, password: config.Password}).then(
-        function (data) {
-            token = data.body.access_token;
-            return token;
-        },
-        function(err) {
-            console.log("Could not log in: "+err);
-            return err;
-        });
-
-}
-
 function getVariable(deviceId, variableName, token) {
     let args = { deviceId: deviceId, name: variableName, auth: token};
     return particle.getVariable(args).then(function(response){
@@ -337,7 +324,6 @@ module.exports = {
     controlOff:controlOff,
     percentage:percentage,
     adjust:adjust,
-    login:login,
     getVariable:getVariable,
     callFunction:callFunction,
     publish:publish,

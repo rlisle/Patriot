@@ -25,11 +25,6 @@ function percentage(event, context, config) {
     return Promise.resolve(this);
 }
 
-function login(config) {
-    this.controlReceived = 'login';
-    return Promise.resolve(this);
-}
-
 function getVariable(deviceId, variableName, token) {
     this.controlReceived = 'getVariable';
     return Promise.resolve(this);
@@ -57,7 +52,6 @@ module.exports = {
     controlOn:controlOn,
     controlOff:controlOff,
     percentage:percentage,
-    login:login,
     getVariable:getVariable,
     callFunction:callFunction,
     publish:publish,
