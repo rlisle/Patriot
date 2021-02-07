@@ -23,8 +23,8 @@ var Particle = require('particle-api-js');
 const testDeviceName   = 'UnitTest';
 const testApplianceId  = 'photon';      // V2
 const testFriendlyName = 'photon';
-//const testAccessToken  = '8e9c665522d622e2ee3f1b91ef44a7f512f18a06';    // Test account. Use when publishing
-const testAccessToken = '3030a462f44ce7c80b2eabadd4a0f7f3c3fc6233';     // PRIVATE! Ron's account only!
+//const testAccessToken  = process.env.PARTICLE_TEST_TOKEN; // Test account token. Update and use when publishing
+const testAccessToken = process.env.PARTICLE_ACCESS_TOKEN;  // PRIVATE! Keep account keys in env
 
 describe("Particle", function () {
 
