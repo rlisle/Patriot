@@ -45,11 +45,6 @@ function publish(name, data, token) {
     return Promise.resolve(this);
 }
 
-function getAppliancesV2(token) {
-    this.controlReceived = 'getAppliancesV2';
-    return Promise.resolve(this);
-}
-
 function getEndpoints(token) {
     this.controlReceived = 'getEndpoints';
     return Promise.resolve(this);
@@ -66,6 +61,5 @@ module.exports = {
     getVariable:getVariable,
     callFunction:callFunction,
     publish:publish,
-    getAppliancesV2:getAppliancesV2,
     getEndpoints:getEndpoints
 };
