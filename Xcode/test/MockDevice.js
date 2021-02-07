@@ -8,7 +8,7 @@ var valueReceived       = 'none';
 
 function controlOn(event, context, config) {
     this.controlReceived = 'controlOn';
-    this.deviceNameReceived = event.payload.appliance.applianceId;
+    this.deviceNameReceived = event.directive.header.name;
     return Promise.resolve(this);
 }
 
