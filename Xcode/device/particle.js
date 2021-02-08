@@ -21,10 +21,13 @@ var token;
  * @returns {Promise} success or fail
  */
 function controlOn(event, context, config) {
+    helper.log("controlOn",event);
     let topic = config.EventName+"/"+event.directive.endpoint.cookie.command;
+    helper.log("controlOn topic",topic);
     let message = "100";
     let accessToken = event.directive.endpoint.scope.token;
     return publish(topic, message, accessToken).then(function(result) {
+        helper.log("controlOn returning result",result);
         return result;
     });
 }
