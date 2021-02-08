@@ -13,7 +13,7 @@ var helper      = require('../src/helper');
 var Particle = require('particle-api-js');
 
 var particle = new Particle();
-var token;
+//var token;
 
 /* TODO: refactor to a common method if cookie.command == endpoingId always */
 /**
@@ -26,10 +26,31 @@ function controlOn(event, context, config) {
     helper.log("controlOn topic",topic);
     let message = "100";
     let accessToken = event.directive.endpoint.scope.token;
-    return publish(topic, message, accessToken).then(function(result) {
-        helper.log("controlOn returning result",result);
-        return result;
-    });
+    helper.log("controlOn token",accessToken);
+    
+// For test/debugging, try issuing another js function
+    var devicesPr = particle.listDevices({ auth: accessToken });
+    devicesPr.then(
+      function(devices){
+        helper.log('DEBUG: Devices: ', devices);
+      },
+      function(err) {
+        helper.log('DEBUG List devices call failed: ', err);
+      }
+    );
+// End test/debug
+    
+//    try {   // This shouldn't be necessary
+//
+//        return publish(topic, message, accessToken).then(function(result) { // Error is occuring here!
+//            helper.log("controlOn returning result",result);
+//            return result;
+//        },function(err) {
+//            helper.log("Publish Error", err);
+//        });
+//    } catch(error) {
+//        helper.log("Publish unhandled error", error);
+//    }
 }
 
 function controlOff(event, context, config) {
@@ -74,8 +95,14 @@ function callFunction(deviceId, functionName, argument, token) {
 }
 
 function publish(name, data, token) {
-    let args = { name: name, data: data, auth: token, isPrivate: true };
+    helper.log("publish name",name);
+    helper.log("publish data",data);
+    helper.log("publish token",token);
+//    let args = { name: name, data: data, auth: token, isPrivate: true };
+    let args = { name: name, data: data, auth: token }; // New version?
+    helper.log("publish args",args);
     return particle.publishEvent(args).then(function(response){
+        helper.log("publish response",response);
         let result = response.body.ok;
         return result;
     });
