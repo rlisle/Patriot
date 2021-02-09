@@ -28,7 +28,7 @@ function controlOn(event, context, config) {
     let accessToken = event.directive.endpoint.scope.token;
     helper.log("controlOn token",accessToken);
         
-    try {   // This shouldn't be necessary
+//    try {   // This shouldn't be necessary
 
         return publish(topic, message, accessToken).then(function(result) { // Error is occuring here!
             helper.log("controlOn returning result",result);
@@ -36,9 +36,9 @@ function controlOn(event, context, config) {
         },function(err) {
             helper.log("Publish Error", err);
         });
-    } catch(error) {
-        helper.log("Publish unhandled error", error);
-    }
+//    } catch(error) {
+//        helper.log("Publish unhandled error", error);
+//    }
 }
 
 function controlOff(event, context, config) {
@@ -90,11 +90,17 @@ function publish(name, data, token) {
 //    let args = { name: name, data: data, auth: token, isPrivate: true };
     let args = { name: name, data: data, auth: token }; // New version?
     helper.log("publish args",args);
-    return particle.publishEvent(args).then(function(response){
-        helper.log("publish response",response);
-        let result = response.body.ok;
-        return result;
-    });
+    try {   // This shouldn't be necessary
+        return particle.publishEvent(args).then(function(response){
+            helper.log("publish response",response);
+            let result = response.body.ok;
+            return result;
+        }, function (err) {
+            helper.log("publish error",err);
+        });
+    } catch(error) {
+        helper.log("publishEvent exception", error);
+    }
 }
 
 /**
