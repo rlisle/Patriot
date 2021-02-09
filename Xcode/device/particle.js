@@ -27,33 +27,22 @@ function controlOn(event, context, config) {
     let message = "100";
     let accessToken = event.directive.endpoint.scope.token;
     helper.log("controlOn token",accessToken);
-    
-// For test/debugging, try issuing another js function
-    var devicesPr = particle.listDevices({ auth: accessToken });
-    devicesPr.then(
-      function(devices){
-        helper.log('DEBUG: Devices: ', devices);
-      },
-      function(err) {
-        helper.log('DEBUG List devices call failed: ', err);
-      }
-    );
-// End test/debug
-    
-//    try {   // This shouldn't be necessary
-//
-//        return publish(topic, message, accessToken).then(function(result) { // Error is occuring here!
-//            helper.log("controlOn returning result",result);
-//            return result;
-//        },function(err) {
-//            helper.log("Publish Error", err);
-//        });
-//    } catch(error) {
-//        helper.log("Publish unhandled error", error);
-//    }
+        
+    try {   // This shouldn't be necessary
+
+        return publish(topic, message, accessToken).then(function(result) { // Error is occuring here!
+            helper.log("controlOn returning result",result);
+            return result;
+        },function(err) {
+            helper.log("Publish Error", err);
+        });
+    } catch(error) {
+        helper.log("Publish unhandled error", error);
+    }
 }
 
 function controlOff(event, context, config) {
+    helper.log("controlOff",event);
     let topic = config.EventName+"/"+event.directive.endpoint.cookie.command;
     let message = "0";
     let accessToken = event.directive.endpoint.scope.token;
