@@ -198,7 +198,8 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("Sink", 50);
+    Device::setValue("Sink", 40);
+    Device::setValue("Cabinets", 50);
 }
 
 void setSunriseLights() {
