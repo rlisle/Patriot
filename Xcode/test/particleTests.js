@@ -2,9 +2,12 @@
  * Particle Tests
  *
  * These tests use a particle.io test account
- * and a dedicated test Photon named 'myPhoton'
- * running the starter.ino sketch.
+ * and a dedicated test Photon named 'RonTest'
+ * running the RonTest.ino sketch.
  *
+ * It includes a blueLed device.
+ *
+ * To run just these tests: "npm test -- -g Particle"
  */
 'use strict';
 
@@ -20,11 +23,10 @@ var helper = require('../src/helper');
 var config = require('../config');
 var Particle = require('particle-api-js');
 
-const testDeviceName   = 'UnitTest';
-const testApplianceId  = 'photon';      // V2
-const testFriendlyName = 'photon';
-//const testAccessToken  = '8e9c665522d622e2ee3f1b91ef44a7f512f18a06';    // Test account. Use when publishing
-const testAccessToken = '3030a462f44ce7c80b2eabadd4a0f7f3c3fc6233';     // PRIVATE! Ron's account only!
+const testDeviceName   = 'RonTest';
+const testFriendlyName = 'blueLed';
+//const testAccessToken  = process.env.PARTICLE_TEST_TOKEN; // Test account token. Update and use when publishing
+const testAccessToken = process.env.PARTICLE_ACCESS_TOKEN;  // PRIVATE! Keep account keys in env
 
 describe("Particle", function () {
 
@@ -34,33 +36,14 @@ describe("Particle", function () {
         expect(particle).to.not.be.undefined;
     });
 
-    // Not testing Login on test account since only token exposed, not id and pw.
-    // describe("login", function () {
-    //
-    //     it('through direct SDK call returns 40 char token for valid username and password', function () {
-    //         return particle.login({username: config.UserName, password: config.Password})
-    //             .then(function (data) {
-    //                 var token = data.body.access_token;
-    //                 expect(token).to.be.lengthOf(40);
-    //             });
-    //     });
-    //
-    //     it('returns 40 char token for valid username and password', function () {
-    //
-    //         return device.login(config)
-    //             .then(function (token) {
-    //                 expect(token).to.be.lengthOf(40);
-    //             });
-    //     })
-    // });
-
     describe('getVariable',function() {
 
         it('returns test value',function() {
 
             return device.getVariable(testDeviceName, 'Devices', testAccessToken)
                 .then(function(data) {
-                    expect(data).to.be.equal('blueled');
+                    expect(data).to.contain('blueLed');
+                    //expect(data).to.be.equal('blueled');
                 })
         })
     });
@@ -81,7 +64,7 @@ describe("Particle", function () {
 
         it("returns ok", function () {
 
-            return device.publish('patriot', 'photon:100', testAccessToken)
+            return device.publish('patriot/blueLed', '100', testAccessToken)
                 .then(function (status) {
                     expect(status).to.be.true;
                 });
@@ -111,46 +94,4 @@ describe("Particle", function () {
         //TODO: subscribe to event and ensure it is actually sent
 
     });
-
-    // V2 Legacy
-//    describe("getAppliancesV2", function () {
-//
-//        this.timeout(3000);
-//
-//        it("returns list of appliances", function () {
-//            return device.getAppliancesV2(testAccessToken).then((appliances) => {
-//                    expect(appliances).to.not.be.null;
-//            })
-//        });
-//
-//        it("returns only the test action", function () {
-//            return device.getAppliancesV2(testAccessToken).then((appliances) => {
-//                    let testDevices = appliances.filter(function (item) {
-//                        let applianceId = item.applianceId;
-//                        return applianceId === testApplianceId;
-//                    });
-//                    //helper.log('getAppliancesV2',appliances);
-//                    // The device name should not be exposed, only the behavior name
-//                    expect(appliances).to.have.length(1);
-//                    //helper.log('testDevices',testDevices);
-//                    let testDevice = testDevices[0];
-//                    expect(testDevice.friendlyName).to.equal(testFriendlyName);
-//            });
-//        });
-//    })
-//
-//    describe('discoveryDevice',function(){
-//        let result = device.discoveryDevice("My Device Name", "MyController");
-//        describe('returns formatted object',function() {
-//            it('formats ID to lowercase without spaces',function() {
-//                expect(result.applianceId).to.equal('mydevicename');
-//            });
-//            it('leaves spaces in friendly name lowercase',function() {
-//                expect(result.friendlyName).to.equal('my device name');
-//            });
-//            it('creates description',function() {
-//                expect(result.friendlyDescription).to.equal('My Device Name connected via Particle.io');
-//            })
-//        })
-//    })
 })

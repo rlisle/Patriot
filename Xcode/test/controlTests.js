@@ -49,27 +49,37 @@ describe("Control", function() {
 
     describe("turn off request",function() {
         it("calls device controlOff", function() {
-            var testEvent = {
-                "header" : { "name" : constants.REQUEST_TURN_OFF },
+            var testRequest = {
+                "directive" : {
+                    "header" : {
+                        "name": constants.REQUEST_TURN_OFF,
+                        "correlationToken": "testToken"
+                    },
+                    "endpoint": { "scope": { "token": "testToken" }}
+                },
                 "payload": { "appliance": { applianceId: 'test'}}
             };
-            control.handler( testEvent, testContext, testConfig);
+            control.handler( testRequest, testContext, testConfig);
             expect(mockDevice.controlReceived).to.equal('controlOff');
         })
     });
 
-    describe("percent request",function() {
+    describe("powerlevel request",function() {
         it("calls device percentage", function() {
-            var testEvent = {
-                "header" : { "name" : constants.REQUEST_SET_PERCENT },
-                "payload": {
-                    "appliance": { applianceId: 'test'},
-                    "percentageState": {
-                        "value": 123
+            var testRequest = {
+                "directive" : {
+                    "header" : {
+                        "name": constants.REQUEST_SET_POWERLEVEL,
+                        "correlationToken": "testToken"
+                    },
+                    "endpoint": { "scope": { "token": "testToken" }},
+                    "payload": {
+                        "appliance": { applianceId: 'test'},
+                        "powerLevel": { "value": 123 }
                     }
                 }
             };
-            control.handler( testEvent, testContext, testConfig);
+            control.handler( testRequest, testContext, testConfig);
             expect(mockDevice.controlReceived).to.equal('percentage');
         })
     });

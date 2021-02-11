@@ -146,7 +146,6 @@ void handlePartOfDayChange(int partOfDay) {
 
     Log.info("PartOfDay has changed: %d", partOfDay);
 
-    //TODO: handle startup to other periods
     if( partOfDay == SUNRISE ) {
         setSunriseLights();
     }
@@ -199,7 +198,8 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("Sink", 50);
+    Device::setValue("Sink", 40);
+    Device::setValue("Cabinets", 50);
 }
 
 void setSunriseLights() {

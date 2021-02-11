@@ -8,25 +8,20 @@ var valueReceived       = 'none';
 
 function controlOn(event, context, config) {
     this.controlReceived = 'controlOn';
-    this.deviceNameReceived = event.payload.appliance.applianceId;
+    this.deviceNameReceived = event.directive.header.name;
     return Promise.resolve(this);
 }
 
 function controlOff(event, context, config) {
     this.controlReceived = 'controlOff';
-    this.deviceNameReceived = event.payload.appliance.applianceId;
+    this.deviceNameReceived = event.directive.header.name;
     return Promise.resolve(this);
 }
 
 function percentage(event, context, config) {
     this.controlReceived     = 'percentage';
-    this.deviceNameReceived  = event.payload.appliance.applianceId;
-    this.valueReceived       = event.payload.percentageState.value;
-    return Promise.resolve(this);
-}
-
-function login(config) {
-    this.controlReceived = 'login';
+    this.deviceNameReceived  = event.directive.header.name;
+    this.valueReceived       = event.directive.payload.powerLevel.value;
     return Promise.resolve(this);
 }
 
@@ -45,11 +40,6 @@ function publish(name, data, token) {
     return Promise.resolve(this);
 }
 
-function getAppliancesV2(token) {
-    this.controlReceived = 'getAppliancesV2';
-    return Promise.resolve(this);
-}
-
 function getEndpoints(token) {
     this.controlReceived = 'getEndpoints';
     return Promise.resolve(this);
@@ -62,10 +52,8 @@ module.exports = {
     controlOn:controlOn,
     controlOff:controlOff,
     percentage:percentage,
-    login:login,
     getVariable:getVariable,
     callFunction:callFunction,
     publish:publish,
-    getAppliancesV2:getAppliancesV2,
     getEndpoints:getEndpoints
 };

@@ -14,23 +14,7 @@ chai.should();
 var mockDevice = require('./MockDevice');
 var mockContext = require('./MockContext');
 
-describe("V2 Discovery request", function() {
-
-    let testConfig = {
-        Helper          : helper,
-        accessToken     : "BogusAccessToken",
-        PublishEndPoint : 'BogusURL',
-        Device          : mockDevice
-    }
-
-    it("should call device getAppliancesV2",function(){
-        discovery.handlerV2("event", mockContext, testConfig);
-        expect(mockDevice.controlReceived).to.equal("getAppliancesV2");
-    });
-
-});
-
-describe("V3 Discovery request", function() {
+describe("Discovery request", function() {
 
     let testConfig = {
         Helper          : helper,

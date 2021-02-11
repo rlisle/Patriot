@@ -13,7 +13,7 @@ var helper      = require('../src/helper');
 var Particle = require('particle-api-js');
 
 var particle = new Particle();
-var token;
+//var token;
 
 /* TODO: refactor to a common method if cookie.command == endpoingId always */
 /**
@@ -26,13 +26,23 @@ function controlOn(event, context, config) {
     helper.log("controlOn topic",topic);
     let message = "100";
     let accessToken = event.directive.endpoint.scope.token;
-    return publish(topic, message, accessToken).then(function(result) {
-        helper.log("controlOn returning result",result);
-        return result;
-    });
+    helper.log("controlOn token",accessToken);
+        
+//    try {   // This shouldn't be necessary
+
+        return publish(topic, message, accessToken).then(function(result) { // Error is occuring here!
+            helper.log("controlOn returning result",result);
+            return result;
+        },function(err) {
+            helper.log("Publish Error", err);
+        });
+//    } catch(error) {
+//        helper.log("Publish unhandled error", error);
+//    }
 }
 
 function controlOff(event, context, config) {
+    helper.log("controlOff",event);
     let topic = config.EventName+"/"+event.directive.endpoint.cookie.command;
     let message = "0";
     let accessToken = event.directive.endpoint.scope.token;
@@ -59,19 +69,6 @@ function adjust(event, context, config) {
     });
 }
 
-function login(config) {
-    return particle.login({username: config.UserName, password: config.Password}).then(
-        function (data) {
-            token = data.body.access_token;
-            return token;
-        },
-        function(err) {
-            console.log("Could not log in: "+err);
-            return err;
-        });
-
-}
-
 function getVariable(deviceId, variableName, token) {
     let args = { deviceId: deviceId, name: variableName, auth: token};
     return particle.getVariable(args).then(function(response){
@@ -87,11 +84,23 @@ function callFunction(deviceId, functionName, argument, token) {
 }
 
 function publish(name, data, token) {
-    let args = { name: name, data: data, auth: token, isPrivate: true };
-    return particle.publishEvent(args).then(function(response){
-        let result = response.body.ok;
-        return result;
-    });
+    helper.log("publish name",name);
+    helper.log("publish data",data);
+    helper.log("publish token",token);
+//    let args = { name: name, data: data, auth: token, isPrivate: true };
+    let args = { name: name, data: data, auth: token }; // New version?
+    helper.log("publish args",args);
+    try {   // This shouldn't be necessary
+        return particle.publishEvent(args).then(function(response){
+            helper.log("publish response",response);
+            let result = response.body.ok;
+            return result;
+        }, function (err) {
+            helper.log("publish error",err);
+        });
+    } catch(error) {
+        helper.log("publishEvent exception", error);
+    }
 }
 
 /**
@@ -328,6 +337,7 @@ function reportState(event, context, config) {
         console.log("Error reading Devices variable for " + photon);
     });
 
+//    return p1;
     // Return the value in a promise (Do we need this?)
     return p1.then(function(result) {
         return result;
@@ -340,7 +350,6 @@ module.exports = {
     controlOff:controlOff,
     percentage:percentage,
     adjust:adjust,
-    login:login,
     getVariable:getVariable,
     callFunction:callFunction,
     publish:publish,

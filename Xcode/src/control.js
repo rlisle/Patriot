@@ -14,6 +14,7 @@ var helper      = require('./helper');
 function handler(request, context, config) {
 
     var requestedName = request.directive.header.name;
+    helper.log('Control.handler',requestedName);
     var token = request.directive.endpoint.scope.token;  // example says payload, but its endpoint
     var timestamp = new Date().toISOString();
     var correlation = request.directive.header.correlationToken;
