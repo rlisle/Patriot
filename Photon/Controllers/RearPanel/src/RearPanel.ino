@@ -157,8 +157,7 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("piano", 20);
-    Device::setValue("officeceiling",80);
+    Device::setValue("officeceiling",70);
 }
 
 void setSunriseLights() {
