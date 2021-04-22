@@ -31,16 +31,18 @@ void setup() {
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain"));
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor"));
 
-    // Lights
+    // Inside Lights
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
     Device::add(new NCD8Light(ADDRESS, 1, "Loft", 2));
+    Device::add(new NCD8Light(ADDRESS, 6, "Piano", 2));
+    // Fading OfficeTrim results in door toggling, probably due to parallel wiring
+    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", 0));
+
+    // Outside Lights
     Device::add(new NCD8Light(ADDRESS, 2, "RampPorch", 2));
     Device::add(new NCD8Light(ADDRESS, 3, "RampAwning", 2));
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", 2));
-    Device::add(new NCD8Light(ADDRESS, 6, "Piano", 2));
-    // Fading OfficeTrim results in door toggling
-    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", 0));
 
     // Switches
     Device::add(new Switch(A0, "OfficeCeilingSwitch"));
@@ -55,7 +57,7 @@ void setup() {
     // Be careful to only define in 1 (this) controller
     Device::add(new Device("sleeping"));
     Device::add(new Device("cleaning"));
-    Device::add(new Device("watching"));
+    Device::add(new Device("watching"));    // TODO: move to front controller?
 }
 
 void loop() {
@@ -176,10 +178,7 @@ void setEveningLights() {
 void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
-    Device::setValue("OfficeCeiling", 80);
-    Device::setValue("Loft", 0);
-    Device::setValue("piano", 0);
-    Device::setValue("OfficeTrim", 0);
+    setAllInsideLights(0);
     setAllOutsideLights(0);
     Device::setValue("Curtain",0);
 }

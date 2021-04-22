@@ -37,18 +37,21 @@ IoT *iot;
 void setup() {
     IoT::begin("192.168.10.184", "FrontPanel");
 
-    Device::add(new NCD8Light(ADDRESS, 0, "DoorSide", 2));
+    // Inside Lights
     Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", 2));
     Device::add(new NCD8Light(ADDRESS, 2, "Sink", 2));
-    Device::add(new NCD8Light(ADDRESS, 3, "OtherSide", 2));
     Device::add(new NCD8Light(ADDRESS, 4, "RightTrim",2));
     Device::add(new NCD8Light(ADDRESS, 5, "LeftTrim",2));
-    Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", 2));
-    Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", 2));
-
     Device::add(new Light(D2, "Ceiling", 2));
     Device::add(new Light(D3, "Cabinets", 2));
 
+    // Outside Lights
+    Device::add(new NCD8Light(ADDRESS, 0, "DoorSide", 2));
+    Device::add(new NCD8Light(ADDRESS, 3, "OtherSide", 2));
+    Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", 2));
+    Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", 2));
+
+    // Switches
     Device::add(new Switch(A5, "CabinetsSwitch"));
     Device::add(new Switch(A6, "RightTrimSwitch"));
     Device::add(new Switch(A7, "SinkSwitch"));
@@ -223,12 +226,7 @@ void setEveningLights() {
 void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
-    Device::setValue("KitchenCeiling", 50);
-    Device::setValue("Sink", 0);
-    Device::setValue("RightTrim", 0);
-    Device::setValue("LeftTrim", 0);
-    Device::setValue("Ceiling", 50);
-    Device::setValue("Cabinets", 0);
+    setAllInsideLights(0);
     setAllOutsideLights(0);
 }
 
@@ -239,7 +237,7 @@ void setSleepingLights() {
     setAllOutsideLights(0);
 }
 
-// This is currently the livingroom "Turn on lights"
+// This is currently the livingroom "Turn on lights" Huh???
 void setBlueledLights(int value) {  // 0 = Off, else On
     Log.info("setBlueledLights %d", value);
     
@@ -255,6 +253,7 @@ void setBlueledLights(int value) {  // 0 = Off, else On
     }
 }
 
+// "Alexa, watch tv"
 void setWatchingLights(int value) {
     Log.info("setWatchingLights %d", value);
 
