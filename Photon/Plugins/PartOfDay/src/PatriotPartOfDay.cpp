@@ -36,9 +36,13 @@ All text above must be included in any redistribution.
 #define MILLIS_PER_MINUTE 60000
 #define MILLIS_PER_DAY 86400000
 
-// Austin lat/long: 30.2672° N, 97.7431° W
-float const LONGITUDE = -97.733330;
+// Spanish Fort, AL: 30.6685° N, 87.9109° W
+// Bonifay, FL: 30.7919° N, 85.6797° W
+// White Springs, FL: 30.3297° N, 82.7590° W
+// Tampa, FL: 27.9506° N, 82.4572° W
+// Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
 float const LATITUDE =  30.266666;
+float const LONGITUDE = -97.733330;
 
 /**
  * Constructor
