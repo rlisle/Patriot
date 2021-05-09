@@ -21,6 +21,7 @@
 #include "IoT.h"
 
 #define POLL_INTERVAL_MILLIS 100
+#define FILTER_INCREMENT 25
 
 /**
  * Constructor
@@ -34,6 +35,7 @@ NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name)
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _lastPollTime = 0;
     _type         = 'S';
+    _filter       = 0;
     
     if(switchIndex > 0 && switchIndex <= 3) {
         _switchBitmap = 0x10 << switchIndex;
@@ -160,12 +162,31 @@ bool NCD4Switch::isTimeToCheckSwitch()
 bool NCD4Switch::didSwitchChange()
 {
     int newValue = isSwitchOn() ? 100 : 0;
-    if (newValue == _value)
-    {
-        return false;
+    bool oldState = (_value != 0);
+    
+    if(newValue == 100) {   // Is switch on?
+        _filter += FILTER_INCREMENT;
+        if(_filter > 100) {
+            _filter = 100;
+        }
+    } else {    // Switch is off
+        _filter -= FILTER_INCREMENT;
+        if(_filter < 0) {
+            _filter = 0;
+        }
     }
-    _value = newValue;
-    return true;
+
+    if(oldState == false && _filter == 100) {
+        _value = 100;
+        return true;
+    }
+    
+    if(oldState == true && _filter == 0) {
+        _value = 0;
+        return true;
+    }
+    
+    return false;
 }
 
 
