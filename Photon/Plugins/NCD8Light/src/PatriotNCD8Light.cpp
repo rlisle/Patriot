@@ -186,7 +186,7 @@ void NCD8Light::loop()
 void NCD8Light::outputPWM() {
     int reg = 2 + _lightNum;
     
-    int retryCount = 3;
+    int retryCount = 5;
     byte status;
     do {
         Wire.beginTransmission(_address);
