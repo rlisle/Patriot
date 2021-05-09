@@ -22,6 +22,7 @@ class Switch : public Device
 private:
     int        _pin;
     long       _lastPollTime;
+    int        _filter;
 
     bool      isTimeToCheckSwitch();
     bool      didSwitchChange();
