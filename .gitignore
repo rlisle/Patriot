@@ -40,10 +40,23 @@ CMakeLists.txt
 # Xcode files
 *.xcuserstate
 xcuserdata/
-xcshareddate/
+xcshareddata/
+Secrets.swift
+Packages
+
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
 
 # Alexa archive
 Archive.zip
 
 # Node modules
 node_modules
+
