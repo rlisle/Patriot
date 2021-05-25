@@ -1,0 +1,6 @@
+framework module Particle_SDK {
+  umbrella header "Particle-SDK-umbrella.h"
+
+  export *
+  module * { export * }
+}
