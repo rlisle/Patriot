@@ -33,8 +33,8 @@ struct LoginView: View {
                                 .autocapitalization(.none)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .background(Color.gray)
-                            TextField("Password", text: $password)
-                                .autocapitalization(.none)
+                            SecureField("Password", text: $password)
+                                //.autocapitalization(.none)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .background(Color.gray)
                             //TODO: submit button
