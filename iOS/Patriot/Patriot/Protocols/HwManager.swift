@@ -12,7 +12,7 @@
 import Foundation
 
 
-protocol HwManager: class
+protocol HwManager: AnyObject
 {
     var deviceDelegate:         DeviceNotifying?    { get set }
     var activityDelegate:       ActivityNotifying?  { get set }

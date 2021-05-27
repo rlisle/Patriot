@@ -9,7 +9,7 @@
 import Foundation
 
 
-protocol ActivityNotifying: class
+protocol ActivityNotifying: AnyObject
 {
     func activitiesChanged()
     func activityChanged(name: String, isActive: Bool)

@@ -8,9 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State var needsLogin = true
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+
+        Button("Log Out") {
+                    needsLogin = true
+                }
+                .sheet(isPresented: $needsLogin) {
+                    LoginView(needsLogin: $needsLogin)
+                }
     }
 }
 
