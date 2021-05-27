@@ -11,69 +11,70 @@ struct LoginView: View {
     
     @Binding var needsLogin: Bool
     
-    @State var userName = ""
-    @State var password = ""
+    @State private var userName = ""
+    @State private var password = ""
+    
+    @State private var hideSpinner = true
     
     var body: some View {
-        GeometryReader { metrics in
-            VStack {
-                Spacer()
-                HStack {
+        ZStack {
+            ProgressView().isHidden(hideSpinner)
+            
+            GeometryReader { metrics in
+                VStack {
                     Spacer()
-                    VStack(alignment: .center, spacing: 20, content: {
-                        Text("Login to your Particle.io account")
-                            .padding(.horizontal, -4)
-                            .padding(.vertical, 12)
-                        TextField("User name", text: $userName)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .background(Color.gray)
-                        TextField("Password", text: $password)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .background(Color.gray)
-                        //TODO: submit button
-                        Button(action: {
-                            handleLogin()
-                        }, label: {
-                            Text("Login")
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 8)
-                                .background(Color.blue)
-                                .foregroundColor(Color.white)
-                                .cornerRadius(20)
+                    HStack {
+                        Spacer()
+                        VStack(alignment: .center, spacing: 20, content: {
+                            Text("Login to your Particle.io account")
+                                .padding(.horizontal, -4)
+                                .padding(.vertical, 12)
+                            TextField("User name", text: $userName)
+                                .autocapitalization(.none)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .background(Color.gray)
+                            TextField("Password", text: $password)
+                                .autocapitalization(.none)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .background(Color.gray)
+                            //TODO: submit button
+                            Button(action: {
+                                handleLogin()
+                            }, label: {
+                                Text("Login")
+                                    .padding(.horizontal, 24)
+                                    .padding(.vertical, 8)
+                                    .background(Color.blue)
+                                    .foregroundColor(Color.white)
+                                    .cornerRadius(20)
+                            })
+                            .disabled(userName == "" || password == "")
+                            .padding(.bottom, 10)
                         })
-                        .disabled(userName == "" || password == "")
-                        .padding(.bottom, 10)
-                    })
-                    .padding(20)
-                    .frame(width: metrics.size.width * 0.75, alignment: .center)
-                    .background(Color.gray)
-                    .cornerRadius(30)
-                    .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+                        .padding(20)
+                        .frame(width: metrics.size.width * 0.75, alignment: .center)
+                        .background(Color.gray)
+                        .cornerRadius(30)
+                        .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+                        Spacer()
+                    }
                     Spacer()
                 }
-                Spacer()
             }
         }
     }
     
     func handleLogin() {
-        needsLogin = false
-    }
-}
-
-struct CardView: View {
-    var body: some View {
-        GeometryReader { gp in
-            VStack {
-                VStack {
-                    Text("Blue")
-                }
-                .frame(width: gp.size.width, height: gp.size.height * 0.7)
-                .background(Color.gray)
+        hideSpinner = false
+        PhotonManager.shared.login(user: userName, password: password) { (error) in
+            hideSpinner = true
+            if let error = error {
+                print("Error logging in: \(error)")
+                //TODO: display an error message, but stay on this screen
+                return
             }
+            needsLogin = false
         }
-        .frame(height: 280).frame(maxWidth: .infinity)
-        .cornerRadius(24).padding(.horizontal, 30)
     }
 }
 

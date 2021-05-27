@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var needsLogin = true
+    @State private var needsLogin = true
     
     var body: some View {
 

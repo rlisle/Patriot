@@ -30,6 +30,8 @@ import Particle_SDK
 
 class PhotonManager: NSObject
 {
+    static let shared = PhotonManager()         // Singleton
+    
     var subscribeHandler:  Any?                 // Particle.io subscribe handle
     var deviceDelegate:    DeviceNotifying?     // Reports changes to devices
     var activityDelegate:  ActivityNotifying?   // Reports changes to activities
