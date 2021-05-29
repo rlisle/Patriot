@@ -74,7 +74,13 @@ struct LoginView: View {
                 return
             }
             needsLogin = false
+            
+            fetchDevices()
         }
+    }
+    
+    func fetchDevices() {
+        
     }
 }
 
