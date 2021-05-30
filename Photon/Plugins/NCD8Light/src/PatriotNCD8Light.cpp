@@ -197,8 +197,20 @@ void NCD8Light::outputPWM() {
     } while(status != 0 && retryCount > 0);
     
     if(status != 0){
-        Log.error("NCD8Light outputPWM write failed for light "+String(_lightNum)+", level = "+String(_currentLevel));
         reset();
+        retryCount = 5;
+        do {
+            Wire.beginTransmission(_address);
+            Wire.write(reg);
+            Wire.write(int(_currentLevel));
+            status = Wire.endTransmission();
+            retryCount--;
+        } while(status != 0 && retryCount > 0);
+        
+        if(status != 0) {
+            Log.error("NCD8Light outputPWM write failed twice for light "+String(_lightNum)+", level = "+String(_currentLevel));
+            reset();
+        }
     }
 }
 

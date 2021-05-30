@@ -34,6 +34,7 @@ private:
     MQTT          *_mqtt;
     String        _controllerName;
     system_tick_t _lastMQTTtime;
+    system_tick_t _lastAliveTime;   // Send out alive messages periodically
     String        _connectID;       // Used when reconnecting
     
     int       _logging; // a counting semaphore to prevent recursion

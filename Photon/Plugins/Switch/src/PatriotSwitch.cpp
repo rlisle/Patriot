@@ -17,6 +17,7 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 
 #define POLL_INTERVAL_MILLIS 100
+#define FILTER_INCREMENT 25
 
 /**
  * Constructor
@@ -29,6 +30,7 @@ Switch::Switch(int pinNum, String name)
 {
     _value = 0;
     _type  = 'S';
+    _filter = 0;
 }
 
 void Switch::begin() {
@@ -71,19 +73,41 @@ bool Switch::isTimeToCheckSwitch()
 
 /**
  * didSwitchChange()
+ *
+ * Use a filter algorithm with hysteresis.
+ * Increment/decrement if switch on/off
+ * Only toggle switch state at 0 or 100
+ *
  * @return bool if switch has changed since last reading
  */
 bool Switch::didSwitchChange()
 {
     int pinState = digitalRead(_pin);   // Inverted: 0 is on, 1 is off
-    bool newState = (pinState == 0);
     bool oldState = (_value != 0);
-    if (newState == oldState)
-    {
-        return false;
+
+    if(pinState == 0) { // Is switch on?
+        _filter += FILTER_INCREMENT;
+        if(_filter > 100) {
+            _filter = 100;
+        }
+    } else {
+        _filter -= FILTER_INCREMENT;
+        if(_filter < 0) {
+            _filter = 0;
+        }
     }
-    _value = newState ? 100 : 0;
-    return true;
+    
+    if(oldState == false && _filter == 100) {
+        _value = 100;
+        return true;
+    }
+    
+    if(oldState == true && _filter == 0) {
+        _value = 0;
+        return true;
+    }
+    
+    return false;
 }
 
 

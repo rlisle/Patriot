@@ -28,6 +28,7 @@ class NCD4Switch : public Device
 {
  private:
     long    _lastPollTime;
+    int8_t  _filter;
 
     int8_t  _boardAddress;
     int8_t  _switchBitmap;

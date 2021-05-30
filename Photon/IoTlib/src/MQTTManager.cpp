@@ -16,6 +16,9 @@ All text above must be included in any redistribution.
 #include "device.h"
 #include "IoT.h"
 
+#define MQTT_TIMEOUT_SECONDS 60*5
+#define MQTT_ALIVE_SECONDS 60
+
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {
     _controllerName = controllerName.toLowerCase();
@@ -39,6 +42,7 @@ void MQTTManager::connect(String connectID) {
 
     _connectID = connectID;
     _lastMQTTtime = Time.now();
+    _lastAliveTime = _lastMQTTtime;
 
     if(_mqtt == NULL) {
         Log.error("ERROR! MQTTManager: connect called but object null");
@@ -78,14 +82,23 @@ void MQTTManager::loop()
 {
     if(_mqtt != NULL && _mqtt->isConnected()) {
         _mqtt->loop();
+        sendAlivePeriodically()
     }
 
     reconnectCheck();
 }
 
+void MQTTManager::sendAlivePeriodically() {
+    system_tick_t secondsSinceLastAlive = Time.now() - _lastAliveTime;
+    if(secondsSinceLastAlive > MQTT_ALIVE_SECONDS) {
+        secondsSinceLastAlive = Time.now()
+        publish("patriot/alive", _controllerName)
+    }
+}
+
 void MQTTManager::reconnectCheck() {
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
-    if(secondsSinceLastMessage > 20 * 60) {
+    if(secondsSinceLastMessage > MQTT_TIMEOUT_SECONDS) {
         Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
         connect(_connectID);
     }
@@ -117,8 +130,13 @@ void MQTTManager::parseMessage(String topic, String message)
         String subtopic = topic.substring(kPublishName.length()+1);
         
         // Look for reserved names
+        // ALIVE
+        if(subtopic == "alive" || subtopic.startsWith("alive/")) {
+            // message is controller name
+            // Ignore it.
+
         // LOG
-        if(subtopic == "log" || subtopic.startsWith("log/")) {
+        } else if(subtopic == "log" || subtopic.startsWith("log/")) {
             // Ignore it.
 
         // LOGLEVEL
