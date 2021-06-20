@@ -60,3 +60,5 @@ Archive.zip
 # Node modules
 node_modules
 
+# Secrets
+secrets.h
