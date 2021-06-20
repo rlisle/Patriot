@@ -91,7 +91,7 @@ void MQTTManager::loop()
 void MQTTManager::sendAlivePeriodically() {
     system_tick_t secondsSinceLastAlive = Time.now() - _lastAliveTime;
     if(secondsSinceLastAlive > MQTT_ALIVE_SECONDS) {
-        secondsSinceLastAlive = Time.now()
+        _lastAliveTime = Time.now()
         publish("patriot/alive", _controllerName)
     }
 }
