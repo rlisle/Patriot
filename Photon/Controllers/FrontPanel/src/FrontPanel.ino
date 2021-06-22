@@ -35,7 +35,7 @@ IoT *iot;
 
               
 void setup() {
-    IoT::begin("192.168.10.184", "FrontPanel");
+    IoT::begin("192.168.50.33", "FrontPanel");
 
     // Inside Lights
     Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", 2));

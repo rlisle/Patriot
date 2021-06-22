@@ -21,7 +21,7 @@ Author: Ron Lisle
 #include <PatriotSwitch.h>
 
 void setup() {
-    IoT::begin("192.168.10.184","LeftSlide");
+    IoT::begin("192.168.50.33","LeftSlide");
 
     // Lights
     Device::add(new Light(TX, "Couch"));

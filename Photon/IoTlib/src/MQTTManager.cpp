@@ -82,7 +82,7 @@ void MQTTManager::loop()
 {
     if(_mqtt != NULL && _mqtt->isConnected()) {
         _mqtt->loop();
-        sendAlivePeriodically()
+        sendAlivePeriodically();
     }
 
     reconnectCheck();
@@ -91,8 +91,8 @@ void MQTTManager::loop()
 void MQTTManager::sendAlivePeriodically() {
     system_tick_t secondsSinceLastAlive = Time.now() - _lastAliveTime;
     if(secondsSinceLastAlive > MQTT_ALIVE_SECONDS) {
-        _lastAliveTime = Time.now()
-        publish("patriot/alive", _controllerName)
+        _lastAliveTime = Time.now();
+        publish("patriot/alive", _controllerName);
     }
 }
 
