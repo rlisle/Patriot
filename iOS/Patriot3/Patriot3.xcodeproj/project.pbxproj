@@ -1,0 +1,608 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		275263E3269008F2005E74C9 /* Patriot3App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275263E2269008F2005E74C9 /* Patriot3App.swift */; };
+		275263E5269008F2005E74C9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275263E4269008F2005E74C9 /* ContentView.swift */; };
+		275263E7269008F2005E74C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 275263E6269008F2005E74C9 /* Assets.xcassets */; };
+		275263EA269008F2005E74C9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 275263E9269008F2005E74C9 /* Preview Assets.xcassets */; };
+		275263F4269008F2005E74C9 /* Patriot3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275263F3269008F2005E74C9 /* Patriot3Tests.swift */; };
+		275263FE269008F2005E74C9 /* Patriot3UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275263FD269008F2005E74C9 /* Patriot3UITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		275263F0269008F2005E74C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 275263D7269008F2005E74C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 275263DE269008F2005E74C9;
+			remoteInfo = Patriot3;
+		};
+		275263FA269008F2005E74C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 275263D7269008F2005E74C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 275263DE269008F2005E74C9;
+			remoteInfo = Patriot3;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		275263DF269008F2005E74C9 /* Patriot3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Patriot3.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		275263E2269008F2005E74C9 /* Patriot3App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patriot3App.swift; sourceTree = "<group>"; };
+		275263E4269008F2005E74C9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		275263E6269008F2005E74C9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		275263E9269008F2005E74C9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		275263EF269008F2005E74C9 /* Patriot3Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Patriot3Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		275263F3269008F2005E74C9 /* Patriot3Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patriot3Tests.swift; sourceTree = "<group>"; };
+		275263F9269008F2005E74C9 /* Patriot3UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Patriot3UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		275263FD269008F2005E74C9 /* Patriot3UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patriot3UITests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		275263DC269008F2005E74C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		275263EC269008F2005E74C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		275263F6269008F2005E74C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		275263D6269008F2005E74C9 = {
+			isa = PBXGroup;
+			children = (
+				275263E1269008F2005E74C9 /* Patriot3 */,
+				275263F2269008F2005E74C9 /* Patriot3Tests */,
+				275263FC269008F2005E74C9 /* Patriot3UITests */,
+				275263E0269008F2005E74C9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		275263E0269008F2005E74C9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				275263DF269008F2005E74C9 /* Patriot3.app */,
+				275263EF269008F2005E74C9 /* Patriot3Tests.xctest */,
+				275263F9269008F2005E74C9 /* Patriot3UITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		275263E1269008F2005E74C9 /* Patriot3 */ = {
+			isa = PBXGroup;
+			children = (
+				275263E2269008F2005E74C9 /* Patriot3App.swift */,
+				275263E4269008F2005E74C9 /* ContentView.swift */,
+				275263E6269008F2005E74C9 /* Assets.xcassets */,
+				275263E8269008F2005E74C9 /* Preview Content */,
+			);
+			path = Patriot3;
+			sourceTree = "<group>";
+		};
+		275263E8269008F2005E74C9 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				275263E9269008F2005E74C9 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		275263F2269008F2005E74C9 /* Patriot3Tests */ = {
+			isa = PBXGroup;
+			children = (
+				275263F3269008F2005E74C9 /* Patriot3Tests.swift */,
+			);
+			path = Patriot3Tests;
+			sourceTree = "<group>";
+		};
+		275263FC269008F2005E74C9 /* Patriot3UITests */ = {
+			isa = PBXGroup;
+			children = (
+				275263FD269008F2005E74C9 /* Patriot3UITests.swift */,
+			);
+			path = Patriot3UITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		275263DE269008F2005E74C9 /* Patriot3 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27526401269008F3005E74C9 /* Build configuration list for PBXNativeTarget "Patriot3" */;
+			buildPhases = (
+				275263DB269008F2005E74C9 /* Sources */,
+				275263DC269008F2005E74C9 /* Frameworks */,
+				275263DD269008F2005E74C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Patriot3;
+			productName = Patriot3;
+			productReference = 275263DF269008F2005E74C9 /* Patriot3.app */;
+			productType = "com.apple.product-type.application";
+		};
+		275263EE269008F2005E74C9 /* Patriot3Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27526404269008F3005E74C9 /* Build configuration list for PBXNativeTarget "Patriot3Tests" */;
+			buildPhases = (
+				275263EB269008F2005E74C9 /* Sources */,
+				275263EC269008F2005E74C9 /* Frameworks */,
+				275263ED269008F2005E74C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				275263F1269008F2005E74C9 /* PBXTargetDependency */,
+			);
+			name = Patriot3Tests;
+			productName = Patriot3Tests;
+			productReference = 275263EF269008F2005E74C9 /* Patriot3Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		275263F8269008F2005E74C9 /* Patriot3UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27526407269008F3005E74C9 /* Build configuration list for PBXNativeTarget "Patriot3UITests" */;
+			buildPhases = (
+				275263F5269008F2005E74C9 /* Sources */,
+				275263F6269008F2005E74C9 /* Frameworks */,
+				275263F7269008F2005E74C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				275263FB269008F2005E74C9 /* PBXTargetDependency */,
+			);
+			name = Patriot3UITests;
+			productName = Patriot3UITests;
+			productReference = 275263F9269008F2005E74C9 /* Patriot3UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		275263D7269008F2005E74C9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1300;
+				LastUpgradeCheck = 1300;
+				TargetAttributes = {
+					275263DE269008F2005E74C9 = {
+						CreatedOnToolsVersion = 13.0;
+					};
+					275263EE269008F2005E74C9 = {
+						CreatedOnToolsVersion = 13.0;
+						TestTargetID = 275263DE269008F2005E74C9;
+					};
+					275263F8269008F2005E74C9 = {
+						CreatedOnToolsVersion = 13.0;
+						TestTargetID = 275263DE269008F2005E74C9;
+					};
+				};
+			};
+			buildConfigurationList = 275263DA269008F2005E74C9 /* Build configuration list for PBXProject "Patriot3" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 275263D6269008F2005E74C9;
+			productRefGroup = 275263E0269008F2005E74C9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				275263DE269008F2005E74C9 /* Patriot3 */,
+				275263EE269008F2005E74C9 /* Patriot3Tests */,
+				275263F8269008F2005E74C9 /* Patriot3UITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		275263DD269008F2005E74C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				275263EA269008F2005E74C9 /* Preview Assets.xcassets in Resources */,
+				275263E7269008F2005E74C9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		275263ED269008F2005E74C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		275263F7269008F2005E74C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		275263DB269008F2005E74C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				275263E5269008F2005E74C9 /* ContentView.swift in Sources */,
+				275263E3269008F2005E74C9 /* Patriot3App.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		275263EB269008F2005E74C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				275263F4269008F2005E74C9 /* Patriot3Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		275263F5269008F2005E74C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				275263FE269008F2005E74C9 /* Patriot3UITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		275263F1269008F2005E74C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 275263DE269008F2005E74C9 /* Patriot3 */;
+			targetProxy = 275263F0269008F2005E74C9 /* PBXContainerItemProxy */;
+		};
+		275263FB269008F2005E74C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 275263DE269008F2005E74C9 /* Patriot3 */;
+			targetProxy = 275263FA269008F2005E74C9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		275263FF269008F3005E74C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		27526400269008F3005E74C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		27526402269008F3005E74C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Patriot3/Preview Content\"";
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		27526403269008F3005E74C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Patriot3/Preview Content\"";
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		27526405269008F3005E74C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot3Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Patriot3.app/Patriot3";
+			};
+			name = Debug;
+		};
+		27526406269008F3005E74C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot3Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Patriot3.app/Patriot3";
+			};
+			name = Release;
+		};
+		27526408269008F3005E74C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot3UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Patriot3;
+			};
+			name = Debug;
+		};
+		27526409269008F3005E74C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot3UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Patriot3;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		275263DA269008F2005E74C9 /* Build configuration list for PBXProject "Patriot3" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				275263FF269008F3005E74C9 /* Debug */,
+				27526400269008F3005E74C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		27526401269008F3005E74C9 /* Build configuration list for PBXNativeTarget "Patriot3" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27526402269008F3005E74C9 /* Debug */,
+				27526403269008F3005E74C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		27526404269008F3005E74C9 /* Build configuration list for PBXNativeTarget "Patriot3Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27526405269008F3005E74C9 /* Debug */,
+				27526406269008F3005E74C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		27526407269008F3005E74C9 /* Build configuration list for PBXNativeTarget "Patriot3UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27526408269008F3005E74C9 /* Debug */,
+				27526409269008F3005E74C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 275263D7269008F2005E74C9 /* Project object */;
+}
