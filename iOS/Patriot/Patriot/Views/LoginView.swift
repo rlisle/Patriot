@@ -84,17 +84,10 @@ struct LoginView: View {
     }
 }
 
-struct PresentLoginView: View {
-    @StateObject var devices = DevicesManager()
-//    @State var needsLogin = true
-    var body: some View {
-        LoginView()
-            .environmentObject(devices)
-    }
-}
-
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        PresentLoginView()
+        LoginView()
+            .environmentObject(DevicesManager())
+
     }
 }

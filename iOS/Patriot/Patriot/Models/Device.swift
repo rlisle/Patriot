@@ -65,8 +65,14 @@ class Device
     }
 }
 
-extension Device: Equatable {
+extension Device: Hashable {
+    
     static func == (lhs: Device, rhs: Device) -> Bool {
         return lhs.name == rhs.name && lhs.type == rhs.type
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(type)
     }
 }

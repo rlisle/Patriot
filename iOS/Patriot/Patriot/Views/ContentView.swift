@@ -11,43 +11,40 @@ struct ContentView: View {
 
     @EnvironmentObject var devices: DevicesManager
     
-    var body: some View {
+    let columns = [
+        GridItem(.adaptive(minimum: 80))
+    ]
 
-        VStack {
-//            Menu("Activities") {
-//                List(PhotonManager.shared.activities) {
-//                    Text($0.name)
-//                }
-//            }
-            
-//            Menu("Devices") {
-//                List(PhotonManager.shared.devices) {
-//                    Text($0.name)
-//                }
-//            }
-//
-//            Menu("Photons") {
-//                //TODO: use enumeration instead of hardcoding
-//                List {
-//                    Text(PhotonManager.shared.photons["FrontPanel"].name)
-//                    Text(PhotonManager.shared.photons["RearPanel"].name)
-//                }
-//            }
-            
-            Menu("Settings") {
-                Button("Log Out") {
-                    devices.NeedsLogIn = true
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(devices.devices, id: \.self) { device in
+                    Text(device.name)
                 }
             }
+            .padding(.horizontal)
         }
+        .frame(maxHeight: 300)
         .sheet(isPresented: $devices.NeedsLogIn) {
             LoginView()
         }
     }
+            
+//            Menu("Settings") {
+//                Button("Log Out") {
+//                    devices.NeedsLogIn = true
+//                }
+//            }
+//        }
+//        .sheet(isPresented: $devices.NeedsLogIn) {
+//            LoginView()
+//        }
+//    }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(DevicesManager())
     }
 }
