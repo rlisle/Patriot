@@ -36,12 +36,12 @@ struct ContentView: View {
             
             Menu("Settings") {
                 Button("Log Out") {
-                    devices.$needsLogin = true
+                    devices.NeedsLogIn = true
                 }
             }
         }
-        .sheet(isPresented: !$devices.isLoggedIn) {
-            LoginView(isLoggedIn: $devices.isLoggedIn)
+        .sheet(isPresented: $devices.NeedsLogIn) {
+            LoginView()
         }
     }
 }

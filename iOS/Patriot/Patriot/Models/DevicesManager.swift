@@ -18,7 +18,7 @@ class DevicesManager: ObservableObject
 {
     @Published var devices: [ Device ] = []
     @Published var favoritesList:  [String]                // List of favorite device names
-    @Published var isLoggedIn: Bool = false
+    @Published var NeedsLogIn: Bool = true
     
     let photonManager:  PhotonManager
     let mqtt:           MQTTManager
