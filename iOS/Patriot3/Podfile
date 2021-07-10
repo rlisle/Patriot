@@ -1,7 +1,7 @@
 #source 'https://github.com/CocoaPods/Specs.git'
 #source 'https://cdn.cocoapods.org'
 
-platform :ios, '11.3'
+platform :ios, '13.0'
 use_frameworks!
 
 target 'Patriot3' do
