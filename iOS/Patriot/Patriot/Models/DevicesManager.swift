@@ -2,34 +2,44 @@
 //  DevicesManager.swift
 //  Patriot
 //
-//  Created by Ron Lisle on 5/31/18.
-//  Copyright © 2018 Ron Lisle. All rights reserved.
+//  This is the top level shared data repository
+//
+//  It will be passed to views via the environment
+//  Uses an observed object instead of delegates
+//
+//  Created by Ron Lisle on 5/31/18, updated 7/10/21
+//  Copyright © 2018-2021 Ron Lisle. All rights reserved.
 //
 
-import UIKit
+import SwiftUI
+import Combine
 
-class DevicesManager
+class DevicesManager: ObservableObject
 {
-    var devices:        [ Device ] = []
+    @Published var devices: [ Device ] = []
+    @Published var favoritesList:  [String]                // List of favorite device names
+    @Published var isLoggedIn: Bool = false
+    
     let photonManager:  PhotonManager
     let mqtt:           MQTTManager
     let settings:       Settings
-    var favoritesList:  [String]                // List of favorite device names
+    
     weak var delegate:  DeviceNotifying?
 
     var favorites: [ Device ] {
         return devices.filter { $0.isFavorite == true }
     }
 
-    init(photonManager: PhotonManager, mqtt: MQTTManager, settings: Settings)
+    init()
     {
         print("DevicesManager init")
-        self.photonManager = photonManager
-        self.mqtt = mqtt
-        self.settings = settings
+        photonManager = PhotonManager()
+        mqtt = MQTTManager()
+        settings = Settings(store: UserDefaultsSettingsStore())
         favoritesList = settings.favorites ?? []
-        mqtt.deviceDelegate = self
         refresh(devices: photonManager.devices)
+        mqtt.deviceDelegate = self
+        photonManager.deviceDelegate = self
     }
 
 

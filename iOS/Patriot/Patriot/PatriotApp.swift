@@ -11,11 +11,12 @@ import SwiftUI
 struct PatriotApp: App {
 
     // TODO: Create Environment ObservedObject
-    
+    @StateObject var devices = DevicesManager()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(devices)
         }
     }
 }

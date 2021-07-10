@@ -26,14 +26,13 @@ import Particle_SDK
 class PhotonManager: NSObject
 {
     var subscribeHandler:  Any?                 // Particle.io subscribe handle
-    var deviceDelegate:    DeviceNotifying?     // Reports changes to devices
+    var deviceDelegate:    DeviceNotifying?     // Reports changes to DevicesManager
 
     var isLoggedIn = false
-    
-    var photons: [String: Photon] = [: ]   // All the particle devices attached to logged-in user's account
-    let eventName          = "patriot"
-    
+    var photons: [String: Photon] = [: ]        // All the particle devices attached to logged-in user's account
     var devices: [DeviceInfo] = []
+
+    let eventName          = "patriot"
 }
 
 extension PhotonManager
@@ -68,11 +67,7 @@ extension PhotonManager
         ParticleCloud.sharedInstance().logout()
         isLoggedIn = false
     }
-}
-
-
-extension PhotonManager
-{
+    
     /**
      * Locate all the particle.io devices
      * This is an asynchronous process.
@@ -104,7 +99,7 @@ extension PhotonManager
                     let photon = Photon(device: photonDevice)
                     photon.delegate = self
                     self.photons[name] = photon
-                    photon.refresh()
+                    photon.refresh()            // Why not do this in init?
                 }
             }
         }
@@ -120,9 +115,7 @@ extension PhotonManager
     func getPhoton(named: String) -> Photon?
     {
         let lowerCaseName = named.lowercased()
-        let photon = photons[lowerCaseName]
-        
-        return photon
+        return photons[lowerCaseName]
     }
 
     // Use MQTT instead
@@ -167,15 +160,14 @@ extension PhotonManager
                     }
                     
                     let name = splitTopic[1].lowercased()
-                    if let percent: Int = Int(eventMessage), percent >= 0, percent <= 100
+                    if let percent: Int = Int(eventMessage), percent >= 0, percent <= 255
                     {
                         self.deviceDelegate?.deviceChanged(name: name, percent: percent)
                     }
                     else
                     {
-                        print("Event data is not a valid number: \(eventMessage)")
+                        print("Particle.io event data is not a valid number: \(eventMessage)")
                     }
-                    
                 })
             }
         })
@@ -202,7 +194,7 @@ extension PhotonManager
 {
     func readVariable(device: ParticleDevice, name: String, completion: @escaping (Any?, Error?) -> Void)
     {
-        device.getVariable("Supported")
+        device.getVariable(name)
         { (result: Any?, error: Error?) in
             if let variable = result as? String
             {

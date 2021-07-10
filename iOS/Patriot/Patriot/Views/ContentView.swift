@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    @State private var needsLogin = true
+
+    @EnvironmentObject var devices: DevicesManager
     
     var body: some View {
 
@@ -36,12 +36,12 @@ struct ContentView: View {
             
             Menu("Settings") {
                 Button("Log Out") {
-                        needsLogin = true
-                    }
+                    devices.$needsLogin = true
+                }
             }
         }
-        .sheet(isPresented: $needsLogin) {
-            LoginView(needsLogin: $needsLogin)
+        .sheet(isPresented: !$devices.isLoggedIn) {
+            LoginView(isLoggedIn: $devices.isLoggedIn)
         }
     }
 }

@@ -22,7 +22,6 @@
 		27473083265D54A800C8EFDE /* ParticleSDKError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473078265D54A800C8EFDE /* ParticleSDKError.swift */; };
 		27473084265D54A800C8EFDE /* DeviceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473079265D54A800C8EFDE /* DeviceType.swift */; };
 		27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307C265D54A800C8EFDE /* DeviceInfo.swift */; };
-		27473088265D54A800C8EFDE /* LoggingIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307D265D54A800C8EFDE /* LoggingIn.swift */; };
 		27473089265D54A800C8EFDE /* PhotonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307E265D54A800C8EFDE /* PhotonError.swift */; };
 		2747308D265FC77800C8EFDE /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747308C265FC77800C8EFDE /* LoginView.swift */; };
 		2747308F266002D700C8EFDE /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747308E266002D700C8EFDE /* ViewExtensions.swift */; };
@@ -70,7 +69,6 @@
 		27473078265D54A800C8EFDE /* ParticleSDKError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticleSDKError.swift; sourceTree = "<group>"; };
 		27473079265D54A800C8EFDE /* DeviceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceType.swift; sourceTree = "<group>"; };
 		2747307C265D54A800C8EFDE /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
-		2747307D265D54A800C8EFDE /* LoggingIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingIn.swift; sourceTree = "<group>"; };
 		2747307E265D54A800C8EFDE /* PhotonError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonError.swift; sourceTree = "<group>"; };
 		2747308C265FC77800C8EFDE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		2747308E266002D700C8EFDE /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
@@ -132,7 +130,7 @@
 		2747301E265D182E00C8EFDE /* Patriot */ = {
 			isa = PBXGroup;
 			children = (
-				274D66C2269A0C4700303F1E /* Device */,
+				2747301F265D182E00C8EFDE /* PatriotApp.swift */,
 				274D66BD2699F50700303F1E /* Network */,
 				27473075265D545500C8EFDE /* Protocols */,
 				2747304D265D51C500C8EFDE /* Supporting Files */,
@@ -193,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				2747306C265D53DE00C8EFDE /* Device.swift */,
+				2747307C265D54A800C8EFDE /* DeviceInfo.swift */,
 				2747306D265D53DE00C8EFDE /* DevicesManager.swift */,
 				2747306F265D53DE00C8EFDE /* SettingsStore.swift */,
 			);
@@ -203,7 +202,6 @@
 			isa = PBXGroup;
 			children = (
 				274730902660030900C8EFDE /* Extensions */,
-				2747301F265D182E00C8EFDE /* PatriotApp.swift */,
 				27473023265D182E00C8EFDE /* Assets.xcassets */,
 			);
 			path = "Supporting Files";
@@ -214,7 +212,6 @@
 			children = (
 				27473077265D54A800C8EFDE /* DeviceNotifying.swift */,
 				27473079265D54A800C8EFDE /* DeviceType.swift */,
-				2747307D265D54A800C8EFDE /* LoggingIn.swift */,
 				27473078265D54A800C8EFDE /* ParticleSDKError.swift */,
 				2747307E265D54A800C8EFDE /* PhotonError.swift */,
 				274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */,
@@ -236,14 +233,6 @@
 				274D66BE2699F51D00303F1E /* MQTTManager.swift */,
 			);
 			path = Network;
-			sourceTree = "<group>";
-		};
-		274D66C2269A0C4700303F1E /* Device */ = {
-			isa = PBXGroup;
-			children = (
-				2747307C265D54A800C8EFDE /* DeviceInfo.swift */,
-			);
-			path = Device;
 			sourceTree = "<group>";
 		};
 		D27112F62ACE9251195A69A2 /* Pods */ = {
@@ -445,7 +434,6 @@
 				27473022265D182E00C8EFDE /* ContentView.swift in Sources */,
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27473051265D533400C8EFDE /* PhotonManager.swift in Sources */,
-				27473088265D54A800C8EFDE /* LoggingIn.swift in Sources */,
 				27473089265D54A800C8EFDE /* PhotonError.swift in Sources */,
 				27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */,
 				27473020265D182E00C8EFDE /* PatriotApp.swift in Sources */,
