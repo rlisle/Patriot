@@ -19,12 +19,12 @@ struct ContentView: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(devices.devices, id: \.self) { device in
-                    Text(device.name)
+                    DeviceView(device: device)
                 }
             }
             .padding(.horizontal)
         }
-        .frame(maxHeight: 300)
+//        .frame(maxHeight: 300)
         .sheet(isPresented: $devices.NeedsLogIn) {
             LoginView()
         }

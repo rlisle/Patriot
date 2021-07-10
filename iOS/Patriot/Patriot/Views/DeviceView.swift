@@ -11,13 +11,24 @@ import SwiftUI
 
 struct DeviceView: View {
     
+    @State var device: Device
+
     var body: some View {
-        Text("Device XYZ")
+        ZStack {
+            Image("LightOff")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+            VStack {
+                Spacer()
+                Text(device.name)
+                    .foregroundColor(.white)
+            }
+        }
     }
 }
 
 struct DeviceView_Previews: PreviewProvider {
     static var previews: some View {
-        DeviceView()
+        DeviceView(device: Device(name: "Light", type: .Light))
     }
 }
