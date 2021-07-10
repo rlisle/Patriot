@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct PatriotApp: App {
+
+    // TODO: Create Environment ObservedObject
+    
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

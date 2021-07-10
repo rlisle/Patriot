@@ -9,7 +9,7 @@
 import Foundation
 
 
-protocol DeviceNotifying: class
+protocol DeviceNotifying: AnyObject
 {
     func deviceListChanged()
     func deviceChanged(name: String, percent: Int)
