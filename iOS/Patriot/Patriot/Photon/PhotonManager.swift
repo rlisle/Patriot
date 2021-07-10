@@ -10,15 +10,10 @@
 //  When a new device is found, it will be added to the photons collection
 //  and a delegate called.
 //
-//  The current activity state will be gleaned from the exposed Activities
-//  properties of one or more Photons initially, but then tracked directly
-//  after initialization by subscribing to particle or MQTT events.
-//  TODO: convert to using the value() function
-//
 //  Subscribing to particle events will also allow detecting new Photons
 //  as they come online.
 //
-//  This file uses the Particle SDK: 
+//  This file uses the Particle SDK:
 //      https://docs.particle.io/reference/ios/#common-tasks
 //
 //  Created by Ron Lisle on 11/13/16.
@@ -30,23 +25,18 @@ import Particle_SDK
 
 class PhotonManager: NSObject
 {
-    static let shared = PhotonManager()         // Singleton
-    
     var subscribeHandler:  Any?                 // Particle.io subscribe handle
     var deviceDelegate:    DeviceNotifying?     // Reports changes to devices
-    var activityDelegate:  ActivityNotifying?   // Reports changes to activities
 
     var isLoggedIn = false
     
     var photons: [String: Photon] = [: ]   // All the particle devices attached to logged-in user's account
     let eventName          = "patriot"
     
-    //TODO: make these calculated properties using aggregation of photons collection
     var devices: [DeviceInfo] = []
-    var activities:  [ActivityInfo] = []
 }
 
-extension PhotonManager: LoggingIn
+extension PhotonManager
 {
     /**
      * Login to the particle.io account
@@ -81,7 +71,7 @@ extension PhotonManager: LoggingIn
 }
 
 
-extension PhotonManager: HwManager
+extension PhotonManager
 {
     /**
      * Locate all the particle.io devices
@@ -135,12 +125,7 @@ extension PhotonManager: HwManager
         return photon
     }
 
-    func sendCommand(activity: String, isActive: Bool, completion: @escaping (Error?) -> Void)
-    {
-        let event = activity + ":" + (isActive ? "100" : "0")
-        publish(event: event, completion: completion)
-    }
-
+    // Use MQTT instead
     func sendCommand(device: String, percent: Int, completion: @escaping (Error?) -> Void)
     {
         let event = device + ":" + String(percent)
@@ -168,19 +153,27 @@ extension PhotonManager: HwManager
             else
             {
                 DispatchQueue.main.async(execute: {
-                    if let eventData = event?.data {
-                        let splitArray = eventData.components(separatedBy: ":")
-                        let name = splitArray[0].lowercased()
-                        if let percent: Int = Int(splitArray[1]), percent >= 0, percent <= 100
-                        {
-                            //TODO: Currently can't tell if this is an activity or device
-                            self.activityDelegate?.activityChanged(name: name, isActive: percent != 0)
-                            self.deviceDelegate?.deviceChanged(name: name, percent: percent)
-                        }
-                        else
-                        {
-                            print("Event data is not a valid number")
-                        }
+                    //TODO: convert to new format. event._event = patriot/<devicename>, event._data = message
+                    guard let eventMessage = event?.data,
+                          let eventTopic = event?.event else {
+                        print("MQTT received event with missing data")
+                        return
+                    }
+                        
+                    let splitTopic = eventTopic.components(separatedBy: "/")
+                    guard splitTopic.count >= 2 else {
+                        print("Invalid topic: \(eventTopic)")
+                        return
+                    }
+                    
+                    let name = splitTopic[1].lowercased()
+                    if let percent: Int = Int(eventMessage), percent >= 0, percent <= 100
+                    {
+                        self.deviceDelegate?.deviceChanged(name: name, percent: percent)
+                    }
+                    else
+                    {
+                        print("Event data is not a valid number: \(eventMessage)")
                     }
                     
                 })
@@ -191,26 +184,16 @@ extension PhotonManager: HwManager
 
 
 // These methods receive the capabilities of each photon asynchronously
-extension PhotonManager: PhotonNotifying
+extension PhotonManager: PhotonDeviceInfoNotifying
 {
-    func device(named: String, hasDevices: [DeviceInfo])
+    func photon(named: String, hasDeviceInfos: Set<DeviceInfo>)
     {
-        for device in hasDevices {
+        for device in hasDeviceInfos {
             if device.name != "" && devices.contains(device) == false {
                 devices.append(device)
             }
         }
         deviceDelegate?.deviceListChanged()
-    }
-    
-    func device(named: String, hasActivities: [ActivityInfo])
-    {
-        for activity in hasActivities {
-            if activity.name != "" && activities.contains(activity) == false {
-                activities.append(activity)
-            }
-        }
-        activityDelegate?.activitiesChanged()
     }
 }
 

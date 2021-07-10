@@ -9,13 +9,19 @@
 import Foundation
 
 struct DeviceInfo {
+    var photonName: String
     var name: String
     var type: DeviceType
     var percent: Int
 }
 
-extension DeviceInfo: Equatable {
+extension DeviceInfo: Hashable {
     static func == (lhs: DeviceInfo, rhs: DeviceInfo) -> Bool {
-        return lhs.name == rhs.name
+        return lhs.name == rhs.name && lhs.type == rhs.type
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(type)
     }
 }
