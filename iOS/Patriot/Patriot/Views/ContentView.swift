@@ -16,35 +16,44 @@ struct ContentView: View {
     ]
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(devices.devices, id: \.self) { device in
-                    DeviceView(device: device)
+        ZStack {
+            VStack {
+                HStack {
+                    Spacer()
+                    Button("Log Out") {
+                        devices.NeedsLogIn = true
+                    }
+                    .foregroundColor(.white)
+                }
+                .padding()
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 20) {
+                        ForEach(devices.devices, id: \.self) { device in
+                            DeviceView(device: device)
+                        }
+                    }
+                    .padding(.horizontal)
                 }
             }
-            .padding(.horizontal)
+            .padding(.top, 32)
         }
+        .background(Color(.black))
+        .edgesIgnoringSafeArea(.all)
 //        .frame(maxHeight: 300)
         .sheet(isPresented: $devices.NeedsLogIn) {
             LoginView()
         }
-    }
-            
-//            Menu("Settings") {
-//                Button("Log Out") {
-//                    devices.NeedsLogIn = true
-//                }
-//            }
-//        }
-//        .sheet(isPresented: $devices.NeedsLogIn) {
-//            LoginView()
-//        }
-//    }
+    }            
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(DevicesManager())
+            .environmentObject(DevicesManager(
+                                devices: [
+                                    Device(name: "Light", type: .Light),
+                                    Device(name: "Switch", type: .Switch),
+                                    Device(name: "Curtain", type: .Curtain)
+                                ]))
     }
 }

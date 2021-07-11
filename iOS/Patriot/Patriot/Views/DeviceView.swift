@@ -15,7 +15,7 @@ struct DeviceView: View {
 
     var body: some View {
         ZStack {
-            Image("LightOff")
+            Image(uiImage: device.percent > 0 ? device.onImage : device.offImage)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
             VStack {

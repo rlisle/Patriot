@@ -42,6 +42,10 @@ class DevicesManager: ObservableObject
         photonManager.deviceDelegate = self
     }
 
+    convenience init(devices: [Device]) {
+        self.init()
+        self.devices = devices
+    }
 
     func isDeviceOn(at: Int) -> Bool
     {
