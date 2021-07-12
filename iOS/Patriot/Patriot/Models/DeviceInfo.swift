@@ -2,6 +2,9 @@
 //  DeviceInfo.swift
 //  Patriot
 //
+//  DeviceInfo contains information read from a photon's Devices variable
+//  It is passed to DeviceManager to create a Device object
+//
 //  Created by Ron Lisle on 6/2/18.
 //  Copyright © 2018 Rons iMac. All rights reserved.
 //

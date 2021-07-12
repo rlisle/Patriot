@@ -21,7 +21,7 @@ struct ContentView: View {
                 HStack {
                     Spacer()
                     Button("Log Out") {
-                        devices.NeedsLogIn = true
+                        devices.logout()
                     }
                     .foregroundColor(.white)
                 }
@@ -40,10 +40,10 @@ struct ContentView: View {
         .background(Color(.black))
         .edgesIgnoringSafeArea(.all)
 //        .frame(maxHeight: 300)
-        .sheet(isPresented: $devices.NeedsLogIn) {
+        .sheet(isPresented: $devices.needsLogIn) {
             LoginView()
         }
-    }            
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {

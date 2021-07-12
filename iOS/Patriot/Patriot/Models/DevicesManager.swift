@@ -18,14 +18,12 @@ class DevicesManager: ObservableObject
 {
     @Published var devices: [ Device ] = []
     @Published var favoritesList:  [String]                // List of favorite device names
-    @Published var NeedsLogIn: Bool = true
+    @Published var needsLogIn: Bool = true
     
     let photonManager:  PhotonManager
     let mqtt:           MQTTManager
     let settings:       Settings
     
-    weak var delegate:  DeviceNotifying?
-
     var favorites: [ Device ] {
         return devices.filter { $0.isFavorite == true }
     }
@@ -37,16 +35,46 @@ class DevicesManager: ObservableObject
         mqtt = MQTTManager()
         settings = Settings(store: UserDefaultsSettingsStore())
         favoritesList = settings.favorites ?? []
-        refresh(devices: photonManager.devices)
-        mqtt.deviceDelegate = self
-        photonManager.deviceDelegate = self
+        mqtt.deviceDelegate = self          // Receives MQTT messages
+        photonManager.deviceDelegate = self // Receives particle.io messages
+        performAutoLogin()                  // During login all photons & devices will be created
     }
 
+    // For Test/Preview
     convenience init(devices: [Device]) {
         self.init()
         self.devices = devices
     }
 
+    func login(user: String, password: String) {
+        photonManager.login(user: user, password: password) { error in
+            guard error == nil else {
+                self.needsLogIn = true
+                print("Error auto logging in: \(error!)")
+                return
+            }
+            self.needsLogIn = false
+            // TODO: loading indicator or better yet progressive updates?
+            self.photonManager.getAllPhotonDevices { deviceInfos, error in
+                if error == nil {
+                    self.addDeviceInfos(deviceInfos)
+                }
+            }
+        }
+    }
+    
+    func logout() {
+        photonManager.logout()
+        self.devices = []
+        self.needsLogIn = true
+    }
+    
+    func performAutoLogin() {
+        if let user = settings.particleUser, let password = settings.particlePassword {
+            login(user: user, password: password)
+        }
+    }
+    
     func isDeviceOn(at: Int) -> Bool
     {
         return devices[at].percent > 0
@@ -103,20 +131,21 @@ class DevicesManager: ObservableObject
 
 extension DevicesManager
 {
-    func refresh(devices: [DeviceInfo])
+    func addDeviceInfos(_ deviceInfos: [DeviceInfo])
     {
-        self.devices = []
-        for device in devices
+        print("DevicesManager addDeviceInfos")
+//        self.devices = []   // Is this correct? Multiple Photons would clobber each other
+        for deviceInfo in deviceInfos
         {
-            let name = device.name
-            let type = device.type
-            let percent = device.percent
+            let name = deviceInfo.name
+            let type = deviceInfo.type
+            let percent = deviceInfo.percent
             let newDevice = Device(name: name, type: type)
             newDevice.percent = percent
             newDevice.isFavorite = favoritesList.contains(name)
             self.devices.append(newDevice)
         }
-        delegate?.deviceListChanged()
+//        delegate?.deviceListChanged()
     }
     
     //TODO: use hash
@@ -135,14 +164,6 @@ extension DevicesManager
 
 extension DevicesManager: DeviceNotifying
 {
-    func deviceListChanged()
-    {
-        print("DevicesManager deviceListChanged")
-        let list = photonManager.devices
-        refresh(devices: list)
-    }
-
-
     func deviceChanged(name: String, percent: Int)
     {
         print("DeviceManager: DeviceChanged: \(name)")
@@ -151,6 +172,6 @@ extension DevicesManager: DeviceNotifying
             print("   index of device = \(index)")
             devices[index].percent = percent
         }
-        delegate?.deviceChanged(name: name, percent: percent)
+//        delegate?.deviceChanged(name: name, percent: percent)
     }
 }

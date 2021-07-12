@@ -11,6 +11,5 @@ import Foundation
 
 protocol DeviceNotifying: AnyObject
 {
-    func deviceListChanged()
     func deviceChanged(name: String, percent: Int)
 }

@@ -73,7 +73,7 @@ struct LoginView: View {
                 //TODO: display an error message, but stay on this screen
                 return
             }
-            devices.NeedsLogIn = false
+            devices.needsLogIn = false
             
             fetchDevices()
         }

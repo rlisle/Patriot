@@ -23,17 +23,13 @@ import Particle_SDK
 
 class Photon
 {
-    let uninitializedString = "uninitialized"
+    // Cached list of device names exposed by Photon, used only for diagnostic purposes
+    // after being returned to completion
+    private var deviceInfos: [DeviceInfo] = []
     
-    var devices: Set<DeviceInfo> = []      // Cached list of device names exposed by Photon
-    
-    var delegate: PhotonDeviceInfoNotifying?      // Notifies manager when status changes
-    
-
     internal let particleDevice: ParticleDevice! // Reference to Particle-SDK device object
     
-    
-    var name: String
+    public var name: String
     {
         get {
             return particleDevice.name ?? "unknown"
@@ -46,25 +42,15 @@ class Photon
         particleDevice  = device
     }
 
-    /**
-     * Refresh is expected to be called once after init and delegate is set
-     */
-    func refresh()
+    public func readDevices(completion: @escaping ([DeviceInfo]) -> Void)
     {
-        refreshDevices()
-    }
-}
-
-extension Photon    // Devices
-{
-    func refreshDevices()
-    {
-        devices = []
+        deviceInfos = []
         readVariable("Devices") { (result) in
             if let result = result {
                 self.parseDeviceNames(result)
             }
         }
+        completion(deviceInfos)
     }
     
     private func parseDeviceNames(_ deviceString: String)
@@ -85,15 +71,11 @@ extension Photon    // Devices
                 name: deviceName,
                 type: deviceType,
                 percent: deviceValue )
-            devices.insert(deviceInfo)
+            deviceInfos.append(deviceInfo)
         }
-        delegate?.photon(named: self.name, hasDeviceInfos: self.devices)
     }
-}
-
-extension Photon        // Read variables
-{
-    func readVariable(_ name: String, completion: @escaping (String?) -> Void)
+    
+    private func readVariable(_ name: String, completion: @escaping (String?) -> Void)
     {
         guard particleDevice.variables[name] != nil else
         {
@@ -103,13 +85,6 @@ extension Photon        // Read variables
         }
         particleDevice.getVariable(name) { (result: Any?, error: Error?) in
             completion(result as? String)
-        }
-    }
-    
-    func callFunction(name: String, args: [String], completion: @escaping (Int?) -> Void)
-    {
-        particleDevice.callFunction(name, withArguments: args) { (result: NSNumber?, error: Error?) in
-            completion(result as? Int)
         }
     }
 }

@@ -26,13 +26,10 @@ import Particle_SDK
 class PhotonManager: NSObject
 {
     var subscribeHandler:  Any?                 // Particle.io subscribe handle
-    var deviceDelegate:    DeviceNotifying?     // Reports changes to DevicesManager
-
-    var isLoggedIn = false
+    private var isLoggedIn = false              // Is this needed?
     var photons: [String: Photon] = [: ]        // All the particle devices attached to logged-in user's account
-    var devices: [DeviceInfo] = []
-
     let eventName          = "patriot"
+    var deviceDelegate: DeviceNotifying?        // Called by particle.io subscribe
 }
 
 extension PhotonManager
@@ -50,14 +47,10 @@ extension PhotonManager
                 if error == nil {
                     self.isLoggedIn = true
                     self.subscribeToEvents()
-                    self.getAllPhotonDevices()
-                    completion(nil)
-                    
                 } else {
-                    print ("Error logging in: \(error!)")
                     self.isLoggedIn = false
-                    completion(error)
                 }
+                completion(error)
             }
         }
     }
@@ -65,29 +58,31 @@ extension PhotonManager
     func logout()
     {
         ParticleCloud.sharedInstance().logout()
+        photons = [:]
         isLoggedIn = false
     }
     
     /**
      * Locate all the particle.io devices
      * This is an asynchronous process.
-     * The delegates will be called as things are discovered.
+     * The completion will be called once for each photon discovered.
      */
-    func getAllPhotonDevices()
+    func getAllPhotonDevices(completion: @escaping ([DeviceInfo], Error?)-> Void)
     {
         ParticleCloud.sharedInstance().getDevices {
             (photons: [ParticleDevice]?, error: Error?) in
             
             guard photons != nil && error == nil else {
                 print("getAllPhotonDevices error: \(error!)")
+                completion([], error)
                 return
             }
-            self.addAllPhotonsToCollection(photonDevices: photons!)
+            self.addAllPhotonsToCollection(photonDevices: photons!, completion: completion)
         }
     }
 
 
-    func addAllPhotonsToCollection(photonDevices: [ParticleDevice])
+    func addAllPhotonsToCollection(photonDevices: [ParticleDevice], completion: @escaping ([DeviceInfo], Error?)-> Void)
     {
         self.photons = [: ]
         for photonDevice in photonDevices
@@ -97,9 +92,10 @@ extension PhotonManager
                 if let name = photonDevice.name?.lowercased()
                 {
                     let photon = Photon(device: photonDevice)
-                    photon.delegate = self
                     self.photons[name] = photon
-                    photon.refresh()            // Why not do this in init?
+                    photon.readDevices() { deviceInfos in
+                        completion(deviceInfos, nil)
+                    }
                 }
             }
         }
@@ -176,18 +172,18 @@ extension PhotonManager
 
 
 // These methods receive the capabilities of each photon asynchronously
-extension PhotonManager: PhotonDeviceInfoNotifying
-{
-    func photon(named: String, hasDeviceInfos: Set<DeviceInfo>)
-    {
-        for device in hasDeviceInfos {
-            if device.name != "" && devices.contains(device) == false {
-                devices.append(device)
-            }
-        }
-        deviceDelegate?.deviceListChanged()
-    }
-}
+//extension PhotonManager: PhotonDeviceInfoNotifying
+//{
+//    func photon(named: String, hasDeviceInfos: Set<DeviceInfo>)
+//    {
+//        for device in hasDeviceInfos {
+//            if device.name != "" && devices.contains(device) == false {
+//                devices.append(device)
+//            }
+//        }
+//        deviceDelegate?.deviceListChanged()
+//    }
+//}
 
 
 extension PhotonManager
