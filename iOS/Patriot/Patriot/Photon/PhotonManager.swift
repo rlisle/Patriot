@@ -77,6 +77,7 @@ extension PhotonManager
                 completion([], error)
                 return
             }
+            print("Got \(photons!.count) Photons")
             self.addAllPhotonsToCollection(photonDevices: photons!, completion: completion)
         }
     }
@@ -91,9 +92,11 @@ extension PhotonManager
             {
                 if let name = photonDevice.name?.lowercased()
                 {
+                    print("photonDevice: \(name)")
                     let photon = Photon(device: photonDevice)
                     self.photons[name] = photon
                     photon.readDevices() { deviceInfos in
+                        print("deviceInfos \(deviceInfos)")
                         completion(deviceInfos, nil)
                     }
                 }
@@ -186,20 +189,20 @@ extension PhotonManager
 //}
 
 
-extension PhotonManager
-{
-    func readVariable(device: ParticleDevice, name: String, completion: @escaping (Any?, Error?) -> Void)
-    {
-        device.getVariable(name)
-        { (result: Any?, error: Error?) in
-            if let variable = result as? String
-            {
-                completion(variable, nil)
-            }
-            else
-            {
-                completion(nil, error!)
-            }
-        }
-    }
-}
+//extension PhotonManager
+//{
+//    func readVariable(device: ParticleDevice, name: String, completion: @escaping (Any?, Error?) -> Void)
+//    {
+//        device.getVariable(name)
+//        { (result: Any?, error: Error?) in
+//            if let variable = result as? String
+//            {
+//                completion(variable, nil)
+//            }
+//            else
+//            {
+//                completion(nil, error!)
+//            }
+//        }
+//    }
+//}

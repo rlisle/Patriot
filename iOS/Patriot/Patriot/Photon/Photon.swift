@@ -48,9 +48,11 @@ class Photon
         readVariable("Devices") { (result) in
             if let result = result {
                 self.parseDeviceNames(result)
+                completion(self.deviceInfos)
+                return
             }
         }
-        completion(deviceInfos)
+        completion([])
     }
     
     private func parseDeviceNames(_ deviceString: String)
@@ -71,6 +73,7 @@ class Photon
                 name: deviceName,
                 type: deviceType,
                 percent: deviceValue )
+            print("Adding deviceInfo \(deviceName)")
             deviceInfos.append(deviceInfo)
         }
     }

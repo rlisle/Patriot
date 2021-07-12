@@ -57,6 +57,7 @@ class DevicesManager: ObservableObject
             // TODO: loading indicator or better yet progressive updates?
             self.photonManager.getAllPhotonDevices { deviceInfos, error in
                 if error == nil {
+                    print("got photon")
                     self.addDeviceInfos(deviceInfos)
                 }
             }
@@ -125,16 +126,10 @@ class DevicesManager: ObservableObject
             }
         }
     }
-}
-
-//MARK: Helper Methods
-
-extension DevicesManager
-{
+    
     func addDeviceInfos(_ deviceInfos: [DeviceInfo])
     {
-        print("DevicesManager addDeviceInfos")
-//        self.devices = []   // Is this correct? Multiple Photons would clobber each other
+        print("DevicesManager addDeviceInfos, count: \(deviceInfos.count)")
         for deviceInfo in deviceInfos
         {
             let name = deviceInfo.name
@@ -143,9 +138,10 @@ extension DevicesManager
             let newDevice = Device(name: name, type: type)
             newDevice.percent = percent
             newDevice.isFavorite = favoritesList.contains(name)
+            print("Appending device: \(name) = \(percent)")
             self.devices.append(newDevice)
         }
-//        delegate?.deviceListChanged()
+        print("Devices.count now \(devices.count)")
     }
     
     //TODO: use hash
