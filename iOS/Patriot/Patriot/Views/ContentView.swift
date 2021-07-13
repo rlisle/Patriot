@@ -9,39 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @EnvironmentObject var devices: DevicesManager
+//    @EnvironmentObject var devices: DevicesManager
     
-    let columns = [
-        GridItem(.adaptive(minimum: 80))
-    ]
-
     var body: some View {
-        ZStack {
-            VStack {
-                HStack {
-                    Spacer()
-                    Button("Log Out") {
-                        devices.logout()
-                    }
-                    .foregroundColor(.white)
-                }
-                .padding()
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(devices.devices, id: \.self) { device in
-                            DeviceView(device: device)
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-            }
-            .padding(.top, 32)
-        }
-        .background(Color(.black))
-        .edgesIgnoringSafeArea(.all)
-//        .frame(maxHeight: 300)
-        .sheet(isPresented: $devices.needsLogIn) {
-            LoginView()
+        GeometryReader { geometry in
+            MainView()
+                .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }
 }
