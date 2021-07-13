@@ -16,7 +16,7 @@ import Combine
 
 class DevicesManager: ObservableObject
 {
-    @Published var devices: [ Device ] = []
+    @Published var devices: [Device] = []
     @Published var favoritesList:  [String]                // List of favorite device names
     @Published var needsLogIn: Bool = true
     
@@ -43,7 +43,7 @@ class DevicesManager: ObservableObject
     // For Test/Preview
     convenience init(devices: [Device]) {
         self.init()
-        self.devices = devices
+        self.devices = Array(Set(devices))
     }
 
     func login(user: String, password: String) {
@@ -72,6 +72,7 @@ class DevicesManager: ObservableObject
     
     func performAutoLogin() {
         if let user = settings.particleUser, let password = settings.particlePassword {
+            print("Performing auto-login \(user), \(password)")
             login(user: user, password: password)
         }
     }
@@ -130,17 +131,15 @@ class DevicesManager: ObservableObject
     func addDeviceInfos(_ deviceInfos: [DeviceInfo])
     {
         print("DevicesManager addDeviceInfos, count: \(deviceInfos.count)")
+        var accumulatedDevices: Set<Device> = Set<Device>(devices)
         for deviceInfo in deviceInfos
         {
-            let name = deviceInfo.name
-            let type = deviceInfo.type
-            let percent = deviceInfo.percent
-            let newDevice = Device(name: name, type: type)
-            newDevice.percent = percent
-            newDevice.isFavorite = favoritesList.contains(name)
-            print("Appending device: \(name) = \(percent)")
-            self.devices.append(newDevice)
+            let newDevice = Device(name: deviceInfo.name, type: deviceInfo.type)
+            newDevice.percent = deviceInfo.percent
+            newDevice.isFavorite = favoritesList.contains(deviceInfo.name)
+            accumulatedDevices.insert(newDevice)
         }
+        self.devices = Array(accumulatedDevices)
         print("Devices.count now \(devices.count)")
     }
     
