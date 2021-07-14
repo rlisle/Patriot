@@ -32,7 +32,7 @@ struct MainView: View {
             .padding(.top, 32)
         }
         .background(Color(.black))
-        .edgesIgnoringSafeArea(.all)
+        //.edgesIgnoringSafeArea(.all)
         .sheet(isPresented: $devices.needsLogIn) {
             LoginView()
         }
