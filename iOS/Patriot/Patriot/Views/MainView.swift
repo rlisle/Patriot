@@ -20,16 +20,16 @@ struct MainView: View {
     var body: some View {
         ZStack {
             VStack {
-                HStack {
-                    Button("Menu") {
-                        withAnimation {
-                            showMenu = true
-                        }
-                    }
-                    .foregroundColor(.white)
-                    Spacer()
-                }
-                .padding()
+//                HStack {
+//                    Button("Menu") {
+//                        withAnimation {
+//                            showMenu = true
+//                        }
+//                    }
+//                    .foregroundColor(.white)
+//                    Spacer()
+//                }
+//                .padding()
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 20) {
                         ForEach(devices.devices, id: \.self) { device in

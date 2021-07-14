@@ -24,20 +24,33 @@ struct ContentView: View {
                 }
             }
         
-        return GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                MainView(showMenu: self.$showMenu)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .offset(x: self.showMenu ? geometry.size.width/2 : 0)
-                    .disabled(self.showMenu ? true : false)
+        return NavigationView {
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    MainView(showMenu: self.$showMenu)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .offset(x: self.showMenu ? geometry.size.width/2 : 0)
+                        .disabled(self.showMenu ? true : false)
 
-                if self.showMenu {
-                    MenuView()
-                        .frame(width: geometry.size.width/2)
-                    
+                    if self.showMenu {
+                        MenuView()
+                            .frame(width: geometry.size.width/2)
+                        
+                    }
                 }
+                .gesture(drag)
             }
-            .gesture(drag)
+            .navigationBarTitle("Side Menu", displayMode: .inline)
+            .navigationBarItems(leading: (
+                Button(action: {
+                    withAnimation {
+                        self.showMenu.toggle()
+                    }
+                }) {
+                    Image(systemName: "line.horizontal.3")
+                        .imageScale(.large)
+                }
+            ))
         }
     }
 }
