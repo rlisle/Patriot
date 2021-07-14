@@ -31,6 +31,7 @@ struct ContentView: View {
         return NavigationView {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
+                    Color.black.edgesIgnoringSafeArea(.all)
                     MainView(showMenu: self.$showMenu)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .offset(x: self.showMenu ? geometry.size.width/2 : 0)
