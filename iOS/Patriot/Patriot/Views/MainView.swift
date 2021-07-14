@@ -11,6 +11,8 @@ struct MainView: View {
     
     @EnvironmentObject var devices: DevicesManager
 
+    @Binding var showMenu: Bool
+    
     let columns = [
         GridItem(.adaptive(minimum: 80))
     ]
@@ -19,8 +21,10 @@ struct MainView: View {
         ZStack {
             VStack {
                 HStack {
-                    Button("Log Out") {
-                        devices.logout()
+                    Button("Menu") {
+                        withAnimation {
+                            showMenu = true
+                        }
                     }
                     .foregroundColor(.white)
                     Spacer()
@@ -39,7 +43,6 @@ struct MainView: View {
         }
         .background(Color(.black))
         .edgesIgnoringSafeArea(.all)
-//        .frame(maxHeight: 300)
         .sheet(isPresented: $devices.needsLogIn) {
             LoginView()
         }
@@ -48,7 +51,7 @@ struct MainView: View {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView()
+        StatefulPreviewWrapper(true) { MainView(showMenu: $0) }
             .environmentObject(DevicesManager(
                                 devices: [
                                     Device(name: "Light", type: .Light),
