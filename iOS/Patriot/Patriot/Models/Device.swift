@@ -44,11 +44,11 @@ class Device
         }
     }
     
-    init(name: String, type: DeviceType) {
+    init(name: String, type: DeviceType, percent: Int = 0, isFavorite: Bool = false) {
         self.name        = name
         self.type        = type
-        self._percent    = 0
-        self._isFavorite = false
+        self._percent    = percent
+        self._isFavorite = isFavorite
         self.delegate    = nil
         
         switch type {

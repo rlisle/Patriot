@@ -113,7 +113,12 @@ struct ContentView_Previews: PreviewProvider {
                                 devices: [
                                     Device(name: "Light", type: .Light),
                                     Device(name: "Switch", type: .Switch),
-                                    Device(name: "Curtain", type: .Curtain)
+                                    Device(name: "Curtain", type: .Curtain),
+                                    Device(name: "Light2", type: .Light),
+                                    Device(name: "Switch2", type: .Switch),
+                                    Device(name: "Light3", type: .Light),
+                                    Device(name: "Curtain2", type: .Curtain),
+                                    Device(name: "Light4", type: .Light)
                                 ]))
     }
 }

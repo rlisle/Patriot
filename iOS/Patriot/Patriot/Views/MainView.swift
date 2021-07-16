@@ -14,25 +14,24 @@ struct MainView: View {
     @Binding var showMenu: Bool
     
     let columns = [
-        GridItem(.adaptive(minimum: 80))
+        GridItem(.adaptive(minimum: 80, maximum: 160))
     ]
 
     var body: some View {
-        ZStack {
-            VStack {
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(devices.devices, id: \.self) { device in
-                            DeviceView(device: device)
-                        }
+        VStack {
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(devices.devices, id: \.self) { device in
+                        DeviceView(device: device)
+                            .aspectRatio(1, contentMode: .fill)
+                            .padding()
                     }
-                    .padding(.horizontal)
                 }
+                .padding(.horizontal)
             }
-            .padding(.top, 32)
         }
-        .background(Color(.black))
-        //.edgesIgnoringSafeArea(.all)
+        .padding(.top, 16)
+        .background(Color(.black).ignoresSafeArea())
         .sheet(isPresented: $devices.needsLogIn) {
             LoginView()
         }
@@ -44,9 +43,14 @@ struct MainView_Previews: PreviewProvider {
         StatefulPreviewWrapper(true) { MainView(showMenu: $0) }
             .environmentObject(DevicesManager(
                                 devices: [
-                                    Device(name: "Light", type: .Light),
+                                    Device(name: "Light", type: .Light, percent: 0, isFavorite: true),
                                     Device(name: "Switch", type: .Switch),
-                                    Device(name: "Curtain", type: .Curtain)
+                                    Device(name: "Curtain", type: .Curtain),
+                                    Device(name: "Light2", type: .Light, percent: 100),
+                                    Device(name: "Switch2", type: .Switch),
+                                    Device(name: "Light3", type: .Light),
+                                    Device(name: "Curtain2", type: .Curtain),
+                                    Device(name: "Light4", type: .Light)
                                 ]))
     }
 }
