@@ -6,50 +6,31 @@
 //  Copyright © 2018 Ron Lisle. All rights reserved.
 //
 
-import UIKit
+import SwiftUI
 
-protocol DeviceDelegate: AnyObject {
-    func devicePercentChanged(name: String, type: DeviceType, percent: Int)
-    func isFavoriteChanged(name: String, type: DeviceType, isFavorite: Bool)
-}
+//protocol DeviceDelegate: AnyObject {
+//    func devicePercentChanged(name: String, type: DeviceType, percent: Int)
+//    func isFavoriteChanged(name: String, type: DeviceType, isFavorite: Bool)
+//}
 
-class Device
+class Device: ObservableObject
 {
-    let name:          String
-    var onImage:       UIImage
-    var offImage:      UIImage
-    var type:          DeviceType
-    private var _percent: Int
-    private var _isFavorite: Bool
+    @Published var percent:     Int
+    @Published var isFavorite:  Bool
 
-    weak var delegate: DeviceDelegate?
+    let name:      String
+    var onImage:   UIImage
+    var offImage:  UIImage
+    var type:      DeviceType
 
-    var percent:       Int {
-        get {
-            return _percent
-        }
-        set {
-            _percent = newValue
-            delegate?.devicePercentChanged(name: name, type: type, percent: _percent)
-        }
-    }
-    var isFavorite:    Bool {
-        get {
-            return _isFavorite
-        }
-        
-        set {
-            _isFavorite = newValue
-            delegate?.isFavoriteChanged(name: name, type: type, isFavorite: _isFavorite)
-        }
-    }
+//    weak var delegate: DeviceDelegate?  //TODO: replace this with an observer
     
-    init(name: String, type: DeviceType, percent: Int = 0, isFavorite: Bool = false) {
+    public init(name: String, type: DeviceType, percent: Int = 0, isFavorite: Bool = false) {
         self.name        = name
         self.type        = type
-        self._percent    = percent
-        self._isFavorite = isFavorite
-        self.delegate    = nil
+        self.percent     = percent
+        self.isFavorite  = isFavorite
+//        self.delegate    = nil
         
         switch type {
         case .Curtain:
@@ -65,7 +46,7 @@ class Device
     }
     
     func toggle() {
-        percent = _percent == 0 ? 100 : 0
+        percent = percent == 0 ? 100 : 0
     }
     
     func flipFavorite() {

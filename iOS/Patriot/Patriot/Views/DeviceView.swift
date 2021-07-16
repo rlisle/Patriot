@@ -11,7 +11,7 @@ import SwiftUI
 
 struct DeviceView: View {
     
-    @State var device: Device
+    @ObservedObject var device: Device
 
     var body: some View {
         GeometryReader { geometry in
