@@ -63,6 +63,14 @@ class Device
             self.offImage = #imageLiteral(resourceName: "LightOff")
         }
     }
+    
+    func toggle() {
+        percent = _percent == 0 ? 100 : 0
+    }
+    
+    func flipFavorite() {
+        isFavorite = !isFavorite
+    }
 }
 
 extension Device: Hashable {

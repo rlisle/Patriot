@@ -16,19 +16,23 @@ struct DeviceView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Image(uiImage: device.percent > 0 ? device.onImage : device.offImage)
-                    .resizable()
-                    .scaledToFit()
-                    .padding(0)
+                Button(action: device.toggle) {
+                    Image(uiImage: device.percent > 0 ? device.onImage : device.offImage)
+                        .resizable()
+                        .scaledToFit()
+                        .padding(0)
+                }
                 VStack {
                     HStack {
                         Spacer()
-                        Image(systemName: device.isFavorite ? "star.fill" : "star")
-                            .renderingMode(.template)
-                            .resizable()
-                            .foregroundColor(device.isFavorite ? .yellow : .gray)
-                            .padding(4)
-                            .frame(width: geometry.size.width/4, height: geometry.size.width/4)
+                        Button(action: device.flipFavorite) {
+                            Image(systemName: device.isFavorite ? "star.fill" : "star")
+                                .renderingMode(.template)
+                                .resizable()
+                                .foregroundColor(device.isFavorite ? .yellow : .gray)
+                                .padding(4)
+                                .frame(width: geometry.size.width/4, height: geometry.size.width/4)
+                        }
                     }
                     Spacer()
                     Text(device.name)
