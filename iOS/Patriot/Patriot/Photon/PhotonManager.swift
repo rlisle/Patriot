@@ -29,7 +29,7 @@ class PhotonManager: NSObject
     private var isLoggedIn = false              // Is this needed?
     var photons: [String: Photon] = [: ]        // All the particle devices attached to logged-in user's account
     let eventName          = "patriot"
-    var deviceDelegate: DeviceNotifying?        // Called by particle.io subscribe
+    var particleIoDelegate: DeviceNotifying?    // Called when particle.io subscribe device message received
 }
 
 extension PhotonManager
@@ -117,10 +117,10 @@ extension PhotonManager
         return photons[lowerCaseName]
     }
 
-    // Use MQTT instead
-    func sendCommand(device: String, percent: Int, completion: @escaping (Error?) -> Void)
+    // Used if MQTT not available
+    func sendCommand(device: Device, completion: @escaping (Error?) -> Void)
     {
-        let event = device + ":" + String(percent)
+        let event = device.name + ":" + String(device.percent)
         publish(event: event, completion: completion)
     }
 
@@ -161,7 +161,7 @@ extension PhotonManager
                     let name = splitTopic[1].lowercased()
                     if let percent: Int = Int(eventMessage), percent >= 0, percent <= 255
                     {
-                        self.deviceDelegate?.deviceChanged(name: name, percent: percent)
+                        self.particleIoDelegate?.deviceChanged(name: name, percent: percent)
                     }
                     else
                     {

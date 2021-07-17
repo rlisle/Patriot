@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     
-    @EnvironmentObject var devices: DevicesManager
+    @EnvironmentObject var devices: PatriotModel
 
     @Binding var showMenu: Bool
     
@@ -41,7 +41,7 @@ struct MainView: View {
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         StatefulPreviewWrapper(true) { MainView(showMenu: $0) }
-            .environmentObject(DevicesManager(
+            .environmentObject(PatriotModel(
                                 devices: [
                                     Device(name: "Light", type: .Light, percent: 0, isFavorite: true),
                                     Device(name: "Switch", type: .Switch),

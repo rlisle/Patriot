@@ -33,8 +33,7 @@ class MQTTManager {
     
     var isConnected: Bool = false
     
-    var delegate: MQTTReceiving?
-    var deviceDelegate: DeviceNotifying?
+    var mqttDelegate: MQTTReceiving?
     
     init() {
         let clientID = "Patriot" + String(ProcessInfo().processIdentifier)
@@ -66,26 +65,7 @@ extension MQTTManager: CocoaMQTTDelegate {
         if let payload: String = message.string {
             let topic = message.topic
             print("MQTT didReceiveMessage: \(topic), \(payload)")
-            delegate?.didReceiveMessage(topic: topic, message: payload)
-
-            // Parse out device commands
-            let splitTopic = topic.components(separatedBy: "/")
-            guard splitTopic.count >= 2 else {
-                print("MQTT Invalid topic: \(topic)")
-                return
-            }
-            
-            let name = splitTopic[1].lowercased()
-            if let percent: Int = Int(payload), percent >= 0, percent <= 100
-            {
-                self.deviceDelegate?.deviceChanged(name: name, percent: percent)
-            }
-            else
-            {
-                print("Event data is not a valid number: \(payload)")
-            }
-
-            
+            self.mqttDelegate?.didReceiveMessage(topic: message.topic, message: payload)
         }
     }
     
@@ -97,7 +77,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     
     func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
         print("MQTT didConnectAck")
-        delegate?.connectionDidChange(isConnected: true)
+        mqttDelegate?.connectionDidChange(isConnected: true)
         mqtt.subscribe(mqttTopic)
     }
     
@@ -130,7 +110,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     func mqttDidDisconnect(_ mqtt: CocoaMQTT, withError err: Error?) {
         print("MQTT didDisconnect withError: \(String(describing: err))")
         isConnected = false
-        delegate?.connectionDidChange(isConnected: false)
+        mqttDelegate?.connectionDidChange(isConnected: false)
     }
     
     func _console(_ info: String) {

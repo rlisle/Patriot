@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
 
-//    @EnvironmentObject var devices: DevicesManager
+//    @EnvironmentObject var model: DevicesManager
     
 //    init() {
 //        UINavigationBar.appearance().backgroundColor = .black
@@ -109,7 +109,7 @@ extension View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(DevicesManager(
+            .environmentObject(PatriotModel(
                                 devices: [
                                     Device(name: "Light", type: .Light),
                                     Device(name: "Switch", type: .Switch),

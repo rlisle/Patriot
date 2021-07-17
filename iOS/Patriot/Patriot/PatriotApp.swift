@@ -10,12 +10,12 @@ import SwiftUI
 @main
 struct PatriotApp: App {
 
-    @StateObject var devices = DevicesManager()
+    @StateObject var model = PatriotModel()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(devices)
+                .environmentObject(model)
         }
     }
 }

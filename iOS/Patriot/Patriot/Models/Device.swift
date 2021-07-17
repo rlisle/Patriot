@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-//protocol DeviceDelegate: AnyObject {
-//    func devicePercentChanged(name: String, type: DeviceType, percent: Int)
-//    func isFavoriteChanged(name: String, type: DeviceType, isFavorite: Bool)
-//}
+protocol DevicePublishing: AnyObject {
+    func devicePercentChanged(device: Device)
+    func isFavoriteChanged(device: Device)
+}
 
 class Device: ObservableObject
 {
@@ -23,14 +23,14 @@ class Device: ObservableObject
     var offImage:  UIImage
     var type:      DeviceType
 
-//    weak var delegate: DeviceDelegate?  //TODO: replace this with an observer
+    weak var publisher: DevicePublishing?
     
     public init(name: String, type: DeviceType, percent: Int = 0, isFavorite: Bool = false) {
         self.name        = name
         self.type        = type
         self.percent     = percent
         self.isFavorite  = isFavorite
-//        self.delegate    = nil
+        self.publisher    = nil
         
         switch type {
         case .Curtain:
@@ -45,12 +45,14 @@ class Device: ObservableObject
         }
     }
     
-    func toggle() {
+    func manualToggle() {
         percent = percent == 0 ? 100 : 0
+        publisher?.devicePercentChanged(device: self)
     }
     
     func flipFavorite() {
         isFavorite = !isFavorite
+        publisher?.isFavoriteChanged(device: self)
     }
 }
 

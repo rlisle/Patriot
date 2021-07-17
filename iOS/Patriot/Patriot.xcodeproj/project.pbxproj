@@ -16,7 +16,7 @@
 		27473051265D533400C8EFDE /* PhotonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747304E265D533400C8EFDE /* PhotonManager.swift */; };
 		27473053265D533400C8EFDE /* Photon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473050265D533400C8EFDE /* Photon.swift */; };
 		27473071265D53DE00C8EFDE /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306C265D53DE00C8EFDE /* Device.swift */; };
-		27473072265D53DE00C8EFDE /* DevicesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306D265D53DE00C8EFDE /* DevicesManager.swift */; };
+		27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306D265D53DE00C8EFDE /* PatriotModel.swift */; };
 		27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306F265D53DE00C8EFDE /* SettingsStore.swift */; };
 		27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473077265D54A800C8EFDE /* DeviceNotifying.swift */; };
 		27473083265D54A800C8EFDE /* ParticleSDKError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473078265D54A800C8EFDE /* ParticleSDKError.swift */; };
@@ -67,7 +67,7 @@
 		2747304E265D533400C8EFDE /* PhotonManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonManager.swift; sourceTree = "<group>"; };
 		27473050265D533400C8EFDE /* Photon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photon.swift; sourceTree = "<group>"; };
 		2747306C265D53DE00C8EFDE /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
-		2747306D265D53DE00C8EFDE /* DevicesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesManager.swift; sourceTree = "<group>"; };
+		2747306D265D53DE00C8EFDE /* PatriotModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatriotModel.swift; sourceTree = "<group>"; };
 		2747306F265D53DE00C8EFDE /* SettingsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		27473077265D54A800C8EFDE /* DeviceNotifying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceNotifying.swift; sourceTree = "<group>"; };
 		27473078265D54A800C8EFDE /* ParticleSDKError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticleSDKError.swift; sourceTree = "<group>"; };
@@ -204,7 +204,7 @@
 			children = (
 				2747306C265D53DE00C8EFDE /* Device.swift */,
 				2747307C265D54A800C8EFDE /* DeviceInfo.swift */,
-				2747306D265D53DE00C8EFDE /* DevicesManager.swift */,
+				2747306D265D53DE00C8EFDE /* PatriotModel.swift */,
 				2747306F265D53DE00C8EFDE /* SettingsStore.swift */,
 			);
 			path = Models;
@@ -454,7 +454,7 @@
 				274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */,
 				2747308D265FC77800C8EFDE /* LoginView.swift in Sources */,
 				27473053265D533400C8EFDE /* Photon.swift in Sources */,
-				27473072265D53DE00C8EFDE /* DevicesManager.swift in Sources */,
+				27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */,
 				27473071265D53DE00C8EFDE /* Device.swift in Sources */,
 				274D66C4269A51DD00303F1E /* DeviceView.swift in Sources */,
 			);

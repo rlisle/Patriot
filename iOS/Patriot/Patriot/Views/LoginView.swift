@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @EnvironmentObject var devices: DevicesManager
+    @EnvironmentObject var devices: PatriotModel
     
     @State private var userName = ""
     @State private var password = ""
@@ -87,7 +87,7 @@ struct LoginView: View {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
-            .environmentObject(DevicesManager())
+            .environmentObject(PatriotModel())
 
     }
 }

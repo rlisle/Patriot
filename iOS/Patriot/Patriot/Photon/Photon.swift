@@ -4,7 +4,7 @@
 //
 //  This class provides the interface to a Photon microcontroller.
 //
-//  The Photon will be interrogated to identify the devices
+//  The Photon will be interrogated to identify the model
 //  that it implements using the published variables:
 //
 //      deviceNames     is a list of all the devices, types, and values exposed on the Photon

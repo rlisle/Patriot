@@ -16,7 +16,7 @@ struct DeviceView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Button(action: device.toggle) {
+                Button(action: device.manualToggle) {
                     Image(uiImage: device.percent > 0 ? device.onImage : device.offImage)
                         .resizable()
                         .scaledToFit()
