@@ -10,35 +10,75 @@
 import SwiftUI
 
 struct MenuView: View {
+    
+    @EnvironmentObject var model: PatriotModel
+
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Image(systemName: "bed.double")
-                    .foregroundColor(.gray)
-                    .imageScale(.large)
-                Text("Bedtime")
-                    .foregroundColor(.gray)
-                    .font(.headline)
+            Button(action: {
+                print("Invoking Wakeup")
+                if let device = model.devices.first(where: {$0.name == "sleeping"}) {
+                    device.manualSet(percent: Sleeping.Awake)
+                }
+
+            }) {
+                HStack {
+                    Image(systemName: "sunrise")
+                        .foregroundColor(.gray)
+                        .imageScale(.large)
+                    Text("Awake")
+                        .foregroundColor(.gray)
+                        .font(.headline)
+                }
+                .padding(.top, 100)
             }
-            .padding(.top, 100)
-            HStack {
-                Image(systemName: "tv")
-                    .foregroundColor(.gray)
-                    .imageScale(.large)
-                Text("Watch TV")
-                    .foregroundColor(.gray)
-                    .font(.headline)
+            Button(action: {
+                print("Invoking Bedtime")
+                if let device = model.devices.first(where: {$0.name == "sleeping"}) {
+                    device.manualSet(percent: Sleeping.Retiring)
+                }
+
+            }) {
+                HStack {
+                    Image(systemName: "bed.double")
+                        .foregroundColor(.gray)
+                        .imageScale(.large)
+                    Text("Bedtime")
+                        .foregroundColor(.gray)
+                        .font(.headline)
+                }
+                .padding(.top, 30)
             }
-            .padding(.top, 30)
-            HStack {
-                Image(systemName: "person")
-                    .foregroundColor(.gray)
-                    .imageScale(.large)
-                Text("Logout")
-                    .foregroundColor(.gray)
-                    .font(.headline)
+            Button(action: {
+                print("Invoking Watch TV")
+                if let device = model.devices.first(where: {$0.name == "watching"}) {
+                    device.manualSet(percent: 100)
+                }
+            }) {
+                HStack {
+                    Image(systemName: "tv")
+                        .foregroundColor(.gray)
+                        .imageScale(.large)
+                    Text("Watch TV")
+                        .foregroundColor(.gray)
+                        .font(.headline)
+                }
+                .padding(.top, 30)
             }
-            .padding(.top, 30)
+            Button(action: {
+                print("Logout")
+                model.logout()
+            }) {
+                HStack {
+                    Image(systemName: "person")
+                        .foregroundColor(.gray)
+                        .imageScale(.large)
+                    Text("Logout")
+                        .foregroundColor(.gray)
+                        .font(.headline)
+                }
+                .padding(.top, 30)
+            }
             Spacer()
         }
         .padding()

@@ -31,6 +31,7 @@
 		274D66C8269DBDBD00303F1E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C7269DBDBD00303F1E /* MainView.swift */; };
 		274D66CA269DC06700303F1E /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C9269DC06700303F1E /* MenuView.swift */; };
 		274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */; };
+		2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */; };
 		70978BAF9E1437D62C231FEE /* Pods_Patriot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80622165AF65D442821D750D /* Pods_Patriot.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +83,7 @@
 		274D66C7269DBDBD00303F1E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		274D66C9269DC06700303F1E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatefulPreviewWrapper.swift; sourceTree = "<group>"; };
+		2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sleeping.swift; sourceTree = "<group>"; };
 		68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.debug.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.debug.xcconfig"; sourceTree = "<group>"; };
 		80622165AF65D442821D750D /* Pods_Patriot.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Patriot.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5038F88DA1AC3AB5283BC42 /* Pods-Patriot.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.release.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.release.xcconfig"; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				27473078265D54A800C8EFDE /* ParticleSDKError.swift */,
 				2747307E265D54A800C8EFDE /* PhotonError.swift */,
 				274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */,
+				2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -446,6 +449,7 @@
 				27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */,
 				274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */,
 				27473022265D182E00C8EFDE /* ContentView.swift in Sources */,
+				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27473051265D533400C8EFDE /* PhotonManager.swift in Sources */,
 				27473089265D54A800C8EFDE /* PhotonError.swift in Sources */,

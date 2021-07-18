@@ -46,7 +46,11 @@ class Device: ObservableObject
     }
     
     func manualToggle() {
-        percent = percent == 0 ? 100 : 0
+        manualSet(percent: percent == 0 ? 100 : 0)
+    }
+    
+    func manualSet(percent: Int) {
+        self.percent = percent
         publisher?.devicePercentChanged(device: self)
     }
     
