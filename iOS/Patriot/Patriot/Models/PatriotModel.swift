@@ -197,20 +197,27 @@ extension PatriotModel {
         return [
             Device(name: "Light1", type: .Light, percent: 0, isFavorite: true),
             Device(name: "Switch1", type: .Switch),
-            Device(name: "Curtain1", type: .Curtain),
+            Device(name: "Curtain1", type: .Curtain, isFavorite: true),
             Device(name: "Light2", type: .Light, percent: 100),
             Device(name: "Switch2", type: .Switch),
             Device(name: "Light3", type: .Light),
             Device(name: "Light4", type: .Light),
             Device(name: "Light5", type: .Light),
-            Device(name: "Light6", type: .Light),
+            Device(name: "Light6", type: .Light, isFavorite: true),
             Device(name: "Switch3", type: .Switch),
             Device(name: "Light7", type: .Light),
             Device(name: "Light8", type: .Light),
             Device(name: "Light9", type: .Light),
             Device(name: "Light10", type: .Light),
             Device(name: "Light11", type: .Light),
-            Device(name: "Light12", type: .Light)
+            Device(name: "Light12", type: .Light),
+            Device(name: "Light13", type: .Light),
+            Device(name: "Light14", type: .Light),
+            Device(name: "Light15", type: .Light),
+            Device(name: "Switch4", type: .Switch),
+            Device(name: "Light16", type: .Light),
+            Device(name: "Light17", type: .Light),
+            Device(name: "Light18", type: .Light)
         ]
     }
 }

@@ -20,14 +20,13 @@ struct MainView: View {
     var body: some View {
         VStack {
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(model.devices, id: \.self) { device in
-                        DeviceView(device: device)
-                            .aspectRatio(1, contentMode: .fill)
-                            .padding()
-                    }
-                }
-                .padding(.horizontal)
+
+                SectionView(title: "Favorites", devices:
+                    model.devices.filter { $0.isFavorite }
+                )
+                SectionView(title: "Living Room", devices:
+                    model.devices.filter { $0.isFavorite == false }
+                )
             }
         }
         .padding(.top, 16)
@@ -41,16 +40,6 @@ struct MainView: View {
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         StatefulPreviewWrapper(true) { MainView(showMenu: $0) }
-            .environmentObject(PatriotModel(
-                                devices: [
-                                    Device(name: "Light", type: .Light, percent: 0, isFavorite: true),
-                                    Device(name: "Switch", type: .Switch),
-                                    Device(name: "Curtain", type: .Curtain),
-                                    Device(name: "Light2", type: .Light, percent: 100),
-                                    Device(name: "Switch2", type: .Switch),
-                                    Device(name: "Light3", type: .Light),
-                                    Device(name: "Curtain2", type: .Curtain),
-                                    Device(name: "Light4", type: .Light)
-                                ]))
+            .environmentObject(PatriotModel(forTest: true))
     }
 }
