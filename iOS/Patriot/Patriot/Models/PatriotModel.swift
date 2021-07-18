@@ -28,6 +28,12 @@ class PatriotModel: ObservableObject
         return devices.filter { $0.isFavorite == true }
     }
 
+    var rooms: [ String ] {
+        let rawRooms = devices.map { $0.room }
+        let uniqueRooms = Set<String>(rawRooms)
+        return Array(uniqueRooms)               // May want to sort
+    }
+    
     init(forTest: Bool = false)
     {
         photonManager = PhotonManager()

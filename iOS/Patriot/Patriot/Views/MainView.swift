@@ -20,9 +20,9 @@ struct MainView: View {
     var body: some View {
         VStack {
             ScrollView {
+// TODO: refactor to SectionView (currently data is lost)
 //                SectionView(title: "Favorites", devices:
-//                                model.devices
-//                    //model.devices.filter { $0.isFavorite }
+//                    model.devices.filter { $0.isFavorite }
 //                )
 //                SectionView(title: "Living Room", devices:
 //                    model.devices.filter { $0.isFavorite == false }
@@ -50,28 +50,30 @@ struct MainView: View {
                 .padding(.horizontal)
                 .background(Color(.black).ignoresSafeArea())
 
-                // Non-Favorites
-                Section(
-                    header:
-                        HStack {
-                            Spacer()
-                            Text("Devices")
-                            Spacer()
-                        }
-                        .foregroundColor(.white)
-                        .background(Color(.gray))
-                    ) {
-                        LazyVGrid(columns: columns, spacing: 20) {
-                            ForEach(model.devices.filter { $0.isFavorite == false }, id: \.self) { device in
-                                DeviceView(device: device)
-                                    .aspectRatio(1, contentMode: .fill)
-                                    .padding()
+                // Rooms
+                ForEach(model.rooms, id: \.self) { room in
+                
+                    Section(
+                        header:
+                            HStack {
+                                Spacer()
+                                Text(room)
+                                Spacer()
+                            }
+                            .foregroundColor(.white)
+                            .background(Color(.gray))
+                        ) {
+                            LazyVGrid(columns: columns, spacing: 20) {
+                                ForEach(model.devices.filter { $0.isFavorite == false  && $0.room == room}, id: \.self) { device in
+                                    DeviceView(device: device)
+                                        .aspectRatio(1, contentMode: .fill)
+                                        .padding()
+                                }
                             }
                         }
-                    }
-                .padding(.horizontal)
-                .background(Color(.black).ignoresSafeArea())
-
+                    .padding(.horizontal)
+                    .background(Color(.black).ignoresSafeArea())
+                }
 
                 
             }
