@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     
-    @EnvironmentObject var devices: PatriotModel
+    @EnvironmentObject var model: PatriotModel
 
     @Binding var showMenu: Bool
     
@@ -21,7 +21,7 @@ struct MainView: View {
         VStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(devices.devices, id: \.self) { device in
+                    ForEach(model.devices, id: \.self) { device in
                         DeviceView(device: device)
                             .aspectRatio(1, contentMode: .fill)
                             .padding()
@@ -32,7 +32,7 @@ struct MainView: View {
         }
         .padding(.top, 16)
         .background(Color(.black).ignoresSafeArea())
-        .sheet(isPresented: $devices.needsLogIn) {
+        .sheet(isPresented: $model.needsLogIn) {
             LoginView()
         }
     }

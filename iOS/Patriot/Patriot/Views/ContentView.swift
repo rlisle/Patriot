@@ -9,12 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
 
-//    @EnvironmentObject var model: DevicesManager
-    
-//    init() {
-//        UINavigationBar.appearance().backgroundColor = .black
-//    }
-    
     @State var showMenu = false
     
     var body: some View {
