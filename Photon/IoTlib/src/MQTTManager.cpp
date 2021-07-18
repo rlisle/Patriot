@@ -16,8 +16,8 @@ All text above must be included in any redistribution.
 #include "device.h"
 #include "IoT.h"
 
-#define MQTT_TIMEOUT_SECONDS 60*5
-#define MQTT_ALIVE_SECONDS 60
+#define MQTT_TIMEOUT_SECONDS 60*6
+#define MQTT_ALIVE_SECONDS 60*5
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {
@@ -82,7 +82,7 @@ void MQTTManager::loop()
 {
     if(_mqtt != NULL && _mqtt->isConnected()) {
         _mqtt->loop();
-        sendAlivePeriodically()
+        sendAlivePeriodically();
     }
 
     reconnectCheck();
@@ -91,8 +91,9 @@ void MQTTManager::loop()
 void MQTTManager::sendAlivePeriodically() {
     system_tick_t secondsSinceLastAlive = Time.now() - _lastAliveTime;
     if(secondsSinceLastAlive > MQTT_ALIVE_SECONDS) {
-        secondsSinceLastAlive = Time.now()
-        publish("patriot/alive", _controllerName)
+        _lastAliveTime = Time.now();
+        String time = Time.format(Time.now(), "%a %H:%M");
+        publish("patriot/alive/"+_controllerName, time);
     }
 }
 
@@ -131,8 +132,9 @@ void MQTTManager::parseMessage(String topic, String message)
         
         // Look for reserved names
         // ALIVE
-        if(subtopic == "alive" || subtopic.startsWith("alive/")) {
-            // message is controller name
+        if(subtopic.startsWith("alive")) {
+            // Remainder of topic is controller name
+            // message is timestamp
             // Ignore it.
 
         // LOG
@@ -326,7 +328,6 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
 void MQTTManager::log(const char *category, String message) {
     String time = Time.format(Time.now(), "%a %H:%M");
 
-//    if(!_logging && strcmp(category, "app") == 0) {
     if(!_logging) {
         _logging++;
         publish("patriot/log/"+_controllerName, time + " " + message);

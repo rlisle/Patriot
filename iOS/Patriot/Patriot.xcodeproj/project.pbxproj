@@ -15,24 +15,22 @@
 		2747303D265D182F00C8EFDE /* PatriotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747303C265D182F00C8EFDE /* PatriotUITests.swift */; };
 		27473051265D533400C8EFDE /* PhotonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747304E265D533400C8EFDE /* PhotonManager.swift */; };
 		27473053265D533400C8EFDE /* Photon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473050265D533400C8EFDE /* Photon.swift */; };
-		27473070265D53DE00C8EFDE /* ActivityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306B265D53DE00C8EFDE /* ActivityModel.swift */; };
-		27473071265D53DE00C8EFDE /* DeviceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306C265D53DE00C8EFDE /* DeviceModel.swift */; };
-		27473072265D53DE00C8EFDE /* DevicesDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306D265D53DE00C8EFDE /* DevicesDataManager.swift */; };
-		27473073265D53DE00C8EFDE /* ActivitiesDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306E265D53DE00C8EFDE /* ActivitiesDataManager.swift */; };
+		27473071265D53DE00C8EFDE /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306C265D53DE00C8EFDE /* Device.swift */; };
+		27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306D265D53DE00C8EFDE /* PatriotModel.swift */; };
 		27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306F265D53DE00C8EFDE /* SettingsStore.swift */; };
-		27473081265D54A800C8EFDE /* ActivityInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473076265D54A800C8EFDE /* ActivityInfo.swift */; };
 		27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473077265D54A800C8EFDE /* DeviceNotifying.swift */; };
 		27473083265D54A800C8EFDE /* ParticleSDKError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473078265D54A800C8EFDE /* ParticleSDKError.swift */; };
 		27473084265D54A800C8EFDE /* DeviceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473079265D54A800C8EFDE /* DeviceType.swift */; };
-		27473085265D54A800C8EFDE /* ActivityNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307A265D54A800C8EFDE /* ActivityNotifying.swift */; };
-		27473086265D54A800C8EFDE /* HwController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307B265D54A800C8EFDE /* HwController.swift */; };
 		27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307C265D54A800C8EFDE /* DeviceInfo.swift */; };
-		27473088265D54A800C8EFDE /* LoggingIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307D265D54A800C8EFDE /* LoggingIn.swift */; };
 		27473089265D54A800C8EFDE /* PhotonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307E265D54A800C8EFDE /* PhotonError.swift */; };
-		2747308A265D54A800C8EFDE /* HwManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307F265D54A800C8EFDE /* HwManager.swift */; };
-		2747308B265D54A800C8EFDE /* PhotonNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473080265D54A800C8EFDE /* PhotonNotifying.swift */; };
 		2747308D265FC77800C8EFDE /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747308C265FC77800C8EFDE /* LoginView.swift */; };
 		2747308F266002D700C8EFDE /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747308E266002D700C8EFDE /* ViewExtensions.swift */; };
+		274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66BE2699F51D00303F1E /* MQTTManager.swift */; };
+		274D66C12699F9E900303F1E /* PhotonDeviceNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */; };
+		274D66C4269A51DD00303F1E /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C3269A51DD00303F1E /* DeviceView.swift */; };
+		274D66C8269DBDBD00303F1E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C7269DBDBD00303F1E /* MainView.swift */; };
+		274D66CA269DC06700303F1E /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C9269DC06700303F1E /* MenuView.swift */; };
+		274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */; };
 		70978BAF9E1437D62C231FEE /* Pods_Patriot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80622165AF65D442821D750D /* Pods_Patriot.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,24 +66,22 @@
 		2747303E265D182F00C8EFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2747304E265D533400C8EFDE /* PhotonManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonManager.swift; sourceTree = "<group>"; };
 		27473050265D533400C8EFDE /* Photon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photon.swift; sourceTree = "<group>"; };
-		2747306B265D53DE00C8EFDE /* ActivityModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityModel.swift; sourceTree = "<group>"; };
-		2747306C265D53DE00C8EFDE /* DeviceModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceModel.swift; sourceTree = "<group>"; };
-		2747306D265D53DE00C8EFDE /* DevicesDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesDataManager.swift; sourceTree = "<group>"; };
-		2747306E265D53DE00C8EFDE /* ActivitiesDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivitiesDataManager.swift; sourceTree = "<group>"; };
+		2747306C265D53DE00C8EFDE /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		2747306D265D53DE00C8EFDE /* PatriotModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatriotModel.swift; sourceTree = "<group>"; };
 		2747306F265D53DE00C8EFDE /* SettingsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
-		27473076265D54A800C8EFDE /* ActivityInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityInfo.swift; sourceTree = "<group>"; };
 		27473077265D54A800C8EFDE /* DeviceNotifying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceNotifying.swift; sourceTree = "<group>"; };
 		27473078265D54A800C8EFDE /* ParticleSDKError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticleSDKError.swift; sourceTree = "<group>"; };
 		27473079265D54A800C8EFDE /* DeviceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceType.swift; sourceTree = "<group>"; };
-		2747307A265D54A800C8EFDE /* ActivityNotifying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityNotifying.swift; sourceTree = "<group>"; };
-		2747307B265D54A800C8EFDE /* HwController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HwController.swift; sourceTree = "<group>"; };
 		2747307C265D54A800C8EFDE /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
-		2747307D265D54A800C8EFDE /* LoggingIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingIn.swift; sourceTree = "<group>"; };
 		2747307E265D54A800C8EFDE /* PhotonError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonError.swift; sourceTree = "<group>"; };
-		2747307F265D54A800C8EFDE /* HwManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HwManager.swift; sourceTree = "<group>"; };
-		27473080265D54A800C8EFDE /* PhotonNotifying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonNotifying.swift; sourceTree = "<group>"; };
 		2747308C265FC77800C8EFDE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		2747308E266002D700C8EFDE /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
+		274D66BE2699F51D00303F1E /* MQTTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTManager.swift; sourceTree = "<group>"; };
+		274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotonDeviceNotifying.swift; sourceTree = "<group>"; };
+		274D66C3269A51DD00303F1E /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
+		274D66C7269DBDBD00303F1E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		274D66C9269DC06700303F1E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatefulPreviewWrapper.swift; sourceTree = "<group>"; };
 		68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.debug.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.debug.xcconfig"; sourceTree = "<group>"; };
 		80622165AF65D442821D750D /* Pods_Patriot.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Patriot.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5038F88DA1AC3AB5283BC42 /* Pods-Patriot.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.release.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.release.xcconfig"; sourceTree = "<group>"; };
@@ -142,6 +138,8 @@
 		2747301E265D182E00C8EFDE /* Patriot */ = {
 			isa = PBXGroup;
 			children = (
+				2747301F265D182E00C8EFDE /* PatriotApp.swift */,
+				274D66BD2699F50700303F1E /* Network */,
 				27473075265D545500C8EFDE /* Protocols */,
 				2747304D265D51C500C8EFDE /* Supporting Files */,
 				2747304C265D51B200C8EFDE /* Models */,
@@ -193,6 +191,10 @@
 			children = (
 				27473021265D182E00C8EFDE /* ContentView.swift */,
 				2747308C265FC77800C8EFDE /* LoginView.swift */,
+				274D66C3269A51DD00303F1E /* DeviceView.swift */,
+				274D66C7269DBDBD00303F1E /* MainView.swift */,
+				274D66C9269DC06700303F1E /* MenuView.swift */,
+				274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -200,10 +202,9 @@
 		2747304C265D51B200C8EFDE /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				2747306E265D53DE00C8EFDE /* ActivitiesDataManager.swift */,
-				2747306B265D53DE00C8EFDE /* ActivityModel.swift */,
-				2747306C265D53DE00C8EFDE /* DeviceModel.swift */,
-				2747306D265D53DE00C8EFDE /* DevicesDataManager.swift */,
+				2747306C265D53DE00C8EFDE /* Device.swift */,
+				2747307C265D54A800C8EFDE /* DeviceInfo.swift */,
+				2747306D265D53DE00C8EFDE /* PatriotModel.swift */,
 				2747306F265D53DE00C8EFDE /* SettingsStore.swift */,
 			);
 			path = Models;
@@ -213,7 +214,6 @@
 			isa = PBXGroup;
 			children = (
 				274730902660030900C8EFDE /* Extensions */,
-				2747301F265D182E00C8EFDE /* PatriotApp.swift */,
 				27473023265D182E00C8EFDE /* Assets.xcassets */,
 			);
 			path = "Supporting Files";
@@ -222,17 +222,11 @@
 		27473075265D545500C8EFDE /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				27473076265D54A800C8EFDE /* ActivityInfo.swift */,
-				2747307A265D54A800C8EFDE /* ActivityNotifying.swift */,
-				2747307C265D54A800C8EFDE /* DeviceInfo.swift */,
 				27473077265D54A800C8EFDE /* DeviceNotifying.swift */,
 				27473079265D54A800C8EFDE /* DeviceType.swift */,
-				2747307B265D54A800C8EFDE /* HwController.swift */,
-				2747307F265D54A800C8EFDE /* HwManager.swift */,
-				2747307D265D54A800C8EFDE /* LoggingIn.swift */,
 				27473078265D54A800C8EFDE /* ParticleSDKError.swift */,
 				2747307E265D54A800C8EFDE /* PhotonError.swift */,
-				27473080265D54A800C8EFDE /* PhotonNotifying.swift */,
+				274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -243,6 +237,14 @@
 				2747308E266002D700C8EFDE /* ViewExtensions.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		274D66BD2699F50700303F1E /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				274D66BE2699F51D00303F1E /* MQTTManager.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		D27112F62ACE9251195A69A2 /* Pods */ = {
@@ -436,27 +438,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				2747308F266002D700C8EFDE /* ViewExtensions.swift in Sources */,
-				27473073265D53DE00C8EFDE /* ActivitiesDataManager.swift in Sources */,
+				274D66C8269DBDBD00303F1E /* MainView.swift in Sources */,
 				27473083265D54A800C8EFDE /* ParticleSDKError.swift in Sources */,
-				27473085265D54A800C8EFDE /* ActivityNotifying.swift in Sources */,
-				2747308B265D54A800C8EFDE /* PhotonNotifying.swift in Sources */,
+				274D66CA269DC06700303F1E /* MenuView.swift in Sources */,
+				274D66C12699F9E900303F1E /* PhotonDeviceNotifying.swift in Sources */,
 				27473084265D54A800C8EFDE /* DeviceType.swift in Sources */,
-				27473070265D53DE00C8EFDE /* ActivityModel.swift in Sources */,
 				27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */,
+				274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */,
 				27473022265D182E00C8EFDE /* ContentView.swift in Sources */,
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27473051265D533400C8EFDE /* PhotonManager.swift in Sources */,
-				27473088265D54A800C8EFDE /* LoggingIn.swift in Sources */,
 				27473089265D54A800C8EFDE /* PhotonError.swift in Sources */,
-				27473081265D54A800C8EFDE /* ActivityInfo.swift in Sources */,
 				27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */,
 				27473020265D182E00C8EFDE /* PatriotApp.swift in Sources */,
+				274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */,
 				2747308D265FC77800C8EFDE /* LoginView.swift in Sources */,
 				27473053265D533400C8EFDE /* Photon.swift in Sources */,
-				27473072265D53DE00C8EFDE /* DevicesDataManager.swift in Sources */,
-				27473071265D53DE00C8EFDE /* DeviceModel.swift in Sources */,
-				27473086265D54A800C8EFDE /* HwController.swift in Sources */,
-				2747308A265D54A800C8EFDE /* HwManager.swift in Sources */,
+				27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */,
+				27473071265D53DE00C8EFDE /* Device.swift in Sources */,
+				274D66C4269A51DD00303F1E /* DeviceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

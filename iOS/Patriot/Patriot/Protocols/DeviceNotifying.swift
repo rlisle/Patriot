@@ -8,9 +8,8 @@
 
 import Foundation
 
-
-protocol DeviceNotifying: class
+// Called when MQTT or particle.io message received
+protocol DeviceNotifying: AnyObject
 {
-    func deviceListChanged()
     func deviceChanged(name: String, percent: Int)
 }

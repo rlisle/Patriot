@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @Binding var needsLogin: Bool
+    @EnvironmentObject var devices: PatriotModel
     
     @State private var userName = ""
     @State private var password = ""
@@ -66,14 +66,14 @@ struct LoginView: View {
     
     func handleLogin() {
         hideSpinner = false
-        PhotonManager.shared.login(user: userName, password: password) { (error) in
+        devices.photonManager.login(user: userName, password: password) { (error) in
             hideSpinner = true
             if let error = error {
                 print("Error logging in: \(error)")
                 //TODO: display an error message, but stay on this screen
                 return
             }
-            needsLogin = false
+            devices.needsLogIn = false
             
             fetchDevices()
         }
@@ -84,15 +84,10 @@ struct LoginView: View {
     }
 }
 
-struct PresentLoginView: View {
-    @State var needsLogin = true
-    var body: some View {
-        LoginView(needsLogin: $needsLogin)
-    }
-}
-
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        PresentLoginView()
+        LoginView()
+            .environmentObject(PatriotModel())
+
     }
 }

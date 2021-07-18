@@ -8,15 +8,17 @@
 
 import Foundation
 
-enum DeviceType: Int {
-    case Unknown
-    case Fan
-    case Light
-    case Motor
-    case NCD8Relay  //placeholder
-    case Presence
-    case Relay
-    case Switch
-    case TempHumidity
-    case Ultrasonic
+enum DeviceType: String {
+    case Unknown = "?"
+    case Curtain = "C"
+    case Fan = "F"
+    case Light = "L"
+    case Motor = "M"
+    case NCD8Relay = "N"  //placeholder
+    case PartOfDay = "P"
+    case Proximity = "X"
+    case Relay = "R"
+    case Switch = "S"
+    case TempHumidity = "T"
+    case Ultrasonic = "U"
 }

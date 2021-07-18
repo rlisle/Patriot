@@ -14,6 +14,7 @@
  Datasheets:
 
  */
+// TODO: Convert to 12 bit
 
 #include "PatriotLight.h"
 #include "math.h"

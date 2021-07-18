@@ -8,46 +8,117 @@
 import SwiftUI
 
 struct ContentView: View {
+
+//    @EnvironmentObject var model: DevicesManager
     
-    @State private var needsLogin = true
+//    init() {
+//        UINavigationBar.appearance().backgroundColor = .black
+//    }
+    
+    @State var showMenu = false
     
     var body: some View {
-
-        VStack {
-//            Menu("Activities") {
-//                List(PhotonManager.shared.activities) {
-//                    Text($0.name)
-//                }
-//            }
-            
-//            Menu("Devices") {
-//                List(PhotonManager.shared.devices) {
-//                    Text($0.name)
-//                }
-//            }
-//
-//            Menu("Photons") {
-//                //TODO: use enumeration instead of hardcoding
-//                List {
-//                    Text(PhotonManager.shared.photons["FrontPanel"].name)
-//                    Text(PhotonManager.shared.photons["RearPanel"].name)
-//                }
-//            }
-            
-            Menu("Settings") {
-                Button("Log Out") {
-                        needsLogin = true
+        
+        let drag = DragGesture()
+            .onEnded {
+                if $0.translation.width < -100 {
+                    withAnimation {
+                        self.showMenu = false
                     }
+                }
             }
-        }
-        .sheet(isPresented: $needsLogin) {
-            LoginView(needsLogin: $needsLogin)
+        
+        return NavigationView {
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    Color.black.edgesIgnoringSafeArea(.all)
+                    MainView(showMenu: self.$showMenu)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .offset(x: self.showMenu ? geometry.size.width/2 : 0)
+                        .disabled(self.showMenu ? true : false)
+                    
+                    if self.showMenu {
+                        MenuView()
+                            .frame(width: geometry.size.width/2)
+                        
+                    }
+                }
+                .gesture(drag)
+            }
+            .blackNavigation
+            .navigationBarTitle("Patriot", displayMode: .inline)
+            .navigationBarItems(leading: (
+                Button(action: {
+                    withAnimation {
+                        self.showMenu.toggle()
+                    }
+                }) {
+                    Image(systemName: "line.horizontal.3")
+                        .imageScale(.large)
+                }
+            ))
         }
     }
 }
 
+struct NavigationBarModifier: ViewModifier {
+  var backgroundColor: UIColor
+  var textColor: UIColor
+
+  init(backgroundColor: UIColor, textColor: UIColor) {
+    self.backgroundColor = backgroundColor
+    self.textColor = textColor
+    let coloredAppearance = UINavigationBarAppearance()
+    coloredAppearance.configureWithTransparentBackground()
+    coloredAppearance.backgroundColor = .clear
+    coloredAppearance.titleTextAttributes = [.foregroundColor: textColor]
+    coloredAppearance.largeTitleTextAttributes = [.foregroundColor: textColor]
+
+    UINavigationBar.appearance().standardAppearance = coloredAppearance
+    UINavigationBar.appearance().compactAppearance = coloredAppearance
+    UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
+    UINavigationBar.appearance().tintColor = textColor
+  }
+
+  func body(content: Content) -> some View {
+    ZStack{
+       content
+        VStack {
+          GeometryReader { geometry in
+             Color(self.backgroundColor)
+                .frame(height: geometry.safeAreaInsets.top)
+                .edgesIgnoringSafeArea(.top)
+              Spacer()
+          }
+        }
+     }
+  }
+}
+
+extension View {
+  func navigationBarColor(_ backgroundColor: UIColor, textColor: UIColor) -> some View {
+    self.modifier(NavigationBarModifier(backgroundColor: backgroundColor, textColor: textColor))
+  }
+}
+
+extension View {
+  var blackNavigation: some View {
+    self.navigationBarColor(UIColor.black, textColor: UIColor.white)
+  }
+}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(PatriotModel(
+                                devices: [
+                                    Device(name: "Light", type: .Light),
+                                    Device(name: "Switch", type: .Switch),
+                                    Device(name: "Curtain", type: .Curtain),
+                                    Device(name: "Light2", type: .Light),
+                                    Device(name: "Switch2", type: .Switch),
+                                    Device(name: "Light3", type: .Light),
+                                    Device(name: "Curtain2", type: .Curtain),
+                                    Device(name: "Light4", type: .Light)
+                                ]))
     }
 }

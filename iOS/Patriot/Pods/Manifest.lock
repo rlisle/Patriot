@@ -14,6 +14,9 @@ PODS:
   - AFNetworking/Serialization (4.0.1)
   - AFNetworking/UIKit (4.0.1):
     - AFNetworking/NSURLSession
+  - CocoaAsyncSocket (7.6.5)
+  - CocoaMQTT (1.2.5):
+    - CocoaAsyncSocket (~> 7.6.3)
   - Particle-SDK (1.0.7):
     - Particle-SDK/Helpers (= 1.0.7)
     - Particle-SDK/SDK (= 1.0.7)
@@ -24,17 +27,22 @@ PODS:
     - Particle-SDK/Helpers
 
 DEPENDENCIES:
+  - CocoaMQTT
   - Particle-SDK
 
 SPEC REPOS:
   trunk:
     - AFNetworking
+    - CocoaAsyncSocket
+    - CocoaMQTT
     - Particle-SDK
 
 SPEC CHECKSUMS:
   AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
+  CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
+  CocoaMQTT: a61490ed3b328011c5d75169a77781983e2bb221
   Particle-SDK: 35ccf1758905326a042907294338a19099b3de04
 
-PODFILE CHECKSUM: 7379681e0772f6c2326a3130681e9df2ec51cb5a
+PODFILE CHECKSUM: b8446539546d5422e74470733ee61047bd24e5c5
 
 COCOAPODS: 1.10.1

@@ -23,7 +23,7 @@ Author: Ron Lisle
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
 void setup() {
-    IoT::begin("192.168.10.184", "RearPanel");
+    IoT::begin("192.168.50.33", "RearPanel");
 
     // PartOfDay
     Device::add(new PartOfDay());
