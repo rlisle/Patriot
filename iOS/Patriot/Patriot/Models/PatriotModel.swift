@@ -28,7 +28,7 @@ class PatriotModel: ObservableObject
         return devices.filter { $0.isFavorite == true }
     }
 
-    init()
+    init(forTest: Bool = false)
     {
         photonManager = PhotonManager()
         mqtt = MQTTManager()
@@ -36,12 +36,16 @@ class PatriotModel: ObservableObject
         favoritesList = settings.favorites ?? []
         mqtt.mqttDelegate = self          // Receives MQTT messages
         photonManager.particleIoDelegate = self // Receives particle.io messages
-        performAutoLogin()                  // During login all photons & devices will be created
+        if forTest {
+            devices = getTestDevices()
+        } else {
+            performAutoLogin()                  // During login all photons & devices will be created
+        }
     }
 
     // For Test/Preview
     convenience init(devices: [Device]) {
-        self.init()
+        self.init(forTest: true)
         self.devices = Array(Set(devices))
     }
 }
@@ -185,5 +189,28 @@ extension PatriotModel: DevicePublishing {
 
     func isFavoriteChanged(device: Device) {
         updateFavoritesList()
+    }
+}
+
+extension PatriotModel {
+    func getTestDevices() -> [Device] {
+        return [
+            Device(name: "Light1", type: .Light, percent: 0, isFavorite: true),
+            Device(name: "Switch1", type: .Switch),
+            Device(name: "Curtain1", type: .Curtain),
+            Device(name: "Light2", type: .Light, percent: 100),
+            Device(name: "Switch2", type: .Switch),
+            Device(name: "Light3", type: .Light),
+            Device(name: "Light4", type: .Light),
+            Device(name: "Light5", type: .Light),
+            Device(name: "Light6", type: .Light),
+            Device(name: "Switch3", type: .Switch),
+            Device(name: "Light7", type: .Light),
+            Device(name: "Light8", type: .Light),
+            Device(name: "Light9", type: .Light),
+            Device(name: "Light10", type: .Light),
+            Device(name: "Light11", type: .Light),
+            Device(name: "Light12", type: .Light)
+        ]
     }
 }
