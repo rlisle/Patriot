@@ -61,20 +61,23 @@ class Photon
         let items = deviceString.components(separatedBy: ",")
         for item in items
         {
-            // Format is now type:name=value ("P|C|L|S|:<name>=<0-255>")
-            let separatedByColon = item.components(separatedBy: ":")
-            let separatedByEquals = separatedByColon[1].components(separatedBy: "=")
-            
-            let deviceType = DeviceType(rawValue: separatedByColon[0]) ?? DeviceType.Unknown
-            let deviceName = separatedByEquals[0].localizedLowercase
-            let deviceValue = Int(separatedByEquals[1]) ?? 0
-            let deviceInfo = DeviceInfo(
-                photonName: self.name,
-                name: deviceName,
-                type: deviceType,
-                percent: deviceValue )
-            print("Adding deviceInfo \(deviceName)")
-            deviceInfos.append(deviceInfo)
+            // Format is now type:name=value ("C|L|P|S:<name>@<room>=<0-255>") @room is optional
+            // Refactoring:
+            let parts = item.components(separatedBy: CharacterSet(charactersIn: ":@="))     // type:name@room=value
+            if parts.count >= 3 {
+                let deviceInfo = DeviceInfo(
+                    photonName: self.name,
+                    name: parts[1],
+                    type: DeviceType(rawValue: parts[0]) ?? DeviceType.Unknown,
+                    percent: Int(parts[ parts.count == 4 ? 3 : 2]) ?? 0,
+                    room: parts.count == 4 ? parts[2] : "Default"
+                )
+                print("Adding deviceInfo \(parts[1])")
+                deviceInfos.append(deviceInfo)
+
+            } else {
+                print("Invalid device info: \(item)")
+            }
         }
     }
     

@@ -20,13 +20,60 @@ struct MainView: View {
     var body: some View {
         VStack {
             ScrollView {
+//                SectionView(title: "Favorites", devices:
+//                                model.devices
+//                    //model.devices.filter { $0.isFavorite }
+//                )
+//                SectionView(title: "Living Room", devices:
+//                    model.devices.filter { $0.isFavorite == false }
+//                )
 
-                SectionView(title: "Favorites", devices:
-                    model.devices.filter { $0.isFavorite }
-                )
-                SectionView(title: "Living Room", devices:
-                    model.devices.filter { $0.isFavorite == false }
-                )
+                // Favorites
+                Section(
+                    header:
+                        HStack {
+                            Spacer()
+                            Text("Favorites")
+                            Spacer()
+                        }
+                        .foregroundColor(.white)
+                        .background(Color(.gray))
+                    ) {
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
+                                DeviceView(device: device)
+                                    .aspectRatio(1, contentMode: .fill)
+                                    .padding()
+                            }
+                        }
+                    }
+                .padding(.horizontal)
+                .background(Color(.black).ignoresSafeArea())
+
+                // Non-Favorites
+                Section(
+                    header:
+                        HStack {
+                            Spacer()
+                            Text("Devices")
+                            Spacer()
+                        }
+                        .foregroundColor(.white)
+                        .background(Color(.gray))
+                    ) {
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            ForEach(model.devices.filter { $0.isFavorite == false }, id: \.self) { device in
+                                DeviceView(device: device)
+                                    .aspectRatio(1, contentMode: .fill)
+                                    .padding()
+                            }
+                        }
+                    }
+                .padding(.horizontal)
+                .background(Color(.black).ignoresSafeArea())
+
+
+                
             }
         }
         .padding(.top, 16)

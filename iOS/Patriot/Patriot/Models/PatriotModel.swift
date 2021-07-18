@@ -155,9 +155,8 @@ extension PatriotModel {
         var accumulatedDevices: Set<Device> = Set<Device>(devices)
         for deviceInfo in deviceInfos
         {
-            let newDevice = Device(name: deviceInfo.name, type: deviceInfo.type)
+            let newDevice = Device(deviceInfo)
             newDevice.publisher = self
-            newDevice.percent = deviceInfo.percent
             newDevice.isFavorite = favoritesList.contains(deviceInfo.name)
             accumulatedDevices.insert(newDevice)
         }
