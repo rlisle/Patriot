@@ -172,37 +172,3 @@ extension PhotonManager
         })
     }
 }
-
-
-// These methods receive the capabilities of each photon asynchronously
-//extension PhotonManager: PhotonDeviceInfoNotifying
-//{
-//    func photon(named: String, hasDeviceInfos: Set<DeviceInfo>)
-//    {
-//        for device in hasDeviceInfos {
-//            if device.name != "" && devices.contains(device) == false {
-//                devices.append(device)
-//            }
-//        }
-//        deviceDelegate?.deviceListChanged()
-//    }
-//}
-
-
-//extension PhotonManager
-//{
-//    func readVariable(device: ParticleDevice, name: String, completion: @escaping (Any?, Error?) -> Void)
-//    {
-//        device.getVariable(name)
-//        { (result: Any?, error: Error?) in
-//            if let variable = result as? String
-//            {
-//                completion(variable, nil)
-//            }
-//            else
-//            {
-//                completion(nil, error!)
-//            }
-//        }
-//    }
-//}

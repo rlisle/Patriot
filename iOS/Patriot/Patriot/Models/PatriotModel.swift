@@ -30,7 +30,6 @@ class PatriotModel: ObservableObject
 
     init()
     {
-        print("PatriotModel init")
         photonManager = PhotonManager()
         mqtt = MQTTManager()
         settings = Settings(store: UserDefaultsSettingsStore())
@@ -131,29 +130,6 @@ extension PatriotModel: MQTTReceiving {
 // Favorites
 extension PatriotModel {
 
-//    func isDeviceFavorite(at: Int) -> Bool
-//    {
-//        return devices[at].isFavorite
-//    }
-//
-//    func toggleFavorite(at: Int)
-//    {
-//        if let index = favoriteDeviceIndex(at: at) {
-//            setFavorite(at: index)
-//        } else {
-//            print("favorite device not found for index \(at) == \(String(describing: index))")
-//        }
-//    }
-//
-//    //TODO: Instead of index use hash (name+type)
-//    func favoriteDeviceIndex(at: Int) -> Int? {
-//        guard at < favorites.count else {
-//            return nil
-//        }
-//        let device = favorites[at]
-//        return indexOfDevice(device)
-//    }
-    
     func updateFavoritesList() {
         favoritesList = []
         for device in devices
@@ -197,7 +173,6 @@ extension PatriotModel: DeviceNotifying
             print("   index of device = \(index)")
             devices[index].percent = percent
         }
-//        delegate?.deviceChanged(name: name, percent: percent)
     }
 }
 
