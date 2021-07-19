@@ -29,7 +29,7 @@ private:
     void      notify();
     
 public:
-    Switch(int pinNum, String name);
+    Switch(int pinNum, String name, String room);
 
     void begin();
     void loop();

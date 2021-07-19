@@ -21,8 +21,8 @@ All text above must be included in any redistribution.
 String globalStatesVariable;
 String globalDevicesVariable;
 
-Device::Device(String name)
-: _next(NULL), _name(name), _value(0), _previous(0), _restore(0), _type('L')
+Device::Device(String name, String room)
+: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _restore(0), _type('L')
 {
     // Do any setup work in begin() not here.
 }
@@ -155,15 +155,16 @@ void Device::expose()
     }
 }
 
-// The Devices variable is used by Alexa discovery and ReportState
-// It is a comma delimited list of <T>:<Name>=<value>
+// The Devices variable is used by Alexa discovery and ReportState and iOS app.
+// It is a comma delimited list of <T>:<Name>@<Room>=<Value>
 void Device::buildDevicesVariable()
 {
     String newVariable = "";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
         newVariable += String(ptr->_type)+":";
-        newVariable += ptr->_name;
+        newVariable += String(ptr->_name)+"@";
+        newVariable += ptr->_room;
         newVariable += "="+String(ptr->_value);
         if (ptr->_next != NULL) {
             newVariable += ",";     // Removed extra space to see if that is breaking discovery

@@ -36,8 +36,8 @@ int8_t NCD8Relay::_addresses[8];        // Addresses of up to 8 boards
  * @param name String name used to address the relay.
  * @param duration Optional seconds value to automatically turn off relay. 0 = no automatic turn off.
  */
-NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration)
-    : Device(name)
+NCD8Relay::NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, String room, int8_t duration)
+    : Device(name, room)
 {
     _relayNum   = relayNum;
     _numRelays  = numRelays;

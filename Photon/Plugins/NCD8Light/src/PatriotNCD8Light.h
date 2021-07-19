@@ -40,7 +40,7 @@ class NCD8Light : public Device
     float   scalePWM(int value);
 
  public:
-    NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration = 0);
+    NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
     void    begin();
     void    reset();
     void    setValue(int value);

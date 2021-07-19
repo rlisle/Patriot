@@ -45,8 +45,8 @@
  * @param relayIndex is the relay number of the 1st of 2 relays (0-2)
  * @param name String name used to address the relay.
  */
-Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name)
-    : Device(name)
+Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room)
+    : Device(name, room)
 {
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _relayIndex  = relayIndex;      // 0 (first 2 relays)

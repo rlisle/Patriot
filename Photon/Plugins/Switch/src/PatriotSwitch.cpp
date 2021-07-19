@@ -24,8 +24,8 @@ All text above must be included in any redistribution.
  * @param pinNum int pin number that is connected to the switch
  * @param name  String name of the event to send when switch changes
  */
-Switch::Switch(int pinNum, String name)
-        : Device(name),
+Switch::Switch(int pinNum, String name, String room)
+        : Device(name, room),
         _pin(pinNum)
 {
     _value = 0;

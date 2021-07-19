@@ -39,7 +39,7 @@ class NCD4Switch : public Device
     void      notify();
 
  public:
-    NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name);
+    NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room);
     
     void    begin();
     void    reset();

@@ -29,8 +29,8 @@
  * @param relayIndex is the relay number of the 1st of 2 relays (0-2)
  * @param name String name used to address the relay.
  */
-NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name)
-    : Device(name)
+NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room)
+    : Device(name, room)
 {
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _lastPollTime = 0;
