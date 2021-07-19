@@ -41,7 +41,7 @@ class Light : public Device
     bool      isPwmSupported();
 
  public:
-    Light(int pin, String name, bool isInverted=false, bool forceDigital=false);
+    Light(int pin, String name, String room, bool isInverted=false, bool forceDigital=false);
     void      begin();
     
     void      setValue(int value);      // Set light immediately

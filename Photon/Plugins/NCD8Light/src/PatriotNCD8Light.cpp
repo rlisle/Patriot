@@ -32,8 +32,8 @@
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
 
-NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, int8_t duration)
-                     : Device(name)
+NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration)
+                     : Device(name, room)
 {
     _address = address;
     _lightNum   = lightNum;

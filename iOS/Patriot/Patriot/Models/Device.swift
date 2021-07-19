@@ -22,13 +22,15 @@ class Device: ObservableObject
     var onImage:   UIImage
     var offImage:  UIImage
     var type:      DeviceType
+    var room:      String
 
     weak var publisher: DevicePublishing?
     
-    public init(name: String, type: DeviceType, percent: Int = 0, isFavorite: Bool = false) {
+    public init(name: String, type: DeviceType, percent: Int = 0, room: String = "Default", isFavorite: Bool = false) {
         self.name        = name
         self.type        = type
         self.percent     = percent
+        self.room        = room
         self.isFavorite  = isFavorite
         self.publisher    = nil
         
@@ -43,6 +45,15 @@ class Device: ObservableObject
             self.onImage = #imageLiteral(resourceName: "LightOn")
             self.offImage = #imageLiteral(resourceName: "LightOff")
         }
+    }
+    
+    convenience init(_ info: DeviceInfo) {
+        self.init(
+            name: info.name,
+            type: info.type,
+            percent: info.percent,
+            room: info.room
+        )
     }
     
     func manualToggle() {

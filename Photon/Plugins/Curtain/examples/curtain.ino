@@ -18,7 +18,7 @@ All text above must be included in any redistribution.
 void setup() {
     IoT::begin("192.168.10.184", "RonTest");
 
-    Device::add(new Curtain(0, 1, "curtains"));
+    Device::add(new Curtain(0, 1, "Curtains", "Office"));
 
 }
 

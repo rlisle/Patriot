@@ -28,36 +28,36 @@ void setup() {
     // PartOfDay
     Device::add(new PartOfDay());
 
-    Device::add(new Curtain(I2CR4IO4, 0, "Curtain"));
-    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor"));
+    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));
+    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
 
     // Inside Lights
-    Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", 2));
-    Device::add(new NCD8Light(ADDRESS, 1, "Loft", 2));
-    Device::add(new NCD8Light(ADDRESS, 6, "Piano", 2));
+    Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", "Office", 2));
+    Device::add(new NCD8Light(ADDRESS, 1, "Loft", "Office", 2));
+    Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
     // Fading OfficeTrim results in door toggling, probably due to parallel wiring
-    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", 0));
+    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
 
     // Outside Lights
-    Device::add(new NCD8Light(ADDRESS, 2, "RampPorch", 2));
-    Device::add(new NCD8Light(ADDRESS, 3, "RampAwning", 2));
-    Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", 2));
-    Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", 2));
+    Device::add(new NCD8Light(ADDRESS, 2, "RampPorch", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 3, "RampAwning", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
 
     // Switches
-    Device::add(new Switch(A0, "OfficeCeilingSwitch"));
-    Device::add(new Switch(A1, "LoftSwitch"));
-    Device::add(new Switch(A2, "RampPorchSwitch"));
-    Device::add(new Switch(A3, "RampAwningSwitch"));
-    Device::add(new Switch(A4, "RearPorchSwitch"));
-    Device::add(new Switch(A5, "RearAwningSwitch"));
+    Device::add(new Switch(A0, "OfficeCeilingSwitch", "Office"));
+    Device::add(new Switch(A1, "LoftSwitch", "Office"));
+    Device::add(new Switch(A2, "RampPorchSwitch", "Office"));
+    Device::add(new Switch(A3, "RampAwningSwitch", "Office"));
+    Device::add(new Switch(A4, "RearPorchSwitch", "Office"));
+    Device::add(new Switch(A5, "RearAwningSwitch", "Office"));
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities/States - define for every other state
     // Be careful to only define in 1 (this) controller
-    Device::add(new Device("sleeping"));
-    Device::add(new Device("cleaning"));
-    Device::add(new Device("watching"));    // TODO: move to front controller?
+    Device::add(new Device("sleeping", "All"));
+    Device::add(new Device("cleaning", "All"));
+    Device::add(new Device("watching", "All"));
 }
 
 void loop() {

@@ -28,7 +28,13 @@ class PatriotModel: ObservableObject
         return devices.filter { $0.isFavorite == true }
     }
 
-    init()
+    var rooms: [ String ] {
+        let rawRooms = devices.map { $0.room }
+        let uniqueRooms = Set<String>(rawRooms)
+        return Array(uniqueRooms)               // May want to sort
+    }
+    
+    init(forTest: Bool = false)
     {
         photonManager = PhotonManager()
         mqtt = MQTTManager()
@@ -36,12 +42,16 @@ class PatriotModel: ObservableObject
         favoritesList = settings.favorites ?? []
         mqtt.mqttDelegate = self          // Receives MQTT messages
         photonManager.particleIoDelegate = self // Receives particle.io messages
-        performAutoLogin()                  // During login all photons & devices will be created
+        if forTest {
+            devices = getTestDevices()
+        } else {
+            performAutoLogin()                  // During login all photons & devices will be created
+        }
     }
 
     // For Test/Preview
     convenience init(devices: [Device]) {
-        self.init()
+        self.init(forTest: true)
         self.devices = Array(Set(devices))
     }
 }
@@ -151,9 +161,8 @@ extension PatriotModel {
         var accumulatedDevices: Set<Device> = Set<Device>(devices)
         for deviceInfo in deviceInfos
         {
-            let newDevice = Device(name: deviceInfo.name, type: deviceInfo.type)
+            let newDevice = Device(deviceInfo)
             newDevice.publisher = self
-            newDevice.percent = deviceInfo.percent
             newDevice.isFavorite = favoritesList.contains(deviceInfo.name)
             accumulatedDevices.insert(newDevice)
         }
@@ -185,5 +194,35 @@ extension PatriotModel: DevicePublishing {
 
     func isFavoriteChanged(device: Device) {
         updateFavoritesList()
+    }
+}
+
+extension PatriotModel {
+    func getTestDevices() -> [Device] {
+        return [
+            Device(name: "Light1", type: .Light, percent: 0, isFavorite: true),
+            Device(name: "Switch1", type: .Switch),
+            Device(name: "Curtain1", type: .Curtain, isFavorite: true),
+            Device(name: "Light2", type: .Light, percent: 100),
+            Device(name: "Switch2", type: .Switch),
+            Device(name: "Light3", type: .Light),
+            Device(name: "Light4", type: .Light),
+            Device(name: "Light5", type: .Light),
+            Device(name: "Light6", type: .Light, isFavorite: true),
+            Device(name: "Switch3", type: .Switch),
+            Device(name: "Light7", type: .Light),
+            Device(name: "Light8", type: .Light),
+            Device(name: "Light9", type: .Light),
+            Device(name: "Light10", type: .Light),
+            Device(name: "Light11", type: .Light),
+            Device(name: "Light12", type: .Light),
+            Device(name: "Light13", type: .Light),
+            Device(name: "Light14", type: .Light),
+            Device(name: "Light15", type: .Light),
+            Device(name: "Switch4", type: .Switch),
+            Device(name: "Light16", type: .Light),
+            Device(name: "Light17", type: .Light),
+            Device(name: "Light18", type: .Light)
+        ]
     }
 }

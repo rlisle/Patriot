@@ -48,7 +48,7 @@ float const LONGITUDE = -97.733330;
  * Constructor
  */
 PartOfDay::PartOfDay()
-        : Device("PartOfDay")
+        : Device("PartOfDay", "All")
 {
     _value = -1;
     _type  = 'P';

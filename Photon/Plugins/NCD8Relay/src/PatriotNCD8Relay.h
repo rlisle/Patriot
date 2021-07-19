@@ -45,7 +45,7 @@ class NCD8Relay : public Device
     int8_t  addAddressToArray(int8_t address);
 
  public:
-    NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, int8_t duration = 0);
+    NCD8Relay(int8_t address, int8_t numRelays, int8_t relayNum, String name, String room, int8_t duration = 0);
     
     void    begin();
 

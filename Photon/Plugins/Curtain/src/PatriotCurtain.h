@@ -49,7 +49,7 @@ class Curtain : public Device
     bool    isTimeToChangePulse();
     
  public:
-    Curtain(int8_t boardAddress, int8_t relayIndex, String name);
+    Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room);
     
     void    begin();
     void    reset();

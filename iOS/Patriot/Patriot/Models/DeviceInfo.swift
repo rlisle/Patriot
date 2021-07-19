@@ -16,6 +16,7 @@ struct DeviceInfo {
     var name: String
     var type: DeviceType
     var percent: Int
+    var room: String
 }
 
 extension DeviceInfo: Hashable {

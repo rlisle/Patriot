@@ -21,13 +21,14 @@ class Device {
     Device*    _next;       // Linked list
     String     _name;       // Public name (used by Alexa)
     int        _value;      // Typically percent 0-100
+    String     _room;       // Room where located
     int        _previous;   // Value before getChanged called
     int        _restore;    // Used to restore previous dimming level
     char       _type;       // Character designating device type: L, S, etc.
 
 public:
 
-    Device(String name);
+    Device(String name, String room);
 
     // begin() is called automatically when device is added.
     // Do any heavy lifting or publishing here and not in constructor.

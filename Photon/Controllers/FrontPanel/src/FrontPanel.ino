@@ -38,38 +38,38 @@ void setup() {
     IoT::begin("192.168.50.33", "FrontPanel");
 
     // Inside Lights
-    Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", 2));
-    Device::add(new NCD8Light(ADDRESS, 2, "Sink", 2));
-    Device::add(new NCD8Light(ADDRESS, 4, "RightTrim",2));
-    Device::add(new NCD8Light(ADDRESS, 5, "LeftTrim",2));
-    Device::add(new Light(D2, "Ceiling", 2));
-    Device::add(new Light(D3, "Cabinets", 2));
+    Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", "Kitchen", 2));
+    Device::add(new NCD8Light(ADDRESS, 2, "Sink", "Kitchen", 2));
+    Device::add(new NCD8Light(ADDRESS, 4, "RightTrim", "Kitchen", 2));
+    Device::add(new NCD8Light(ADDRESS, 5, "LeftTrim", "Living Room", 2));
+    Device::add(new Light(D2, "Ceiling", "Kitchen", 2));
+    Device::add(new Light(D3, "Cabinets", "Kitchen", 2));
 
     // Outside Lights
-    Device::add(new NCD8Light(ADDRESS, 0, "DoorSide", 2));
-    Device::add(new NCD8Light(ADDRESS, 3, "OtherSide", 2));
-    Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", 2));
-    Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", 2));
+    Device::add(new NCD8Light(ADDRESS, 0, "DoorSide", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 3, "OtherSide", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
 
     // Switches
-    Device::add(new Switch(A5, "CabinetsSwitch"));
-    Device::add(new Switch(A6, "RightTrimSwitch"));
-    Device::add(new Switch(A7, "SinkSwitch"));
-    Device::add(new Switch(RX, "KitchenCeilingSwitch"));
-    Device::add(new Switch(TX, "LeftTrimSwitch"));
-    Device::add(new Switch(A1, "CeilingSwitch"));
-    Device::add(new Switch(A2, "DoorSideSwitch"));
-    Device::add(new Switch(A3, "OtherSideSwitch"));
-    Device::add(new Switch(A4, "FrontPorchSwitch"));
-    Device::add(new Switch(A0, "FrontAwningSwitch"));
+    Device::add(new Switch(A5, "CabinetsSwitch", "Kitchen"));
+    Device::add(new Switch(A6, "RightTrimSwitch", "Kitchen"));
+    Device::add(new Switch(A7, "SinkSwitch", "Kitchen"));
+    Device::add(new Switch(RX, "KitchenCeilingSwitch", "Kitchen"));
+    Device::add(new Switch(TX, "LeftTrimSwitch", "Living Room"));
+    Device::add(new Switch(A1, "CeilingSwitch", "Living Room"));
+    Device::add(new Switch(A2, "DoorSideSwitch", "Outside"));
+    Device::add(new Switch(A3, "OtherSideSwitch", "Outside"));
+    Device::add(new Switch(A4, "FrontPorchSwitch", "Outside"));
+    Device::add(new Switch(A0, "FrontAwningSwitch", "Outside"));
 
     // Other devices we monitor
     // TODO: could we define these automatically when getChangedValue is called?
-    Device::add(new Device("sleeping"));
-    Device::add(new Device("partofday"));
-    Device::add(new Device("cleaning"));
-    Device::add(new Device("blueled"));
-    Device::add(new Device("watching"));
+    Device::add(new Device("sleeping", "All"));
+    Device::add(new Device("partofday", "All"));
+    Device::add(new Device("cleaning", "All"));
+    Device::add(new Device("blueled", "Test"));
+    Device::add(new Device("watching", "All"));
 }
 
 void loop() {
