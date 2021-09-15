@@ -34,14 +34,13 @@ void setup() {
     Device::add(new NCD16Dimmer(ADDRESS, 9, "Bottom1", "Kitchen", 2));  // Rear ledge
 
     // Activities/States - define for every other state
-    // Be careful to only define in 1 (this) controller
+    // Be careful to only define in 1 (this) controller (Is this still true? I don't think so)
     Device::add(new Device("sleeping", "All"));
     Device::add(new Device("cleaning", "All"));
     Device::add(new Device("watching", "All"));
     Device::add(new Device("cooking", "All"));
 }
 
-//TODO: continue from here
 void loop() {
 
     IoT::loop();
@@ -50,7 +49,6 @@ void loop() {
     int cleaningChanged = Device::getChangedValue("cleaning");
     int watchingChanged = Device::getChangedValue("watching");
     int cookingChanged = Device::getChangedValue("cooking");
-//    int partOfDay = Device::value("PartOfDay");
 
     if( sleepingChanged != -1 ) {
 
@@ -74,23 +72,6 @@ void loop() {
         }
     }
 
-/*    if( partOfDayChanged != -1 ) {
-
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
-
-        if( partOfDayChanged == SUNRISE ) {
-            // Turn off lights at sunrise
-            Log.info("It is sunrise");
-            setSunriseLights();
-        }
-
-        if( partOfDayChanged == DUSK ) {
-            // Turn on lights after sunset
-            Log.info("It is dusk");
-            setEveningLights();
-        }
-    }*/
-
     if( cleaningChanged != -1 ) {
         if( cleaningChanged > 0 ) {
             Log.info("cleaning did turn on");
@@ -112,77 +93,61 @@ void loop() {
             setWatchingLights( 0 );
         }
     }
-
-    if( officeDoorChanged != -1) {
-        if( officeDoorChanged > 0 ) {   // Door opened
-            if( partOfDay > SUNSET ) {
-                Device::setValue("RearPorch", 100);
-            }
-            //TODO: chime?
-        } else {                        // Door closed
-            // Nothing to do when door closes
-        }
-    }
 }
-
-//TODO: continue here...
 
 void setAllActivities(int value) {
     Device::setValue("cooking", value);
     Device::setValue("cleaning", value);
+    Device::setValue("watching", value);
 }
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("officeceiling",70);
+    Device::setValue("Mid1",70);
+    Device::setValue("Mid2",70);
+    Device::setValue("Mid3",100);    // Over coffee pot
+    Device::setValue("Top4",70);
+    Device::setValue("Top5",70);
 }
 
 void setSunriseLights() {
     Log.info("setSunriseLights");
-    setAllOutsideLights(0);
     setAllInsideLights(0);
 }
 
 void setEveningLights() {
     Log.info("setEveningLights");
-    Device::setValue("piano", 50);
-    Device::setValue("officeceiling",80);
-    setAllOutsideLights(100);
+    setAllInsideLights(70);
 }
 
 void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
     setAllInsideLights(0);
-    setAllOutsideLights(0);
-    Device::setValue("Curtain",0);
 }
 
 void setSleepingLights() {
     Log.info("setSleepingLights");
     setAllActivities(0);
     setAllInsideLights(0);
-    setAllOutsideLights(0);
-    Device::setValue("Curtain",0);
 }
 
 void setWatchingLights(int level) {
     Log.info("setWatchingLights %d", level);
-    // Nothing to do
+    setAllInsideLights(70);
+    //TODO:
 }
 
 void setAllInsideLights(int value) {
     Log.info("setAllInsideLights %d",value);
-    Device::setValue("OfficeCeiling", value);
-    Device::setValue("Loft", value);
-    Device::setValue("Piano", value);
-    Device::setValue("OfficeTrim", value);
-}
-
-void setAllOutsideLights(int value) {
-    Log.info("setAllInsideLights %d",value);
-    Device::setValue("RampPorch", value);
-    Device::setValue("RampAwning", value);
-    Device::setValue("RearPorch", value);
-    Device::setValue("RearAwning", value);
+    Device::setValue("Top1", value);
+    Device::setValue("Top2", value);
+    Device::setValue("Top3", value);
+    Device::setValue("Top4", value);
+    Device::setValue("Mid1", value);
+    Device::setValue("Mid2", value);
+    Device::setValue("Mid3", value);
+    Device::setValue("Mid4", value);
+    Device::setValue("Mid5", value);
+    Device::setValue("Bottom1", value);
 }
