@@ -21,6 +21,9 @@ All text above must be included in any redistribution.
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {
+    int month = Time.month();
+    int day = Time.day();
+    
     _controllerName = controllerName.toLowerCase();
     _logging = 0;
 
@@ -28,7 +31,16 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
     // Use MQTT to switch to error when done testing or vs. a vs.
     _logLevel = LOG_LEVEL_ERROR;
 
-    Time.zone(-6.0);
+    //TODO: Use GPS to determine actual timezone
+    Time.zone(-6.0);    // Set timezone to Central
+    
+    //TODO: Set Daylight Savings Time as needed
+    // Begins on the 2nd Sunday in March at 2:00 am
+    // Ends on the 1st Sunday in November
+    // 2021: 3/14 - 11/7
+    // 2022: 3/13 - 11/6
+    // 2023: 3/12 - 11/5
+    //TODO: call beginDST() if between those dates
     
     //TODO: do we need this, and what should we pass?
     //const LogCategoryFilters &filters) : LogHandler(level, filters)

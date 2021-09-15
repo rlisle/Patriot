@@ -28,9 +28,17 @@
 		2733857525C047570032BB1F /* package.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = package.json; sourceTree = "<group>"; };
 		2733857625C047570032BB1F /* project.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = project.json; sourceTree = "<group>"; };
 		2733857725C047570032BB1F /* testConfig.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = testConfig.js; sourceTree = "<group>"; };
+		273696EF26EB7CA200CA5791 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		273696F026EB7CA200CA5791 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		273696F126EB7CA200CA5791 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
+		273696F226EB7CA200CA5791 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; path = library.properties; sourceTree = "<group>"; };
+		273696F326EB7CA200CA5791 /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = examples; sourceTree = "<group>"; };
 		2755615325CC1FAA00FEE0FF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		2755615425CC1FAA00FEE0FF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		2755DBE4259DFA3900971ABA /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = device.cpp; path = ../Photon/IoTlib/src/device.cpp; sourceTree = "<group>"; };
+		27AE94DD26F0CC2A004D5CB6 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/Kitchen/src; sourceTree = "<group>"; };
+		27AE94DE26F0CC2A004D5CB6 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/Kitchen/project.properties; sourceTree = "<group>"; };
+		27AE94DF26F0CC2A004D5CB6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/Kitchen/README.md; sourceTree = "<group>"; };
 		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
 		E41085872568628F00EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Light/library.properties; sourceTree = "<group>"; };
@@ -134,6 +142,29 @@
 			name = Alexa;
 			sourceTree = "<group>";
 		};
+		273696EE26EB7BAD00CA5791 /* NCD16Dimmer */ = {
+			isa = PBXGroup;
+			children = (
+				273696F326EB7CA200CA5791 /* examples */,
+				273696F226EB7CA200CA5791 /* library.properties */,
+				273696F026EB7CA200CA5791 /* LICENSE */,
+				273696EF26EB7CA200CA5791 /* README.md */,
+				273696F126EB7CA200CA5791 /* src */,
+			);
+			name = NCD16Dimmer;
+			path = ../Photon/Plugins/NCD16Dimmer;
+			sourceTree = "<group>";
+		};
+		27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */ = {
+			isa = PBXGroup;
+			children = (
+				27AE94DE26F0CC2A004D5CB6 /* project.properties */,
+				27AE94DF26F0CC2A004D5CB6 /* README.md */,
+				27AE94DD26F0CC2A004D5CB6 /* src */,
+			);
+			name = KitchenCabinets;
+			sourceTree = "<group>";
+		};
 		E410859525688BE000EFBE84 /* NCD8LightTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,6 +224,7 @@
 		E4849C6E2566AC0F00A39734 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */,
 				2733855D25AF256F0032BB1F /* RightSlide */,
 				E4E61716257D285400D7AA04 /* LeftSlide */,
 				E410859525688BE000EFBE84 /* NCD8LightTest */,
@@ -240,6 +272,7 @@
 				E4849C752566B4A400A39734 /* NCD8Relay */,
 				2733856625B5C5850032BB1F /* NCD4Switch */,
 				E4849C78256724B400A39734 /* NCD8Switch */,
+				273696EE26EB7BAD00CA5791 /* NCD16Dimmer */,
 				E4D62D892572DC4400E1555C /* NCD16Switch */,
 				E4256942256C47CB007D8450 /* Pseudo */,
 				E4530C13256A97960021E5CB /* Switch */,
@@ -315,6 +348,7 @@
 				E4D62D8A2572DC7600E1555C /* library.properties */,
 			);
 			name = NCD16Switch;
+			path = ../Photon/Plugins/NCD16Switch;
 			sourceTree = "<group>";
 		};
 		E4E61716257D285400D7AA04 /* LeftSlide */ = {
@@ -335,7 +369,7 @@
 			attributes = {
 				LastUpgradeCheck = 1220;
 			};
-			buildConfigurationList = E4849C4D2566A90700A39734 /* Build configuration list for PBXProject "Xcode" */;
+			buildConfigurationList = E4849C4D2566A90700A39734 /* Build configuration list for PBXProject "Patriot" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -367,7 +401,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E4849C4D2566A90700A39734 /* Build configuration list for PBXProject "Xcode" */ = {
+		E4849C4D2566A90700A39734 /* Build configuration list for PBXProject "Patriot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4849C4E2566A90700A39734 /* Debug */,
