@@ -27,7 +27,8 @@ class NCD16Dimmer : public Device
     int8_t  _lightNum;                 // Up to 16 lights supported, 0 based
     int8_t  _address;                  // Address of board (eg. 0x40)
 
-    // Since no FP on Photon, using int (signed 32 bit) fixed point.
+    // Since no Floating Point support on Photon,
+    // use int (signed 32 bit) fixed point.
     // Outputs are 12 bit unsigned, so Lower 19 bits truncated and sign discarded.
     // Using signed ints to simplify underflow (< 0)
     int     _dimmingDuration;           // time in msecs

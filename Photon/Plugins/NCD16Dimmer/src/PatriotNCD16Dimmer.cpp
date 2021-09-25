@@ -20,7 +20,6 @@
  */
 
 #include "PatriotNCD16Dimmer.h"
-//#include "math.h"
 
 #define MILLIS_PER_SECOND 1000
 
@@ -222,10 +221,10 @@ void NCD16Dimmer::outputPWM() {
  * Convert 0-100 to 0-0x7fffffff (exponential?) scale
  * 0 = 0, 100 = 0x7fffffff
  */
-float NCD16Dimmer::scalePWM(int value) {
+int NCD16Dimmer::scalePWM(int value) {
     if (value <= 0) return 0;
     if (value >= 100) return 0x7fffffff;
     
     //TODO: No curve applied
-    return value * (0x7fffffff / 100)
+    return value * (0x7fffffff / 100);
 }

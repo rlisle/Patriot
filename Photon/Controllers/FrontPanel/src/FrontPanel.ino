@@ -65,10 +65,10 @@ void setup() {
 
     // Other devices we monitor
     // TODO: could we define these automatically when getChangedValue is called?
-    Device::add(new Device("sleeping", "All"));
-    Device::add(new Device("partofday", "All"));
-    Device::add(new Device("cleaning", "All"));
     Device::add(new Device("blueled", "Test"));
+    Device::add(new Device("cleaning", "All"));
+    Device::add(new Device("partofday", "All"));
+    Device::add(new Device("sleeping", "All"));
     Device::add(new Device("watching", "All"));
 }
 
@@ -80,10 +80,10 @@ void loop() {
     // - update light dimming
     IoT::loop();
     
-    int sleepingChanged  = Device::getChangedValue("sleeping");
-    int partOfDayChanged = Device::getChangedValue("partofday");
-    int cleaningChanged  = Device::getChangedValue("cleaning");
     int blueledChanged   = Device::getChangedValue("blueled");
+    int cleaningChanged  = Device::getChangedValue("cleaning");
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    int sleepingChanged  = Device::getChangedValue("sleeping");
     int watchingChanged  = Device::getChangedValue("watching");
 
     if( sleepingChanged != -1 ) {

@@ -9,21 +9,24 @@ Author: Ron Lisle
     1. Edit this code
     2. Update IoT and plugins if needed
     3. "particle flash Kitchen"
+
+  To setup a new controller, be sure to "particle library add <libname>" for each
+  included library. Currently this controller uses IoT and PatriotNCD16Dimmer.
  
  */
 #include <IoT.h>
 #include <PatriotNCD16Dimmer.h>
 
-#define ADDRESS 1      // PWM board address A0 jumper set
+#define ADDRESS 0x41      // PWM board address A0 jumper set
 
 void setup() {
     IoT::begin("192.168.50.33", "Kitchen");
 
     // Cabinet Lights
-    Device::add(new NCD16Dimmer(ADDRESS, 0, "Top1", "Kitchen", 2)); // Top front
-    Device::add(new NCD16Dimmer(ADDRESS, 1, "Top2", "Kitchen", 2));
-    Device::add(new NCD16Dimmer(ADDRESS, 2, "Top3", "Kitchen", 2)); // Rear left
-    Device::add(new NCD16Dimmer(ADDRESS, 3, "Top4", "Kitchen", 2)); // Rear right
+    Device::add(new NCD16Dimmer(ADDRESS, 0, "Top1", "Kitchen", 0)); // Top front
+    Device::add(new NCD16Dimmer(ADDRESS, 1, "Top2", "Kitchen", 0));
+    Device::add(new NCD16Dimmer(ADDRESS, 2, "Top3", "Kitchen", 0)); // Rear left
+    Device::add(new NCD16Dimmer(ADDRESS, 3, "Top4", "Kitchen", 0)); // Rear right
     
     Device::add(new NCD16Dimmer(ADDRESS, 4, "Mid1", "Kitchen", 2)); // Nearest Sink
     Device::add(new NCD16Dimmer(ADDRESS, 5, "Mid2", "Kitchen", 2)); // Over Window
@@ -35,24 +38,28 @@ void setup() {
 
     // Activities/States - define for every other state
     // Be careful to only define in 1 (this) controller (Is this still true? I don't think so)
-    Device::add(new Device("sleeping", "All"));
     Device::add(new Device("cleaning", "All"));
-    Device::add(new Device("watching", "All"));
     Device::add(new Device("cooking", "All"));
+    Device::add(new Device("partofday", "All"));
+    Device::add(new Device("sleeping", "All"));
+    Device::add(new Device("watching", "All"));
 }
 
 void loop() {
 
     IoT::loop();
     
-    int sleepingChanged = Device::getChangedValue("sleeping");
     int cleaningChanged = Device::getChangedValue("cleaning");
-    int watchingChanged = Device::getChangedValue("watching");
     int cookingChanged = Device::getChangedValue("cooking");
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    int sleepingChanged = Device::getChangedValue("sleeping");
+    int watchingChanged = Device::getChangedValue("watching");
 
     if( sleepingChanged != -1 ) {
 
         Log.info("sleeping has changed %d",sleepingChanged);
+        
+        int partOfDay = Device::value("PartOfDay");
 
         // Alexa, Good morning
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
