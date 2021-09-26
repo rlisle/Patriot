@@ -29,7 +29,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
-    _logLevel = LOG_LEVEL_ERROR;
+//    _logLevel = LOG_LEVEL_ERROR;
+    _logLevel = LOG_LEVEL_ALL;
 
     //TODO: Use GPS to determine actual timezone
     Time.zone(-6.0);    // Set timezone to Central

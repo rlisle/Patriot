@@ -41,7 +41,7 @@ class NCD16Dimmer : public Device
     int8_t  initializeBoard();
     void    outputPWM();
     void    startSmoothDimming();
-    int     scalePWM(int value);        // Optionally apply a curve to output
+    int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
 
  public:
     NCD16Dimmer(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);

@@ -6,6 +6,12 @@
  Features:
  - PWM control
  - Smooth transitioning if duration specified
+ 
+ Native 32 bit signed int math will be used since Photon does not have native FP support.
+ Since D/A is 12 bit, data will be converted from 32b signed to 12 bit unsigned (<< 20?)
+ So fixed point math means upper 12 bits are unsigned value (0-4095) and lower 19 bits are fractional (0 - 524,287)
+ leaving top bit for sign which is discarded during signed to unsigned conversion.
+ Smallest value (1) = 524,288 (0x0008 0000) which when >> 19 = 001
 
  http://www.github.com/rlisle/Patriot
 
@@ -62,22 +68,6 @@ int8_t NCD16Dimmer::initializeBoard() {
 
     //TODO: retry several times?
     if(status == 0) {
-// NCD8 code commented out
-//        Wire.beginTransmission(_address);
-//        Wire.write(0);          // Control register - No AI, point to reg0 Mode1
-//        Wire.write(0);          // Mode1 reg. Osc on, disable AI, subaddrs, allcall
-//        Wire.endTransmission();
-//
-//        Wire.beginTransmission(_address);
-//        Wire.write(1);          // Mode2 register
-//        Wire.write(0x04);       // Dimming, Not inverted, totem-pole
-//        Wire.endTransmission();
-//
-//        Wire.beginTransmission(_address);
-//	    Wire.write(0x8c);       // AI + LEDOUT0
-//	    Wire.write(0xaa);       // LEDOUT0 LEDs 0-3 dimming
-//	    Wire.write(0xaa);       // LEDOUT1 LEDS 4-7 dimming
-//        Wire.endTransmission();
         // PCA9685 repo code
         Wire.beginTransmission(_address);
         Wire.write(254);    // PRE_SCALE for PWM output freq
@@ -126,15 +116,15 @@ void NCD16Dimmer::reset() {
 void NCD16Dimmer::setValue(int value) {
     if( value == _value ) {
         Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
-        _currentLevel = scalePWM(_value);   // Turn 0-100 into 0x0 to 0x7fffffff
+        _currentLevel = convertPercent(_value);   // Turn 0-100 into 0x0 to 0x7fffffff
         outputPWM();
         return;
     }
     
-    _currentLevel = scalePWM(_value);   // previous value
-    _value = value;                     // percent 0-100
-    _targetLevel = scalePWM(value);     // new 32 bit value
-    Log.info("Dimmer " + _name + " setValue " + String(value) + " scaled to " + String(_targetLevel));
+    _currentLevel = convertPercent(_value);     // previous value
+    _value = value;                             // percent 0-100
+    _targetLevel = convertPercent(value);       // new 32 bit value
+    Log.info("Dimmer " + _name + " setValue " + String(value) + " converted to " + String(_targetLevel));
     if(_dimmingDuration == 0) {
         _currentLevel = _targetLevel;
         outputPWM();
@@ -154,7 +144,14 @@ void NCD16Dimmer::startSmoothDimming() {
         _lastUpdateTime = millis();
         int delta = _targetLevel - _currentLevel;   // signed 32 bit
         _incrementPerMillisecond = delta / _dimmingDuration;
-        Log.info("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
+        if(_incrementPerMillisecond == 0) {
+            if(delta > 0) {
+                _incrementPerMillisecond = 1;
+            } else {
+                _incrementPerMillisecond = -1;
+            }
+        }
+        Log.info("Dimmer "+_name+" setting increment to "+String(_incrementPerMillisecond)+", delta: "+String(delta));
     }
 }
 
@@ -218,13 +215,43 @@ void NCD16Dimmer::outputPWM() {
 }
 
 /**
- * Convert 0-100 to 0-0x7fffffff (exponential?) scale
- * 0 = 0, 100 = 0x7fffffff
+ * Convert 0-100 to 0-0x0FFF (exponential) scale (0 - 4095)
+ * 0 = 0, 100 = 0x0FFF
  */
-int NCD16Dimmer::scalePWM(int value) {
-    if (value <= 0) return 0;
-    if (value >= 100) return 0x7fffffff;
+int16_t scaledValues[] =
+{
+    //55, // 80: 29,196,319 0x1bd 801f >> 19 = 0x37 (55)
+    //69, // 81: 36,194,676 0x0228 4974 >> 19 = 0x045 (69)
+    85, // 82: 44,870,540 0x02ac ab8c >> 19 = 0x055 (85)
+    106, // 83: 55,626,008 0x0350 c918 >> 19 = 0x06a (106)
+    131, // 84: 68,959,563 0x041c 3d4b >> 19 = 0x083 (131)
+    163, // 85: 85,489,170 0x0518 7612 >> 19 = 0x0a3 (163)
+    202, // 86: 105,980,924 0x0651 23fc >> 19 = 0x0ca (202)
+    250, // 87: 131,384,552 0x07d4 c4e8 >> 19 = 0x0fa (250)
+    310, // 88: 162,877,429 0x09b5 4ff5 >> 19 = 0x136 (310)
+    385, // 89: 201,919,148 0x0c09 0aac >> 19 = 0x181 (385)
     
-    //TODO: No curve applied
-    return value * (0x7fffffff / 100);
+    477, // 90: 250,319,169 0xeeb 9141 >> 19 = 0x1dd (477)
+    591, // 91: 310,320,674 0x127f 1e22 >> 19 = 0x24f (591)
+    733, // 92: 384,704,539 0x16ee 201b >> 19 = 0x02dd (733)
+    909, // 93: 476,918,217 0x1c6d31c9 >> 19 = 0x038d (909)
+    1127, // 94: 591,235,514 0x233d89ba >> 19 = 0x0467 (1,127)
+    1398, // 95: 732,954,667 0x2bb0002b >> 19 = 0x576 (1,398)
+    1733, // 96: 908,643,900 0x3628 ce3c >> 19 = 0x6c5 (1,733)
+    2148, // 97: 1,126,445,843 0x4324 3313 >> 19 = 0x864 (2,148)
+    2663, // 98: 1,396,454,912 0x533c 3600 >> 19 = 0xa67 (2,663)
+    3302 // 99: 1,731,185,155 0x672f ca03 >> 19 = 0xce6 (3,302)
+    // 100 = 2,146,150,236 0x7feb a75c >> 19 = 0xffd
+};
+
+// Calculate a somewhat exponential scale, but ensure each value
+// is greater than the previous.
+// So expValue = 1.2397 ^ value
+int NCD16Dimmer::convertPercent(int percent) {
+    if (percent <= 0) return 0;
+    if (percent < 82) return percent << 19;     // 82 is crossover point
+    if (percent >= 100) return 0x7fffffff;
+
+    // Apply exponential curve at or above 82
+    return scaledValues[percent-82] << 19;
 }
