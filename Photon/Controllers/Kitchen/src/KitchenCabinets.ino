@@ -23,10 +23,10 @@ void setup() {
     IoT::begin("192.168.50.33", "Kitchen");
 
     // Cabinet Lights
-    Device::add(new NCD16Dimmer(ADDRESS, 0, "Top1", "Kitchen", 0)); // Top front
-    Device::add(new NCD16Dimmer(ADDRESS, 1, "Top2", "Kitchen", 0));
-    Device::add(new NCD16Dimmer(ADDRESS, 2, "Top3", "Kitchen", 0)); // Rear left
-    Device::add(new NCD16Dimmer(ADDRESS, 3, "Top4", "Kitchen", 0)); // Rear right
+    Device::add(new NCD16Dimmer(ADDRESS, 0, "Top1", "Kitchen", 2)); // Top front
+    Device::add(new NCD16Dimmer(ADDRESS, 1, "Top2", "Kitchen", 2));
+    Device::add(new NCD16Dimmer(ADDRESS, 2, "Top3", "Kitchen", 2)); // Rear left
+    Device::add(new NCD16Dimmer(ADDRESS, 3, "Top4", "Kitchen", 2)); // Rear right
     
     Device::add(new NCD16Dimmer(ADDRESS, 4, "Mid1", "Kitchen", 2)); // Nearest Sink
     Device::add(new NCD16Dimmer(ADDRESS, 5, "Mid2", "Kitchen", 2)); // Over Window
