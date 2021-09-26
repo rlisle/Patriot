@@ -23,7 +23,6 @@ class Device {
     int        _value;      // Typically percent 0-100
     String     _room;       // Room where located
     int        _previous;   // Value before getChanged called
-    int        _restore;    // Used to restore previous dimming level
     char       _type;       // Character designating device type: L, S, etc.
 
 public:
@@ -43,9 +42,6 @@ public:
     virtual void setValue(int value);
     
     virtual int  getChangedValue();
-    
-    virtual void saveRestoreValue();
-    virtual void restoreSavedValue();
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};

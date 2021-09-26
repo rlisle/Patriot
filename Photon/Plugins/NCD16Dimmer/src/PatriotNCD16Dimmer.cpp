@@ -7,6 +7,9 @@
  - PWM control
  - Smooth transitioning if duration specified
  
+ - The "Common Bus" appears to be isolated from everything else, so can be used as
+  as a + power strip for the LEDs. It can be sourced separately if desired.
+ 
  Native 32 bit signed int math will be used since Photon does not have native FP support.
  Since D/A is 12 bit, data will be converted from 32b signed to 12 bit unsigned (<< 20?)
  So fixed point math means upper 12 bits are unsigned value (0-4095) and lower 19 bits are fractional (0 - 524,287)

@@ -204,14 +204,7 @@ void MQTTManager::parseMessage(String topic, String message)
                 
                 // Handle save/restore value
                 Log.info("Parser setting device " + subtopic + " to " + value);
-                if( value == 100 ) {
-                    device->saveRestoreValue();
-                    device->setValue(value);
-                } else if( value == 0 ) {
-                    device->restoreSavedValue();
-                } else {
-                    device->setValue(value);
-                }
+                device->setValue(value);
                 Device::buildDevicesVariable();
                 
             } else {

@@ -171,10 +171,8 @@ void handleBlueledChange(int blueled) {
 void handleCleaningChange(int cleaning) {
     if( cleaning > 0 ) {
         Log.info("cleaning did turn on");
-        //TODO: save/restore previous states
         setAllInsideLights( 100 );
     } else {
-        //TODO: save/restore previous states
         Log.info("cleaning did turn off");
         setAllInsideLights( 0 );
     }
@@ -183,10 +181,8 @@ void handleCleaningChange(int cleaning) {
 void handleWatchingChange(int watching) {
     if( watching > 0 ) {
         Log.info("watching did turn on");
-        //TODO: save/restore previous states
         setWatchingLights( 100 );
     } else {
-        //TODO: save/restore previous states
         Log.info("watching did turn off");
         setWatchingLights( 0 );
     }
