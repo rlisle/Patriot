@@ -75,6 +75,6 @@ private:
     static MQTTManager* _mqttManager;
 
     static void subscribeHandler(const char *eventName, const char *rawData);
-    static void periodicReset();
+//    static void periodicReset();
     static void mqttHandler(char* topic, byte* payload, unsigned int length);
 };

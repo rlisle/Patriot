@@ -11,6 +11,7 @@ Author: Ron Lisle
     2. Update IoT and plugins if needed
     3. "particle flash RearPanel"
  
+ TODO: Add GPS board (Rx, Vin, Gnd)
  */
 #include <IoT.h>
 #include <PatriotSwitch.h>
@@ -45,6 +46,13 @@ void setup() {
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
 
     // Switches
+    // Converting to grouped switches
+    // 1. Power/reset
+    // 2. Office (programming)
+    // 3. Good Morning / Bedtime (sleeping 1, 2)
+    // 4. Outside
+    // 5. Cleaning (all on/off)
+    // 6. ?
     Device::add(new Switch(A0, "OfficeCeilingSwitch", "Office"));
     Device::add(new Switch(A1, "LoftSwitch", "Office"));
     Device::add(new Switch(A2, "RampPorchSwitch", "Office"));

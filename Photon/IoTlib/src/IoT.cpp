@@ -95,10 +95,9 @@ int IoT::handleLightSwitch(String name) {
     Log.info("handleLightSwitch hasChanged: %d",lightSwitch);
     Device *device = Device::get(name);
     if( lightSwitch > 0 ) {
-        device->saveRestoreValue();
         device->setValue(100);
     } else {
-        device->restoreSavedValue();
+        device->setValue(0);
     }
     return lightSwitch;
 }

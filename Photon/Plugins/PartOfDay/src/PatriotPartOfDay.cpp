@@ -41,8 +41,9 @@ All text above must be included in any redistribution.
 // White Springs, FL: 30.3297° N, 82.7590° W
 // Tampa, FL: 27.9506° N, 82.4572° W
 // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
-float const LATITUDE =  30.266666;
-float const LONGITUDE = -97.733330;
+//                  30.28267 N, 97.63624 W via iPhone maps in office.
+float const LATITUDE =  30.28267;
+float const LONGITUDE = -97.63624;
 
 /**
  * Constructor

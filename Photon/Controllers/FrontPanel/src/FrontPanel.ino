@@ -65,10 +65,10 @@ void setup() {
 
     // Other devices we monitor
     // TODO: could we define these automatically when getChangedValue is called?
-    Device::add(new Device("sleeping", "All"));
-    Device::add(new Device("partofday", "All"));
-    Device::add(new Device("cleaning", "All"));
     Device::add(new Device("blueled", "Test"));
+    Device::add(new Device("cleaning", "All"));
+    Device::add(new Device("partofday", "All"));
+    Device::add(new Device("sleeping", "All"));
     Device::add(new Device("watching", "All"));
 }
 
@@ -80,10 +80,10 @@ void loop() {
     // - update light dimming
     IoT::loop();
     
-    int sleepingChanged  = Device::getChangedValue("sleeping");
-    int partOfDayChanged = Device::getChangedValue("partofday");
-    int cleaningChanged  = Device::getChangedValue("cleaning");
     int blueledChanged   = Device::getChangedValue("blueled");
+    int cleaningChanged  = Device::getChangedValue("cleaning");
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    int sleepingChanged  = Device::getChangedValue("sleeping");
     int watchingChanged  = Device::getChangedValue("watching");
 
     if( sleepingChanged != -1 ) {
@@ -171,10 +171,8 @@ void handleBlueledChange(int blueled) {
 void handleCleaningChange(int cleaning) {
     if( cleaning > 0 ) {
         Log.info("cleaning did turn on");
-        //TODO: save/restore previous states
         setAllInsideLights( 100 );
     } else {
-        //TODO: save/restore previous states
         Log.info("cleaning did turn off");
         setAllInsideLights( 0 );
     }
@@ -183,10 +181,8 @@ void handleCleaningChange(int cleaning) {
 void handleWatchingChange(int watching) {
     if( watching > 0 ) {
         Log.info("watching did turn on");
-        //TODO: save/restore previous states
         setWatchingLights( 100 );
     } else {
-        //TODO: save/restore previous states
         Log.info("watching did turn off");
         setWatchingLights( 0 );
     }

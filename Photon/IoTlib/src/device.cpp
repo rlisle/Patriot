@@ -22,7 +22,7 @@ String globalStatesVariable;
 String globalDevicesVariable;
 
 Device::Device(String name, String room)
-: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _restore(0), _type('L')
+: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type('L')
 {
     // Do any setup work in begin() not here.
 }
@@ -42,21 +42,6 @@ int  Device::getChangedValue() {
     Log.info("Device "+_name+" getChangedValue() changed");
     _previous = _value;
     return _value;
-}
-
-void Device::saveRestoreValue() {
-    if( _value == 100 ) {
-        Log.info("Device "+_name+" not saving restore value becuase its 100");
-        return;
-    }
-    Log.info("Device "+_name+" saveRestoreValue %d, prev %d",_value,_restore);
-    _restore = _value;
-}
-
-void Device::restoreSavedValue() {
-    Log.info("restorePrevious %d", _restore);
-    setValue(_restore);
-    _restore = 0;
 }
 
 // Static Methods
