@@ -36,7 +36,7 @@ void setup() {
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", "Office", 2));
     Device::add(new NCD8Light(ADDRESS, 1, "Loft", "Office", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    // Fading OfficeTrim results in door toggling, probably due to parallel wiring
+    // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
     Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
 
     // Outside Lights
@@ -46,13 +46,6 @@ void setup() {
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
 
     // Switches
-    // Converting to grouped switches
-    // 1. Power/reset
-    // 2. Office (programming)
-    // 3. Good Morning / Bedtime (sleeping 1, 2)
-    // 4. Outside
-    // 5. Cleaning (all on/off)
-    // 6. ?
     Device::add(new Switch(A0, "OfficeCeilingSwitch", "Office"));
     Device::add(new Switch(A1, "LoftSwitch", "Office"));
     Device::add(new Switch(A2, "RampPorchSwitch", "Office"));
@@ -62,10 +55,12 @@ void setup() {
     // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
 
     // Activities/States - define for every other state
-    // Be careful to only define in 1 (this) controller
+    // Be careful to only define in 1 (this) controller.
     Device::add(new Device("sleeping", "All"));
     Device::add(new Device("cleaning", "All"));
     Device::add(new Device("watching", "All"));
+    Device::add(new Device("RonHome", "All"));
+    Device::add(new Device("ShelleyHome", "All"))
 }
 
 void loop() {
