@@ -23,10 +23,45 @@ Author: Ron Lisle
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
+#define
+// Enumerate all switches and states to simplify handling
+char* inputNames[] = {
+    // Switches
+    // TODO: Redefine 6 switches
+    // Replace 5 of the switches with momentary On-off-On
+    // Will need an additional 4 inputs (10 vs 6)
+    // 0. Reset/Power (regular switch, no input)
+    // 1. Good Morning / Good Night
+    // 2. All On (Cleaning) / Normal
+    // 3. Outside All / Outside Awnings
+    // 4. ?
+    // 5. ?
+    "OfficeSwitch1a",    // 0
+    "OfficeSwitch1b",    // 1
+    "OfficeSwitch2a",    // 2
+    "OfficeSwitch2b",    // 3
+    "OfficeSwitch3a",    // 4
+    "OfficeSwitch3b",    // 5
+    "OfficeSwitch4a",    // 6
+    "OfficeSwitch4b",    // 7
+    "OfficeSwitch5a",    // 8
+    "OfficeSwitch5b",    // 9
+
+    // Activities/States - define for every other state
+    "sleeping",         // 10
+    "cleaning",         // 11
+    "watching",         // 12
+    "RonHome",          // 13
+    "ShelleyHome"       // 14
+};
+
 void setup() {
     IoT::begin("192.168.50.33", "RearPanel");
+    createDevices();
+}
 
-    // PartOfDay
+
+void createDevices() {
     Device::add(new PartOfDay());
 
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));
@@ -45,7 +80,7 @@ void setup() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
 
-    // Switches
+    // Light Switches
     Device::add(new Switch(A0, "OfficeCeilingSwitch", "Office"));
     Device::add(new Switch(A1, "LoftSwitch", "Office"));
     Device::add(new Switch(A2, "RampPorchSwitch", "Office"));
@@ -63,9 +98,48 @@ void setup() {
     Device::add(new Device("ShelleyHome", "All"))
 }
 
+void checkStateChanges() {
+    for(int index=0; index<arraySize(inputNames); index++) {
+        int changedValue = Device::getChangedValue(inputNames[index]);
+        if(changedValue != -1) {
+            valueDidChange(index, changedValue);
+        }
+    }
+}
+
+void valueDidChange(int index, int value) {
+    switch (index) {
+        case 0:     // OfficeCelingSwitch
+            break;
+        case 0:     // LoftSwitch
+            break;
+        case 0:     // RampPorchSwitch
+            break;
+        case 0:     // RampAwningSwitch
+            break;
+        case 0:     // RearPorchSwitch
+            break;
+        case 0:     //
+            break;
+        case 0:
+            break;
+        case 0:
+            break;
+        case 0:
+            break;
+        case 0:
+            break;
+        case 0:
+            break;
+    }
+}
+
 void loop() {
 
     IoT::loop();
+
+    // This method checks to see if any state changed, and if so calls handleStateChange(name, value)
+    checkStateChanges(["sleeping", "partofday", "cleaning", "watching", "OfficeDoor"]));
     
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");

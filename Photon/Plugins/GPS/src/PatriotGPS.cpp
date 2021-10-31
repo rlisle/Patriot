@@ -3,6 +3,9 @@ PatriotGPS plugin
 
  Features:
  - Broadcasts the current location
+ - Interfaces to the NEO-6M GPS Module
+ - Refer to https://www.electronicwings.com/sensors-modules/gps-receiver-module
+     and https://www.electronicwings.com/particle/gps-module-interfacing-with-particle-photon
  
  - _value will be TBD, but probably latitude, longitude, and timezone
     

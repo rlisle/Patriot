@@ -21,6 +21,7 @@ class GPS : public Device
 {
 private:
     unsigned long  _lastPollTime;
+    int        _pin;
 
     bool       isNextMinute();
     void       publishGPS();
