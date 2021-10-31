@@ -65,7 +65,7 @@ public:
      Particle.io variable "States"
      */
     static void buildDevicesVariable();
-    static void publishStates(String controllerName);
+    static void publishStates();
     static void expose();
 
 };

@@ -191,7 +191,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         } else if(subtopic == "query") {   // was "states"
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info("Received query addressed to us");
-                Device::publishStates(_controllerName); // Is controllerName needed?
+                Device::publishStates();
             }
             
         // DEVICE
