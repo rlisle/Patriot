@@ -14,7 +14,7 @@ Author: Ron Lisle
  TODO: Add GPS board (Rx, Vin, Gnd)
  */
 #include <IoT.h>
-#include <PatriotSwitch.h>
+//#include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotPartOfDay.h>
 #include <PatriotCurtain.h>
@@ -23,37 +23,16 @@ Author: Ron Lisle
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
-#define
-// Enumerate all switches and states to simplify handling
-char* inputNames[] = {
-    // Switches
-    // TODO: Redefine 6 switches
-    // Replace 5 of the switches with momentary On-off-On
-    // Will need an additional 4 inputs (10 vs 6)
-    // 0. Reset/Power (regular switch, no input)
-    // 1. Good Morning / Good Night
-    // 2. All On (Cleaning) / Normal
-    // 3. Outside All / Outside Awnings
-    // 4. ?
-    // 5. ?
-    "OfficeSwitch1a",    // 0
-    "OfficeSwitch1b",    // 1
-    "OfficeSwitch2a",    // 2
-    "OfficeSwitch2b",    // 3
-    "OfficeSwitch3a",    // 4
-    "OfficeSwitch3b",    // 5
-    "OfficeSwitch4a",    // 6
-    "OfficeSwitch4b",    // 7
-    "OfficeSwitch5a",    // 8
-    "OfficeSwitch5b",    // 9
-
-    // Activities/States - define for every other state
-    "sleeping",         // 10
-    "cleaning",         // 11
-    "watching",         // 12
-    "RonHome",          // 13
-    "ShelleyHome"       // 14
-};
+// Resellable Switch Wiring
+// In order to keep the RV resellable, switches need to work without IoT.
+// So changing switches from inputs to directly control LEDs.
+// Moved from A0-A5 on Photon board to 6 terminal strip, same order.
+//   Office Ceiling Switch was A0 Brown thermistat wire
+//   Loft Switch           was A1 Red " "
+//   Ramp Porch Switch     was A2 Yellow " "
+//   Ramp Awning Switch    was A3 Green " "
+//   Rear Porch Switch     was A4 Blue " "
+//   Rear Awning Switch    was A5 White " "
 
 void setup() {
     IoT::begin("192.168.50.33", "RearPanel");
@@ -80,67 +59,56 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
 
-    // Light Switches
-    Device::add(new Switch(A0, "OfficeCeilingSwitch", "Office"));
-    Device::add(new Switch(A1, "LoftSwitch", "Office"));
-    Device::add(new Switch(A2, "RampPorchSwitch", "Office"));
-    Device::add(new Switch(A3, "RampAwningSwitch", "Office"));
-    Device::add(new Switch(A4, "RearPorchSwitch", "Office"));
-    Device::add(new Switch(A5, "RearAwningSwitch", "Office"));
-    // More available inputs A6, A7, TX, RX - use for door switch, motion detector, etc.
-
-    // Activities/States - define for every other state
+    // Activities/States - define for every other state.
     // Be careful to only define in 1 (this) controller.
     Device::add(new Device("sleeping", "All"));
     Device::add(new Device("cleaning", "All"));
     Device::add(new Device("watching", "All"));
     Device::add(new Device("RonHome", "All"));
-    Device::add(new Device("ShelleyHome", "All"))
-}
+    Device::add(new Device("ShelleyHome", "All"));
+    
+    // Depart checklist items - define for every non-automated checklist item
+    Device::add(new Device("startList", "All"));
+    Device::add(new Device("checkTires", "All"));
+    Device::add(new Device("dumpTanks", "All"));
+    Device::add(new Device("fillWater", "All"));
+    Device::add(new Device("fuel", "All"));
+    Device::add(new Device("fillPropane", "All"));
+    Device::add(new Device("checkRoof", "All"));
+    Device::add(new Device("checkUnderRV", "All"));
+    Device::add(new Device("planRoute", "All"));
+    Device::add(new Device("bedSlideIn", "All"));
+    Device::add(new Device("LRSlideIn", "All"));
+    Device::add(new Device("rearAwningIn", "All"));
+    Device::add(new Device("closeRamp", "All"));
+    Device::add(new Device("latchHandles", "All"));
+    Device::add(new Device("rearAwningIn", "All"));
+    Device::add(new Device("frontAwningIn", "All"));
+    Device::add(new Device("discPropane", "All"));
+    Device::add(new Device("waterHeaterOff", "All"));
+    Device::add(new Device("hitchTruck", "All"));
+    Device::add(new Device("raiseLG", "All"));
+    Device::add(new Device("discPower", "All"));
 
-void checkStateChanges() {
-    for(int index=0; index<arraySize(inputNames); index++) {
-        int changedValue = Device::getChangedValue(inputNames[index]);
-        if(changedValue != -1) {
-            valueDidChange(index, changedValue);
-        }
-    }
-}
-
-void valueDidChange(int index, int value) {
-    switch (index) {
-        case 0:     // OfficeCelingSwitch
-            break;
-        case 0:     // LoftSwitch
-            break;
-        case 0:     // RampPorchSwitch
-            break;
-        case 0:     // RampAwningSwitch
-            break;
-        case 0:     // RearPorchSwitch
-            break;
-        case 0:     //
-            break;
-        case 0:
-            break;
-        case 0:
-            break;
-        case 0:
-            break;
-        case 0:
-            break;
-        case 0:
-            break;
-    }
+    // Arrive checklist items
+    Device::add(new Device("lowerLG", "All"));
+    Device::add(new Device("bedSlideOut", "All"));
+    Device::add(new Device("LRSlidesOut", "All"));
+    Device::add(new Device("openRamp", "All"));
+    Device::add(new Device("rampAwningOut", "All"));
+    Device::add(new Device("stepsDown", "All"));
+    Device::add(new Device("rearAwningOut", "All"));
+    Device::add(new Device("frontAwningOut", "All"));
+    Device::add(new Device("propaneOn", "All"));
+    Device::add(new Device("waterHeaterOn", "All"));
+    Device::add(new Device("waterHose", "All"));
+    Device::add(new Device("sewerHose", "All"));
 }
 
 void loop() {
 
     IoT::loop();
 
-    // This method checks to see if any state changed, and if so calls handleStateChange(name, value)
-    checkStateChanges(["sleeping", "partofday", "cleaning", "watching", "OfficeDoor"]));
-    
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
