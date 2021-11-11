@@ -178,6 +178,13 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         } else if(subtopic == "pong") {
             // Ignore it.
             
+        // QUERY
+        } else if(subtopic == "query") {   // was "states"
+            if(lcMessage == _controllerName || lcMessage == "all") {
+                Log.info("Received query addressed to us");
+                Device::publishStates();
+            }
+                
         // RESET
         } else if(subtopic == "reset") {
             // Respond if reset is addressed to us
@@ -187,13 +194,10 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 System.reset(RESET_NO_WAIT);
             }
                 
-        // STATES
-        } else if(subtopic == "query") {   // was "states"
-            if(lcMessage == _controllerName || lcMessage == "all") {
-                Log.info("Received query addressed to us");
-                Device::publishStates();
-            }
-            
+        // STATE
+        } else if(subtopic == "state") {
+            // Ignore it (for now).
+                
         // DEVICE
         } else {
             
