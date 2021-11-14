@@ -133,15 +133,14 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
 //Mark - Parser
 
-// topic and messages are already lowercase
-void MQTTManager::parseMessage(String topic, String message)
+void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 {
     // This creates an infinite loop. Don't do it.
-    //log("Parser received: " + topic + ", " + message, LogDebug);
+    //log("Parser received: " + lcTopic + ", " + lcMessage, LogDebug);
     
     // New Protocol: patriot/<name>  <value>
-    if(topic.startsWith(kPublishName+"/")) {
-        String subtopic = topic.substring(kPublishName.length()+1);
+    if(lcTopic.startsWith(kPublishName+"/")) {
+        String subtopic = lcTopic.substring(kPublishName.length()+1);
         
         // Look for reserved names
         // ALIVE
@@ -157,20 +156,20 @@ void MQTTManager::parseMessage(String topic, String message)
         // LOGLEVEL
         } else if(subtopic.startsWith("loglevel")) {
             if(subtopic == "loglevel/"+_controllerName) {
-                Log.info(_controllerName + " setting logLevel = " + message);
-                parseLogLevel(message);
+                Log.info(_controllerName + " setting logLevel = " + lcMessage);
+                parseLogLevel(lcMessage);
             }
             
         // MEMORY
         } else if(subtopic == "memory") {
-            if(message == _controllerName) {
+            if(lcMessage == _controllerName) {
                 publish( "debug/"+_controllerName, String::format("Free memory = %d", System.freeMemory()));
             }
             
         // PING
         } else if(subtopic == "ping") {
             // Respond if ping is addressed to us
-            if(message == _controllerName) {
+            if(lcMessage == _controllerName) {
                 Log.trace("Ping addressed to us");
                 publish(kPublishName + "/pong", _controllerName);
             }
@@ -179,26 +178,30 @@ void MQTTManager::parseMessage(String topic, String message)
         } else if(subtopic == "pong") {
             // Ignore it.
             
+        // QUERY
+        } else if(subtopic == "query") {   // was "states"
+            if(lcMessage == _controllerName || lcMessage == "all") {
+                Log.info("Received query addressed to us");
+                Device::publishStates();
+            }
+                
         // RESET
         } else if(subtopic == "reset") {
             // Respond if reset is addressed to us
-            if(message == _controllerName) {
+            if(lcMessage == _controllerName) {
                 Log.info("Reset addressed to us");
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
                 
-        // STATES
-        } else if(subtopic == "states") {
-            if(message == _controllerName) {
-                Log.info("Received states addressed to us");
-                Device::publishStates(_controllerName);
-            }
-            
+        // STATE
+        } else if(subtopic == "state") {
+            // Ignore it (for now).
+                
         // DEVICE
         } else {
             
-            int value = parseValue(message);
+            int value = parseValue(lcMessage);
             Device *device = Device::get(subtopic);
             if( device != NULL ) {
                 
@@ -213,28 +216,28 @@ void MQTTManager::parseMessage(String topic, String message)
         }
     } else {
         // Not addressed or recognized by us
-        Log.error("Parser: Not our message: "+String(topic)+" "+String(message));
+        Log.error("Parser: Not our message: "+String(lcTopic)+" "+String(lcMessage));
     }
 }
 
-int MQTTManager::parseValue(String message)
+int MQTTManager::parseValue(String lcMessage)
 {
-    if(message == "on") {
+    if(lcMessage == "on") {
         return 100;
-    } else if(message == "off") {
+    } else if(lcMessage == "off") {
         return 0;
     }
-    return message.toInt();
+    return lcMessage.toInt();
 }
 
-void MQTTManager::parseLogLevel(String message) {
+void MQTTManager::parseLogLevel(String lcMessage) {
     LogLevel level = LOG_LEVEL_ERROR;
-    if (message == "none") level = LOG_LEVEL_NONE;         // 70
-    else if (message == "error") level = LOG_LEVEL_ERROR;  // 50
-    else if (message == "warn") level = LOG_LEVEL_WARN;    // 40
-    else if (message == "info") level = LOG_LEVEL_INFO;    // 30
-    else if (message == "trace") level = LOG_LEVEL_TRACE;  // 1
-    else if (message == "all") level = LOG_LEVEL_ALL;      // 1
+    if (lcMessage == "none") level = LOG_LEVEL_NONE;         // 70
+    else if (lcMessage == "error") level = LOG_LEVEL_ERROR;  // 50
+    else if (lcMessage == "warn") level = LOG_LEVEL_WARN;    // 40
+    else if (lcMessage == "info") level = LOG_LEVEL_INFO;    // 30
+    else if (lcMessage == "trace") level = LOG_LEVEL_TRACE;  // 1
+    else if (lcMessage == "all") level = LOG_LEVEL_ALL;      // 1
     else return;
 
     _logLevel = level;

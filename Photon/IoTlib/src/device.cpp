@@ -162,9 +162,9 @@ void Device::buildDevicesVariable()
     }
 }
 
-// Publish each device name and its value
-void Device::publishStates(String controllerName) {
+// Publish each device name and its value in response to patriot/query
+void Device::publishStates() {
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-        IoT::mqttPublish("debug/"+controllerName+"/"+ptr->name()+"/state", String(ptr->_value));
+        IoT::mqttPublish("patriot/state/"+ptr->name(), String(ptr->_value));
     }
 }
