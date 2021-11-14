@@ -15,10 +15,10 @@ All text above must be included in any redistribution.
 #include "constants.h"
 
 /**
- * globalStatesVariable and globalDevicesVariable
- * Lists all the currently active devices and their states names in CSV format.
+ * globalChecklistVariable and globalDevicesVariable
+ * Lists all the currently active devices and checklist names in CSV format.
  */
-String globalStatesVariable;
+String globalChecklistVariable;
 String globalDevicesVariable;
 
 Device::Device(String name, String room, Char type)
@@ -138,6 +138,10 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
     }
+    if(!Particle.variable(kChecklistVariableName, globalChecklistVariable))
+    {
+        Log.error("Error: Unable to expose " + kChecklistVariableName + " variable");
+    }
 }
 
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
@@ -145,15 +149,31 @@ void Device::expose()
 void Device::buildDevicesVariable()
 {
     String newVariable = "";
+    String newChecklist = "";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-        newVariable += String(ptr->_type)+":";
-        newVariable += String(ptr->_name)+"@";
-        newVariable += ptr->_room;
-        newVariable += "="+String(ptr->_value);
-        if (ptr->_next != NULL) {
-            newVariable += ",";     // Removed extra space to see if that is breaking discovery
+
+        if(ptr->_type == 'X') {
+            newChecklist += String(ptr->_id);
+            newChecklist += "="+String(ptr->_value);
+            if (ptr->_next != NULL) {
+                newChecklist += ",";
+            }
+
+        } else {
+            newVariable += String(ptr->_type)+":";
+            newVariable += String(ptr->_name)+"@";
+            newVariable += ptr->_room;
+            newVariable += "="+String(ptr->_value);
+            if (ptr->_next != NULL) {
+                newVariable += ",";
+            }
         }
+    }
+    if(newChecklist.length() < kMaxVariableStringLength) {
+        globalChecklistVariable = newChecklist;
+    } else {
+        Log.error("Checklist variable is too long. Need to extend to a 2nd variable");
     }
     if(newVariable.length() < kMaxVariableStringLength) {
         globalDevicesVariable = newVariable;
