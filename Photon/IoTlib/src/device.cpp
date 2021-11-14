@@ -21,7 +21,7 @@ All text above must be included in any redistribution.
 String globalChecklistVariable;
 String globalDevicesVariable;
 
-Device::Device(String name, String room, Char type)
+Device::Device(String name, String room, char type)
 : _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type)
 {
     // Do any setup work in begin() not here.
@@ -154,7 +154,7 @@ void Device::buildDevicesVariable()
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
 
         if(ptr->_type == 'X') {
-            newChecklist += String(ptr->_id);
+            newChecklist += String(ptr->_name);
             newChecklist += "="+String(ptr->_value);
             if (ptr->_next != NULL) {
                 newChecklist += ",";

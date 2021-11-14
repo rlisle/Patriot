@@ -68,41 +68,41 @@ void createDevices() {
     Device::add(new Device("ShelleyHome", "All"));
     
     // Depart checklist items - define for every non-automated checklist item
-    Device::add(new Device("startList", "All"));
-    Device::add(new Device("checkTires", "All"));
-    Device::add(new Device("dumpTanks", "All"));
-    Device::add(new Device("fillWater", "All"));
-    Device::add(new Device("fuel", "All"));
-    Device::add(new Device("fillPropane", "All"));
-    Device::add(new Device("checkRoof", "All"));
-    Device::add(new Device("checkUnderRV", "All"));
-    Device::add(new Device("planRoute", "All"));
-    Device::add(new Device("bedSlideIn", "All"));
-    Device::add(new Device("LRSlideIn", "All"));
-    Device::add(new Device("rearAwningIn", "All"));
-    Device::add(new Device("closeRamp", "All"));
-    Device::add(new Device("latchHandles", "All"));
-    Device::add(new Device("rearAwningIn", "All"));
-    Device::add(new Device("frontAwningIn", "All"));
-    Device::add(new Device("discPropane", "All"));
-    Device::add(new Device("waterHeaterOff", "All"));
-    Device::add(new Device("hitchTruck", "All"));
-    Device::add(new Device("raiseLG", "All"));
-    Device::add(new Device("discPower", "All"));
+    Device::add(new Device("startList", "All", 'X'));
+    Device::add(new Device("checkTires", "All", 'X'));
+    Device::add(new Device("dumpTanks", "All", 'X'));
+    Device::add(new Device("fillWater", "All", 'X'));
+    Device::add(new Device("fuel", "All", 'X'));
+    Device::add(new Device("fillPropane", "All", 'X'));
+    Device::add(new Device("checkRoof", "All", 'X'));
+    Device::add(new Device("checkUnderRV", "All", 'X'));
+    Device::add(new Device("planRoute", "All", 'X'));
+    Device::add(new Device("bedSlideIn", "All", 'X'));
+    Device::add(new Device("LRSlideIn", "All", 'X'));
+    Device::add(new Device("rearAwningIn", "All", 'X'));
+    Device::add(new Device("closeRamp", "All", 'X'));
+    Device::add(new Device("latchHandles", "All", 'X'));
+    Device::add(new Device("rearAwningIn", "All", 'X'));
+    Device::add(new Device("frontAwningIn", "All", 'X'));
+    Device::add(new Device("discPropane", "All", 'X'));
+    Device::add(new Device("waterHeaterOff", "All", 'X'));
+    Device::add(new Device("hitchTruck", "All", 'X'));
+    Device::add(new Device("raiseLG", "All", 'X'));
+    Device::add(new Device("discPower", "All", 'X'));
 
     // Arrive checklist items
-    Device::add(new Device("lowerLG", "All"));
-    Device::add(new Device("bedSlideOut", "All"));
-    Device::add(new Device("LRSlidesOut", "All"));
-    Device::add(new Device("openRamp", "All"));
-    Device::add(new Device("rampAwningOut", "All"));
-    Device::add(new Device("stepsDown", "All"));
-    Device::add(new Device("rearAwningOut", "All"));
-    Device::add(new Device("frontAwningOut", "All"));
-    Device::add(new Device("propaneOn", "All"));
-    Device::add(new Device("waterHeaterOn", "All"));
-    Device::add(new Device("waterHose", "All"));
-    Device::add(new Device("sewerHose", "All"));
+    Device::add(new Device("lowerLG", "All", 'X'));
+    Device::add(new Device("bedSlideOut", "All", 'X'));
+    Device::add(new Device("LRSlidesOut", "All", 'X'));
+    Device::add(new Device("openRamp", "All", 'X'));
+    Device::add(new Device("rampAwningOut", "All", 'X'));
+    Device::add(new Device("stepsDown", "All", 'X'));
+    Device::add(new Device("rearAwningOut", "All", 'X'));
+    Device::add(new Device("frontAwningOut", "All", 'X'));
+    Device::add(new Device("propaneOn", "All", 'X'));
+    Device::add(new Device("waterHeaterOn", "All", 'X'));
+    Device::add(new Device("waterHose", "All", 'X'));
+    Device::add(new Device("sewerHose", "All", 'X'));
 }
 
 void loop() {
