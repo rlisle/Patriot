@@ -21,8 +21,8 @@ All text above must be included in any redistribution.
 String globalStatesVariable;
 String globalDevicesVariable;
 
-Device::Device(String name, String room)
-: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type('L')
+Device::Device(String name, String room, Char type)
+: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type)
 {
     // Do any setup work in begin() not here.
 }
