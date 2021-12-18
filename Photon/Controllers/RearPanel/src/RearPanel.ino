@@ -67,7 +67,9 @@ void createDevices() {
     Device::add(new Device("RonHome", "All"));
     Device::add(new Device("ShelleyHome", "All"));
     
-    // Depart checklist items - define for every non-automated checklist item
+    // Checklist Items -  - define for every non-automated checklist item
+    
+    // Pre-Trip checklist items
     Device::add(new Device("startList", "All", 'X'));
     Device::add(new Device("checkTires", "All", 'X'));
     Device::add(new Device("dumpTanks", "All", 'X'));
@@ -77,12 +79,14 @@ void createDevices() {
     Device::add(new Device("checkRoof", "All", 'X'));
     Device::add(new Device("checkUnderRV", "All", 'X'));
     Device::add(new Device("planRoute", "All", 'X'));
+
+    // Depart checklist items
     Device::add(new Device("bedSlideIn", "All", 'X'));
     Device::add(new Device("LRSlideIn", "All", 'X'));
-    Device::add(new Device("rearAwningIn", "All", 'X'));
+    Device::add(new Device("rampAwningIn", "All", 'X'));
     Device::add(new Device("closeRamp", "All", 'X'));
-    Device::add(new Device("latchHandles", "All", 'X'));
     Device::add(new Device("rearAwningIn", "All", 'X'));
+    Device::add(new Device("latchHandles", "All", 'X'));
     Device::add(new Device("frontAwningIn", "All", 'X'));
     Device::add(new Device("discPropane", "All", 'X'));
     Device::add(new Device("waterHeaterOff", "All", 'X'));
@@ -91,6 +95,7 @@ void createDevices() {
     Device::add(new Device("discPower", "All", 'X'));
 
     // Arrive checklist items
+    Device::add(new Device("connectPower", "All", 'X'));
     Device::add(new Device("lowerLG", "All", 'X'));
     Device::add(new Device("bedSlideOut", "All", 'X'));
     Device::add(new Device("LRSlidesOut", "All", 'X'));
@@ -100,8 +105,8 @@ void createDevices() {
     Device::add(new Device("rearAwningOut", "All", 'X'));
     Device::add(new Device("frontAwningOut", "All", 'X'));
     Device::add(new Device("propaneOn", "All", 'X'));
-    Device::add(new Device("waterHeaterOn", "All", 'X'));
     Device::add(new Device("waterHose", "All", 'X'));
+    Device::add(new Device("waterHeaterOn", "All", 'X'));
     Device::add(new Device("sewerHose", "All", 'X'));
 }
 

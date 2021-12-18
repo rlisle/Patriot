@@ -18,6 +18,8 @@ int current_state = 0;
 void setup() {
     pinMode(PIR_PIN, INPUT);
     Serial.begin(57600);    // Use "screen /dev/tty.usbmodem21201 57600" or 9600, etc.
+    RGB.control(true);
+    RGB.color(255,0,0);     // Red
 }
 
 void loop() {
@@ -27,14 +29,17 @@ void loop() {
     if(warm_up == 1) {
         Serial.println("Warming Up");
         warm_up = 0;
+        RGB.color(255,255,0);
         delay(2000);
         
     } else if(sensor_output != current_state) {
         current_state = sensor_output;
         if(sensor_output == LOW) {
             Serial.println("No object in sight");
+            RGB.color(255,0,0);
         } else {
             Serial.println("Objected Detected");
+            RGB.color(0,255,0);
         }
         delay(1000);
     }
