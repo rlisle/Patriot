@@ -1,28 +1,33 @@
-/*
- * RonPIRTest Controller
- *
- * Description: This sketch is for testing a PIR device connected to D0
- * Refer to www.ElectronicWings.com/particle/pir-sensor-interfacing-with-particle-photon
- *
- * Author: Ron Lisle
- *
- * Hardware
- * - built-in blue LED     D7
- * - PIR                   D0
- */
+/**
+RonPIRTest Controller
+ 
+Description: This sketch is for testing a PIR device connected to D0
+Refer to www.ElectronicWings.com/particle/pir-sensor-interfacing-with-particle-photon
+ 
+Author: Ron Lisle
 
-int PIR_PIN = D0;
-int warm_up = 1;
-int current_state = 0;
+Hardware
+ - built-in blue LED     D7
+ - PIR                   D0
+**/
+
+#include <IoT.h>
+#include <PatriotPIR.h>
+
+#define PIR_PIN D0
 
 void setup() {
-    pinMode(PIR_PIN, INPUT);
-    Serial.begin(57600);    // Use "screen /dev/tty.usbmodem21201 57600" or 9600, etc.
+    IoT::begin("192.168.50.33", "RearPanel");
+
+    Device::add(new PIR(PIR_PIN, "Movement", "Office"));
+
     RGB.control(true);
     RGB.color(255,0,0);     // Red
 }
 
 void loop() {
+
+    IoT::loop();
 
     int sensor_output;
     sensor_output = digitalRead(PIR_PIN);
