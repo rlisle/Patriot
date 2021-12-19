@@ -22,8 +22,8 @@ private:
     int        _pin;
     long       _lastPollTime;
 
-    bool      isTimeToCheckSwitch();
-    bool      didSwitchChange();
+    bool      isTimeToCheckSensor();
+    bool      didSensorChange();
     void      notify();
     
 public:

@@ -59,7 +59,7 @@ void PIR::loop()
  * isTimeToCheckSensor()
  * @return bool if enough time has elapsed to sample switch again
  */
-bool Switch::isTimeToCheckSensor()
+bool PIR::isTimeToCheckSensor()
 {
     long currentTime = millis();
     if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
