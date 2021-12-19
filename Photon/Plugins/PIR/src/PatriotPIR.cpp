@@ -27,9 +27,9 @@ All text above must be included in any redistribution.
  */
 PIR::PIR(int pinNum, String name, String room)
         : Device(name, room),
-        _type('M'),
         _pin(pinNum)
 {
+    _type  = 'M';
     _value = 0;
 }
 

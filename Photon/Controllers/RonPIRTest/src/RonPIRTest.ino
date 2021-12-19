@@ -9,6 +9,9 @@ Author: Ron Lisle
 Hardware
  - built-in blue LED     D7
  - PIR                   D0
+ 
+To update controller: particle flash RonPIRTest
+ 
 **/
 
 #include <IoT.h>
@@ -29,22 +32,13 @@ void loop() {
 
     IoT::loop();
 
-    int sensor_output;
-    sensor_output = digitalRead(PIR_PIN);
-    if(warm_up == 1) {
-        Serial.println("Warming Up");
-        warm_up = 0;
-        RGB.color(255,255,0);
-        delay(2000);
-        
-    } else if(sensor_output != current_state) {
-        current_state = sensor_output;
-        if(sensor_output == LOW) {
-            Serial.println("No object in sight");
-            RGB.color(255,0,0);
-        } else {
-            Serial.println("Objected Detected");
+    int motionChanged = Device::getChangedValue("Movement");
+    if( motionChanged != -1 ) {
+        Log.info("office movement changed %d",motionChanged);
+        if( motionChanged == 0 ) {
             RGB.color(0,255,0);
+        } else {
+            RGB.color(64,0,0);
         }
     }
 }
