@@ -54,7 +54,7 @@ void createDevices() {
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
     
     // Photon I/O
-    Device::add(new PIR(A5, "OfficeMotion"));
+    Device::add(new PIR(A5, "OfficeMotion", "Office"));
 
     // I2CPWM8W80C board
     // 8 Dimmers
