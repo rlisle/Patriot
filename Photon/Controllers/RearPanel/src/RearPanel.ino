@@ -44,21 +44,28 @@ void setup() {
 void createDevices() {
     Device::add(new PartOfDay());
 
-    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));
-    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
+    // I2CIO4R4G5LE board
+    // 4 Relays
+    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
+    // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
 
-    // Inside Lights
+    
+    // 4 GPIO
+    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
+    
+    // Photon I/O
+    Device::add(new PIR(A5, "OfficeMotion"));
+
+    // I2CPWM8W80C board
+    // 8 Dimmers
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", "Office", 2));
     Device::add(new NCD8Light(ADDRESS, 1, "Loft", "Office", 2));
-    Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
-    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
-
-    // Outside Lights
     Device::add(new NCD8Light(ADDRESS, 2, "RampPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 3, "RampAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
+    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
 
     // Activities/States - define for every other state.
     // Be careful to only define in 1 (this) controller.
