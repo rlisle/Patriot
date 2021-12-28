@@ -127,7 +127,7 @@ void loop() {
     int cleaningChanged = Device::getChangedValue("cleaning");
     int watchingChanged = Device::getChangedValue("watching");
     int officeDoorChanged = Device::getChangedValue("OfficeDoor");
-    int officeMotion = Device::getChangedValue("OfficeMotion");
+    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
     int partOfDay = Device::value("PartOfDay");
 
     if( sleepingChanged != -1 ) {
