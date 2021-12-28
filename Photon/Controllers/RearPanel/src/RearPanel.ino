@@ -127,6 +127,7 @@ void loop() {
     int cleaningChanged = Device::getChangedValue("cleaning");
     int watchingChanged = Device::getChangedValue("watching");
     int officeDoorChanged = Device::getChangedValue("OfficeDoor");
+    int officeMotion = Device::getChangedValue("OfficeMotion");
     int partOfDay = Device::value("PartOfDay");
 
     if( sleepingChanged != -1 ) {
@@ -201,13 +202,18 @@ void loop() {
         }
     }
     
-    // SWITCHES
-    IoT::handleLightSwitch("OfficeCeiling");
-    IoT::handleLightSwitch("Loft");
-    IoT::handleLightSwitch("RampPorch");
-    IoT::handleLightSwitch("RampAwning");
-    IoT::handleLightSwitch("RearPorch");
-    IoT::handleLightSwitch("RearAwning");
+    if( officeMotionChanged != -1) {
+        // Just for testing - turn off piano when motion stops
+        if( officeMotionChanged > 0 ) {   // Motion detected
+//            if( partOfDay > SUNSET ) {
+                Device::setValue("Piano", 100);
+//            }
+            //TODO: chime?
+        } else {                        // Door closed
+            // Nothing to do when motion stops
+            Device::setValue("Piano", 0);
+        }
+    }
 }
 
 void setAllActivities(int value) {
