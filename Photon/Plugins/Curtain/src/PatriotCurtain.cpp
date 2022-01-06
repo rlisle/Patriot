@@ -6,8 +6,8 @@
  and closes when pin 5 is briefly connect to pin 1 ground.
  Motion is stopped when the same pin is briefly connected again.
 
- This plugin is designed to coexist with up to 2 NCD4Relay
- and other NCD4Switch devices using the same board.
+ This plugin is designed to coexist with up to 2 NCD4Relays
+ and up to 4 NCD4Switch devices using the GPIOs on same board.
  
  Features:
  - 2 relay automated curtain control
