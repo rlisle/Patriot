@@ -65,7 +65,7 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
+//    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
 
     // Activities/States - define for every other state.
     // Be careful to only define in 1 (this) controller.
