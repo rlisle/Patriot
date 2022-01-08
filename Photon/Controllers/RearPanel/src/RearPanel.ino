@@ -49,7 +49,7 @@ void createDevices() {
     // 4 Relays
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
     // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
-    Device::add(new NCD4Relay(I2CR4IO4, 2, "OfficeTrim", "Office");
+    Device::add(new NCD4Relay(I2CR4IO4, 2, "OfficeTrim", "Office"));
     
     // 4 GPIO
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
@@ -208,11 +208,13 @@ void loop() {
         if( officeMotionChanged > 0 ) {   // Motion detected
 //            if( partOfDay > SUNSET ) {
                 Device::setValue("Piano", 100);
+                Device::setValue("OfficeTrim", 100);
 //            }
             //TODO: chime?
         } else {                        // Door closed
             // Nothing to do when motion stops
             Device::setValue("Piano", 0);
+            Device::setValue("OfficeTrim", 0);
         }
     }
 }

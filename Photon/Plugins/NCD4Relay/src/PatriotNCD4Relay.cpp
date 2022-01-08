@@ -1,12 +1,8 @@
 /**
  NCD 4 Relay board control
 
- Up to 4 relay boards can reside on a single I2C bus.
- 
  Features:
- - On/Off control
- - Supports multiple boards
- - Automatic shut off if duration specified
+ - On/Off control of up to 4 relays on I2C4R4IO board
 
  http://www.github.com/rlisle/Patriot
 
@@ -35,12 +31,12 @@ int8_t NCD4Relay::_address;        // Addresses of board
  * @param name String name used to address the relay.
  * @param room String name of location room
  */
-NCD4Relay::NCD8Relay(int8_t address, int8_t relayNum, String name, String room)
+NCD4Relay::NCD4Relay(int8_t address, int8_t relayNum, String name, String room)
     : Device(name, room)
 {
     _address    = address;   // 0x20 (no jumpers)
     _relayNum   = relayNum;
-    _percent    = 0;
+    _value      = 0;
     _type       = 'R';
 }
 
@@ -49,7 +45,7 @@ void NCD4Relay::begin() {
     initializeBoard();
     
     // Initialize relay to off
-    _percent = 55;  // Just to allow setOff to not ignore
+    _value = 55;  // Just to allow setOff to not ignore
     setOff();
 }
 
@@ -102,7 +98,7 @@ void NCD4Relay::setPercent(int percent) {
  */
 void NCD4Relay::setOn() {
     
-    _percent = 100;
+    _value = 100;
 
     byte bitmap = 1 << _relayNum;
     NCD4Relay::_currentState |= bitmap;            // Set relay's bit
@@ -112,7 +108,7 @@ void NCD4Relay::setOn() {
     do {
         Wire.beginTransmission(_address);
         Wire.write(REGISTER_ADDRESS);
-        Wire.write(NCD8Relay::_currentState);
+        Wire.write(NCD4Relay::_currentState);
         status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
 
@@ -125,20 +121,20 @@ void NCD4Relay::setOn() {
 /**
  * Set relay off
  */
-void NCD8Relay::setOff() {
+void NCD4Relay::setOff() {
     
-    _percent = 0;
+    _value = 0;
 
     byte bitmap = 1 << _relayNum;
     bitmap = 0xff ^ bitmap;
-    NCD8Relay::_currentState &= bitmap;
+    NCD4Relay::_currentState &= bitmap;
 
     byte status;
     int retries = 0;
     do {
         Wire.beginTransmission(_address);
         Wire.write(REGISTER_ADDRESS);
-        Wire.write(NCD8Relay::_currentState);
+        Wire.write(NCD4Relay::_currentState);
         byte status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
 
@@ -155,7 +151,7 @@ void NCD8Relay::setOff() {
 /**
  * loop()
  */
-void NCD8Relay::loop()
+void NCD4Relay::loop()
 {
     // Nothing to do
 };
