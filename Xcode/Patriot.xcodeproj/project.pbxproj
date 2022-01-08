@@ -41,6 +41,9 @@
 		2769F3CA2729644400E8FE57 /* PatriotChecklist.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotChecklist.cpp; path = ../Photon/Plugins/Checklist/src/PatriotChecklist.cpp; sourceTree = "<group>"; };
 		2769F3CB2729644400E8FE57 /* PatriotChecklist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotChecklist.h; path = ../Photon/Plugins/Checklist/src/PatriotChecklist.h; sourceTree = "<group>"; };
 		2769F3CC2729646B00E8FE57 /* checklist.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = checklist.ino; path = ../Photon/Plugins/Checklist/examples/checklist.ino; sourceTree = "<group>"; };
+		27841D7527871CE400DFCCFD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/NCD4Relay/src; sourceTree = "<group>"; };
+		27841D7627871CE400DFCCFD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Relay/library.properties; sourceTree = "<group>"; };
+		27841D7727871CFD00DFCCFD /* relay.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = relay.ino; path = ../Photon/Plugins/NCD4Relay/examples/relay/relay.ino; sourceTree = "<group>"; };
 		27AE94DD26F0CC2A004D5CB6 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/Kitchen/src; sourceTree = "<group>"; };
 		27AE94DE26F0CC2A004D5CB6 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/Kitchen/project.properties; sourceTree = "<group>"; };
 		27AE94DF26F0CC2A004D5CB6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/Kitchen/README.md; sourceTree = "<group>"; };
@@ -175,6 +178,16 @@
 			name = Checklist;
 			sourceTree = SOURCE_ROOT;
 		};
+		27841D7427871C8100DFCCFD /* NCD4Relay */ = {
+			isa = PBXGroup;
+			children = (
+				27841D7727871CFD00DFCCFD /* relay.ino */,
+				27841D7627871CE400DFCCFD /* library.properties */,
+				27841D7527871CE400DFCCFD /* src */,
+			);
+			name = NCD4Relay;
+			sourceTree = "<group>";
+		};
 		27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */ = {
 			isa = PBXGroup;
 			children = (
@@ -304,6 +317,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				27841D7427871C8100DFCCFD /* NCD4Relay */,
 				2769F3C82729635500E8FE57 /* Checklist */,
 				273243FD2709DC1A00F3C21E /* GPS */,
 				2733856125B29C420032BB1F /* Curtain */,

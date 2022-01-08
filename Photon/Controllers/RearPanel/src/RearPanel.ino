@@ -19,6 +19,7 @@ Author: Ron Lisle
 #include <PatriotPartOfDay.h>
 #include <PatriotCurtain.h>
 #include <PatriotNCD4Switch.h>
+#include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
 
 #define ADDRESS 1      // PWM board address A0 jumper set
