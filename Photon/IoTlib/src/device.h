@@ -5,6 +5,18 @@ This class is the parent of all device classes
 such as Lights, Switches, Fans, etc.
 
 http://www.github.com/rlisle/Patriot
+ 
+ Device types:
+ * C curtain
+ * D door switch
+ * F fan
+ * H humidity
+ * L light
+ * M motion detector
+ * P presence/proximity detector
+ * S switch
+ * T temperature
+ * X checklist state
 
 Written by Ron Lisle
 
@@ -27,7 +39,7 @@ class Device {
 
 public:
 
-    Device(String name, String room);
+    Device(String name, String room, char type = 'L');
 
     // begin() is called automatically when device is added.
     // Do any heavy lifting or publishing here and not in constructor.

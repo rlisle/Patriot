@@ -19,6 +19,8 @@ Author: Ron Lisle
 #include <PatriotPartOfDay.h>
 #include <PatriotCurtain.h>
 #include <PatriotNCD4Switch.h>
+#include <PatriotNCD4Relay.h>
+#include <PatriotPIR.h>
 
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
@@ -43,21 +45,28 @@ void setup() {
 void createDevices() {
     Device::add(new PartOfDay());
 
-    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));
+    // I2CIO4R4G5LE board
+    // 4 Relays
+    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
+    // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
+    Device::add(new NCD4Relay(I2CR4IO4, 2, "OfficeTrim", "Office"));
+    
+    // 4 GPIO
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
+    
+    // Photon I/O
+    Device::add(new PIR(A5, "OfficeMotion", "Office"));
 
-    // Inside Lights
+    // I2CPWM8W80C board
+    // 8 Dimmers
     Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", "Office", 2));
     Device::add(new NCD8Light(ADDRESS, 1, "Loft", "Office", 2));
-    Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
-    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
-
-    // Outside Lights
     Device::add(new NCD8Light(ADDRESS, 2, "RampPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 3, "RampAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
+//    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
 
     // Activities/States - define for every other state.
     // Be careful to only define in 1 (this) controller.
@@ -67,42 +76,47 @@ void createDevices() {
     Device::add(new Device("RonHome", "All"));
     Device::add(new Device("ShelleyHome", "All"));
     
-    // Depart checklist items - define for every non-automated checklist item
-    Device::add(new Device("startList", "All"));
-    Device::add(new Device("checkTires", "All"));
-    Device::add(new Device("dumpTanks", "All"));
-    Device::add(new Device("fillWater", "All"));
-    Device::add(new Device("fuel", "All"));
-    Device::add(new Device("fillPropane", "All"));
-    Device::add(new Device("checkRoof", "All"));
-    Device::add(new Device("checkUnderRV", "All"));
-    Device::add(new Device("planRoute", "All"));
-    Device::add(new Device("bedSlideIn", "All"));
-    Device::add(new Device("LRSlideIn", "All"));
-    Device::add(new Device("rearAwningIn", "All"));
-    Device::add(new Device("closeRamp", "All"));
-    Device::add(new Device("latchHandles", "All"));
-    Device::add(new Device("rearAwningIn", "All"));
-    Device::add(new Device("frontAwningIn", "All"));
-    Device::add(new Device("discPropane", "All"));
-    Device::add(new Device("waterHeaterOff", "All"));
-    Device::add(new Device("hitchTruck", "All"));
-    Device::add(new Device("raiseLG", "All"));
-    Device::add(new Device("discPower", "All"));
+    // Checklist Items -  - define for every non-automated checklist item
+    
+    // Pre-Trip checklist items
+    Device::add(new Device("startList", "All", 'X'));
+    Device::add(new Device("checkTires", "All", 'X'));
+    Device::add(new Device("dumpTanks", "All", 'X'));
+    Device::add(new Device("fillWater", "All", 'X'));
+    Device::add(new Device("fuel", "All", 'X'));
+    Device::add(new Device("fillPropane", "All", 'X'));
+    Device::add(new Device("checkRoof", "All", 'X'));
+    Device::add(new Device("checkUnderRV", "All", 'X'));
+    Device::add(new Device("planRoute", "All", 'X'));
+
+    // Depart checklist items
+    Device::add(new Device("bedSlideIn", "All", 'X'));
+    Device::add(new Device("LRSlideIn", "All", 'X'));
+    Device::add(new Device("rampAwningIn", "All", 'X'));
+    Device::add(new Device("closeRamp", "All", 'X'));
+    Device::add(new Device("rearAwningIn", "All", 'X'));
+    Device::add(new Device("latchHandles", "All", 'X'));
+    Device::add(new Device("frontAwningIn", "All", 'X'));
+    Device::add(new Device("discPropane", "All", 'X'));
+    Device::add(new Device("waterHeaterOff", "All", 'X'));
+    Device::add(new Device("hitchTruck", "All", 'X'));
+    Device::add(new Device("raiseLG", "All", 'X'));
+    Device::add(new Device("discPower", "All", 'X'));
 
     // Arrive checklist items
-    Device::add(new Device("lowerLG", "All"));
-    Device::add(new Device("bedSlideOut", "All"));
-    Device::add(new Device("LRSlidesOut", "All"));
-    Device::add(new Device("openRamp", "All"));
-    Device::add(new Device("rampAwningOut", "All"));
-    Device::add(new Device("stepsDown", "All"));
-    Device::add(new Device("rearAwningOut", "All"));
-    Device::add(new Device("frontAwningOut", "All"));
-    Device::add(new Device("propaneOn", "All"));
-    Device::add(new Device("waterHeaterOn", "All"));
-    Device::add(new Device("waterHose", "All"));
-    Device::add(new Device("sewerHose", "All"));
+    Device::add(new Device("connectPower", "All", 'X'));
+    Device::add(new Device("lowerLG", "All", 'X'));
+    Device::add(new Device("bedSlideOut", "All", 'X'));
+    Device::add(new Device("LRSlidesOut", "All", 'X'));
+    Device::add(new Device("openRamp", "All", 'X'));
+    Device::add(new Device("rampAwningOut", "All", 'X'));
+    Device::add(new Device("stepsDown", "All", 'X'));
+    Device::add(new Device("rearAwningOut", "All", 'X'));
+    Device::add(new Device("frontAwningOut", "All", 'X'));
+    Device::add(new Device("propaneOn", "All", 'X'));
+    Device::add(new Device("waterHose", "All", 'X'));
+    Device::add(new Device("waterHeaterOn", "All", 'X'));
+    Device::add(new Device("sewerHose", "All", 'X'));
 }
 
 void loop() {
@@ -114,6 +128,7 @@ void loop() {
     int cleaningChanged = Device::getChangedValue("cleaning");
     int watchingChanged = Device::getChangedValue("watching");
     int officeDoorChanged = Device::getChangedValue("OfficeDoor");
+    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
     int partOfDay = Device::value("PartOfDay");
 
     if( sleepingChanged != -1 ) {
@@ -188,13 +203,20 @@ void loop() {
         }
     }
     
-    // SWITCHES
-    IoT::handleLightSwitch("OfficeCeiling");
-    IoT::handleLightSwitch("Loft");
-    IoT::handleLightSwitch("RampPorch");
-    IoT::handleLightSwitch("RampAwning");
-    IoT::handleLightSwitch("RearPorch");
-    IoT::handleLightSwitch("RearAwning");
+    if( officeMotionChanged != -1) {
+        // Just for testing - turn off piano when motion stops
+        if( officeMotionChanged > 0 ) {   // Motion detected
+//            if( partOfDay > SUNSET ) {
+                Device::setValue("Piano", 100);
+                Device::setValue("OfficeTrim", 100);
+//            }
+            //TODO: chime?
+        } else {                        // Door closed
+            // Nothing to do when motion stops
+            Device::setValue("Piano", 0);
+            Device::setValue("OfficeTrim", 0);
+        }
+    }
 }
 
 void setAllActivities(int value) {
@@ -216,7 +238,6 @@ void setSunriseLights() {
 void setEveningLights() {
     Log.info("setEveningLights");
     Device::setValue("piano", 50);
-    Device::setValue("officeceiling",80);
     setAllOutsideLights(100);
 }
 

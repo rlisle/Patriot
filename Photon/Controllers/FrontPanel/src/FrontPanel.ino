@@ -198,7 +198,6 @@ void setAllActivities(int value) {
 void setMorningLights() {
     Log.info("setMorningLights");
     Device::setValue("Sink", 40);
-    Device::setValue("Cabinets", 50);
 }
 
 void setSunriseLights() {
@@ -209,13 +208,7 @@ void setSunriseLights() {
 
 void setEveningLights() {
     Log.info("setEveningLights");
-    Device::setValue("KitchenCeiling", 70);
     Device::setValue("Sink", 60);
-    Device::setValue("RightTrim", 0);
-    Device::setValue("LeftTrim", 100);
-    Device::setValue("Ceiling", 70);
-    Device::setValue("Cabinets", 60);
-    
     setAllOutsideLights(100);
 }
 
@@ -238,14 +231,10 @@ void setBlueledLights(int value) {  // 0 = Off, else On
     Log.info("setBlueledLights %d", value);
     
     if( value > 0 ) {   // Turn on TV lights
-        Device::setValue("KitchenCeiling", 60);
         Device::setValue("Sink", 50);
-        Device::setValue("Ceiling", 70);
         
     } else {    // Turn off TV lights
-        Device::setValue("KitchenCeiling", 0);
         Device::setValue("Sink", 0);
-        Device::setValue("Ceiling", 0);
     }
 }
 
@@ -255,12 +244,9 @@ void setWatchingLights(int value) {
 
     // TODO: What if watching TV while also washing dishes, etc?
     if( value > 0 ) {   // Turn on "watching TV" lights
-        Device::setValue("KitchenCeiling", 50);
         Device::setValue("Sink", 50);
         Device::setValue("RightTrim", 0);
         Device::setValue("LeftTrim", 100);
-        Device::setValue("Ceiling", 65);
-        Device::setValue("Cabinets", 0);
     }
 }
 
