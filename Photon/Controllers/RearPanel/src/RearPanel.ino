@@ -212,13 +212,13 @@ void loop() {
         if( officeMotionChanged > 0 ) {   // Motion detected
 //            if( partOfDay > SUNSET ) {
                 Device::setValue("Piano", 100);
-                Device::setValue("OfficeTrim", 100);
+//                Device::setValue("OfficeTrim", 100);
 //            }
             //TODO: chime?
         } else {                        // Door closed
             // Nothing to do when motion stops
             Device::setValue("Piano", 0);
-            Device::setValue("OfficeTrim", 0);
+//            Device::setValue("OfficeTrim", 0);
         }
     }
 }
@@ -231,6 +231,7 @@ void setAllActivities(int value) {
 void setMorningLights() {
     Log.info("setMorningLights");
     Device::setValue("officeceiling",70);
+    Device::setValue("OfficeTrim", 100);
 }
 
 void setSunriseLights() {
@@ -241,7 +242,9 @@ void setSunriseLights() {
 
 void setEveningLights() {
     Log.info("setEveningLights");
-    Device::setValue("piano", 50);
+    Device::setValue("officeceiling",70);
+    Device::setValue("piano", 100);
+    Device::setValue("OfficeTrim", 100);
     setAllOutsideLights(100);
 }
 
@@ -249,6 +252,7 @@ void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
     setAllInsideLights(0);
+    Device::setValue("piano",70);
     setAllOutsideLights(0);
     Device::setValue("Curtain",0);
 }
