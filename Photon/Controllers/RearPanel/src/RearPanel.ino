@@ -6,6 +6,10 @@ Author: Ron Lisle
  The controller is located in the office above the piano.
  It includes the PartOfDay plugin.
  
+ Photon pin assignments
+ - A2-A4 future 12v monitor ?
+ - A5 PIR
+ 
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed

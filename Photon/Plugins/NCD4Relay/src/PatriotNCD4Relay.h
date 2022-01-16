@@ -37,7 +37,7 @@ class NCD4Relay : public Device
     
     void    begin();
 
-    void    setPercent(int percent);
+    void    setValue(int value);
     void    setOn();
     void    setOff();
 
