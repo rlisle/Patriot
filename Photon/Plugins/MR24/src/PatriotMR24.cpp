@@ -19,22 +19,46 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 
 #define POLL_INTERVAL_MILLIS 100
+#define MESSAGE_HEAD 0x55
+#define ACTIVE_REPORT 0x04
+#define FALL_REPORT 0x06
+
+#define REPORT_RADAR 0x03
+#define REPORT_OTHER 0x05
+
+#define HEARTBEAT 0x01
+#define ABNORMAL 0x02
+#define ENVIRONMENT 0x05
+#define BODYSIGN 0x06
+#define CLOSE_AWAY 0x07
+
+#define CA_BE 0x01
+#define CA_CLOSE 0x02
+#define CA_AWAY 0x03
+#define SOMEBODY_BE 0x01
+#define SOMEBODY_MOVE 0x01
+#define SOMEBODY_STOP 0x00
+#define NOBODY 0x00
+
+// Return values
+#define DETECTED_NOBODY 0
+#define DETECTED_SOMEBODY 50
+#define DETECTED_MOVEMENT 100
 
 /**
  * Constructor
  * @param pinNum int pin number that is connected to the sensor output
  * @param name  String name of the event to send when sensor changes
  */
-MR24::MR24(int pinNum, String name, String room)
-        : Device(name, room),
-        _pin(pinNum)
+MR24::MR24(String name, String room)
+        : Device(name, room)
 {
     _type  = 'M';
     _value = 0;
 }
 
 void MR24::begin() {
-    pinMode(_pin, INPUT);
+    Serial1.begin(9600);
     _lastPollTime = millis();
 }
 
@@ -78,14 +102,57 @@ bool MR24::isTimeToCheckSensor()
  */
 bool MR24::didSensorChange()
 {
-    int pinState = digitalRead(_pin);
-    int newValue = pinState ? 100 : 0;
+    int data[14] = {0};
+    int i = 0;
+    int Msg;
+    int newValue = _value;
+
+    Msg = Serial1.read();
+    if(Msg == MESSAGE_HEAD){
+      for(i = 0; i<14; i++){
+        data[i] = Msg;
+        Msg = Serial1.read();
+        if (Msg == MESSAGE_HEAD){
+            newValue = Situation_judgment(data[5], data[6], data[7], data[8], data[9]);
+            continue;
+        }
+        delay(25);
+       }
+     }
     if(newValue != _value) {
         _value = newValue;
         return true;
     }
-    
     return false;
+}
+
+void MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5){
+  if(ad1 == REPORT_RADAR || ad1 == REPORT_OTHER){
+        if(ad2 == ENVIRONMENT || ad2 == HEARTBEAT){
+          if(ad3 == NOBODY){
+            return NOBODY;
+          }
+          else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_MOVE){
+            Serial.println("radar said somebody move");
+          }
+          else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_STOP){
+            Serial.println("radar said somebody stop");
+          }
+        }
+        else if(ad2 == CLOSE_AWAY){
+          if(ad3 == CA_BE && ad4 == CA_BE){
+            if(ad5 == CA_BE){
+              Serial.println("radar said no move");
+            }
+            else if(ad5 == CA_CLOSE){
+              Serial.println("radar said somebody close");
+            }
+            else if(ad5 == CA_AWAY){
+              Serial.println("radar said somebody away");
+            }
+          }
+        }
+  }
 }
 
 

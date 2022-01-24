@@ -24,6 +24,7 @@ private:
 
     bool      isTimeToCheckSensor();
     bool      didSensorChange();
+    int       situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5);
     void      notify();
     
 public:
