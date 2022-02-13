@@ -1,6 +1,6 @@
 /**
 Left Slide Controller
-Description: This sketch controls the 2 lights and switches in the left slide.
+Description: This sketch controls the 2 lights and sensors in the left slide.
 Author: Ron Lisle
  
   To update Photon:
@@ -8,33 +8,36 @@ Author: Ron Lisle
     2. Update IoT and plugins if needed
     3. "particle flash LeftSlide"
  
-    I/Os selected to be all on the same side
-     2 switch connections:
-       A0 Watch TV
-       A1 Reading
-    2 LED driver boards
-       TX Vertical Lights
-       RX Reading lights
+    D3 HR24 sensor S1
+    D4 HR24 sensor S2
+    D6 DHT11/22
+ 
+    Tx HR24 sensor Rx
+    Rx HR24 sensor Tx
+ 
+    A0 PIR sensor
+    A3 Light sensor
+    A5 LED 2 PWM output
+    A6 (DAC) Voltage monitor R ladder
+    A7 (WKP) LED1 PWM output
+ 
  */
+
 #include <IoT.h>
 #include <PatriotLight.h>
-#include <PatriotSwitch.h>
+//#include <PatriotSwitch.h>
 
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
 
     // Lights
-    Device::add(new Light(TX, "Couch"));
-    Device::add(new Light(RX, "LeftVertical"));
-    
-    // Switches
-    Device::add(new Switch(A0, "CouchSwitch"));
-    Device::add(new Switch(A1, "LeftVerticalSwitch"));
-    
+    Device::add(new Light(WKP, "Couch", "Living Room"));
+    Device::add(new Light(A5, "LeftVertical", "Living Room"));
+        
     // Activities/States
-    Device::add(new Device("sleeping"));
-    Device::add(new Device("partofday"));
-    Device::add(new Device("cleaning"));
+    Device::add(new Device("sleeping", "All"));
+    Device::add(new Device("partofday", "All"));
+    Device::add(new Device("cleaning", "All"));
 }
 
 void loop() {
@@ -71,7 +74,7 @@ void loop() {
 
     if( partOfDayChanged != -1 ) {
 
-        Log.info("partOfDay has changed: %d", partOfDay);
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
             // Turn off lights at sunrise
