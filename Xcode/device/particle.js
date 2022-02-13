@@ -218,6 +218,7 @@ function endpointInfo(name,controller) {
         value = splitValues[1];
     }
     
+    //TODO: parse @location (T:name@location=value)
     let id = name.replace(/\s/g,'').toLocaleLowerCase();    // Remove spaces. Numbers, letters, _-=#;:?@& only
     let friendlyName = name.toLocaleLowerCase();            // Name lower case to simplify compares. No special chars
     let description = name + ' RvSmartHome';  //
