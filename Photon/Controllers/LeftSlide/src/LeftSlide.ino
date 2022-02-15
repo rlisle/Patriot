@@ -18,23 +18,23 @@ Author: Ron Lisle
  */
 #include <IoT.h>
 #include <PatriotLight.h>
-#include <PatriotSwitch.h>
+#include <PatriotPIR.h>
 
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
 
+    // Photon I/O
+    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
+    
     // Lights
-    Device::add(new Light(TX, "Couch"));
-    Device::add(new Light(RX, "LeftVertical"));
-    
-    // Switches
-    Device::add(new Switch(A0, "CouchSwitch"));
-    Device::add(new Switch(A1, "LeftVerticalSwitch"));
-    
+    Device::add(new Light(A7, "Couch", "Living Room", 2));
+    Device::add(new Light(A5, "LeftVertical", "Living Room", 2));
+        
     // Activities/States
-    Device::add(new Device("sleeping"));
-    Device::add(new Device("partofday"));
-    Device::add(new Device("cleaning"));
+    Device::add(new Device("cleaning", "All"));
+    Device::add(new Device("partofday", "All"));
+    Device::add(new Device("sleeping", "All"));
+    Device::add(new Device("watching", "All"));
 }
 
 void loop() {
@@ -44,6 +44,9 @@ void loop() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
+    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+    int watchingChanged = Device::getChangedValue("watching");
+
 
     if( sleepingChanged != -1 ) {
 
@@ -84,6 +87,33 @@ void loop() {
             Log.info("It is dusk");
             setEveningLights();
         }
+        
+        if( watchingChanged != -1 ) {
+            if( watchingChanged > 0 ) {
+                Log.info("watching did turn on");
+                setWatchingLights( 100 );
+            } else {
+                //TODO: check if evening lights s/b on, etc.
+                Log.info("watching did turn off");
+                setWatchingLights( 0 );
+            }
+        }
+        
+        if( livingRoomMotionChanged != -1) {
+            // Just for testing - turn off piano when motion stops
+            if( livingRoomMotionChanged > 0 ) {   // Motion detected
+    //            if( partOfDay > SUNSET ) {
+                    Device::setValue("LeftVertical", 50);
+    //                Device::setValue("OfficeTrim", 100);
+    //            }
+                //TODO: chime?
+            } else {                        // Door closed
+                // Nothing to do when motion stops
+                Device::setValue("LeftVertical", 0);
+    //            Device::setValue("OfficeTrim", 0);
+            }
+        }
+
     }
 
     if( cleaningChanged != -1 ) {
@@ -104,6 +134,7 @@ void loop() {
 
 void setAllActivities(int value) {
     Device::setValue("cleaning", value);
+    Device::setValue("watching", value);
 }
 
 void setAllLights(int value) {
@@ -138,3 +169,9 @@ void setSleepingLights() {
     setAllActivities(0);
     setAllLights(0);
 }
+
+void setWatchingLights(int level) {
+    Log.info("setWatchingLights %d", level);
+    Device::setValue("Couch", 30)
+}
+
