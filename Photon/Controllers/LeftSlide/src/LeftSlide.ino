@@ -22,7 +22,10 @@ Author: Ron Lisle
 
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
+    createDevices();
+}
 
+void createDevices() {
     // Photon I/O
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
     
@@ -87,34 +90,37 @@ void loop() {
             Log.info("It is dusk");
             setEveningLights();
         }
+    }
         
-        if( watchingChanged != -1 ) {
-            if( watchingChanged > 0 ) {
-                Log.info("watching did turn on");
-                setWatchingLights( 100 );
-            } else {
-                //TODO: check if evening lights s/b on, etc.
-                Log.info("watching did turn off");
-                setWatchingLights( 0 );
-            }
+    if( watchingChanged != -1 ) {
+        if( watchingChanged > 0 ) {
+            Log.info("watching did turn on");
+            setWatchingLights( 100 );
+        } else {
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("watching did turn off");
+            setWatchingLights( 0 );
         }
+    }
 
-        if( livingRoomMotionChanged != -1) {
-            //TODO: set goodmorning if between 4:30 am and sunrise
-            // Just for testing - turn off LeftVertical when motion stops
-            if( livingRoomMotionChanged > 0 ) {   // Motion detected
-    //            if( partOfDay > SUNSET ) {
-                    Device::setValue("LeftVertical", 50);
-    //                Device::setValue("OfficeTrim", 100);
-    //            }
-                //TODO: chime?
-            } else {                        // Door closed
-                // Nothing to do when motion stops
-                Device::setValue("LeftVertical", 0);
-    //            Device::setValue("OfficeTrim", 0);
+    if( livingRoomMotionChanged != -1) {
+        
+        int partOfDay = Device::value("PartOfDay");
+
+        // Just for testing - turn off LeftVertical when motion stops
+        if( livingRoomMotionChanged > 0 ) {   // Motion detected
+            if( partOfDay > SUNSET ) {
+                Device::setValue("LeftVertical", 50);
+                
+                if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+                    Device::setValue("sleeping", AWAKE);
+                }
             }
+            //TODO: chime?
+        } else {                        // Door closed
+            // Nothing to do when motion stops
+            Device::setValue("LeftVertical", 0);
         }
-
     }
 
     if( cleaningChanged != -1 ) {
