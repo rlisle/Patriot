@@ -109,8 +109,8 @@ void loop() {
 
         // Just for testing - turn off LeftVertical when motion stops
         if( livingRoomMotionChanged > 0 ) {   // Motion detected
+            Device::setValue("LeftVertical", 50);
             if( partOfDay > SUNSET ) {
-                Device::setValue("LeftVertical", 50);
                 
                 if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
                     Device::setValue("sleeping", AWAKE);
