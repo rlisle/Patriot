@@ -7,34 +7,39 @@ Author: Ron Lisle
     1. Edit this code
     2. Update IoT and plugins if needed
     3. "particle flash LeftSlide"
- 
-    I/Os selected to be all on the same side
-     2 switch connections:
-       A0 Watch TV
-       A1 Reading
+
+  I/O Connections
     2 LED driver boards
-       TX Vertical Lights
-       RX Reading lights
+      A5 Vertical Lights
+      A7 Reading lights (WKP)
+    PIR sensor A0
+    MR24 sensor D3, D4
+ 
  */
 #include <IoT.h>
 #include <PatriotLight.h>
-#include <PatriotSwitch.h>
+#include <PatriotPIR.h>
 
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
+    createDevices();
+}
 
+void createDevices() {
+    // Photon I/O
+    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
+    
     // Lights
-    Device::add(new Light(TX, "Couch"));
-    Device::add(new Light(RX, "LeftVertical"));
-    
-    // Switches
-    Device::add(new Switch(A0, "CouchSwitch"));
-    Device::add(new Switch(A1, "LeftVerticalSwitch"));
-    
+    Device::add(new Light(A7, "Couch", "Living Room", 2));
+    Device::add(new Light(A5, "LeftVertical", "Living Room", 2));
+        
     // Activities/States
-    Device::add(new Device("sleeping"));
-    Device::add(new Device("partofday"));
-    Device::add(new Device("cleaning"));
+    Device::add(new Device("cleaning", "All"));
+    Device::add(new Device("partofday", "All"));
+    Device::add(new Device("sleeping", "All"));
+    Device::add(new Device("watching", "All"));
+    
+    //TODO: Need MR24 device
 }
 
 void loop() {
@@ -44,6 +49,8 @@ void loop() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
+    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+    int watchingChanged = Device::getChangedValue("watching");
 
     if( sleepingChanged != -1 ) {
 
@@ -71,7 +78,7 @@ void loop() {
 
     if( partOfDayChanged != -1 ) {
 
-        Log.info("partOfDay has changed: %d", partOfDay);
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
             // Turn off lights at sunrise
@@ -83,6 +90,37 @@ void loop() {
             // Turn on lights after sunset
             Log.info("It is dusk");
             setEveningLights();
+        }
+    }
+        
+    if( watchingChanged != -1 ) {
+        if( watchingChanged > 0 ) {
+            Log.info("watching did turn on");
+            setWatchingLights( 100 );
+        } else {
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("watching did turn off");
+            setWatchingLights( 0 );
+        }
+    }
+
+    if( livingRoomMotionChanged != -1) {
+        
+        int partOfDay = Device::value("PartOfDay");
+
+        // Just for testing - turn off LeftVertical when motion stops
+        if( livingRoomMotionChanged > 0 ) {   // Motion detected
+            Device::setValue("LeftVertical", 50);
+            if( partOfDay > SUNSET ) {
+                
+                if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+                    Device::setValue("sleeping", AWAKE);
+                }
+            }
+            //TODO: chime?
+        } else {                        // Door closed
+            // Nothing to do when motion stops
+            Device::setValue("LeftVertical", 0);
         }
     }
 
@@ -104,6 +142,7 @@ void loop() {
 
 void setAllActivities(int value) {
     Device::setValue("cleaning", value);
+    Device::setValue("watching", value);
 }
 
 void setAllLights(int value) {
@@ -138,3 +177,9 @@ void setSleepingLights() {
     setAllActivities(0);
     setAllLights(0);
 }
+
+void setWatchingLights(int level) {
+    Log.info("setWatchingLights %d", level);
+    Device::setValue("Couch", 30);
+}
+

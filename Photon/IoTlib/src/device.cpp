@@ -146,6 +146,7 @@ void Device::expose()
 
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
 // It is a comma delimited list of <T>:<Name>@<Room>=<Value>
+// Note: Alexa skill hasn't been updated to support @<room>, so removing it for now.
 void Device::buildDevicesVariable()
 {
     String newVariable = "";
@@ -162,8 +163,8 @@ void Device::buildDevicesVariable()
 
         } else {
             newVariable += String(ptr->_type)+":";
-            newVariable += String(ptr->_name)+"@";
-            newVariable += ptr->_room;
+            newVariable += String(ptr->_name);
+//            newVariable += "@"+ptr->_room;
             newVariable += "="+String(ptr->_value);
             if (ptr->_next != NULL) {
                 newVariable += ",";

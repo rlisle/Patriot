@@ -41,6 +41,9 @@
 		2769F3CA2729644400E8FE57 /* PatriotChecklist.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotChecklist.cpp; path = ../Photon/Plugins/Checklist/src/PatriotChecklist.cpp; sourceTree = "<group>"; };
 		2769F3CB2729644400E8FE57 /* PatriotChecklist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotChecklist.h; path = ../Photon/Plugins/Checklist/src/PatriotChecklist.h; sourceTree = "<group>"; };
 		2769F3CC2729646B00E8FE57 /* checklist.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = checklist.ino; path = ../Photon/Plugins/Checklist/examples/checklist.ino; sourceTree = "<group>"; };
+		277FABEE27C1996100692A74 /* MR24.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MR24.h; path = ../Photon/Plugins/MR24/src/MR24.h; sourceTree = "<group>"; };
+		277FABEF27C1996100692A74 /* MR24.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MR24.cpp; path = ../Photon/Plugins/MR24/src/MR24.cpp; sourceTree = "<group>"; };
+		277FABF127C1998B00692A74 /* MR24.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = MR24.ino; path = ../Photon/Plugins/MR24/examples/MR24.ino; sourceTree = "<group>"; };
 		27841D7527871CE400DFCCFD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/NCD4Relay/src; sourceTree = "<group>"; };
 		27841D7627871CE400DFCCFD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Relay/library.properties; sourceTree = "<group>"; };
 		27841D7727871CFD00DFCCFD /* relay.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = relay.ino; path = ../Photon/Plugins/NCD4Relay/examples/relay/relay.ino; sourceTree = "<group>"; };
@@ -177,6 +180,24 @@
 			);
 			name = Checklist;
 			sourceTree = SOURCE_ROOT;
+		};
+		277FABED27C1990B00692A74 /* MR24 */ = {
+			isa = PBXGroup;
+			children = (
+				277FABF027C1997000692A74 /* Examples */,
+				277FABEF27C1996100692A74 /* MR24.cpp */,
+				277FABEE27C1996100692A74 /* MR24.h */,
+			);
+			name = MR24;
+			sourceTree = "<group>";
+		};
+		277FABF027C1997000692A74 /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+				277FABF127C1998B00692A74 /* MR24.ino */,
+			);
+			name = Examples;
+			sourceTree = "<group>";
 		};
 		27841D7427871C8100DFCCFD /* NCD4Relay */ = {
 			isa = PBXGroup;
@@ -323,6 +344,7 @@
 				2733856125B29C420032BB1F /* Curtain */,
 				E4927CBF257FB05F007B5FDD /* PartOfDay */,
 				E4849C772566B4BB00A39734 /* Light */,
+				277FABED27C1990B00692A74 /* MR24 */,
 				E4849C762566B4B300A39734 /* NCD8Light */,
 				E4849C752566B4A400A39734 /* NCD8Relay */,
 				2733856625B5C5850032BB1F /* NCD4Switch */,

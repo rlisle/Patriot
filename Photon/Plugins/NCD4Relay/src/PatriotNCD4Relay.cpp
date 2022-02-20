@@ -84,12 +84,12 @@ void NCD4Relay::initializeBoard() {
 }
 
 /**
- * Set percent
+ * Set value
  * This is how things are turned on/off in Patriot
- * @param percent Int 0 to 100. 0 = off, >0 = on
+ * @param value Int 0 to 100. 0 = off, >0 = on
  */
-void NCD4Relay::setPercent(int percent) {
-    if(percent == 0) setOff();
+void NCD4Relay::setValue(int value) {
+    if(value == 0) setOff();
     else setOn();
 }
 
@@ -99,9 +99,14 @@ void NCD4Relay::setPercent(int percent) {
 void NCD4Relay::setOn() {
     
     _value = 100;
+    
+Log.info("NCD4Relay current state = " + String::format("%x",_currentState));
 
+    
     byte bitmap = 1 << _relayNum;
     NCD4Relay::_currentState |= bitmap;            // Set relay's bit
+
+Log.info("NCD4Relay new state = " + String::format("%x",_currentState));
 
     byte status;
     int retries = 0;
@@ -124,10 +129,13 @@ void NCD4Relay::setOn() {
 void NCD4Relay::setOff() {
     
     _value = 0;
+    
+Log.info("NCD4Relay current state = " + String::format("%x",_currentState));
 
     byte bitmap = 1 << _relayNum;
     bitmap = 0xff ^ bitmap;
     NCD4Relay::_currentState &= bitmap;
+Log.info("NCD4Relay new state = " + String::format("%x",_currentState));
 
     byte status;
     int retries = 0;
