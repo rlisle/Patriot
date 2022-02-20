@@ -109,8 +109,8 @@ bool MR24::isTimeToCheckSensor()
  */
 bool MR24::didSensorChange()
 {
-    int oldS1 = _s1Value;
-    int oldS2 = _s2Value;
+    int oldS1 = _s1value;
+    int oldS2 = _s2value;
     _s1value = digitalRead(_s1pin);
     _s2value = digitalRead(_s2pin);
     _value = _s1value ? 25 : 0;
