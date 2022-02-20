@@ -52,8 +52,6 @@ void loop() {
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     int watchingChanged = Device::getChangedValue("watching");
 
-    int s1 =
-
     if( sleepingChanged != -1 ) {
 
         Log.info("sleeping has changed %d",sleepingChanged);
