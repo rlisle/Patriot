@@ -23,7 +23,7 @@ Changelog:
 ********************************************************/
 
 #include <IoT.h>
-#include <MR24.h>
+#include <PatriotMR24.h>
 
 IoT *iot;
 
