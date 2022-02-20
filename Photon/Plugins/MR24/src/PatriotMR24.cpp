@@ -58,8 +58,8 @@ MR24::MR24(int s1pin, int s2pin, String name, String room)
     _value = 0;
     _s1value = 0;
     _s2value = 0;
-    _s1pin = s1pinNum;
-    _s2pin = s2pinNum;
+    _s1pin = s1pin;
+    _s2pin = s2pin;
 }
 
 void MR24::begin() {
