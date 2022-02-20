@@ -26,6 +26,7 @@ Author: Ron Lisle
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotPIR.h>
+#include <PatriotMR24.h>
 
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
@@ -33,8 +34,9 @@ void setup() {
 }
 
 void createDevices() {
-    // Photon I/O
+
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
+    Device::add(new MR24(D3, D4, "HumanOnCouch", "Living Room"));
     
     // Lights
     Device::add(new Light(A7, "Couch", "Living Room", 2));
