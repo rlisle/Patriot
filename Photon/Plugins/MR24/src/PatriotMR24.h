@@ -21,6 +21,10 @@ class MR24 : public Device
 private:
     int        _s1pin;                // Either this or use Rx/Tx
     int        _s2pin;                // "
+    
+    int        _s1value;
+    int        _s2value;
+    
     long       _lastPollTime;
 
     bool      isTimeToCheckSensor();

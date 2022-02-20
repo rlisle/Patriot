@@ -51,20 +51,22 @@ All text above must be included in any redistribution.
  * @param pinNum int pin number that is connected to the sensor output
  * @param name  String name of the event to send when sensor changes
  */
-MR24::MR24(int s1pin, int s2pin, String name, String room)
+MR24::MR24(int s1pinNum, int s2pinNum, String name, String room)
         : Device(name, room)
 {
     _type  = 'M';
     _value = 0;
-    _s1pin = s1pin;
-    _s2pin = s2pin;
+    _s1pinValue = 0;
+    _s2pinValue = 0;
+    _s1pinNum = s1pinNum;
+    _s2pinNum = s2pinNum;
 }
 
 void MR24::begin() {
 //    Serial1.begin(9600);
     _lastPollTime = millis();
-    pinMode(_s1pin, INPUT_PULLDOWN);
-    pinMode(_s2pin, INPUT_PULLDOWN);
+    pinMode(_s1pinNum, INPUT_PULLDOWN);
+    pinMode(_s2pinNum, INPUT_PULLDOWN);
 }
 
 /**
@@ -107,13 +109,13 @@ bool MR24::isTimeToCheckSensor()
  */
 bool MR24::didSensorChange()
 {
-    int oldS1 = _s1pin;
-    int oldS2 = _s2pin;
-    _s1pin = digitalRead(_s1Pin);
-    _s2pin = digitalRead(_s2Pin);
-    _value = _s1pin ? 25 : 0;
-    _value += _s2pin ? 50 : 0;
-    return (oldS1 != _s1pin || olds2 != _s2pin);
+    int oldS1 = _s1Value;
+    int oldS2 = _s2Value;
+    _s1value = digitalRead(_s1pin);
+    _s2value = digitalRead(_s2pin);
+    _value = _s1value ? 25 : 0;
+    _value += _s2value ? 50 : 0;
+    return (oldS1 != _s1value || olds2 != _s2value);
     
 // Example code using Rx/Tx instead of S1, S2
 //    int data[14] = {0};
