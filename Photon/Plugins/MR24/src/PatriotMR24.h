@@ -33,7 +33,7 @@ private:
     void      notify();
     
 public:
-    MR24(int s1PinNum, int s2PinNum, String name, String room);
+    MR24(int s1pin, int s2pin, String name, String room);
 
     void begin();
     void loop();

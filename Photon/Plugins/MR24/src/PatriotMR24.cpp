@@ -51,22 +51,22 @@ All text above must be included in any redistribution.
  * @param pinNum int pin number that is connected to the sensor output
  * @param name  String name of the event to send when sensor changes
  */
-MR24::MR24(int s1pinNum, int s2pinNum, String name, String room)
+MR24::MR24(int s1pin, int s2pin, String name, String room)
         : Device(name, room)
 {
     _type  = 'M';
     _value = 0;
-    _s1pinValue = 0;
-    _s2pinValue = 0;
-    _s1pinNum = s1pinNum;
-    _s2pinNum = s2pinNum;
+    _s1value = 0;
+    _s2value = 0;
+    _s1pin = s1pinNum;
+    _s2pin = s2pinNum;
 }
 
 void MR24::begin() {
 //    Serial1.begin(9600);
     _lastPollTime = millis();
-    pinMode(_s1pinNum, INPUT_PULLDOWN);
-    pinMode(_s2pinNum, INPUT_PULLDOWN);
+    pinMode(_s1pin, INPUT_PULLDOWN);
+    pinMode(_s2pin, INPUT_PULLDOWN);
 }
 
 /**
