@@ -1,21 +1,28 @@
 /**
 Left Slide Controller
-Description: This sketch controls the 2 lights and switches in the left slide.
+Description: This sketch controls the 2 lights and sensors in the left slide.
 Author: Ron Lisle
  
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
     3. "particle flash LeftSlide"
-
-  I/O Connections
-    2 LED driver boards
-      A5 Vertical Lights
-      A7 Reading lights (WKP)
-    PIR sensor A0
-    MR24 sensor D3, D4
+ 
+    D3 HR24 sensor S1
+    D4 HR24 sensor S2
+    D6 DHT11/22
+ 
+    Tx HR24 sensor Rx
+    Rx HR24 sensor Tx
+ 
+    A0 PIR sensor
+    A3 Light sensor
+    A5 LED 2 PWM output
+    A6 (DAC) Voltage monitor R ladder
+    A7 (WKP) LED1 PWM output
  
  */
+
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotPIR.h>

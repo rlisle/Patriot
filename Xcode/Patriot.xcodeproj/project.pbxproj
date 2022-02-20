@@ -47,6 +47,11 @@
 		27841D7527871CE400DFCCFD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/NCD4Relay/src; sourceTree = "<group>"; };
 		27841D7627871CE400DFCCFD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Relay/library.properties; sourceTree = "<group>"; };
 		27841D7727871CFD00DFCCFD /* relay.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = relay.ino; path = ../Photon/Plugins/NCD4Relay/examples/relay/relay.ino; sourceTree = "<group>"; };
+		27A0F26C279DE9950021E84D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../Photon/Plugins/MR24/LICENSE; sourceTree = "<group>"; };
+		27A0F26D279DE9950021E84D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Plugins/MR24/README.md; sourceTree = "<group>"; };
+		27A0F26E279DE9950021E84D /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/MR24/library.properties; sourceTree = "<group>"; };
+		27A0F26F279DE9E50021E84D /* PatriotMR24.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotMR24.cpp; path = ../Photon/Plugins/MR24/src/PatriotMR24.cpp; sourceTree = "<group>"; };
+		27A0F270279DE9E50021E84D /* PatriotMR24.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotMR24.h; path = ../Photon/Plugins/MR24/src/PatriotMR24.h; sourceTree = "<group>"; };
 		27AE94DD26F0CC2A004D5CB6 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/Kitchen/src; sourceTree = "<group>"; };
 		27AE94DE26F0CC2A004D5CB6 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/Kitchen/project.properties; sourceTree = "<group>"; };
 		27AE94DF26F0CC2A004D5CB6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/Kitchen/README.md; sourceTree = "<group>"; };
@@ -209,6 +214,18 @@
 			name = NCD4Relay;
 			sourceTree = "<group>";
 		};
+		27A0F26B279DE9640021E84D /* MR24 */ = {
+			isa = PBXGroup;
+			children = (
+				27A0F26F279DE9E50021E84D /* PatriotMR24.cpp */,
+				27A0F270279DE9E50021E84D /* PatriotMR24.h */,
+				27A0F26E279DE9950021E84D /* library.properties */,
+				27A0F26C279DE9950021E84D /* LICENSE */,
+				27A0F26D279DE9950021E84D /* README.md */,
+			);
+			name = MR24;
+			sourceTree = "<group>";
+		};
 		27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */ = {
 			isa = PBXGroup;
 			children = (
@@ -338,6 +355,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				27A0F26B279DE9640021E84D /* MR24 */,
 				27841D7427871C8100DFCCFD /* NCD4Relay */,
 				2769F3C82729635500E8FE57 /* Checklist */,
 				273243FD2709DC1A00F3C21E /* GPS */,

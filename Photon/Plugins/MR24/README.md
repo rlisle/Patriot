@@ -1,43 +1,13 @@
-# PatriotPIR
+# PatriotMR24
 
-A Patriot plugin to support PIR sensor devices.
-
-This library is used to support input switch devices.
-Any Photon I/O pin may be used to provide on/off status.
+A Patriot plugin to support MR24HPB1 24Ghz Human Presence sensor devices.
 
 ## Usage
 
-Include this library in any Photon sketch that needs to support a PIR sensor.
+Include this library in any Photon sketch that needs to support a MR24 sensor.
 Refer to the more complex examples in the main Patriot IoT examples
  directory.
 
-This example creates a single PIR device connected to pin D4.
-
-When the state of the input D4 pin changes, an event named "movement"
-will be published. Other device can define a behavior that uses
-this event.
-
-You can use the Particle.io console to monitor these events.
-
-```
-#include <IoT.h>
-#include <PatriotPIR.h>
-
-IoT *iot;
-
-void setup() {
-    iot = IoT::getInstance();
-    iot->setControllerName("myPhoton");
-    iot->begin();
-
-    PIR *pir1 = new PIR(D4, "movement");
-    iot->addDevice(pir1);
-}
-
-void loop() {
-    iot->loop();
-}
-```
 
 ## Documentation
 
@@ -64,6 +34,6 @@ At this point, you can create a [GitHub pull request](https://help.github.com/ar
 If you wish to make your library public, use `particle library publish` or `Publish` command.
 
 ## LICENSE
-Copyright 2021 Ron Lisle
+Copyright 2022 Ron Lisle
 
 Refer to the included LICENSE file.
