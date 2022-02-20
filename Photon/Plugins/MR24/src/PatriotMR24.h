@@ -19,16 +19,17 @@ All text above must be included in any redistribution.
 class MR24 : public Device
 {
 private:
-    int        _pin;                // Either this or use Rx/Tx
+    int        _s1pin;                // Either this or use Rx/Tx
+    int        _s2pin;                // "
     long       _lastPollTime;
 
     bool      isTimeToCheckSensor();
     bool      didSensorChange();
-    int       situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5);
+//    int       situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5);
     void      notify();
     
 public:
-    MR24(int pinNum, String name, String room);
+    MR24(int s1PinNum, int s2PinNum, String name, String room);
 
     void begin();
     void loop();
