@@ -7,14 +7,14 @@ Author: Ron Lisle
     1. Edit this code
     2. Update IoT and plugins if needed
     3. "particle flash LeftSlide"
- 
-    I/Os selected to be all on the same side
-     2 switch connections:
-       A0 Watch TV
-       A1 Reading
+
+  I/O Connections
     2 LED driver boards
-       TX Vertical Lights
-       RX Reading lights
+      A5 Vertical Lights
+      A7 Reading lights (WKP)
+    PIR sensor A0
+    MR24 sensor D3, D4
+ 
  */
 #include <IoT.h>
 #include <PatriotLight.h>
@@ -38,6 +38,8 @@ void createDevices() {
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
     Device::add(new Device("watching", "All"));
+    
+    //TODO: Need MR24 device
 }
 
 void loop() {
@@ -50,6 +52,7 @@ void loop() {
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     int watchingChanged = Device::getChangedValue("watching");
 
+    int s1 =
 
     if( sleepingChanged != -1 ) {
 
