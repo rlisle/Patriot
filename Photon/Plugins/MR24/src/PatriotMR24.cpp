@@ -115,7 +115,7 @@ bool MR24::didSensorChange()
     _s2value = digitalRead(_s2pin);
     _value = _s1value ? 25 : 0;
     _value += _s2value ? 50 : 0;
-    return (oldS1 != _s1value || olds2 != _s2value);
+    return (oldS1 != _s1value || oldS2 != _s2value);
     
 // Example code using Rx/Tx instead of S1, S2
 //    int data[14] = {0};
