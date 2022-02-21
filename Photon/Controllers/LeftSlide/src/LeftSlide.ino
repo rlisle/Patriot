@@ -34,9 +34,9 @@ void setup() {
 }
 
 void createDevices() {
-
+    // Sensors
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
-    Device::add(new MR24(D3, D4, "HumanOnCouch", "Living Room"));
+    Device::add(new MR24(D3, D4, "CouchPresence", "Living Room"));
     
     // Lights
     Device::add(new Light(A7, "Couch", "Living Room", 2));
@@ -47,25 +47,23 @@ void createDevices() {
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
     Device::add(new Device("watching", "All"));
-    
-    //TODO: Need MR24 device
 }
 
 void loop() {
-
     IoT::loop();
 
     int sleepingChanged = Device::getChangedValue("sleeping");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+    int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     int watchingChanged = Device::getChangedValue("watching");
 
+    int partOfDay = Device::value("PartOfDay");
+    
     if( sleepingChanged != -1 ) {
 
         Log.info("sleeping has changed %d",sleepingChanged);
-
-        int partOfDay = Device::value("PartOfDay");
 
         // Alexa, Good morning
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
@@ -115,8 +113,6 @@ void loop() {
 
     if( livingRoomMotionChanged != -1) {
         
-        int partOfDay = Device::value("PartOfDay");
-
         // Just for testing - turn off LeftVertical when motion stops
         if( livingRoomMotionChanged > 0 ) {   // Motion detected
             Device::setValue("LeftVertical", 50);
@@ -130,6 +126,16 @@ void loop() {
         } else {                        // Door closed
             // Nothing to do when motion stops
             Device::setValue("LeftVertical", 0);
+        }
+    }
+
+    if( couchPresenceChanged != -1) {
+        
+        // Just for testing - set couch to presence value
+        if( couchPresenceChanged > 0 ) {            // Presence detected
+            Device::setValue("Couch", couchPresenceChanged);
+            
+            //TODO: handle watching TV
         }
     }
 
