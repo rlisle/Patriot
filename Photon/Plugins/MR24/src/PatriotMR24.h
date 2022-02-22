@@ -19,7 +19,7 @@ All text above must be included in any redistribution.
 class MR24 : public Device
 {
 private:
-    int        _s1pin;                // Either this or use Rx/Tx
+    int        _s1pin;                // Use Rx/Tx if both 0
     int        _s2pin;                // "
     
     int        _s1value;
@@ -27,9 +27,12 @@ private:
     
     long       _lastPollTime;
 
+    bool      usingS1S2();
     bool      isTimeToCheckSensor();
     bool      didSensorChange();
-//    int       situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5);
+    bool      didS1S2sensorChange();
+    bool      didRxTxSensorChange();
+    int       situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5);
     void      notify();
     
 public:

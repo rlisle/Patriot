@@ -2,7 +2,7 @@
 PatriotMR24 plugin
 
 Features:
--
+- Use Rx/Tx if pins specified as 0,0
 
 http://www.github.com/rlisle/Patriot
 
@@ -63,10 +63,13 @@ MR24::MR24(int s1pin, int s2pin, String name, String room)
 }
 
 void MR24::begin() {
-//    Serial1.begin(9600);
     _lastPollTime = millis();
-    pinMode(_s1pin, INPUT_PULLDOWN);
-    pinMode(_s2pin, INPUT_PULLDOWN);
+    if (usingS1S2()) {
+        pinMode(_s1pin, INPUT_PULLDOWN);
+        pinMode(_s2pin, INPUT_PULLDOWN);
+    } else {
+        Serial1.begin(9600);
+    }
 }
 
 /**
@@ -86,6 +89,10 @@ void MR24::loop()
 
 
 // Private Helper Methods
+bool MR24::usingS1S2() {
+    return (_s1pin > 0 && _s2pin > 0);
+}
+
 /**
  * isTimeToCheckSensor()
  * @return bool if enough time has elapsed to sample switch again
@@ -107,7 +114,15 @@ bool MR24::isTimeToCheckSensor()
  *
  * @return bool if switch has changed since last reading
  */
-bool MR24::didSensorChange()
+bool MR24::didSensorChange() {
+    if(usingS1S2()) {
+        return didS1S2sensorChange();
+    } else {
+        
+    }
+}
+
+bool MR24::didS1S2sensorChange()
 {
     int oldS1 = _s1value;
     int oldS2 = _s2value;
@@ -116,60 +131,62 @@ bool MR24::didSensorChange()
     _value = _s1value ? 25 : 0;
     _value += _s2value ? 50 : 0;
     return (oldS1 != _s1value || oldS2 != _s2value);
-    
-// Example code using Rx/Tx instead of S1, S2
-//    int data[14] = {0};
-//    int i = 0;
-//    int Msg;
-//    int newValue = _value;
-//
-//    Msg = Serial1.read();
-//    if(Msg == MESSAGE_HEAD){
-//      for(i = 0; i<14; i++){
-//        data[i] = Msg;
-//        Msg = Serial1.read();
-//        if (Msg == MESSAGE_HEAD){
-//            newValue = Situation_judgment(data[5], data[6], data[7], data[8], data[9]);
-//            continue;
-//        }
-//        delay(25);
-//       }
-//     }
-//    if(newValue != _value) {
-//        _value = newValue;
-//        return true;
-//    }
-//    return false;
 }
 
-//void MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5){
-//  if(ad1 == REPORT_RADAR || ad1 == REPORT_OTHER){
-//        if(ad2 == ENVIRONMENT || ad2 == HEARTBEAT){
-//          if(ad3 == NOBODY){
-//            return NOBODY;
-//          }
-//          else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_MOVE){
-//            Serial.println("radar said somebody move");
-//          }
-//          else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_STOP){
-//            Serial.println("radar said somebody stop");
-//          }
-//        }
-//        else if(ad2 == CLOSE_AWAY){
-//          if(ad3 == CA_BE && ad4 == CA_BE){
-//            if(ad5 == CA_BE){
-//              Serial.println("radar said no move");
-//            }
-//            else if(ad5 == CA_CLOSE){
-//              Serial.println("radar said somebody close");
-//            }
-//            else if(ad5 == CA_AWAY){
-//              Serial.println("radar said somebody away");
-//            }
-//          }
-//        }
-//  }
-//}
+bool MR24::didTxRxSensorChange()
+{
+    int data[14] = {0};
+    int i = 0;
+    int Msg;
+    int newValue = _value;
+
+    Msg = Serial1.read();
+    if(Msg == MESSAGE_HEAD){
+      for(i = 0; i<14; i++){
+        data[i] = Msg;
+        Msg = Serial1.read();
+        if (Msg == MESSAGE_HEAD){
+            newValue = Situation_judgment(data[5], data[6], data[7], data[8], data[9]);
+            continue;
+        }
+        delay(25);
+       }
+     }
+    if(newValue != _value) {
+        _value = newValue;
+        return true;
+    }
+    return false;
+}
+
+void MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5){
+  if(ad1 == REPORT_RADAR || ad1 == REPORT_OTHER){
+        if(ad2 == ENVIRONMENT || ad2 == HEARTBEAT){
+          if(ad3 == NOBODY){
+            return NOBODY;
+          }
+          else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_MOVE){
+            Serial.println("radar said somebody move");
+          }
+          else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_STOP){
+            Serial.println("radar said somebody stop");
+          }
+        }
+        else if(ad2 == CLOSE_AWAY){
+          if(ad3 == CA_BE && ad4 == CA_BE){
+            if(ad5 == CA_BE){
+              Serial.println("radar said no move");
+            }
+            else if(ad5 == CA_CLOSE){
+              Serial.println("radar said somebody close");
+            }
+            else if(ad5 == CA_AWAY){
+              Serial.println("radar said somebody away");
+            }
+          }
+        }
+  }
+}
 
 
 /**
