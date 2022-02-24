@@ -31,7 +31,7 @@ private:
     bool      isTimeToCheckSensor();
     bool      didSensorChange();
     bool      didS1S2sensorChange();
-    bool      didRxTxSensorChange();
+    bool      didTxRxSensorChange();
     int       situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5);
     void      notify();
     
@@ -40,6 +40,8 @@ public:
 
     void begin();
     void loop();
+
+    String status;    // String representation of last received data packet
     
     // Override to prevent MQTT from setting _percent.
     void setValue(int percent) { return; };

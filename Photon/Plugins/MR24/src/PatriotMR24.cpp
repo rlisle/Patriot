@@ -19,7 +19,7 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 
 // All this stuff is in case we want to use Rx/Tx instead of S1, S2
-#define POLL_INTERVAL_MILLIS 100
+#define POLL_INTERVAL_MILLIS 2000
 #define MESSAGE_HEAD 0x55
 #define ACTIVE_REPORT 0x04
 #define FALL_REPORT 0x06
@@ -43,7 +43,9 @@ All text above must be included in any redistribution.
 
 // Return values
 #define DETECTED_NOBODY 0
+#define DETECTED_SOMEBODY_FAR 25
 #define DETECTED_SOMEBODY 50
+#define DETECTED_SOMEBODY_CLOSE 75
 #define DETECTED_MOVEMENT 100
 
 /**
@@ -60,6 +62,7 @@ MR24::MR24(int s1pin, int s2pin, String name, String room)
     _s2value = 0;
     _s1pin = s1pin;
     _s2pin = s2pin;
+    status = "None";
 }
 
 void MR24::begin() {
@@ -118,7 +121,7 @@ bool MR24::didSensorChange() {
     if(usingS1S2()) {
         return didS1S2sensorChange();
     } else {
-        
+        return didTxRxSensorChange();
     }
 }
 
@@ -137,20 +140,44 @@ bool MR24::didTxRxSensorChange()
 {
     int data[14] = {0};
     int i = 0;
+    int length = 0;
+    int function = 0;
+    int address = 0;
     int Msg;
     int newValue = _value;
 
+    // This looks wrong. It's using 0x55 start byte of next packet to identify the end of the previous.
+    // Also, it is storing the start byte into data[0], but reading data from data[5-9]
+    //  but data would be in data[6-10] if data[0] is 0x55.
     Msg = Serial1.read();
     if(Msg == MESSAGE_HEAD){
-      for(i = 0; i<14; i++){
-        data[i] = Msg;
-        Msg = Serial1.read();
-        if (Msg == MESSAGE_HEAD){
-            newValue = Situation_judgment(data[5], data[6], data[7], data[8], data[9]);
-            continue;
-        }
         delay(25);
-       }
+        length = Serial1.read();
+        delay(25);
+        length += Serial1.read() << 8;
+        delay(25);
+        function = Serial1.read();
+        delay(25);
+        address = Serial1.read();
+        delay(25);
+        address += Serial1.read() << 8;
+        delay(25);
+        for(i=0; i<length-7; i++) {
+            data[i] = Serial1.read();
+            delay(25);
+        }
+        newValue = situation_judgment(data[0], data[1], data[2], data[3], data[4]);
+        status = String::format("Status result=%d, length=%d, function=%d, address=%d, data=%d, %d, %d, %d, %d",newValue,length,function,address,data[0],data[1],data[2], data[3], data[4])
+        
+//      for(i = 0; i<14; i++){
+//        data[i] = Msg;              // We don't really need to save the 0x55
+//        Msg = Serial1.read();
+//        if (Msg == MESSAGE_HEAD){
+//            newValue = situation_judgment(data[5], data[6], data[7], data[8], data[9]);
+//            continue;
+//        }
+//        delay(25);
+//       }
      }
     if(newValue != _value) {
         _value = newValue;
@@ -159,33 +186,40 @@ bool MR24::didTxRxSensorChange()
     return false;
 }
 
-void MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5){
-  if(ad1 == REPORT_RADAR || ad1 == REPORT_OTHER){
-        if(ad2 == ENVIRONMENT || ad2 == HEARTBEAT){
-          if(ad3 == NOBODY){
-            return NOBODY;
-          }
-          else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_MOVE){
-            Serial.println("radar said somebody move");
-          }
-          else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_STOP){
-            Serial.println("radar said somebody stop");
-          }
+int MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5)
+{
+    if(ad1 == REPORT_RADAR || ad1 == REPORT_OTHER){ // 0x03, 0x05
+        if(ad2 == ENVIRONMENT || ad2 == HEARTBEAT){ // 0x05, 0x01
+            if(ad3 == NOBODY){                      // 0x00
+                return DETECTED_NOBODY;             // 0
+            }
+            else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_MOVE){
+                Serial.println("radar said somebody move");
+                return DETECTED_MOVEMENT;
+            }
+            else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_STOP){
+                Serial.println("radar said somebody stop");
+                return DETECTED_SOMEBODY;
+            }
         }
         else if(ad2 == CLOSE_AWAY){
-          if(ad3 == CA_BE && ad4 == CA_BE){
-            if(ad5 == CA_BE){
-              Serial.println("radar said no move");
+            if(ad3 == CA_BE && ad4 == CA_BE){
+                if(ad5 == CA_BE){
+                    Serial.println("radar said no move");
+                    return DETECTED_SOMEBODY;
+                }
+                else if(ad5 == CA_CLOSE){
+                    Serial.println("radar said somebody close");
+                    return DETECTED_SOMEBODY_CLOSE;
+                }
+                else if(ad5 == CA_AWAY){
+                    Serial.println("radar said somebody away");
+                    return DETECTED_SOMEBODY_FAR;
+                }
             }
-            else if(ad5 == CA_CLOSE){
-              Serial.println("radar said somebody close");
-            }
-            else if(ad5 == CA_AWAY){
-              Serial.println("radar said somebody away");
-            }
-          }
         }
-  }
+    }
+    return DETECTED_NOBODY;
 }
 
 
