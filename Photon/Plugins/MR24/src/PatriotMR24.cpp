@@ -62,7 +62,6 @@ MR24::MR24(int s1pin, int s2pin, String name, String room)
     _s2value = 0;
     _s1pin = s1pin;
     _s2pin = s2pin;
-    status = "None";
 }
 
 void MR24::begin() {
@@ -143,6 +142,7 @@ bool MR24::didTxRxSensorChange()
     int length = 0;
     int function = 0;
     int address = 0;
+    int chksum = 0;
     int Msg;
     int newValue = _value;
 
@@ -166,8 +166,14 @@ bool MR24::didTxRxSensorChange()
             data[i] = Serial1.read();
             delay(25);
         }
+        chksum = Serial1.read();
+        delay(25);
+        chksum += Serial1.read() << 8;
+        
         newValue = situation_judgment(data[0], data[1], data[2], data[3], data[4]);
-        status = String::format("Status result=%d, length=%d, function=%d, address=%d, data=%d, %d, %d, %d, %d",newValue,length,function,address,data[0],data[1],data[2], data[3], data[4])
+        String status = String::format("Status result=%d, length=%d, function=%d, address=%x, data=%d, %d, %d, %d, %d chksum=%x",newValue,length,function,address,data[0],data[1],data[2], data[3], data[4],chksum);
+        IoT::mqttPublish("DEBUG:",status);
+
         
 //      for(i = 0; i<14; i++){
 //        data[i] = Msg;              // We don't really need to save the 0x55
