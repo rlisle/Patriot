@@ -19,7 +19,7 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 
 // All this stuff is in case we want to use Rx/Tx instead of S1, S2
-#define POLL_INTERVAL_MILLIS 2000
+#define POLL_INTERVAL_MILLIS 500
 #define MESSAGE_HEAD 0x55
 #define ACTIVE_REPORT 0x04
 #define FALL_REPORT 0x06
@@ -62,6 +62,7 @@ MR24::MR24(int s1pin, int s2pin, String name, String room)
     _s2value = 0;
     _s1pin = s1pin;
     _s2pin = s2pin;
+    _index = 0;
 }
 
 void MR24::begin() {
@@ -70,7 +71,7 @@ void MR24::begin() {
         pinMode(_s1pin, INPUT_PULLDOWN);
         pinMode(_s2pin, INPUT_PULLDOWN);
     } else {
-        Serial1.begin(9600);
+        Serial1.begin(9600);    // 9600 baud, default 8 bits, no parity, 1 stop bit SERIAL_8N1
     }
 }
 
@@ -101,6 +102,8 @@ bool MR24::usingS1S2() {
  */
 bool MR24::isTimeToCheckSensor()
 {
+    if(!usingS1S2()) return true;
+    
     long currentTime = millis();
     if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
     {
@@ -137,59 +140,128 @@ bool MR24::didS1S2sensorChange()
 
 bool MR24::didTxRxSensorChange()
 {
-    int data[14] = {0};
-    int i = 0;
+    int Msg;
+    int prevValue = _value;
+
+    while(Serial1.available()) {
+        Msg = Serial1.read();
+        if(Msg == MESSAGE_HEAD && _index > 0){  // Skip first time
+            _index = 0;             // Loop back to start of buffer
+            _value = situation_judgment(_data[5], _data[6], _data[7], _data[8], _data[9]);
+            logMessage();
+        }
+        if(_index < 14) {
+            _data[_index++] = Msg;
+        }
+    }
+    return _value != prevValue;
+}
+
+//    Msg = Serial1.read();
+//    if(Msg == MESSAGE_HEAD){
+//        delay(25);
+//        length = Serial1.read();
+//        delay(25);
+//        length += Serial1.read() << 8;
+//        delay(25);
+//        function = Serial1.read();
+//        delay(25);
+//        address1 = Serial1.read();
+//        delay(25);
+//        address2 = Serial1.read();
+//        delay(25);
+//        for(i=0; i<length-7; i++) {
+//            data[i] = Serial1.read();
+//            delay(25);
+//        }
+//        chksum = Serial1.read();
+//        delay(25);
+//        chksum += Serial1.read() << 8;
+//
+//        newValue = situation_judgment(data[0], data[1], data[2], data[3], data[4]);
+//
+//        if(function == 4) {
+//            String proactive = "Proactive ";
+//            if(address1 == 1) {
+//                proactive += "module ID ";  // address2 s/b 2
+//            }
+//            if(address1 == 3){
+//                if(address2 == 5) {
+//                    if(data[0]==0 && data[1]==255 && data[2] == 255) proactive += "radar unoccupied ";
+//                    if(data[0]==1 && data[1]==0 && data[2] == 255) proactive += "radar stationary ";
+//                    if(data[0]==1 && data[1]==1 && data[2] == 1) proactive += "radar people moving ";
+//                }
+//                if(address2 == 6) {
+//                    proactive += "radar motor (float) ";
+//                }
+//                if(address2 == 7) {
+//                    if(data[0]==1 && data[1]==1 && data[2] == 1) proactive += "radar approaching away none ";
+//                    if(data[0]==1 && data[1]==1 && data[2] == 2) proactive += "radar approaching away close ";
+//                    if(data[0]==1 && data[1]==1 && data[2] == 3) proactive += "radar approaching stay away ";
+//                }
+//            }
+//            if(address1 == 5) {
+//                if(address2 == 1) {
+//                    if(data[0]==0 && data[1]==255 && data[2] == 255) proactive += "radar Heartbeat unoccupied ";
+//                    if(data[0]==1 && data[1]==0 && data[2] == 255) proactive += "radar Heartbeat stationary ";
+//                    if(data[0]==1 && data[1]==1 && data[2] == 1) proactive += "radar Heartbeat people moving ";
+//                }
+//            }
+//            IoT::mqttPublish("DEBUG1:",proactive);
+//
+//        } else {
+//            String status = String::format("Status %d, len=%d, func=%d, a1=%d, a2=%d data: %d, %d, %d, %d, %d chksum=%x",newValue,length,function,address1,address2,data[0],data[1],data[2], data[3], data[4],chksum);
+//            IoT::mqttPublish("DEBUG2:",status);
+//        }
+//}
+
+void MR24::logMessage() {
     int length = 0;
     int function = 0;
-    int address = 0;
-    int chksum = 0;
-    int Msg;
-    int newValue = _value;
+    int address1 = 0;
+    int address2 = 0;
 
-    // This looks wrong. It's using 0x55 start byte of next packet to identify the end of the previous.
-    // Also, it is storing the start byte into data[0], but reading data from data[5-9]
-    //  but data would be in data[6-10] if data[0] is 0x55.
-    Msg = Serial1.read();
-    if(Msg == MESSAGE_HEAD){
-        delay(25);
-        length = Serial1.read();
-        delay(25);
-        length += Serial1.read() << 8;
-        delay(25);
-        function = Serial1.read();
-        delay(25);
-        address = Serial1.read();
-        delay(25);
-        address += Serial1.read() << 8;
-        delay(25);
-        for(i=0; i<length-7; i++) {
-            data[i] = Serial1.read();
-            delay(25);
+    length = _data[1] + (_data[2] << 8);
+    function = _data[3];
+    address1 = _data[4];
+    address2 = _data[5];
+    // Data in data[6-10]
+    //TODO: account for length
+    //TODO: get and check CRC
+
+    if(function == 4) {
+        String proactive = "Proactive ";
+        if(address1 == 1) {
+            proactive += "module ID ";  // address2 s/b 2
         }
-        chksum = Serial1.read();
-        delay(25);
-        chksum += Serial1.read() << 8;
-        
-        newValue = situation_judgment(data[0], data[1], data[2], data[3], data[4]);
-        String status = String::format("Status result=%d, length=%d, function=%d, address=%x, data=%d, %d, %d, %d, %d chksum=%x",newValue,length,function,address,data[0],data[1],data[2], data[3], data[4],chksum);
-        IoT::mqttPublish("DEBUG:",status);
+        if(address1 == 3){
+            if(address2 == 5) {
+                if(_data[6]==0 && _data[7]==255 && _data[8] == 255) proactive += "radar unoccupied ";
+                if(_data[6]==1 && _data[7]==0 && _data[8] == 255) proactive += "radar stationary ";
+                if(_data[6]==1 && _data[7]==1 && _data[8] == 1) proactive += "radar people moving ";
+            }
+            if(address2 == 6) {
+                proactive += "radar motor (float) ";
+            }
+            if(address2 == 7) {
+                if(_data[6]==1 && _data[7]==1 && _data[8] == 1) proactive += "radar approaching away none ";
+                if(_data[6]==1 && _data[7]==1 && _data[8] == 2) proactive += "radar approaching away close ";
+                if(_data[6]==1 && _data[7]==1 && _data[8] == 3) proactive += "radar approaching stay away ";
+            }
+        }
+        if(address1 == 5) {
+            if(address2 == 1) {
+                if(_data[6]==0 && _data[7]==255 && _data[8] == 255) proactive += "radar Heartbeat unoccupied ";
+                if(_data[6]==1 && _data[7]==0 && _data[8] == 255) proactive += "radar Heartbeat stationary ";
+                if(_data[6]==1 && _data[7]==1 && _data[8] == 1) proactive += "radar Heartbeat people moving ";
+            }
+        }
+        Log.info(proactive);
 
-        
-//      for(i = 0; i<14; i++){
-//        data[i] = Msg;              // We don't really need to save the 0x55
-//        Msg = Serial1.read();
-//        if (Msg == MESSAGE_HEAD){
-//            newValue = situation_judgment(data[5], data[6], data[7], data[8], data[9]);
-//            continue;
-//        }
-//        delay(25);
-//       }
-     }
-    if(newValue != _value) {
-        _value = newValue;
-        return true;
+    } else {
+        String status = String::format("Status %d, len=%d, func=%d, a1=%d, a2=%d data: %d, %d, %d, %d, %d ", _value,length,function,address1,address2,_data[6],_data[7],_data[8], _data[9], _data[10]);
+        Log.info(status);
     }
-    return false;
 }
 
 int MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5)
@@ -200,26 +272,26 @@ int MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5)
                 return DETECTED_NOBODY;             // 0
             }
             else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_MOVE){
-                Serial.println("radar said somebody move");
+                Log.info("radar said somebody move");
                 return DETECTED_MOVEMENT;
             }
             else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_STOP){
-                Serial.println("radar said somebody stop");
+                Log.info("radar said somebody stop");
                 return DETECTED_SOMEBODY;
             }
         }
         else if(ad2 == CLOSE_AWAY){
             if(ad3 == CA_BE && ad4 == CA_BE){
                 if(ad5 == CA_BE){
-                    Serial.println("radar said no move");
+                    Log.info("radar said no move");
                     return DETECTED_SOMEBODY;
                 }
                 else if(ad5 == CA_CLOSE){
-                    Serial.println("radar said somebody close");
+                    Log.info("radar said somebody close");
                     return DETECTED_SOMEBODY_CLOSE;
                 }
                 else if(ad5 == CA_AWAY){
-                    Serial.println("radar said somebody away");
+                    Log.info("radar said somebody away");
                     return DETECTED_SOMEBODY_FAR;
                 }
             }

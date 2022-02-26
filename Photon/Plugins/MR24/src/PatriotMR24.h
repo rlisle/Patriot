@@ -26,6 +26,9 @@ private:
     int        _s2value;
     
     long       _lastPollTime;
+    
+    int         _data[14];              // Typically 10 or 11 used
+    int         _index;                 // Current position in _data
 
     bool      usingS1S2();
     bool      isTimeToCheckSensor();
@@ -34,6 +37,7 @@ private:
     bool      didTxRxSensorChange();
     int       situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5);
     void      notify();
+    void      logMessage();
     
 public:
     MR24(int s1pin, int s2pin, String name, String room);
