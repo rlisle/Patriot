@@ -30,6 +30,9 @@ private:
     int         _data[14];              // Typically 10 or 11 used
     int         _index;                 // Current position in _data
 
+    String    _statusMessage;
+    String    _prevStatusMessage;
+    
     bool      usingS1S2();
     bool      isTimeToCheckSensor();
     bool      didSensorChange();

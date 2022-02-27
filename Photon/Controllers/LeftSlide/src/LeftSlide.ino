@@ -36,8 +36,7 @@ void setup() {
 void createDevices() {
     // Sensors
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
-//    Device::add(new MR24(D3, D4, "CouchPresence", "Living Room"));
-    Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));
+    Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Lights
     Device::add(new Light(A7, "Couch", "Living Room", 2));
