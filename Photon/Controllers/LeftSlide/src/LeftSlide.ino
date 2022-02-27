@@ -52,11 +52,11 @@ void createDevices() {
 void loop() {
     IoT::loop();
 
-    int sleepingChanged = Device::getChangedValue("sleeping");
-    int partOfDayChanged = Device::getChangedValue("partofday");
     int cleaningChanged = Device::getChangedValue("cleaning");
-    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
+    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    int sleepingChanged = Device::getChangedValue("sleeping");
     int watchingChanged = Device::getChangedValue("watching");
 
     int partOfDay = Device::value("PartOfDay");
@@ -117,7 +117,8 @@ void loop() {
         if( livingRoomMotionChanged > 0 ) {   // Motion detected
             Device::setValue("LeftVertical", 50);
             if( partOfDay > SUNSET ) {
-                
+
+                // This doesn't appear to be working.
                 if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
                     Device::setValue("sleeping", AWAKE);
                 }

@@ -42,6 +42,7 @@ All text above must be included in any redistribution.
 #define NOBODY 0x00
 
 // Return values
+#define DETECTED_NOTHING -1
 #define DETECTED_NOBODY 0
 #define DETECTED_SOMEBODY_FAR 25
 #define DETECTED_SOMEBODY 50
@@ -57,14 +58,14 @@ MR24::MR24(int s1pin, int s2pin, String name, String room)
         : Device(name, room)
 {
     _type  = 'M';
-    _value = DETECTED_NOBODY;
+    _value = DETECTED_NOTHING;
     _s1value = 0;
     _s2value = 0;
     _s1pin = s1pin;
     _s2pin = s2pin;
     _index = 0;
-    _statusMessage = "None";
-    _prevStatusMessage = "None";
+    _statusMessage = "Init";
+    _prevStatusMessage = "Init";
 }
 
 void MR24::begin() {
@@ -74,6 +75,8 @@ void MR24::begin() {
         pinMode(_s2pin, INPUT_PULLDOWN);
     } else {
         Serial1.begin(9600);    // 9600 baud, default 8 bits, no parity, 1 stop bit SERIAL_8N1
+        sendScene(3);       // bedroom
+        sendSensitivity(8); // default 7
     }
 }
 
@@ -149,8 +152,10 @@ bool MR24::didTxRxSensorChange()
         Msg = Serial1.read();
         if(Msg == MESSAGE_HEAD && _index > 0){  // Skip first time
             _index = 0;             // Loop back to start of buffer
-            _value = situation_judgment(_data[5], _data[6], _data[7], _data[8], _data[9]);
-            logMessage();
+            int newValue = situation_judgment(_data[5], _data[6], _data[7], _data[8], _data[9]);
+            if(newValue > DETECTED_NOTHING) {
+                _value = newValue;
+            }
         }
         if(_index < 14) {
             _data[_index++] = Msg;
@@ -215,32 +220,57 @@ int MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5)
     if(ad1 == REPORT_RADAR || ad1 == REPORT_OTHER){ // 0x03, 0x05
         if(ad2 == ENVIRONMENT || ad2 == HEARTBEAT){ // 0x05, 0x01
             if(ad3 == NOBODY){                      // 0x00
+                _statusMessage = "Couch nobody";
                 return DETECTED_NOBODY;             // 0
             }
             else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_MOVE){
+                _statusMessage = "Couch movement";
                 return DETECTED_MOVEMENT;           // 100
             }
             else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_STOP){
+                _statusMessage = "Couch occupied stop";
                 return DETECTED_SOMEBODY;           // 50
             }
         }
         else if(ad2 == CLOSE_AWAY){
             if(ad3 == CA_BE && ad4 == CA_BE){
                 if(ad5 == CA_BE){
+                    _statusMessage = "Couch occupied";
                     return DETECTED_SOMEBODY;       // 50
                 }
                 else if(ad5 == CA_CLOSE){
+                    _statusMessage = "Couch occupied close";
                     return DETECTED_SOMEBODY_CLOSE; // 75
                 }
                 else if(ad5 == CA_AWAY){
+                    _statusMessage = "Couch occupied away";
                     return DETECTED_SOMEBODY_FAR;   // 25
                 }
             }
         }
     }
-    return DETECTED_NOBODY;
+    _statusMessage = "Couch nothing";
+    return DETECTED_NOTHING;
 }
 
+void MR24::sendScene(int scene) {
+    int data[10] = { 0x55, 10, 0, 2, 4, 16, 0, 0, 0 };
+    
+    data[6] = scene;
+    int crc = calcCRC(data);
+    data[7] = crc & 0xff;
+    data[8] = (crc << 8) & 0xff;
+}
+
+void MR24::sendSensitivity(int sensitivity) {
+    
+}
+
+int MR24::calcCRC(int *data, int length) {
+    int crc = 0;
+    //TODO: refer to doc Appendex 1
+    return crc;
+}
 
 /**
  * notify()
@@ -248,10 +278,37 @@ int MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5)
  */
 void MR24::notify()
 {
+    logMessage();
     Log.info("Radar change from "+_prevStatusMessage+" to "+_statusMessage);
-    _prevStatusMessage = _statusMessage;
+    _prevStatusMessage = _statusMe ssage;
     
     String topic = "patriot/" + _name;
     String message = String(_value);
-    IoT::mqttPublish(topic,message);
+     IoT::mqttPublish(topic,message);
 }
+
+const unsigned char cuc_CRCHi[25 6]=
+{
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+0x00, 0xC1, 0x81, 0x40
+};

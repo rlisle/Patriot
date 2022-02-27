@@ -39,6 +39,8 @@ private:
     bool      didS1S2sensorChange();
     bool      didTxRxSensorChange();
     int       situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5);
+    void      sendScene(int scene);
+    void      sendSensitivity(int sensitivity);
     void      notify();
     void      logMessage();
     
