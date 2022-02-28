@@ -13,6 +13,9 @@ Written by Ron Lisle
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
+ Messages:
+ 0x55, LLo, LHi, Fn, A1, A2, Data, CrcL, CrcH
+ 
 ******************************************************************/
 
 #include "PatriotMR24.h"
@@ -143,6 +146,13 @@ bool MR24::didS1S2sensorChange()
     return (oldS1 != _s1value || oldS2 != _s2value);
 }
 
+/**
+ Receive any data.
+ If complete message received:
+ * Set value
+ * Return true if value changed
+ _index can be used to determine if any data was received
+ */
 bool MR24::didTxRxSensorChange()
 {
     int Msg;
@@ -150,99 +160,73 @@ bool MR24::didTxRxSensorChange()
 
     while(Serial1.available()) {
         Msg = Serial1.read();
-        if(Msg == MESSAGE_HEAD && _index > 0){  // Skip first time
-            _index = 0;             // Loop back to start of buffer
-            int newValue = situation_judgment(_data[5], _data[6], _data[7], _data[8], _data[9]);
+        if(Msg == MESSAGE_HEAD && _index > 0){      // Skip first time
+            _index = 0;                             // Loop back to start of buffer
+            parseMessage();
+            int newValue = situation_judgment();    //was passing _data[5], _data[6], _data[7], _data[8], _data[9]
             if(newValue > DETECTED_NOTHING) {
                 _value = newValue;
             }
         }
-        if(_index < 14) {
+        if(_index < 14) {   // Safety check. Should not happen.
             _data[_index++] = Msg;
         }
     }
     return _value != prevValue;
 }
 
-
-void MR24::logMessage() {
-    int length = 0;
-    int function = 0;
-    int address1 = 0;
-    int address2 = 0;
-
-    length = _data[1] + (_data[2] << 8);
-    function = _data[3];
-    address1 = _data[4];
-    address2 = _data[5];
-    // Data in data[6-10]
-    //TODO: account for length
-    //TODO: get and check CRC
-
-//    if(function == 4) {
-//        String proactive = "Radar ";
-//        if(address1 == 1) {
-//            proactive += "module ID ";  // address2 s/b 2
-//        } else if(address1 == 3){
-//            if(address2 == 5) {
-//                if(_data[6]==0 && _data[7]==255 && _data[8] == 255) proactive += "unoccupied ";
-//                if(_data[6]==1 && _data[7]==0 && _data[8] == 255) proactive += "stationary ";
-//                if(_data[6]==1 && _data[7]==1 && _data[8] == 1) proactive += "people moving ";
-//            }
-//            if(address2 == 6) {
-//                return;
-//                //proactive += "radar motor (float) ";
-//            }
-//            if(address2 == 7) {
-//                if(_data[6]==1 && _data[7]==1 && _data[8] == 1) proactive += "approaching away none ";
-//                if(_data[6]==1 && _data[7]==1 && _data[8] == 2) proactive += "approaching away close ";
-//                if(_data[6]==1 && _data[7]==1 && _data[8] == 3) proactive += "approaching stay away ";
-//            }
-//        } else if(address1 == 5) {
-//            if(address2 == 1) {
-//                //if(_data[6]==0 && _data[7]==255 && _data[8] == 255) proactive += "Radar Heartbeat unoccupied ";
-//                if(_data[6]==1 && _data[7]==0 && _data[8] == 255) proactive += "heartbeat stationary ";
-//                if(_data[6]==1 && _data[7]==1 && _data[8] == 1) proactive += "heartbeat people moving ";
-//            }
-//        } else {
-//            proactive += "address = " + String(address1);
-//        }
-//        Log.info(proactive);
-//
-//    } else {
-        String status = String::format("Status %d, len=%d, func=%d, a1=%d, a2=%d data: %d, %d, %d, %d, %d ", _value,length,function,address1,address2,_data[6],_data[7],_data[8], _data[9], _data[10]);
-        Log.info(status);
-//    }
+void MR24::parseMessage() {
+    _length = _data[1] + (_data[2] << 8);
+    _function = _data[3];
+    _address1 = _data[4];
+    _address2 = _data[5];
+    _d1 = _data[6];
+    _d2 = _data[7];
+    _d3 = _length > 10 ? _data[8] : 0;
+    _crc = _data[_length-2] | (_data[_length-1] << 8);
 }
 
-int MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5)
+
+void MR24::logMessage() {
+    if(_length == 10) {
+        String status10 = String::format("Radar %d, L:%d, F:%d, A1:%d, A2:%d D: %d, %d, crc: %x", _value,_length,_function,_address1,_address2,_data[6],_data[7],_crc);
+        Log.info(status10);
+    } else if(_length == 11) {
+        String status11 = String::format("Radar %d, L:%d, F:%d, A1:%d, A2:%d D: %d, %d, %d, crc: %x", _value,_length,_function,_address1,_address2,_data[6],_data[7],_data[8],_crc);
+        Log.info(status11);
+    } else {
+        Log.info("Radar: length != 10 or 11");
+    }
+}
+
+int MR24::situation_judgment()
 {
-    if(ad1 == REPORT_RADAR || ad1 == REPORT_OTHER){ // 0x03, 0x05
-        if(ad2 == ENVIRONMENT || ad2 == HEARTBEAT){ // 0x05, 0x01
-            if(ad3 == NOBODY){                      // 0x00
+    if(_address1 == REPORT_RADAR || _address1 == REPORT_OTHER){ // 0x03, 0x05
+        if(_address2 == ENVIRONMENT || _address2 == HEARTBEAT){ // 0x05, 0x01
+            if(_d1 == NOBODY){                      // 0x00
                 _statusMessage = "Couch nobody";
                 return DETECTED_NOBODY;             // 0
             }
-            else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_MOVE){
+            else if(_d1 == SOMEBODY_BE && _d2 == SOMEBODY_MOVE){
                 _statusMessage = "Couch movement";
                 return DETECTED_MOVEMENT;           // 100
             }
-            else if(ad3 == SOMEBODY_BE && ad4 == SOMEBODY_STOP){
+            else if(_d1 == SOMEBODY_BE && _d2 == SOMEBODY_STOP){
                 _statusMessage = "Couch occupied stop";
                 return DETECTED_SOMEBODY;           // 50
             }
         }
-        else if(ad2 == CLOSE_AWAY){
-            if(ad3 == CA_BE && ad4 == CA_BE){
-                if(ad5 == CA_BE){
+        else if(_address2 == CLOSE_AWAY){
+            if(_d1 == CA_BE && _d2 == CA_BE){
+                if(_d3 == CA_BE){
                     _statusMessage = "Couch occupied";
                     return DETECTED_SOMEBODY;       // 50
                 }
-                else if(ad5 == CA_CLOSE){
+                else if(_d3 == CA_CLOSE){
                     _statusMessage = "Couch occupied close";
                     return DETECTED_SOMEBODY_CLOSE; // 75
                 }
-                else if(ad5 == CA_AWAY){
+                else if(_d3 == CA_AWAY){
                     _statusMessage = "Couch occupied away";
                     return DETECTED_SOMEBODY_FAR;   // 25
                 }
@@ -254,22 +238,23 @@ int MR24::situation_judgment(int ad1, int ad2, int ad3, int ad4, int ad5)
 }
 
 void MR24::sendScene(int scene) {
-    int data[10] = { 0x55, 10, 0, 2, 4, 16, 0, 0, 0 };
+    unsigned char data[9] = { 0x55, 9, 0, 2, 4, 16, 0, 0, 0 };
     
     data[6] = scene;
-    int crc = calcCRC(data);
+    int crc = calcCRC(&data[1],6);
     data[7] = crc & 0xff;
     data[8] = (crc << 8) & 0xff;
+    Serial1.write(data,9);
 }
 
 void MR24::sendSensitivity(int sensitivity) {
+    unsigned char data[9] = { 0x55, 9, 0, 2, 4, 16, 0, 0, 0 };
     
-}
-
-int MR24::calcCRC(int *data, int length) {
-    int crc = 0;
-    //TODO: refer to doc Appendex 1
-    return crc;
+    data[6] = sensitivity;
+    int crc = calcCRC(&data[1],6);
+    data[7] = crc & 0xff;
+    data[8] = (crc << 8) & 0xff;
+    Serial1.write(data,9);
 }
 
 /**
@@ -280,14 +265,14 @@ void MR24::notify()
 {
     logMessage();
     Log.info("Radar change from "+_prevStatusMessage+" to "+_statusMessage);
-    _prevStatusMessage = _statusMe ssage;
+    _prevStatusMessage = _statusMessage;
     
     String topic = "patriot/" + _name;
     String message = String(_value);
      IoT::mqttPublish(topic,message);
 }
 
-const unsigned char cuc_CRCHi[25 6]=
+const unsigned char crcHiTable[256] =
 {
 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
@@ -313,7 +298,7 @@ const unsigned char cuc_CRCHi[25 6]=
 0x00, 0xC1, 0x81, 0x40
 };
 
-const unsigned char cuc_CRCLo[256]=
+const unsigned char crcLoTable[256] =
 {
 0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06, 0x07, 0xC7,
 0x05, 0xC5, 0xC4, 0x04, 0xCC, 0x0C, 0x0D, 0xCD, 0x0F, 0xCF, 0xCE, 0x0E,
@@ -340,25 +325,15 @@ const unsigned char cuc_CRCLo[256]=
 };
 
 
-//0x03, 0x02, 0xC2, 0xC6, 0x06, 0x07, 0xC7,
-//0x0C, 0x0D, 0xCD, 0x0F, 0xCF, 0xCE, 0x0E,
-//0x09, 0x08, 0xC8, 0xD8, 0x18, 0x19, 0xD9,
-//0xDE, 0xDF, 0x1F, 0xDD, 0x1D, 0x1C, 0xDC,
-//0x17, 0x16, 0xD6, 0xD2, 0x12, 0x13, 0xD3,
-//0x30, 0x31, 0xF1, 0x33, 0xF3, 0xF2, 0x32,
-//0x35, 0x34, 0xF4, 0x3C, 0xFC, 0xFD, 0x3D,
-//0x3A, 0x3B, 0xFB, 0x39, 0xF9, 0xF8, 0x38,
-//0x2B, 0x2A, 0xEA, 0xEE, 0x2E, 0x2F, 0xEF,
-//0x24, 0x25, 0xE5, 0x27, 0xE7, 0xE6, 0x26,
-//0x21, 0x20, 0xE0, 0xA0, 0x60, 0x61, 0xA1,
-//0xA6, 0xA7, 0x67, 0xA5, 0x65, 0x64, 0xA4,
-//0x6F, 0x6E, 0xAE, 0xAA, 0x6A, 0x6B, 0xAB,
-//0xB8, 0xB9, 0x79, 0xBB, 0x7B, 0x7A, 0xBA,
-//0xBD, 0xBC, 0x7C, 0xB4, 0x74, 0x75, 0xB5,
-//0xB2, 0xB3, 0x73, 0xB1, 0x71, 0x70, 0xB0,
-//0x53, 0x52, 0x92, 0x96, 0x56, 0x57, 0x97,
-//0x5C, 0x5D, 0x9D, 0x5F, 0x9F, 0x9E, 0x5E,
-//0x59, 0x58, 0x98, 0x88, 0x48, 0x49, 0x89,
-//0x8E, 0x8F, 0x4F, 0x8D, 0x4D, 0x4C, 0x8C,
-//0x47, 0x46, 0x86, 0x82, 0x42, 0x43, 0x83,
-
+int MR24::calcCRC(unsigned char *data, int length) {
+    unsigned char crcHi = 0xff;
+    unsigned char crcLo = 0xff;
+    int index = 0;
+    
+    while(length--) {
+        index = crcLo ^ *(data++);
+        crcLo = (unsigned char)(crcHi ^ crcHiTable[index]);
+        crcHi = crcLoTable[index];
+    }
+    return crcLo | (crcHi << 8);    // Example does this the opposite
+}
