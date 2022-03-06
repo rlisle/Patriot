@@ -25,6 +25,7 @@ Author: Ron Lisle
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
+#include <HueLight.h>
 
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
@@ -60,6 +61,12 @@ void createDevices() {
     
     // Photon I/O
     Device::add(new PIR(A5, "OfficeMotion", "Office"));
+
+    // Philips Hue Lights
+    Device::add(new HueLight("Bedroom", "Bedroom", 2));
+    Device::add(new HueLight("DeskLeft", "Office", 2));
+    Device::add(new HueLight("DeskRight", "Office", 2));
+    Device::add(new HueLight("Nook", "LivingRoom", 2));
 
     // I2CPWM8W80C board
     // 8 Dimmers

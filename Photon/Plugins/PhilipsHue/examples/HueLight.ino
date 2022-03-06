@@ -15,7 +15,7 @@ Changelog:
 ********************************************************/
 
 #include <IoT.h>
-#include <PatriotHue.h>
+#include <HueLight.h>
 
 IoT *iot;
 
@@ -24,10 +24,10 @@ void setup() {
     iot->begin();
 
     // Create checklist
-    PatriotHue *patriotHue1 = new PatriotHue("Desk Lamp");
+    HueLight *hueLight = new HueLight("Desk Lamp");
 
     // Add it to IoT
-    iot->addDevice(patriotHue1);
+    iot->addDevice(hueLight);
 }
 
 void loop() {

@@ -1,8 +1,10 @@
 /******************************************************************
-PatriotHue plugin
+ HueLight plugin
 
 Features:
-- Read and set Philips Hue light value
+- Control Philips Hue light
+ 
+Note: Name must match that used in the Philips Hue app.
 
 http://www.github.com/rlisle/Patriot
 
@@ -17,17 +19,14 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include <device.h>
 
-class PatriotHue : public Device
+class HueLight : public Device
 {
 private:
-    long       _lastPollTime;
-
-    bool      isTimeToCheckState();
-    bool      didStateChange();
+    void      writeToHue();
     void      notify();
     
 public:
-    PatriotHue(String name);
+    HueLight(String name, String room);
 
     void begin();
     void loop();
