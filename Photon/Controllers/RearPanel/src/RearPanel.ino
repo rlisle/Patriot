@@ -25,7 +25,7 @@ Author: Ron Lisle
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
 #include <HueLight.h>
-#include "secrets.h"    // Modify this to include your passwords: HUE_USERID
+#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
