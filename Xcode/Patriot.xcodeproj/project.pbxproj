@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		2712610B27D4E3C1004CB49C /* secrets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = secrets.h; path = ../Photon/Plugins/PhilipsHue/secrets.h; sourceTree = "<group>"; };
+		2712610C27D4E653004CB49C /* secrets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = secrets.h; path = ../Photon/Controllers/RearPanel/src/secrets.h; sourceTree = "<group>"; };
 		273243FD2709DC1A00F3C21E /* GPS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GPS; path = ../Photon/Plugins/GPS; sourceTree = "<group>"; };
 		2733855E25AF25930032BB1F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RightSlide/README.md; sourceTree = "<group>"; };
 		2733855F25AF25930032BB1F /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RightSlide/project.properties; sourceTree = "<group>"; };
@@ -352,6 +353,7 @@
 		E4849C712566B28800A39734 /* RearPanel */ = {
 			isa = PBXGroup;
 			children = (
+				2712610C27D4E653004CB49C /* secrets.h */,
 				E41085932568638200EFBE84 /* project.properties */,
 				E4849C722566B2AF00A39734 /* RearPanel.ino */,
 			);
