@@ -22,13 +22,13 @@ All text above must be included in any redistribution.
  * Constructor
  * @param name  String name of the checklist item
  */
-HueLight::HueLight(String name, String room, String userid)
+HueLight::HueLight(String name, String room, byte server[4], String userid)
         : Device(name, room)
 {
+    _server = server;
     _userID = userid;
     _value = 0;
     _type  = 'L';
-    _server = { 192, 168, 50, 21 };
 }
 
 void HueLight::begin(byte server[]) {

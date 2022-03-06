@@ -41,6 +41,8 @@ Author: Ron Lisle
 //   Rear Porch Switch     was A4 Blue " "
 //   Rear Awning Switch    was A5 White " "
 
+byte server[4] = { 192, 168,50, 21 };
+
 void setup() {
     IoT::begin("192.168.50.33", "RearPanel");
     createDevices();
@@ -63,10 +65,10 @@ void createDevices() {
     Device::add(new PIR(A5, "OfficeMotion", "Office"));
 
     // Philips Hue Lights (currently requires internet connection)
-    Device::add(new HueLight("Bedroom", "Bedroom", HUE_USERID));
-    Device::add(new HueLight("DeskLeft", "Office", HUE_USERID));
-    Device::add(new HueLight("DeskRight", "Office", HUE_USERID));
-    Device::add(new HueLight("Nook", "LivingRoom", HUE_USERID));
+    Device::add(new HueLight("Bedroom", "Bedroom", server, HUE_USERID));
+    Device::add(new HueLight("DeskLeft", "Office", server, HUE_USERID));
+    Device::add(new HueLight("DeskRight", "Office", server, HUE_USERID));
+    Device::add(new HueLight("Nook", "LivingRoom", server, HUE_USERID));
 
     // I2CPWM8W80C board
     // 8 Dimmers

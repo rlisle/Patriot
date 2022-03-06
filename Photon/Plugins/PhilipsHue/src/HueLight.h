@@ -30,7 +30,7 @@ private:
     void      notify();
     
 public:
-    HueLight(String name, String room);
+    HueLight(String name, String room, byte server[4], String userid);
 
     void begin();
     void loop();
