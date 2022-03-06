@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		2712610B27D4E3C1004CB49C /* secrets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = secrets.h; path = ../Photon/Plugins/PhilipsHue/secrets.h; sourceTree = "<group>"; };
 		273243FD2709DC1A00F3C21E /* GPS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GPS; path = ../Photon/Plugins/GPS; sourceTree = "<group>"; };
 		2733855E25AF25930032BB1F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RightSlide/README.md; sourceTree = "<group>"; };
 		2733855F25AF25930032BB1F /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RightSlide/project.properties; sourceTree = "<group>"; };
@@ -236,6 +237,7 @@
 				27BA7D6827D456AA0045A887 /* HueLight.cpp */,
 				27BA7D6727D456AA0045A887 /* HueLight.h */,
 				27BA7D6627D456940045A887 /* library.properties */,
+				2712610B27D4E3C1004CB49C /* secrets.h */,
 			);
 			name = HueLight;
 			sourceTree = "<group>";
