@@ -5,6 +5,8 @@
  - Control Philips Hue light.
 
 http://www.github.com/rlisle/Patriot
+ 
+Example code used from https://www.digikey.com/en/maker/blogs/2019/how-to-post-data-using-the-particle-photon
 
 Written by Ron Lisle
 
@@ -20,15 +22,23 @@ All text above must be included in any redistribution.
  * Constructor
  * @param name  String name of the checklist item
  */
-HueLight::HueLight(String name, String room)
+HueLight::HueLight(String name, String room, String userid)
         : Device(name, room)
 {
+    _userID = userid;
     _value = 0;
     _type  = 'L';
+    _server = { 192, 168, 50, 21 };
 }
 
-void HueLight::begin() {
-    //TODO: maybe setup or check WiFi connectivity?
+void HueLight::begin(byte server[]) {
+    if(_client.connect(_server,80)) {
+        Log("HueLight "+_name+" connected");
+        _client.stop();
+    } else {
+        Log("HueLight "+_name+" failed to connect!");
+    }
+    
 }
 
 /**
@@ -55,7 +65,17 @@ void HueLight::setValue(int value) {
 
 // Private Helper Methods
 void HueLight::writeToHue() {
-    //TODO: Write to Hue via Wifi
+    //TODO: may try staying connected if noticably faster?
+    if(_client.connect(server,80)) {
+        _client.println("PUT /api/" + _user + "/lights/" + _name + "/state");
+        if(_value > 0) {
+            _client.println('{"on":"true"}');
+        } else {
+            _client.println('{"on":"false"}');
+        }
+    } else {
+        Log("HueLight "+_name+" not connected");
+    }
     
 }
 

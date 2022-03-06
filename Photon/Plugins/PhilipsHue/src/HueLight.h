@@ -22,6 +22,10 @@ All text above must be included in any redistribution.
 class HueLight : public Device
 {
 private:
+    String    _userID;
+    byte      _server[4];
+    TCPClient _tcpClient;
+    
     void      writeToHue();
     void      notify();
     
