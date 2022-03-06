@@ -132,7 +132,17 @@ void loop() {
 
     if( couchPresenceChanged != -1) {        
         // Just for testing - set couch to presence value
-        Device::setValue("Couch", couchPresenceChanged);
+        switch(couchPresenceChanges){
+        case 25:    // presence
+            Device::setValue("Couch", 20);
+        case 75:    // near?
+            Device::setValue("Couch", 50);
+        case 100:   // Movement
+            Device::setValue("Couch", 100);
+        default:    // off
+            //TODO: wait a minute or so
+            Device::setValue("Couch", 0);
+        }
         Log.info("Couch presence = %d",couchPresenceChanged);
     }
 
@@ -192,6 +202,6 @@ void setSleepingLights() {
 
 void setWatchingLights(int level) {
     Log.info("setWatchingLights %d", level);
-    Device::setValue("Couch", 30);
+    Device::setValue("Couch", 66);      // 10 and 66 don't appear to flicker
 }
 

@@ -210,13 +210,14 @@ void loop() {
     if( officeMotionChanged != -1) {
         // Just for testing - turn off piano when motion stops
         if( officeMotionChanged > 0 ) {   // Motion detected
-//            if( partOfDay > SUNSET ) {
+            if( partOfDay > SUNSET ) {
                 Device::setValue("Piano", 100);
 //                Device::setValue("OfficeTrim", 100);
-//            }
+            }
             //TODO: chime?
         } else {                        // Door closed
             // Nothing to do when motion stops
+            //TODO: wait a couple minutes before turning off
             Device::setValue("Piano", 0);
 //            Device::setValue("OfficeTrim", 0);
         }

@@ -53,6 +53,10 @@
 		27AE94DD26F0CC2A004D5CB6 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/Kitchen/src; sourceTree = "<group>"; };
 		27AE94DE26F0CC2A004D5CB6 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/Kitchen/project.properties; sourceTree = "<group>"; };
 		27AE94DF26F0CC2A004D5CB6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/Kitchen/README.md; sourceTree = "<group>"; };
+		27BA7D6627D456940045A887 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/PhilipsHue/library.properties; sourceTree = "<group>"; };
+		27BA7D6727D456AA0045A887 /* PatriotHue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotHue.h; path = ../Photon/Plugins/PhilipsHue/src/PatriotHue.h; sourceTree = "<group>"; };
+		27BA7D6827D456AA0045A887 /* PatriotHue.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotHue.cpp; path = ../Photon/Plugins/PhilipsHue/src/PatriotHue.cpp; sourceTree = "<group>"; };
+		27BA7D6927D456C80045A887 /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; name = examples; path = ../Photon/Plugins/PhilipsHue/examples; sourceTree = "<group>"; };
 		27D74327276E1B2300280B2C /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RonPIRTest/project.properties; sourceTree = "<group>"; };
 		27D74328276E1B2300280B2C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RonPIRTest/README.md; sourceTree = "<group>"; };
 		27D74329276E1B2300280B2C /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/RonPIRTest/src; sourceTree = "<group>"; };
@@ -225,6 +229,17 @@
 			name = KitchenCabinets;
 			sourceTree = "<group>";
 		};
+		27BA7D6527D456610045A887 /* PhilipsHue */ = {
+			isa = PBXGroup;
+			children = (
+				27BA7D6927D456C80045A887 /* examples */,
+				27BA7D6827D456AA0045A887 /* PatriotHue.cpp */,
+				27BA7D6727D456AA0045A887 /* PatriotHue.h */,
+				27BA7D6627D456940045A887 /* library.properties */,
+			);
+			name = PhilipsHue;
+			sourceTree = "<group>";
+		};
 		27D74326276E1B0500280B2C /* RonPIRTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -344,6 +359,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				27BA7D6527D456610045A887 /* PhilipsHue */,
 				27841D7427871C8100DFCCFD /* NCD4Relay */,
 				2769F3C82729635500E8FE57 /* Checklist */,
 				273243FD2709DC1A00F3C21E /* GPS */,
