@@ -22,19 +22,19 @@ All text above must be included in any redistribution.
  * Constructor
  * @param name  String name of the checklist item
  */
-HueLight::HueLight(String name, String room, byte server[4], String userid)
+HueLight::HueLight(String name, String room, byte *server, String userid)
         : Device(name, room)
 {
-    _server = server;
+    memcpy(_server, server, 4);
     _userID = userid;
     _value = 0;
     _type  = 'L';
 }
 
-void HueLight::begin(byte server[]) {
-    if(_client.connect(_server,80)) {
+void HueLight::begin() {
+    if(_tcpClient.connect(_server,80)) {
         Log("HueLight "+_name+" connected");
-        _client.stop();
+        _tcpClient.stop();
     } else {
         Log("HueLight "+_name+" failed to connect!");
     }
@@ -56,29 +56,36 @@ void HueLight::loop()
  */
 void HueLight::setValue(int value) {
     Log.info("HueLight " + _name + " setValue: " + String(value));
-    if(_targetValue == value) {
+    if(_value == value) {
         Log.info("HueLight value already set, but writing again!");
     }
+    _value = value;
     writeToHue();
 }
 
 
 // Private Helper Methods
 void HueLight::writeToHue() {
-    //TODO: may try staying connected if noticably faster?
-    if(_client.connect(server,80)) {
-        _client.println("PUT /api/" + _user + "/lights/" + _name + "/state");
-        if(_value > 0) {
-            _client.println('{"on":"true"}');
-        } else {
-            _client.println('{"on":"false"}');
-        }
+    //TODO: lookup ID from name
+    String lightId = "2";
+    if(_tcpClient.connect(_server,80)) {
+
+        String json = _value > 0 ? "{\"on\":true}" : "{\"on\":false}";
+
+        _tcpClient.print("PUT /api/");
+        _tcpClient.print(_userID);
+        _tcpClient.print("/lights/");
+        _tcpClient.print(lightId);
+        _tcpClient.println("/state HTTP/1.0");
+        
+        _tcpClient.print("Content-Length: ");
+        _tcpClient.println(json.length());
+        _tcpClient.println();
+        _tcpClient.println(json);
     } else {
         Log("HueLight "+_name+" not connected");
     }
-    
 }
-
 /**
  * notify()
  * Publish switch state
