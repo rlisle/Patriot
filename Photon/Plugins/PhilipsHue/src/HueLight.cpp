@@ -22,9 +22,10 @@ All text above must be included in any redistribution.
  * Constructor
  * @param name  String name of the checklist item
  */
-HueLight::HueLight(String name, String room, byte *server, String userid)
+HueLight::HueLight(String name, String room, String hueId, byte *server, String userid)
         : Device(name, room)
 {
+    _hueId = hueId;
     memcpy(_server, server, 4);
     _userID = userid;
     _value = 0;
@@ -67,7 +68,6 @@ void HueLight::setValue(int value) {
 // Private Helper Methods
 void HueLight::writeToHue() {
     //TODO: lookup ID from name
-    String lightId = "2";
     if(_tcpClient.connect(_server,80)) {
 
         String json = _value > 0 ? "{\"on\":true}" : "{\"on\":false}";
@@ -75,7 +75,7 @@ void HueLight::writeToHue() {
         _tcpClient.print("PUT /api/");
         _tcpClient.print(_userID);
         _tcpClient.print("/lights/");
-        _tcpClient.print(lightId);
+        _tcpClient.print(_hueId);
         _tcpClient.println("/state HTTP/1.0");
         
         _tcpClient.print("Content-Length: ");

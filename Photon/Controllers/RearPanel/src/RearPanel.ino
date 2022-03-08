@@ -65,10 +65,10 @@ void createDevices() {
     Device::add(new PIR(A5, "OfficeMotion", "Office"));
 
     // Philips Hue Lights (currently requires internet connection)
-    Device::add(new HueLight("Bedroom", "Bedroom", server, HUE_USERID));
-    Device::add(new HueLight("DeskLeft", "Office", server, HUE_USERID));
-    Device::add(new HueLight("DeskRight", "Office", server, HUE_USERID));
-    Device::add(new HueLight("Nook", "LivingRoom", server, HUE_USERID));
+    Device::add(new HueLight("Bedroom", "Bedroom", "1", server, HUE_USERID));
+    Device::add(new HueLight("DeskLeft", "Office", "2", server, HUE_USERID));
+    Device::add(new HueLight("DeskRight", "Office", "3", server, HUE_USERID));
+    Device::add(new HueLight("Nook", "LivingRoom", "4", server, HUE_USERID));
 
     // I2CPWM8W80C board
     // 8 Dimmers

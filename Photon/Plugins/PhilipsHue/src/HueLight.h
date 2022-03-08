@@ -25,12 +25,13 @@ private:
     String    _userID;
     byte      _server[4];
     TCPClient _tcpClient;
+    String    _hueId;
     
     void      writeToHue();
     void      notify();
     
 public:
-    HueLight(String name, String room, byte *server, String userid);
+    HueLight(String name, String room, String hueId, byte *server, String userid);
 
     void begin();
     void loop();
