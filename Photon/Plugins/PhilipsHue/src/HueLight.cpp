@@ -66,6 +66,8 @@ void HueLight::setValue(int value) {
 
 
 // Private Helper Methods
+// This is currently just simple on/off.
+// Much more is possible through the API.
 void HueLight::writeToHue() {
     //TODO: lookup ID from name
     if(_tcpClient.connect(_server,80)) {

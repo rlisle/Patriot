@@ -28,6 +28,11 @@ Author: Ron Lisle
 #include <PatriotPIR.h>
 #include <PatriotMR24.h>
 
+#define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
+
+bool livingRoomMotion = false;
+long lastLivingRoomMotion = 0;
+
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
     createDevices();
@@ -58,6 +63,14 @@ void loop() {
     int partOfDayChanged = Device::getChangedValue("partofday");
     int sleepingChanged = Device::getChangedValue("sleeping");
     int watchingChanged = Device::getChangedValue("watching");
+    
+    long loopTime = millis();
+    
+    if(livingRoomMotion == true) {
+        if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
+            livingRoomMotionStopped();
+        }
+    }
 
     int partOfDay = Device::value("PartOfDay");
     
@@ -112,27 +125,12 @@ void loop() {
     }
 
     if( livingRoomMotionChanged != -1) {
-        
-        // Just for testing - turn off LeftVertical when motion stops
-        if( livingRoomMotionChanged > 0 ) {   // Motion detected
-            Device::setValue("LeftVertical", 50);
-            if( partOfDay > SUNSET ) {
-
-                // This doesn't appear to be working.
-                if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
-                    Device::setValue("sleeping", AWAKE);
-                }
-            }
-            //TODO: chime?
-        } else {                        // Door closed
-            // Nothing to do when motion stops
-            Device::setValue("LeftVertical", 0);
-        }
+        handleLivingRoomMotion(livingRoomMotionChanged, partOfDay);
     }
 
     if( couchPresenceChanged != -1) {        
         // Just for testing - set couch to presence value
-        switch(couchPresenceChanges){
+        switch(couchPresenceChanged){
         case 25:    // presence
             Device::setValue("Couch", 20);
         case 75:    // near?
@@ -156,11 +154,30 @@ void loop() {
             setAllLights( 0 );
         }
     }
-
-    // SWITCHES
-    IoT::handleLightSwitch("Couch");
-    IoT::handleLightSwitch("LeftVertical");
 }
+
+void handleLivingRoomMotion(int motion, int partOfDay) {
+    if(motion > 0 ) {   // Motion detected
+        lastLivingRoomMotion = millis();
+        Device::setValue("LeftVertical", 50);
+        if( partOfDay > SUNSET ) {
+            //TODO: maybe check sleeping already set
+            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+                Device::setValue("sleeping", AWAKE);
+            }
+        }
+//    } else {            // Motion stopped
+//        // Nothing to do when motion stops
+//        Device::setValue("LeftVertical", 0);
+    }
+}
+
+void livingRoomMotionStopped() {
+    livingRoomMotion = false;
+    //TODO: check other things like watching, sleeping, etc.
+    Device::setValue("LeftVertical", 0);
+}
+
 
 void setAllActivities(int value) {
     Device::setValue("cleaning", value);
@@ -175,7 +192,7 @@ void setAllLights(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    setAllLights(30);
+    Device::setValue("LeftVertical", 30);
 }
 
 void setSunriseLights() {
@@ -185,7 +202,7 @@ void setSunriseLights() {
 
 void setEveningLights() {
     Log.info("setEveningLights");
-    setAllLights(50);
+    setAllLights(60);
 }
 
 void setBedtimeLights() {
@@ -202,6 +219,6 @@ void setSleepingLights() {
 
 void setWatchingLights(int level) {
     Log.info("setWatchingLights %d", level);
-    Device::setValue("Couch", 66);      // 10 and 66 don't appear to flicker
+    Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
 }
 
