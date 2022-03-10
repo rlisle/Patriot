@@ -240,6 +240,8 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
+    Device::setValue("DeskLeft",100);
+    Device::setValue("DeskRight",100);
     Device::setValue("officeceiling",70);
     Device::setValue("OfficeTrim", 100);
 }
@@ -247,7 +249,7 @@ void setMorningLights() {
 void setSunriseLights() {
     Log.info("setSunriseLights");
     setAllOutsideLights(0);
-    setAllInsideLights(0);
+    //setAllInsideLights(0);
 }
 
 void setEveningLights() {
@@ -286,10 +288,15 @@ void setAllInsideLights(int value) {
     Device::setValue("Loft", value);
     Device::setValue("Piano", value);
     Device::setValue("OfficeTrim", value);
+    Device::setValue("DeskLeft",value);
+    Device::setValue("DeskRight",value);
+    Device::setValue("Bedroom",value);
+    Device::setValue("Nook",value);
+
 }
 
 void setAllOutsideLights(int value) {
-    Log.info("setAllInsideLights %d",value);
+    Log.info("setAllOutsideLights %d",value);
     Device::setValue("RampPorch", value);
     Device::setValue("RampAwning", value);
     Device::setValue("RearPorch", value);

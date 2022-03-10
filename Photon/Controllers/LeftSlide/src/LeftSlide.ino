@@ -163,6 +163,7 @@ void handleLivingRoomMotion(int motion, int partOfDay) {
         if( partOfDay > SUNSET ) {
             //TODO: maybe check sleeping already set
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
             }
         }
