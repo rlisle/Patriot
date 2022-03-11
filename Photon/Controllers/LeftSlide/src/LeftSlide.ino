@@ -28,7 +28,7 @@ Author: Ron Lisle
 #include <PatriotPIR.h>
 #include <PatriotMR24.h>
 
-#define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
+#define LIVINGROOM_MOTION_TIMEOUT 30*1000
 
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
@@ -159,6 +159,7 @@ void loop() {
 void handleLivingRoomMotion(int motion, int partOfDay) {
     if(motion > 0 ) {   // Motion detected
         lastLivingRoomMotion = millis();
+        livingRoomMotion = true;
         Device::setValue("LeftVertical", 50);
         if( partOfDay > SUNSET ) {
             //TODO: maybe check sleeping already set
@@ -167,13 +168,11 @@ void handleLivingRoomMotion(int motion, int partOfDay) {
                 Device::setValue("sleeping", AWAKE);
             }
         }
-//    } else {            // Motion stopped
-//        // Nothing to do when motion stops
-//        Device::setValue("LeftVertical", 0);
     }
 }
 
 void livingRoomMotionStopped() {
+    Log.info("LivingRoom motion stopped");
     livingRoomMotion = false;
     //TODO: check other things like watching, sleeping, etc.
     Device::setValue("LeftVertical", 0);
