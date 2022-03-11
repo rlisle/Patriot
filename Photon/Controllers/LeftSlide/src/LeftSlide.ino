@@ -33,6 +33,11 @@ Author: Ron Lisle
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
 
+int partOfDay = 0;
+int sleeping = 0;
+int watching = 0;
+int cleaning = 0;
+
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
     createDevices();
@@ -61,7 +66,7 @@ void loop() {
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     int partOfDayChanged = Device::getChangedValue("partofday");
-    int sleepingChanged = Device::getChangedValue("sleeping");
+//    int sleepingChanged = Device::getChangedValue("sleeping");
     int watchingChanged = Device::getChangedValue("watching");
     
     long loopTime = millis();
@@ -74,7 +79,9 @@ void loop() {
 
     int partOfDay = Device::value("PartOfDay");
     
-    if( sleepingChanged != -1 ) {
+    handleSleeping();
+    
+/*    if( sleepingChanged != -1 ) {
 
         Log.info("sleeping has changed %d",sleepingChanged);
 
@@ -98,6 +105,7 @@ void loop() {
             setSleepingLights();
         }
     }
+ */
 
     if( partOfDayChanged != -1 ) {
 
@@ -155,6 +163,45 @@ void loop() {
             //TODO: check if evening lights s/b on, etc.
             Log.info("cleaning did turn off");
             setAllLights( 0 );
+        }
+    }
+}
+
+/**
+ * handleSleeping
+ *
+ * Dependencies:
+ *   int sleeping
+ *   int partOfDay
+ *   void setMorningLights()
+ *   void setBedtimeLights()
+ *   void setSleepingLights()
+ */
+void handleSleeping() {
+
+    int sleepingChanged = Device::getChangedValue("sleeping");
+    if( sleepingChanged != -1 ) {
+        
+        Log.info("sleeping has changed %d",sleepingChanged);
+
+        // Alexa, Good morning
+        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
+        if( sleepingChanged == AWAKE) {
+            Log.info("It is AWAKE");
+            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+                Log.info("It is morning");
+                setMorningLights();
+            }
+        }
+
+        // Alexa, Bedtime
+        if( sleepingChanged == RETIRING ) {
+            setBedtimeLights();
+        }
+
+        // Alexa, Goodnight
+        if( sleepingChanged == ASLEEP ) {
+            setSleepingLights();
         }
     }
 }
