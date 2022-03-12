@@ -72,8 +72,6 @@ void loop() {
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     int watchingChanged = Device::getChangedValue("watching");
     
-    long loopTime = millis();
-
     handlePartOfDay();
     handleSleeping();
     handleLivingRoomMotion();
@@ -189,6 +187,7 @@ void handleSleeping() {
 void handleLivingRoomMotion() {
 
     // Timed shut-off
+    long loopTime = millis();
     if(livingRoomMotion == true) {
         if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
             Log.info("LivingRoom motion stopped");
