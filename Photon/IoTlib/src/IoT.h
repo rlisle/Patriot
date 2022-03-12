@@ -49,8 +49,8 @@ class IoT {
 
 public:
 
-    static int partOfDay = 0;       //TODO: make enum
-    static int sleeping = 0;        //TODO: make enum
+//    static int partOfDay = 0;       //TODO: make enum
+//    static int sleeping = 0;        //TODO: make enum
     
     /**
      * begin(byte * brokerIP, String connectID)

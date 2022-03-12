@@ -36,6 +36,11 @@ long lastLivingRoomMotion = 0;
 int watching = 0;
 int cleaning = 0;
 
+// Move to IoT eventually
+int partOfDay = 0;
+int sleeping = 0;
+
+
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
     createDevices();
@@ -52,9 +57,12 @@ void createDevices() {
         
     // Activities/States
     Device::add(new Device("cleaning", "All"));
+    Device::add(new Device("watching", "All"));
+    
+    //Move to IoT eventually
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
-    Device::add(new Device("watching", "All"));
+
 }
 
 void loop() {
@@ -62,19 +70,12 @@ void loop() {
 
     int cleaningChanged = Device::getChangedValue("cleaning");
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
-    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+    int partOfDayChanged = Device::getChangedValue("partofday");
     int watchingChanged = Device::getChangedValue("watching");
     
     long loopTime = millis();
     
-    if(livingRoomMotion == true) {
-        if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
-            livingRoomMotionStopped();
-        }
-    }
-
     int partOfDay = Device::value("PartOfDay");
-    
     handleSleeping();
     
     if( watchingChanged != -1 ) {
@@ -88,9 +89,7 @@ void loop() {
         }
     }
 
-    if( livingRoomMotionChanged != -1) {
-        handleLivingRoomMotion(livingRoomMotionChanged, partOfDay);
-    }
+    handleLivingRoomMotion();
 
     if( couchPresenceChanged != -1) {        
         // Just for testing - set couch to presence value
@@ -156,6 +155,8 @@ void handleSleeping() {
         if( sleepingChanged == ASLEEP ) {
             setSleepingLights();
         }
+        
+        sleeping = sleepingChanged;
     }
 }
 
@@ -183,14 +184,28 @@ void handlePartOfDay() {
             Log.info("It is dusk");
             setEveningLights();
         }
+        partOfDay = partOfDayChanged;
     }
 }
 
-void handleLivingRoomMotion(int motion, int partOfDay) {
-    if(motion > 0 ) {   // Motion detected
-        lastLivingRoomMotion = millis();
+void handleLivingRoomMotion() {
+
+    if(livingRoomMotion == true) {
+        if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
+            Log.info("LivingRoom motion stopped");
+            livingRoomMotion = false;
+            //TODO: check other things like watching, sleeping, etc.
+            Device::setValue("LeftVertical", 0);
+        }
+    }
+
+    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+    if(livingRoomMotionChanged > 0 ) {         // Motion?
         livingRoomMotion = true;
+        lastLivingRoomMotion = millis();
+        
         Device::setValue("LeftVertical", 50);
+        
         if( partOfDay > SUNSET ) {
             //TODO: maybe check sleeping already set
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
@@ -199,13 +214,6 @@ void handleLivingRoomMotion(int motion, int partOfDay) {
             }
         }
     }
-}
-
-void livingRoomMotionStopped() {
-    Log.info("LivingRoom motion stopped");
-    livingRoomMotion = false;
-    //TODO: check other things like watching, sleeping, etc.
-    Device::setValue("LeftVertical", 0);
 }
 
 
