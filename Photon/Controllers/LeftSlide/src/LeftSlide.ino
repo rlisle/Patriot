@@ -33,8 +33,6 @@ Author: Ron Lisle
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
 
-int partOfDay = 0;
-int sleeping = 0;
 int watching = 0;
 int cleaning = 0;
 
@@ -65,8 +63,6 @@ void loop() {
     int cleaningChanged = Device::getChangedValue("cleaning");
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
-    int partOfDayChanged = Device::getChangedValue("partofday");
-//    int sleepingChanged = Device::getChangedValue("sleeping");
     int watchingChanged = Device::getChangedValue("watching");
     
     long loopTime = millis();
@@ -81,49 +77,6 @@ void loop() {
     
     handleSleeping();
     
-/*    if( sleepingChanged != -1 ) {
-
-        Log.info("sleeping has changed %d",sleepingChanged);
-
-        // Alexa, Good morning
-        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
-        if( sleepingChanged == AWAKE) {
-            Log.info("It is AWAKE");
-            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-                Log.info("It is morning");
-                setMorningLights();
-            }
-        }
-
-        // Alexa, Bedtime
-        if( sleepingChanged == RETIRING ) {
-            setBedtimeLights();
-        }
-
-        // Alexa, Goodnight
-        if( sleepingChanged == ASLEEP ) {
-            setSleepingLights();
-        }
-    }
- */
-
-    if( partOfDayChanged != -1 ) {
-
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
-
-        if( partOfDayChanged == SUNRISE ) {
-            // Turn off lights at sunrise
-            Log.info("It is sunrise");
-            setSunriseLights();
-        }
-
-        if( partOfDayChanged == DUSK ) {
-            // Turn on lights after sunset
-            Log.info("It is dusk");
-            setEveningLights();
-        }
-    }
-        
     if( watchingChanged != -1 ) {
         if( watchingChanged > 0 ) {
             Log.info("watching did turn on");
@@ -202,6 +155,33 @@ void handleSleeping() {
         // Alexa, Goodnight
         if( sleepingChanged == ASLEEP ) {
             setSleepingLights();
+        }
+    }
+}
+
+/**
+ * handlePartOfDay
+ *
+ * Dependencies:
+ *   int partOfDay
+ *   void setSunriseLights()
+ *   void setEveningLights()
+ */
+void handlePartOfDay() {
+    
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    if( partOfDayChanged != -1 ) {
+
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
+
+        if( partOfDayChanged == SUNRISE ) {
+            Log.info("It is sunrise");
+            setSunriseLights();
+        }
+
+        if( partOfDayChanged == DUSK ) {
+            Log.info("It is dusk");
+            setEveningLights();
         }
     }
 }
