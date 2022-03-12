@@ -35,6 +35,7 @@ long lastLivingRoomMotion = 0;
 
 int watching = 0;
 int cleaning = 0;
+int couchPresence = 0;
 
 // Move to IoT eventually
 int partOfDay = 0;
@@ -68,51 +69,12 @@ void createDevices() {
 void loop() {
     IoT::loop();
 
-    int cleaningChanged = Device::getChangedValue("cleaning");
-    int couchPresenceChanged = Device::getChangedValue("CouchPresence");
-    int watchingChanged = Device::getChangedValue("watching");
-    
     handlePartOfDay();
     handleSleeping();
     handleLivingRoomMotion();
-
-    if( watchingChanged != -1 ) {
-        if( watchingChanged > 0 ) {
-            Log.info("watching did turn on");
-            setWatchingLights( 100 );
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("watching did turn off");
-            setWatchingLights( 0 );
-        }
-    }
-
-    if( couchPresenceChanged != -1) {        
-        // Just for testing - set couch to presence value
-        switch(couchPresenceChanged){
-        case 25:    // presence
-            Device::setValue("Couch", 20);
-        case 75:    // near?
-            Device::setValue("Couch", 50);
-        case 100:   // Movement
-            Device::setValue("Couch", 100);
-        default:    // off
-            //TODO: wait a minute or so
-            Device::setValue("Couch", 0);
-        }
-        Log.info("Couch presence = %d",couchPresenceChanged);
-    }
-
-    if( cleaningChanged != -1 ) {
-        if( cleaningChanged > 0 ) {
-            Log.info("cleaning did turn on");
-            setAllLights( 100 );
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("cleaning did turn off");
-            setAllLights( 0 );
-        }
-    }
+    handleWatching();
+    handleCleaning();
+    handleCouchPresence();
 }
 
 /**
@@ -214,6 +176,66 @@ void handleLivingRoomMotion() {
     }
 }
 
+/**
+ * handleWatching
+ *
+ * Dependencies:
+ *   int partOfDay
+ *   void setWatchingLights()
+ */
+void handleWatching() {
+    
+    int watchingChanged = Device::getChangedValue("watching");
+    if( watchingChanged != -1 ) {
+        if( watchingChanged > 0 ) {
+            watching = 100;
+            Log.info("watching did turn on");
+            Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
+
+        } else {
+            watching = 0;
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("watching did turn off");
+            Device::setValue("Couch", 0);
+        }
+    }
+}
+
+void handleCleaning() {
+    int cleaningChanged = Device::getChangedValue("cleaning");
+    if( cleaningChanged != -1 ) {
+        if( cleaningChanged > 0 ) {
+            cleaning = 100;
+            Log.info("cleaning did turn on");
+            //TODO: save current light state to restore when cleaning turned off
+            setAllLights( 100 );
+        } else {
+            cleaning = 0;
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("cleaning did turn off");
+            setAllLights( 0 );
+        }
+    }
+}
+
+void handleCouchPresence() {
+    int couchPresenceChanged = Device::getChangedValue("CouchPresence");
+    if( couchPresenceChanged != -1) {
+        couchPresence = couchPresenceChanged;
+        switch(couchPresenceChanged){
+        case 25:    // presence
+            Device::setValue("Couch", 20);
+        case 75:    // near?
+            Device::setValue("Couch", 50);
+        case 100:   // Movement
+            Device::setValue("Couch", 100);
+        default:    // off
+            //TODO: wait a minute or so
+            Device::setValue("Couch", 0);
+        }
+        Log.info("Couch presence = %d",couchPresence);
+    }
+}
 
 void setAllActivities(int value) {
     Device::setValue("cleaning", value);
@@ -252,9 +274,3 @@ void setSleepingLights() {
     setAllActivities(0);
     setAllLights(0);
 }
-
-void setWatchingLights(int level) {
-    Log.info("setWatchingLights %d", level);
-    Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
-}
-
