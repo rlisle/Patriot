@@ -70,14 +70,14 @@ void loop() {
 
     int cleaningChanged = Device::getChangedValue("cleaning");
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
-    int partOfDayChanged = Device::getChangedValue("partofday");
     int watchingChanged = Device::getChangedValue("watching");
     
     long loopTime = millis();
-    
-    int partOfDay = Device::value("PartOfDay");
+
+    handlePartOfDay();
     handleSleeping();
-    
+    handleLivingRoomMotion();
+
     if( watchingChanged != -1 ) {
         if( watchingChanged > 0 ) {
             Log.info("watching did turn on");
@@ -88,8 +88,6 @@ void loop() {
             setWatchingLights( 0 );
         }
     }
-
-    handleLivingRoomMotion();
 
     if( couchPresenceChanged != -1) {        
         // Just for testing - set couch to presence value
@@ -116,6 +114,34 @@ void loop() {
             Log.info("cleaning did turn off");
             setAllLights( 0 );
         }
+    }
+}
+
+/**
+ * handlePartOfDay
+ *
+ * Dependencies:
+ *   int partOfDay
+ *   void setSunriseLights()
+ *   void setEveningLights()
+ */
+void handlePartOfDay() {
+    
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    if( partOfDayChanged != -1 ) {
+
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
+
+        if( partOfDayChanged == SUNRISE ) {
+            Log.info("It is sunrise");
+            setSunriseLights();
+        }
+
+        if( partOfDayChanged == DUSK ) {
+            Log.info("It is dusk");
+            setEveningLights();
+        }
+        partOfDay = partOfDayChanged;
     }
 }
 
@@ -160,36 +186,9 @@ void handleSleeping() {
     }
 }
 
-/**
- * handlePartOfDay
- *
- * Dependencies:
- *   int partOfDay
- *   void setSunriseLights()
- *   void setEveningLights()
- */
-void handlePartOfDay() {
-    
-    int partOfDayChanged = Device::getChangedValue("partofday");
-    if( partOfDayChanged != -1 ) {
-
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
-
-        if( partOfDayChanged == SUNRISE ) {
-            Log.info("It is sunrise");
-            setSunriseLights();
-        }
-
-        if( partOfDayChanged == DUSK ) {
-            Log.info("It is dusk");
-            setEveningLights();
-        }
-        partOfDay = partOfDayChanged;
-    }
-}
-
 void handleLivingRoomMotion() {
 
+    // Timed shut-off
     if(livingRoomMotion == true) {
         if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
             Log.info("LivingRoom motion stopped");
