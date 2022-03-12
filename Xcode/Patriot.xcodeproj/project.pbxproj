@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		2712610B27D4E3C1004CB49C /* secrets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = secrets.h; path = ../Photon/Plugins/PhilipsHue/secrets.h; sourceTree = "<group>"; };
+		2712610C27D4E653004CB49C /* secrets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = secrets.h; path = ../Photon/Controllers/RearPanel/src/secrets.h; sourceTree = "<group>"; };
 		273243FD2709DC1A00F3C21E /* GPS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GPS; path = ../Photon/Plugins/GPS; sourceTree = "<group>"; };
 		2733855E25AF25930032BB1F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RightSlide/README.md; sourceTree = "<group>"; };
 		2733855F25AF25930032BB1F /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RightSlide/project.properties; sourceTree = "<group>"; };
@@ -41,8 +43,6 @@
 		2769F3CA2729644400E8FE57 /* PatriotChecklist.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotChecklist.cpp; path = ../Photon/Plugins/Checklist/src/PatriotChecklist.cpp; sourceTree = "<group>"; };
 		2769F3CB2729644400E8FE57 /* PatriotChecklist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotChecklist.h; path = ../Photon/Plugins/Checklist/src/PatriotChecklist.h; sourceTree = "<group>"; };
 		2769F3CC2729646B00E8FE57 /* checklist.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = checklist.ino; path = ../Photon/Plugins/Checklist/examples/checklist.ino; sourceTree = "<group>"; };
-		277FABEE27C1996100692A74 /* MR24.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MR24.h; path = ../Photon/Plugins/MR24/src/MR24.h; sourceTree = "<group>"; };
-		277FABEF27C1996100692A74 /* MR24.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MR24.cpp; path = ../Photon/Plugins/MR24/src/MR24.cpp; sourceTree = "<group>"; };
 		277FABF127C1998B00692A74 /* MR24.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = MR24.ino; path = ../Photon/Plugins/MR24/examples/MR24.ino; sourceTree = "<group>"; };
 		27841D7527871CE400DFCCFD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/NCD4Relay/src; sourceTree = "<group>"; };
 		27841D7627871CE400DFCCFD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Relay/library.properties; sourceTree = "<group>"; };
@@ -55,6 +55,10 @@
 		27AE94DD26F0CC2A004D5CB6 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/Kitchen/src; sourceTree = "<group>"; };
 		27AE94DE26F0CC2A004D5CB6 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/Kitchen/project.properties; sourceTree = "<group>"; };
 		27AE94DF26F0CC2A004D5CB6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/Kitchen/README.md; sourceTree = "<group>"; };
+		27BA7D6627D456940045A887 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/PhilipsHue/library.properties; sourceTree = "<group>"; };
+		27BA7D6727D456AA0045A887 /* HueLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HueLight.h; path = ../Photon/Plugins/PhilipsHue/src/HueLight.h; sourceTree = "<group>"; };
+		27BA7D6827D456AA0045A887 /* HueLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HueLight.cpp; path = ../Photon/Plugins/PhilipsHue/src/HueLight.cpp; sourceTree = "<group>"; };
+		27BA7D6927D456C80045A887 /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; name = examples; path = ../Photon/Plugins/PhilipsHue/examples; sourceTree = "<group>"; };
 		27D74327276E1B2300280B2C /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RonPIRTest/project.properties; sourceTree = "<group>"; };
 		27D74328276E1B2300280B2C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RonPIRTest/README.md; sourceTree = "<group>"; };
 		27D74329276E1B2300280B2C /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/RonPIRTest/src; sourceTree = "<group>"; };
@@ -189,9 +193,12 @@
 		277FABED27C1990B00692A74 /* MR24 */ = {
 			isa = PBXGroup;
 			children = (
+				27A0F26D279DE9950021E84D /* README.md */,
+				27A0F26C279DE9950021E84D /* LICENSE */,
+				27A0F26E279DE9950021E84D /* library.properties */,
+				27A0F270279DE9E50021E84D /* PatriotMR24.h */,
+				27A0F26F279DE9E50021E84D /* PatriotMR24.cpp */,
 				277FABF027C1997000692A74 /* Examples */,
-				277FABEF27C1996100692A74 /* MR24.cpp */,
-				277FABEE27C1996100692A74 /* MR24.h */,
 			);
 			name = MR24;
 			sourceTree = "<group>";
@@ -214,18 +221,6 @@
 			name = NCD4Relay;
 			sourceTree = "<group>";
 		};
-		27A0F26B279DE9640021E84D /* MR24 */ = {
-			isa = PBXGroup;
-			children = (
-				27A0F26F279DE9E50021E84D /* PatriotMR24.cpp */,
-				27A0F270279DE9E50021E84D /* PatriotMR24.h */,
-				27A0F26E279DE9950021E84D /* library.properties */,
-				27A0F26C279DE9950021E84D /* LICENSE */,
-				27A0F26D279DE9950021E84D /* README.md */,
-			);
-			name = MR24;
-			sourceTree = "<group>";
-		};
 		27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,6 +229,18 @@
 				27AE94DD26F0CC2A004D5CB6 /* src */,
 			);
 			name = KitchenCabinets;
+			sourceTree = "<group>";
+		};
+		27BA7D6527D456610045A887 /* HueLight */ = {
+			isa = PBXGroup;
+			children = (
+				27BA7D6927D456C80045A887 /* examples */,
+				27BA7D6827D456AA0045A887 /* HueLight.cpp */,
+				27BA7D6727D456AA0045A887 /* HueLight.h */,
+				27BA7D6627D456940045A887 /* library.properties */,
+				2712610B27D4E3C1004CB49C /* secrets.h */,
+			);
+			name = HueLight;
 			sourceTree = "<group>";
 		};
 		27D74326276E1B0500280B2C /* RonPIRTest */ = {
@@ -346,6 +353,7 @@
 		E4849C712566B28800A39734 /* RearPanel */ = {
 			isa = PBXGroup;
 			children = (
+				2712610C27D4E653004CB49C /* secrets.h */,
 				E41085932568638200EFBE84 /* project.properties */,
 				E4849C722566B2AF00A39734 /* RearPanel.ino */,
 			);
@@ -355,7 +363,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				27A0F26B279DE9640021E84D /* MR24 */,
+				27BA7D6527D456610045A887 /* HueLight */,
 				27841D7427871C8100DFCCFD /* NCD4Relay */,
 				2769F3C82729635500E8FE57 /* Checklist */,
 				273243FD2709DC1A00F3C21E /* GPS */,

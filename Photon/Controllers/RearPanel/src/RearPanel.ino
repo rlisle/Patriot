@@ -18,13 +18,14 @@ Author: Ron Lisle
  TODO: Add GPS board (Rx, Vin, Gnd)
  */
 #include <IoT.h>
-//#include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotPartOfDay.h>
 #include <PatriotCurtain.h>
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
+#include <HueLight.h>
+#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
@@ -39,6 +40,8 @@ Author: Ron Lisle
 //   Ramp Awning Switch    was A3 Green " "
 //   Rear Porch Switch     was A4 Blue " "
 //   Rear Awning Switch    was A5 White " "
+
+byte server[4] = { 192, 168,50, 21 };
 
 void setup() {
     IoT::begin("192.168.50.33", "RearPanel");
@@ -60,6 +63,12 @@ void createDevices() {
     
     // Photon I/O
     Device::add(new PIR(A5, "OfficeMotion", "Office"));
+
+    // Philips Hue Lights (currently requires internet connection)
+    Device::add(new HueLight("Bedroom", "Bedroom", "1", server, HUE_USERID));
+    Device::add(new HueLight("DeskLeft", "Office", "2", server, HUE_USERID));
+    Device::add(new HueLight("DeskRight", "Office", "3", server, HUE_USERID));
+    Device::add(new HueLight("Nook", "LivingRoom", "4", server, HUE_USERID));
 
     // I2CPWM8W80C board
     // 8 Dimmers
@@ -210,13 +219,14 @@ void loop() {
     if( officeMotionChanged != -1) {
         // Just for testing - turn off piano when motion stops
         if( officeMotionChanged > 0 ) {   // Motion detected
-//            if( partOfDay > SUNSET ) {
+            if( partOfDay > SUNSET ) {
                 Device::setValue("Piano", 100);
 //                Device::setValue("OfficeTrim", 100);
-//            }
+            }
             //TODO: chime?
         } else {                        // Door closed
             // Nothing to do when motion stops
+            //TODO: wait a couple minutes before turning off
             Device::setValue("Piano", 0);
 //            Device::setValue("OfficeTrim", 0);
         }
@@ -230,6 +240,8 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
+    Device::setValue("DeskLeft",100);
+    Device::setValue("DeskRight",100);
     Device::setValue("officeceiling",70);
     Device::setValue("OfficeTrim", 100);
 }
@@ -237,7 +249,7 @@ void setMorningLights() {
 void setSunriseLights() {
     Log.info("setSunriseLights");
     setAllOutsideLights(0);
-    setAllInsideLights(0);
+    //setAllInsideLights(0);
 }
 
 void setEveningLights() {
@@ -276,10 +288,15 @@ void setAllInsideLights(int value) {
     Device::setValue("Loft", value);
     Device::setValue("Piano", value);
     Device::setValue("OfficeTrim", value);
+    Device::setValue("DeskLeft",value);
+    Device::setValue("DeskRight",value);
+    Device::setValue("Bedroom",value);
+    Device::setValue("Nook",value);
+
 }
 
 void setAllOutsideLights(int value) {
-    Log.info("setAllInsideLights %d",value);
+    Log.info("setAllOutsideLights %d",value);
     Device::setValue("RampPorch", value);
     Device::setValue("RampAwning", value);
     Device::setValue("RearPorch", value);

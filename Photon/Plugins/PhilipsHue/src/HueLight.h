@@ -1,7 +1,10 @@
 /******************************************************************
-PatriotPIR plugin
+ HueLight plugin
 
 Features:
+- Control Philips Hue light
+ 
+Note: Name must match that used in the Philips Hue app.
 
 http://www.github.com/rlisle/Patriot
 
@@ -16,22 +19,22 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include <device.h>
 
-class PIR : public Device
+class HueLight : public Device
 {
 private:
-    int        _pin;
-    long       _lastPollTime;
-
-    bool      isTimeToCheckSensor();
-    bool      didSensorChange();
+    String    _userID;
+    byte      _server[4];
+    TCPClient _tcpClient;
+    String    _hueId;
+    
+    void      writeToHue();
     void      notify();
     
 public:
-    PIR(int pinNum, String name, String room);
+    HueLight(String name, String room, String hueId, byte *server, String userid);
 
     void begin();
     void loop();
     
-    // Override to prevent MQTT from setting _percent.
-    void setValue(int percent) { return; };
+    void setValue(int percent);
 };
