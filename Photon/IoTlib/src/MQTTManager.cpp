@@ -234,7 +234,7 @@ void MQTTManager::parseLogLevel(String lcMessage) {
     LogLevel level = LOG_LEVEL_ERROR;
     if (lcMessage == "none") level = LOG_LEVEL_NONE;         // 70
     else if (lcMessage == "error") level = LOG_LEVEL_ERROR;  // 50
-    else if (lcMessage == "warn") level = LOG_LEVEL_WARN;    // 40
+    else if (lcMessage == "warn" || lcMessage == "warning") level = LOG_LEVEL_WARN;    // 40
     else if (lcMessage == "info") level = LOG_LEVEL_INFO;    // 30
     else if (lcMessage == "trace") level = LOG_LEVEL_TRACE;  // 1
     else if (lcMessage == "all") level = LOG_LEVEL_ALL;      // 1
