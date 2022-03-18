@@ -27,6 +27,8 @@ Author: Ron Lisle
 #include <HueLight.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
+#define OFFICE_MOTION_TIMEOUT 2*60*1000
+
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
@@ -42,6 +44,15 @@ Author: Ron Lisle
 //   Rear Awning Switch    was A5 White " "
 
 byte server[4] = { 192, 168,50, 21 };
+
+bool officeMotion = false;
+long lastOfficeMotion = 0;
+
+int watching = 0;
+int cleaning = 0;
+int partOfDay = 0;
+int sleeping = 0;
+int officeDoor = 0;
 
 void setup() {
     IoT::begin("192.168.50.33", "RearPanel");
@@ -135,24 +146,68 @@ void createDevices() {
 void loop() {
 
     IoT::loop();
+    
+    handlePartOfDay();
+    handleSleeping();
+    handleOfficeMotion();
+    handleOfficeDoor();
+    handleWatching();
+    handleCleaning();
+}
+
+/**
+ * handlePartOfDay
+ *
+ * Dependencies:
+ *   int partOfDay
+ *   void setSunriseLights()
+ *   void setEveningLights()
+ */
+void handlePartOfDay() {
+    
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    if( partOfDayChanged != -1 ) {
+
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
+
+        if( partOfDayChanged == SUNRISE ) {
+            Log.info("It is sunrise");
+            setSunriseLights();
+        }
+
+        if( partOfDayChanged == DUSK ) {
+            Log.info("It is dusk");
+            setEveningLights();
+        }
+        partOfDay = partOfDayChanged;
+    }
+}
+
+/**
+ * handleSleeping
+ *
+ * Dependencies:
+ *   int sleeping
+ *   int partOfDay
+ *   void setMorningLights()
+ *   void setBedtimeLights()
+ *   void setSleepingLights()
+ */
+void handleSleeping() {
 
     int sleepingChanged = Device::getChangedValue("sleeping");
-    int partOfDayChanged = Device::getChangedValue("partofday");
-    int cleaningChanged = Device::getChangedValue("cleaning");
-    int watchingChanged = Device::getChangedValue("watching");
-    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
-    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
-    int partOfDay = Device::value("PartOfDay");
-
     if( sleepingChanged != -1 ) {
-
+        
         Log.info("sleeping has changed %d",sleepingChanged);
 
         // Alexa, Good morning
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
-        if( sleepingChanged == AWAKE && partOfDay > SUNSET ) {
-            Log.info("It is good morning");
-            setMorningLights();
+        if( sleepingChanged == AWAKE) {
+            Log.info("It is AWAKE");
+            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+                Log.info("It is morning");
+                setMorningLights();
+            }
         }
 
         // Alexa, Bedtime
@@ -164,74 +219,104 @@ void loop() {
         if( sleepingChanged == ASLEEP ) {
             setSleepingLights();
         }
+        
+        sleeping = sleepingChanged;
     }
+}
 
-    if( partOfDayChanged != -1 ) {
+/**
+ * handleSleeping
+ *
+ * Dependencies:
+ *   int sleeping
+ *   int partOfDay
+ */
+void handleOfficeMotion() {
 
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
-
-        if( partOfDayChanged == SUNRISE ) {
-            // Turn off lights at sunrise
-            Log.info("It is sunrise");
-            setSunriseLights();
-        }
-
-        if( partOfDayChanged == DUSK ) {
-            // Turn on lights after sunset
-            Log.info("It is dusk");
-            setEveningLights();
-        }
-    }
-
-    if( cleaningChanged != -1 ) {
-        if( cleaningChanged > 0 ) {
-            Log.info("cleaning did turn on");
-            setAllInsideLights( 100 );
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("cleaning did turn off");
-            setAllInsideLights( 0 );
+    // Timed shut-off
+    long loopTime = millis();
+    if(officeMotion == true) {
+        if(loopTime >= lastOfficeMotion+OFFICE_MOTION_TIMEOUT) {
+            Log.info("Office motion stopped");
+            officeMotion = false;
+            //TODO: check other things like watching, sleeping, etc.
+            Device::setValue("Piano", 0);
         }
     }
 
-    if( watchingChanged != -1 ) {
-        if( watchingChanged > 0 ) {
-            Log.info("watching did turn on");
-            setWatchingLights( 100 );
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("watching did turn off");
-            setWatchingLights( 0 );
+    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
+    if(officeMotionChanged > 0 ) {         // Motion?
+        officeMotion = true;
+        lastOfficeMotion = millis();
+        
+        Device::setValue("Piano", 50);
+        
+        if( partOfDay > SUNSET ) {
+            //TODO: maybe check sleeping already set
+            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
+                Device::setValue("sleeping", AWAKE);
+            }
         }
     }
+}
 
+void handleOfficeDoor() {
+    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
     if( officeDoorChanged != -1) {
         if( officeDoorChanged > 0 ) {   // Door opened
             if( partOfDay > SUNSET ) {
                 Device::setValue("RearPorch", 100);
             }
-            //TODO: chime?
         } else {                        // Door closed
             // Nothing to do when door closes
         }
     }
+
+}
+
+/**
+ * handleWatching
+ *
+ * Dependencies:
+ *   int partOfDay
+ *   void setWatchingLights()
+ */
+void handleWatching() {
     
-    if( officeMotionChanged != -1) {
-        // Just for testing - turn off piano when motion stops
-        if( officeMotionChanged > 0 ) {   // Motion detected
-            if( partOfDay > SUNSET ) {
-                Device::setValue("Piano", 100);
-//                Device::setValue("OfficeTrim", 100);
-            }
-            //TODO: chime?
-        } else {                        // Door closed
-            // Nothing to do when motion stops
-            //TODO: wait a couple minutes before turning off
-            Device::setValue("Piano", 0);
-//            Device::setValue("OfficeTrim", 0);
+    int watchingChanged = Device::getChangedValue("watching");
+    if( watchingChanged != -1 ) {
+        if( watchingChanged > 0 ) {
+            watching = 100;
+            Log.info("watching did turn on");
+            Device::setValue("Nook", 100);
+
+        } else {
+            watching = 0;
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("watching did turn off");
+            Device::setValue("Nook", 0);    // Do I want to just leave this on?
         }
     }
 }
+
+void handleCleaning() {
+    int cleaningChanged = Device::getChangedValue("cleaning");
+    if( cleaningChanged != -1 ) {
+        if( cleaningChanged > 0 ) {
+            cleaning = 100;
+            Log.info("cleaning did turn on");
+            //TODO: save current light state to restore when cleaning turned off
+            setAllInsideLights( 100 );
+        } else {
+            cleaning = 0;
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("cleaning did turn off");
+            setAllInsideLights( 0 );
+        }
+    }
+}
+
 
 void setAllActivities(int value) {
     Device::setValue("cooking", value);
