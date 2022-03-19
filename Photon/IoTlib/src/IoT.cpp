@@ -86,23 +86,6 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 }
 
 /**
- Sketch Programming Support
- */
-
-int IoT::handleLightSwitch(String name) {
-    int lightSwitch = Device::getChangedValue(name+"Switch");
-    if( lightSwitch == -1) return -1;
-    Log.info("handleLightSwitch hasChanged: %d",lightSwitch);
-    Device *device = Device::get(name);
-    if( lightSwitch > 0 ) {
-        device->setValue(100);
-    } else {
-        device->setValue(0);
-    }
-    return lightSwitch;
-}
-
-/**
  publishValue()
  param: name of state
  param: value to assign state
