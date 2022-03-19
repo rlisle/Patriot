@@ -28,6 +28,7 @@ Author: Ron Lisle
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define OFFICE_MOTION_TIMEOUT 2*60*1000
+#define OFFICE_DOOR_TIMEOUT 5*60*1000
 
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
@@ -48,11 +49,14 @@ byte server[4] = { 192, 168,50, 21 };
 bool officeMotion = false;
 long lastOfficeMotion = 0;
 
+bool officeDoor = false;
+bool officeDoorCountdown = false;
+long lastOfficeDoor = 0;
+
 int watching = 0;
 int cleaning = 0;
 int partOfDay = 0;
 int sleeping = 0;
-int officeDoor = 0;
 
 void setup() {
     IoT::begin("192.168.50.33", "RearPanel");
@@ -225,7 +229,7 @@ void handleSleeping() {
 }
 
 /**
- * handleSleeping
+ * handleOfficeMotion
  *
  * Dependencies:
  *   int sleeping
@@ -261,15 +265,42 @@ void handleOfficeMotion() {
     }
 }
 
+/**
+ * handleOfficeDoor
+ *
+ * Dependencies:
+ *   int sleeping
+ *   int partOfDay
+ */
 void handleOfficeDoor() {
+
+    // Timed shut-off after door closes
+    long loopTime = millis();
+    if(officeDoorCountdown == true) {
+        if(loopTime >= lastOfficeDoor+OFFICE_DOOR_TIMEOUT) {
+            Log.info("Office door timeout");
+            officeDoorCountdown = false;
+            //Turn off light if night and after sleeping
+            if(partOfDay > SUNSET && sleeping == ASLEEP ) {
+                Device::setValue("RearPorch", 0);
+            }
+        }
+    }
+
     int officeDoorChanged = Device::getChangedValue("OfficeDoor");
     if( officeDoorChanged != -1) {
         if( officeDoorChanged > 0 ) {   // Door opened
+            officeDoor = true;
+            officeDoorCountdown = false;    // Reset it if it was in progress
+            // If after sunset turn on porch light
             if( partOfDay > SUNSET ) {
                 Device::setValue("RearPorch", 100);
             }
         } else {                        // Door closed
-            // Nothing to do when door closes
+            officeDoor = false;
+            lastOfficeDoor = millis();  // update timeout
+            officeDoorCountdown = true;
+            // Nothing else to do when door closes. Timer will shut off if needed.
         }
     }
 
@@ -300,6 +331,9 @@ void handleWatching() {
     }
 }
 
+/**
+ * handleSleeping
+ */
 void handleCleaning() {
     int cleaningChanged = Device::getChangedValue("cleaning");
     if( cleaningChanged != -1 ) {

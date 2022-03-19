@@ -16,7 +16,7 @@ All text above must be included in any redistribution.
 #include "device.h"
 #include "IoT.h"
 
-#define MQTT_TIMEOUT_SECONDS 60*6
+#define MQTT_TIMEOUT_SECONDS 60*31
 #define MQTT_ALIVE_SECONDS 60*15
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
@@ -29,8 +29,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
-//    _logLevel = LOG_LEVEL_ERROR;
-    _logLevel = LOG_LEVEL_ALL;
+    _logLevel = LOG_LEVEL_ERROR;
+//    _logLevel = LOG_LEVEL_ALL;
 
     //TODO: Use GPS to determine actual timezone
     Time.zone(-6.0);    // Set timezone to Central
