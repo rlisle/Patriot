@@ -33,10 +33,14 @@ Author: Ron Lisle
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
 
-int partOfDay = 0;
-int sleeping = 0;
 int watching = 0;
 int cleaning = 0;
+int couchPresence = 0;
+
+// Move to IoT eventually
+int partOfDay = 0;
+int sleeping = 0;
+
 
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
@@ -54,116 +58,50 @@ void createDevices() {
         
     // Activities/States
     Device::add(new Device("cleaning", "All"));
+    Device::add(new Device("watching", "All"));
+    
+    //Move to IoT eventually
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
-    Device::add(new Device("watching", "All"));
+
 }
 
 void loop() {
     IoT::loop();
 
-    int cleaningChanged = Device::getChangedValue("cleaning");
-    int couchPresenceChanged = Device::getChangedValue("CouchPresence");
-    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
-    int partOfDayChanged = Device::getChangedValue("partofday");
-//    int sleepingChanged = Device::getChangedValue("sleeping");
-    int watchingChanged = Device::getChangedValue("watching");
-    
-    long loopTime = millis();
-    
-    if(livingRoomMotion == true) {
-        if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
-            livingRoomMotionStopped();
-        }
-    }
-
-    int partOfDay = Device::value("PartOfDay");
-    
+    handlePartOfDay();
     handleSleeping();
-    
-/*    if( sleepingChanged != -1 ) {
+    handleLivingRoomMotion();
+    handleWatching();
+    handleCleaning();
+    handleCouchPresence();
+}
 
-        Log.info("sleeping has changed %d",sleepingChanged);
-
-        // Alexa, Good morning
-        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
-        if( sleepingChanged == AWAKE) {
-            Log.info("It is AWAKE");
-            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-                Log.info("It is morning");
-                setMorningLights();
-            }
-        }
-
-        // Alexa, Bedtime
-        if( sleepingChanged == RETIRING ) {
-            setBedtimeLights();
-        }
-
-        // Alexa, Goodnight
-        if( sleepingChanged == ASLEEP ) {
-            setSleepingLights();
-        }
-    }
+/**
+ * handlePartOfDay
+ *
+ * Dependencies:
+ *   int partOfDay
+ *   void setSunriseLights()
+ *   void setEveningLights()
  */
-
+void handlePartOfDay() {
+    
+    int partOfDayChanged = Device::getChangedValue("partofday");
     if( partOfDayChanged != -1 ) {
 
         Log.info("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
-            // Turn off lights at sunrise
             Log.info("It is sunrise");
             setSunriseLights();
         }
 
         if( partOfDayChanged == DUSK ) {
-            // Turn on lights after sunset
             Log.info("It is dusk");
             setEveningLights();
         }
-    }
-        
-    if( watchingChanged != -1 ) {
-        if( watchingChanged > 0 ) {
-            Log.info("watching did turn on");
-            setWatchingLights( 100 );
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("watching did turn off");
-            setWatchingLights( 0 );
-        }
-    }
-
-    if( livingRoomMotionChanged != -1) {
-        handleLivingRoomMotion(livingRoomMotionChanged, partOfDay);
-    }
-
-    if( couchPresenceChanged != -1) {        
-        // Just for testing - set couch to presence value
-        switch(couchPresenceChanged){
-        case 25:    // presence
-            Device::setValue("Couch", 20);
-        case 75:    // near?
-            Device::setValue("Couch", 50);
-        case 100:   // Movement
-            Device::setValue("Couch", 100);
-        default:    // off
-            //TODO: wait a minute or so
-            Device::setValue("Couch", 0);
-        }
-        Log.info("Couch presence = %d",couchPresenceChanged);
-    }
-
-    if( cleaningChanged != -1 ) {
-        if( cleaningChanged > 0 ) {
-            Log.info("cleaning did turn on");
-            setAllLights( 100 );
-        } else {
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("cleaning did turn off");
-            setAllLights( 0 );
-        }
+        partOfDay = partOfDayChanged;
     }
 }
 
@@ -203,14 +141,31 @@ void handleSleeping() {
         if( sleepingChanged == ASLEEP ) {
             setSleepingLights();
         }
+        
+        sleeping = sleepingChanged;
     }
 }
 
-void handleLivingRoomMotion(int motion, int partOfDay) {
-    if(motion > 0 ) {   // Motion detected
-        lastLivingRoomMotion = millis();
+void handleLivingRoomMotion() {
+
+    // Timed shut-off
+    long loopTime = millis();
+    if(livingRoomMotion == true) {
+        if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
+            Log.info("LivingRoom motion stopped");
+            livingRoomMotion = false;
+            //TODO: check other things like watching, sleeping, etc.
+            Device::setValue("LeftVertical", 0);
+        }
+    }
+
+    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+    if(livingRoomMotionChanged > 0 ) {         // Motion?
         livingRoomMotion = true;
+        lastLivingRoomMotion = millis();
+        
         Device::setValue("LeftVertical", 50);
+        
         if( partOfDay > SUNSET ) {
             //TODO: maybe check sleeping already set
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
@@ -221,13 +176,66 @@ void handleLivingRoomMotion(int motion, int partOfDay) {
     }
 }
 
-void livingRoomMotionStopped() {
-    Log.info("LivingRoom motion stopped");
-    livingRoomMotion = false;
-    //TODO: check other things like watching, sleeping, etc.
-    Device::setValue("LeftVertical", 0);
+/**
+ * handleWatching
+ *
+ * Dependencies:
+ *   int partOfDay
+ *   void setWatchingLights()
+ */
+void handleWatching() {
+    
+    int watchingChanged = Device::getChangedValue("watching");
+    if( watchingChanged != -1 ) {
+        if( watchingChanged > 0 ) {
+            watching = 100;
+            Log.info("watching did turn on");
+            Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
+
+        } else {
+            watching = 0;
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("watching did turn off");
+            Device::setValue("Couch", 0);
+        }
+    }
 }
 
+void handleCleaning() {
+    int cleaningChanged = Device::getChangedValue("cleaning");
+    if( cleaningChanged != -1 ) {
+        if( cleaningChanged > 0 ) {
+            cleaning = 100;
+            Log.info("cleaning did turn on");
+            //TODO: save current light state to restore when cleaning turned off
+            setAllLights( 100 );
+        } else {
+            cleaning = 0;
+            //TODO: check if evening lights s/b on, etc.
+            Log.info("cleaning did turn off");
+            setAllLights( 0 );
+        }
+    }
+}
+
+void handleCouchPresence() {
+    int couchPresenceChanged = Device::getChangedValue("CouchPresence");
+    if( couchPresenceChanged != -1) {
+        couchPresence = couchPresenceChanged;
+        switch(couchPresenceChanged){
+        case 25:    // presence
+            Device::setValue("Couch", 20);
+        case 75:    // near?
+            Device::setValue("Couch", 50);
+        case 100:   // Movement
+            Device::setValue("Couch", 100);
+        default:    // off
+            //TODO: wait a minute or so
+            Device::setValue("Couch", 0);
+        }
+        Log.info("Couch presence = %d",couchPresence);
+    }
+}
 
 void setAllActivities(int value) {
     Device::setValue("cleaning", value);
@@ -266,9 +274,3 @@ void setSleepingLights() {
     setAllActivities(0);
     setAllLights(0);
 }
-
-void setWatchingLights(int level) {
-    Log.info("setWatchingLights %d", level);
-    Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
-}
-

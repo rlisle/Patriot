@@ -16,8 +16,8 @@ All text above must be included in any redistribution.
 #include "device.h"
 #include "IoT.h"
 
-#define MQTT_TIMEOUT_SECONDS 60*6
-#define MQTT_ALIVE_SECONDS 60*5
+#define MQTT_TIMEOUT_SECONDS 60*31
+#define MQTT_ALIVE_SECONDS 60*15
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {
@@ -29,8 +29,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
-//    _logLevel = LOG_LEVEL_ERROR;
-    _logLevel = LOG_LEVEL_ALL;
+    _logLevel = LOG_LEVEL_ERROR;
+//    _logLevel = LOG_LEVEL_ALL;
 
     //TODO: Use GPS to determine actual timezone
     Time.zone(-6.0);    // Set timezone to Central
@@ -234,7 +234,7 @@ void MQTTManager::parseLogLevel(String lcMessage) {
     LogLevel level = LOG_LEVEL_ERROR;
     if (lcMessage == "none") level = LOG_LEVEL_NONE;         // 70
     else if (lcMessage == "error") level = LOG_LEVEL_ERROR;  // 50
-    else if (lcMessage == "warn") level = LOG_LEVEL_WARN;    // 40
+    else if (lcMessage == "warn" || lcMessage == "warning") level = LOG_LEVEL_WARN;    // 40
     else if (lcMessage == "info") level = LOG_LEVEL_INFO;    // 30
     else if (lcMessage == "trace") level = LOG_LEVEL_TRACE;  // 1
     else if (lcMessage == "all") level = LOG_LEVEL_ALL;      // 1
