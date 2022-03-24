@@ -77,6 +77,8 @@ public:
      Particle.io variable "States"
      */
     static void buildDevicesVariable();
+    static void buildStatusVariable();
+    static void buildChecklistVariable();
     static void publishStates();
     static void expose();
 

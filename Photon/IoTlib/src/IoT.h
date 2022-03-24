@@ -65,11 +65,6 @@ public:
      * Loop needs to be called periodically
      */
     static void loop();
-
-    /**
-    Values used by loop programming
-     */
-    static int handleLightSwitch(String name);        // Requires matching Light & LightSwitch type names
     
     static int publishValue(String name, int value);  // Sends MQTT message
     
@@ -78,6 +73,5 @@ private:
     static MQTTManager* _mqttManager;
 
     static void subscribeHandler(const char *eventName, const char *rawData);
-//    static void periodicReset();
     static void mqttHandler(char* topic, byte* payload, unsigned int length);
 };

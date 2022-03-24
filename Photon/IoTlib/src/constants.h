@@ -16,4 +16,5 @@ All text above must be included in any redistribution.
 static const int    kMaxVariableStringLength   = 864; // was 622 < v3.0.0
 static const String kDevicesVariableName       = "Devices";
 static const String kChecklistVariableName     = "Checklist";
+static const String kStatusVariableName        = "Status";
 static const String kPublishName               = "patriot";

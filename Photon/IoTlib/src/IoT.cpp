@@ -36,6 +36,7 @@ void IoT::begin(String brokerIP, String controllerName)
 
     // Expose particle.io variables
     Device::expose();
+    
 }
 
 void IoT::mqttPublish(String topic, String message)
@@ -83,23 +84,6 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
     if(_mqttManager != NULL) {
         _mqttManager->mqttHandler(rawTopic, payload, length);
     }
-}
-
-/**
- Sketch Programming Support
- */
-
-int IoT::handleLightSwitch(String name) {
-    int lightSwitch = Device::getChangedValue(name+"Switch");
-    if( lightSwitch == -1) return -1;
-    Log.info("handleLightSwitch hasChanged: %d",lightSwitch);
-    Device *device = Device::get(name);
-    if( lightSwitch > 0 ) {
-        device->setValue(100);
-    } else {
-        device->setValue(0);
-    }
-    return lightSwitch;
 }
 
 /**

@@ -20,6 +20,7 @@ All text above must be included in any redistribution.
  */
 String globalChecklistVariable;
 String globalDevicesVariable;
+String globalStatusVariable;
 
 Device::Device(String name, String room, char type)
 : _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type)
@@ -30,6 +31,7 @@ Device::Device(String name, String room, char type)
 void Device::setValue(int value) {
     Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
+    buildStatusVariable();
 }
 
 // Check if device has changed and return new value or -1
@@ -65,6 +67,7 @@ void Device::add(Device *device)
     device->begin();
     
     buildDevicesVariable();
+    buildChecklistVariable();
 }
 
 void Device::resetAll()
@@ -130,7 +133,7 @@ int Device::count()
     return i;
 }
 
-// Particle.io Devices variable
+// Particle.io Devices, Checklist, and Status variables
 
 void Device::expose()
 {
@@ -142,14 +145,65 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kChecklistVariableName + " variable");
     }
+    if(!Particle.variable(kStatusVariableName, globalStatusVariable))
+    {
+        Log.error("Error: Unable to expose " + kStatusVariableName + " variable");
+    }
 }
 
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
-// It is a comma delimited list of <T>:<Name>@<Room>=<Value>
+// It is a comma delimited list of <T>:<Name>
 // Note: Alexa skill hasn't been updated to support @<room>, so removing it for now.
 void Device::buildDevicesVariable()
 {
     String newVariable = "";
+    
+    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
+
+        if(ptr->_type != 'X') {     // Ignore Checklist items
+            newVariable += String(ptr->_type)+":";
+            newVariable += String(ptr->_name);
+//            newVariable += "@"+ptr->_room;
+            if (ptr->_next != NULL) {
+                newVariable += ",";
+            }
+        }
+    }
+    if(newVariable.length() < kMaxVariableStringLength) {
+        globalDevicesVariable = newVariable;
+    } else {
+        Log.error("Devices variable is too long. Need to extend to a 2nd variable");
+    }
+}
+
+// The Status variable is used to report the current state of each device
+// It is a comma delimited list of <T>:<Name>=<Value>
+void Device::buildStatusVariable()
+{
+    String newVariable = "";
+    
+    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
+
+        if(ptr->_type != 'X') {     // Ignore checklist items
+            newVariable += String(ptr->_type)+":";
+            newVariable += String(ptr->_name);
+            newVariable += "="+String(ptr->_value);
+            if (ptr->_next != NULL) {
+                newVariable += ",";
+            }
+        }
+    }
+    if(newVariable.length() < kMaxVariableStringLength) {
+        globalStatusVariable = newVariable;
+    } else {
+        Log.error("Status variable is too long. Need to extend to a 2nd variable");
+    }
+}
+
+// The Checklist variable is used by the Checklist iOS app.
+// It is a comma delimited list of <Name>=0|1
+void Device::buildChecklistVariable()
+{
     String newChecklist = "";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
@@ -160,15 +214,6 @@ void Device::buildDevicesVariable()
             if (ptr->_next != NULL) {
                 newChecklist += ",";
             }
-
-        } else {
-            newVariable += String(ptr->_type)+":";
-            newVariable += String(ptr->_name);
-//            newVariable += "@"+ptr->_room;
-            newVariable += "="+String(ptr->_value);
-            if (ptr->_next != NULL) {
-                newVariable += ",";
-            }
         }
     }
     if(newChecklist.length() < kMaxVariableStringLength) {
@@ -176,12 +221,8 @@ void Device::buildDevicesVariable()
     } else {
         Log.error("Checklist variable is too long. Need to extend to a 2nd variable");
     }
-    if(newVariable.length() < kMaxVariableStringLength) {
-        globalDevicesVariable = newVariable;
-    } else {
-        Log.error("Devices variable is too long. Need to extend to a 2nd variable");
-    }
 }
+
 
 // Publish each device name and its value in response to patriot/query
 void Device::publishStates() {
