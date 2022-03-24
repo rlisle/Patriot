@@ -36,6 +36,7 @@ void IoT::begin(String brokerIP, String controllerName)
 
     // Expose particle.io variables
     Device::expose();
+    
 }
 
 void IoT::mqttPublish(String topic, String message)
