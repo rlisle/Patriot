@@ -31,6 +31,7 @@ Device::Device(String name, String room, char type)
 void Device::setValue(int value) {
     Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
+    buildStatusVariable();
 }
 
 // Check if device has changed and return new value or -1
@@ -66,6 +67,7 @@ void Device::add(Device *device)
     device->begin();
     
     buildDevicesVariable();
+    buildChecklistVariable();
 }
 
 void Device::resetAll()
