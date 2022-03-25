@@ -84,6 +84,7 @@ private:
     bool    didTxRxSensorChange();
     void    parseMessage();
     int     situation_judgment();
+    void    filterChanges(int newValue);
     void    sendScene(int scene);
     void    sendSensitivity(int sensitivity);
     int     calcCRC(unsigned char *data, int length);

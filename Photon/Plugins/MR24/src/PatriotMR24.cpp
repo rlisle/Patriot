@@ -141,16 +141,16 @@ bool MR24::didTxRxSensorChange()
     return _value != prevValue;
 }
 
-void filterChanges(int newValue) {
+void MR24::filterChanges(int newValue) {
     // Turning on (or getting closer)?
     if(newValue > _value) {
-        _last_motion = millis();
+        _lastMotion = millis();
         _value = newValue;
     }
     
     // Turning off?
     if(newValue < _value && newValue <= DETECTED_NOBODY) {
-        if(_last_motion + TURNOFF_DELAY < millis()) {
+        if(_lastMotion + TURNOFF_DELAY < millis()) {
             _value = newValue;
         }
     }

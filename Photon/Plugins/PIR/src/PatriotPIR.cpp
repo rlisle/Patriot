@@ -80,11 +80,24 @@ bool PIR::didSensorChange()
 {
     int pinState = digitalRead(_pin);
     int newValue = pinState ? 100 : 0;
-    if(newValue != _value) {
+    return filterChanges(newValue);
+}
+
+bool PIR::filterChanges(int newValue) {
+    // Turning on (or getting closer)?
+    if(newValue > _value) {
+        _lastMotion = millis();
         _value = newValue;
         return true;
     }
     
+    // Turning off?
+    if(newValue < _value) {
+        if(_lastMotion + TURNOFF_DELAY < millis()) {
+            _value = newValue;
+            return true;
+        }
+    }
     return false;
 }
 
