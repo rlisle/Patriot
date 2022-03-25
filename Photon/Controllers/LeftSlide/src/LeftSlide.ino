@@ -166,6 +166,7 @@ void handleLivingRoomMotion() {
         
         Device::setValue("LeftVertical", 50);
         
+        // Determine if this is Ron getting up
         if( partOfDay > SUNSET ) {
             //TODO: maybe check sleeping already set
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
