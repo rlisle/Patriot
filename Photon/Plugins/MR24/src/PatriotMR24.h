@@ -73,7 +73,6 @@ private:
     int     _d3;
     unsigned _crc;
 
-    int     _status;
     String  _statusMessage;
     String  _prevStatusMessage;
     
