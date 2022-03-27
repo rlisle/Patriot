@@ -237,30 +237,31 @@ void handleSleeping() {
  */
 void handleOfficeMotion() {
 
-    // Timed shut-off
     long loopTime = millis();
-    if(officeMotion == true) {
-        if(loopTime >= lastOfficeMotion+OFFICE_MOTION_TIMEOUT) {
-            Log.info("Office motion stopped");
-            officeMotion = false;
-            //TODO: check other things like watching, sleeping, etc.
-            Device::setValue("Piano", 0);
-        }
-    }
-
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
+    
     if(officeMotionChanged > 0 ) {         // Motion?
         officeMotion = true;
-        lastOfficeMotion = millis();
+        lastOfficeMotion = loopTime;
         
         Device::setValue("Piano", 50);
         
-        if( partOfDay > SUNSET ) {
-            //TODO: maybe check sleeping already set
+        if( partOfDay > SUNSET && sleeping > AWAKE) {
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
             }
+        }
+        return;
+    }
+        
+    // Timed shut-off
+    if(officeMotion == true) {
+        if(loopTime >= lastOfficeMotion+OFFICE_MOTION_TIMEOUT) {
+            Log.info("Office motion timed out");
+            officeMotion = false;
+            //TODO: check other things like watching, sleeping, etc.
+            Device::setValue("Piano", 0);
         }
     }
 }
