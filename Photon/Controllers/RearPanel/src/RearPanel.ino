@@ -246,7 +246,7 @@ void handleOfficeMotion() {
         
         Device::setValue("Piano", 50);
         
-        if( partOfDay > SUNSET && sleeping > AWAKE) {
+        if( partOfDay > SUNSET && sleeping != AWAKE) {
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
