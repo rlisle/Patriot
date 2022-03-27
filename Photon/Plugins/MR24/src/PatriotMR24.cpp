@@ -142,14 +142,21 @@ bool MR24::didTxRxSensorChange()
 }
 
 void MR24::filterChanges(int newValue) {
+    if(newValue == DETECTED_NOTHING) {
+        // Try ignoring these. Do we always get DETECTED_NOBODY after motion?
+        return;
+    }
+    
     // Turning on (or getting closer)?
-    if(newValue > _value) {
+    if(newValue > DETECTED_NOBODY) {
         _lastMotion = millis();
+        //TODO: we may want to filter on states
         _value = newValue;
+        return;
     }
     
     // Turning off?
-    if(newValue < _value && newValue <= DETECTED_NOBODY) {
+    if(newValue == DETECTED_NOBODY && _value > DETECTED_NOBODY) {
         if(_lastMotion + TURNOFF_DELAY < millis()) {
             _value = newValue;
         }

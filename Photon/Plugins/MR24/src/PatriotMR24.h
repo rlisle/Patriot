@@ -61,6 +61,7 @@ private:
     
     long    _lastPollTime;
     long    _lastMotion;
+    long    _lastNobody;
     
     int     _data[14];              // Typically 10 or 11 used
     int     _index;                 // Current position in _data
