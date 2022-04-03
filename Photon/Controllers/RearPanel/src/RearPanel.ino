@@ -148,6 +148,7 @@ void createDevices() {
     Device::add(new Device("sewerHose", "All", 'X'));
 }
 
+// TODO: refactor to IoT
 // from 2nd Sunday of March through 1st Sunday of November
 // 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
 void handleDaylightSavings() {
@@ -475,6 +476,7 @@ void setBedtimeLights() {
     Device::setValue("piano",70);
     setAllOutsideLights(0);
     Device::setValue("Curtain",0);
+    Device::setValue("Bedroom", 100);   // Turn on bedroom lamp
 }
 
 void setSleepingLights() {
