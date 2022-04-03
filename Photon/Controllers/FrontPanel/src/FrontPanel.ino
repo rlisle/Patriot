@@ -29,13 +29,28 @@
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 
+#define FRONT_DOOR_TIMEOUT 5*60*1000
+
 #define ADDRESS 1      // PWM board switches low switch on
 
-IoT *iot;
+//IoT *iot;
 
-              
+bool frontDoor = false;
+bool frontDoorCountdown = false;
+long lastFrontDoor = 0;
+
+int watching = 0;
+int cleaning = 0;
+int partOfDay = 0;
+int sleeping = 0;
+
 void setup() {
     IoT::begin("192.168.50.33", "FrontPanel");
+    createDevices();
+    handleDaylightSavings();
+}
+
+void createDevices() {
 
     // Inside Lights
     Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", "Kitchen", 2));
@@ -72,6 +87,82 @@ void setup() {
     Device::add(new Device("watching", "All"));
 }
 
+// TODO: refactor to IoT
+// from 2nd Sunday of March through 1st Sunday of November
+// 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
+void handleDaylightSavings() {
+    int month = Time.month();
+    if(month > 3 && month < 11) {
+        Time.beginDST();
+    } else if(month == 3) {
+        handleDSTMarch();
+    } else if(month == 11) {
+        handleDSTNovember();
+    }
+}
+
+void handleDSTMarch() {
+    int weekday = Time.weekday();
+    int day = Time.day();
+    int hour = Time.hour();
+    
+    if(day <= 7) return;
+    
+    switch(weekday) {
+        case 1:     // Sunday
+            if(day == 8 && hour < 2) return;
+            break;
+        case 2:
+            if(day < 9) return;
+        case 3:
+            if(day < 10) return;
+        case 4:
+            if(day < 11) return;
+        case 5:
+            if(day < 12) return;
+        case 6:
+            if(day < 13) return;
+        case 7:     // Saturday
+        default:
+            if(day < 14) return;
+    }
+    Time.beginDST();
+}
+
+void handleDSTNovember() {
+    int weekday = Time.weekday();
+    int day = Time.day();
+    int hour = Time.hour();
+    
+    if(day > 7) return;
+    
+    switch(weekday) {
+        case 1:     // Sunday
+            if(day == 1 && hour >= 2) return;
+            break;
+        case 2:
+            if(day > 2) return;
+            break;
+        case 3:
+            if(day > 3) return;
+            break;
+        case 4:
+            if(day > 4) return;
+            break;
+        case 5:
+            if(day > 5) return;
+            break;
+        case 6:
+            if(day > 6) return;
+            break;
+        case 7:     // Saturday
+        default:
+            if(day > 7) return;
+    }
+    Time.beginDST();
+}
+
+
 void loop() {
     
     // When IoT loop() is called, it will
@@ -106,20 +197,34 @@ void loop() {
         handleWatchingChange(watchingChanged);
     }
     
+    //TODO: Convert to resallable light switches
     handleLightSwitches();
 }
 
+//TODO: Remove after converting to resellable switches
 void handleLightSwitches() {
-    IoT::handleLightSwitch("Ceiling");
-    IoT::handleLightSwitch("KitchenCeiling");
-    IoT::handleLightSwitch("Sink");
-    IoT::handleLightSwitch("Cabinets");
-    IoT::handleLightSwitch("RightTrim");
-    IoT::handleLightSwitch("LeftTrim");
-    IoT::handleLightSwitch("DoorSide");
-    IoT::handleLightSwitch("OtherSide");
-    IoT::handleLightSwitch("FrontPorch");
-    IoT::handleLightSwitch("FrontAwning");
+    handleLightSwitch("Ceiling");
+    handleLightSwitch("KitchenCeiling");
+    handleLightSwitch("Sink");
+    handleLightSwitch("Cabinets");
+    handleLightSwitch("RightTrim");
+    handleLightSwitch("LeftTrim");
+    handleLightSwitch("DoorSide");
+    handleLightSwitch("OtherSide");
+    handleLightSwitch("FrontPorch");
+    handleLightSwitch("FrontAwning");
+}
+
+void handleLightSwitch(String name) {
+    int lightSwitch = Device::getChangedValue(name+"Switch");
+    if( lightSwitch == -1) return;
+    Log.info("handleLightSwitch hasChanged: %d",lightSwitch);
+    Device *device = Device::get(name);
+    if( lightSwitch > 0 ) {
+        device->setValue(100);
+    } else {
+        device->setValue(0);
+    }
 }
 
 void handleSleepingChange(int sleeping) {

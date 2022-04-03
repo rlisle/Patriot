@@ -16,14 +16,18 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include <device.h>
 
+#define TURNOFF_DELAY 2000
+
 class PIR : public Device
 {
 private:
     int        _pin;
     long       _lastPollTime;
+    long       _lastMotion;
 
     bool      isTimeToCheckSensor();
     bool      didSensorChange();
+    bool      filterChanges(int newValue);
     void      notify();
     
 public:

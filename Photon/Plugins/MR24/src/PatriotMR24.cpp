@@ -21,37 +21,6 @@ All text above must be included in any redistribution.
 #include "PatriotMR24.h"
 #include "IoT.h"
 
-// All this stuff is in case we want to use Rx/Tx instead of S1, S2
-#define POLL_INTERVAL_MILLIS 500
-#define MESSAGE_HEAD 0x55
-#define ACTIVE_REPORT 0x04
-#define FALL_REPORT 0x06
-
-#define REPORT_RADAR 0x03
-#define REPORT_OTHER 0x05
-
-#define HEARTBEAT 0x01
-#define ABNORMAL 0x02
-#define ENVIRONMENT 0x05
-#define BODYSIGN 0x06
-#define CLOSE_AWAY 0x07
-
-#define CA_BE 0x01
-#define CA_CLOSE 0x02
-#define CA_AWAY 0x03
-#define SOMEBODY_BE 0x01
-#define SOMEBODY_MOVE 0x01
-#define SOMEBODY_STOP 0x00
-#define NOBODY 0x00
-
-// Return values
-#define DETECTED_NOTHING -1
-#define DETECTED_NOBODY 0
-#define DETECTED_SOMEBODY_FAR 25
-#define DETECTED_SOMEBODY 50
-#define DETECTED_SOMEBODY_CLOSE 75
-#define DETECTED_MOVEMENT 100
-
 /**
  * Constructor
  * @param pinNum int pin number that is connected to the sensor output
@@ -110,8 +79,6 @@ bool MR24::usingS1S2() {
  */
 bool MR24::isTimeToCheckSensor()
 {
-    if(!usingS1S2()) return true;
-    
     long currentTime = millis();
     if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
     {
@@ -164,15 +131,36 @@ bool MR24::didTxRxSensorChange()
             _index = 0;                             // Loop back to start of buffer
             parseMessage();
             int newValue = situation_judgment();    //was passing _data[5], _data[6], _data[7], _data[8], _data[9]
-            if(newValue > DETECTED_NOTHING) {
-                _value = newValue;
-            }
+
+            filterChanges(newValue);
         }
         if(_index < 14) {   // Safety check. Should not happen.
             _data[_index++] = Msg;
         }
     }
     return _value != prevValue;
+}
+
+void MR24::filterChanges(int newValue) {
+    if(newValue == DETECTED_NOTHING) {
+        // Try ignoring these. Do we always get DETECTED_NOBODY after motion?
+        return;
+    }
+    
+    // Turning on (or getting closer)?
+    if(newValue > DETECTED_NOBODY) {
+        _lastMotion = millis();
+        //TODO: we may want to filter on states
+        _value = newValue;
+        return;
+    }
+    
+    // Turning off?
+    if(newValue == DETECTED_NOBODY && _value > DETECTED_NOBODY) {
+        if(_lastMotion + TURNOFF_DELAY < millis()) {
+            _value = newValue;
+        }
+    }
 }
 
 void MR24::parseMessage() {

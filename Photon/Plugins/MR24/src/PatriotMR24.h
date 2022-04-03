@@ -16,6 +16,40 @@ All text above must be included in any redistribution.
 #include "Particle.h"
 #include <device.h>
 
+#define POLL_INTERVAL_MILLIS 500
+#define TURNOFF_DELAY 2000
+
+// Rx/Tx communications
+#define MESSAGE_HEAD 0x55
+#define ACTIVE_REPORT 0x04
+#define FALL_REPORT 0x06
+
+#define REPORT_RADAR 0x03
+#define REPORT_OTHER 0x05
+
+#define HEARTBEAT 0x01
+#define ABNORMAL 0x02
+#define ENVIRONMENT 0x05
+#define BODYSIGN 0x06
+#define CLOSE_AWAY 0x07
+
+#define CA_BE 0x01
+#define CA_CLOSE 0x02
+#define CA_AWAY 0x03
+#define SOMEBODY_BE 0x01
+#define SOMEBODY_MOVE 0x01
+#define SOMEBODY_STOP 0x00
+#define NOBODY 0x00
+
+// Return values
+#define DETECTED_NOTHING -1
+#define DETECTED_NOBODY 0
+#define DETECTED_SOMEBODY_FAR 25
+#define DETECTED_SOMEBODY 50
+#define DETECTED_SOMEBODY_CLOSE 75
+#define DETECTED_MOVEMENT 100
+
+
 class MR24 : public Device
 {
 private:
@@ -26,6 +60,8 @@ private:
     int     _s2value;
     
     long    _lastPollTime;
+    long    _lastMotion;
+    long    _lastNobody;
     
     int     _data[14];              // Typically 10 or 11 used
     int     _index;                 // Current position in _data
@@ -48,6 +84,7 @@ private:
     bool    didTxRxSensorChange();
     void    parseMessage();
     int     situation_judgment();
+    void    filterChanges(int newValue);
     void    sendScene(int scene);
     void    sendSensitivity(int sensitivity);
     int     calcCRC(unsigned char *data, int length);
