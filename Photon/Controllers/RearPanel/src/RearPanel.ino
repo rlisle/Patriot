@@ -169,7 +169,7 @@ void handleDSTMarch() {
     
     if(day <= 7) return;
     
-    switch(day) {
+    switch(weekday) {
         case 1:     // Sunday
             if(day == 8 && hour < 2) return;
             break;
@@ -197,7 +197,7 @@ void handleDSTNovember() {
     
     if(day > 7) return;
     
-    switch(day) {
+    switch(weekday) {
         case 1:     // Sunday
             if(day == 1 && hour >= 2) return;
             break;

@@ -108,7 +108,7 @@ void handleDSTMarch() {
     
     if(day <= 7) return;
     
-    switch(day) {
+    switch(weekday) {
         case 1:     // Sunday
             if(day == 8 && hour < 2) return;
             break;
@@ -136,7 +136,7 @@ void handleDSTNovember() {
     
     if(day > 7) return;
     
-    switch(day) {
+    switch(weekday) {
         case 1:     // Sunday
             if(day == 1 && hour >= 2) return;
             break;
@@ -201,17 +201,30 @@ void loop() {
     handleLightSwitches();
 }
 
+//TODO: Remove after converting to resellable switches
 void handleLightSwitches() {
-    IoT::handleLightSwitch("Ceiling");
-    IoT::handleLightSwitch("KitchenCeiling");
-    IoT::handleLightSwitch("Sink");
-    IoT::handleLightSwitch("Cabinets");
-    IoT::handleLightSwitch("RightTrim");
-    IoT::handleLightSwitch("LeftTrim");
-    IoT::handleLightSwitch("DoorSide");
-    IoT::handleLightSwitch("OtherSide");
-    IoT::handleLightSwitch("FrontPorch");
-    IoT::handleLightSwitch("FrontAwning");
+    handleLightSwitch("Ceiling");
+    handleLightSwitch("KitchenCeiling");
+    handleLightSwitch("Sink");
+    handleLightSwitch("Cabinets");
+    handleLightSwitch("RightTrim");
+    handleLightSwitch("LeftTrim");
+    handleLightSwitch("DoorSide");
+    handleLightSwitch("OtherSide");
+    handleLightSwitch("FrontPorch");
+    handleLightSwitch("FrontAwning");
+}
+
+void handleLightSwitch(String name) {
+    int lightSwitch = Device::getChangedValue(name+"Switch");
+    if( lightSwitch == -1) return;
+    Log.info("handleLightSwitch hasChanged: %d",lightSwitch);
+    Device *device = Device::get(name);
+    if( lightSwitch > 0 ) {
+        device->setValue(100);
+    } else {
+        device->setValue(0);
+    }
 }
 
 void handleSleepingChange(int sleeping) {
