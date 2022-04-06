@@ -7,7 +7,8 @@ Author: Ron Lisle
     1. Edit this code
     2. Update IoT and plugins if needed
     3. "particle flash LeftSlide"
- 
+
+  I/O Map
     D3 HR24 sensor S1
     D4 HR24 sensor S2
     D6 DHT11/22
