@@ -74,4 +74,7 @@ private:
 
     static void subscribeHandler(const char *eventName, const char *rawData);
     static void mqttHandler(char* topic, byte* payload, unsigned int length);
+    static void handleDaylightSavings();
+    static void handleDSTMarch();
+    static void handleDSTNovember();
 };
