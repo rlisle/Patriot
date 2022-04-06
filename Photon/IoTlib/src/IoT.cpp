@@ -136,13 +136,13 @@ void IoT::loop()
         _mqttManager->loop();
     }
 
-    int day = Time.day();
-    if (Time.day() != _prevDay) {
+//    int day = Time.day();
+//    if (Time.day() != _prevDay) {
         // Handle any once-a-day things
         // TODO:
         //if (Time.month() == 3 && )
         
-    }
+//    }
 }
 
 /**
