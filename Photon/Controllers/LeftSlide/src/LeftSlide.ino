@@ -34,6 +34,9 @@ Author: Ron Lisle
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
 
+bool couchPresenceFiltered = 0;
+long lastCouchPresence = 0;
+
 int watching = 0;
 int cleaning = 0;
 int couchPresence = 0;
@@ -224,20 +227,42 @@ void handleCleaning() {
 void handleCouchPresence() {
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     if( couchPresenceChanged != -1) {
-        couchPresence = couchPresenceChanged;
-        switch(couchPresenceChanged){
-        case 25:    // presence
-            Device::setValue("Couch", 20);
-        case 75:    // near?
-            Device::setValue("Couch", 50);
-        case 100:   // Movement
-            Device::setValue("Couch", 100);
-        default:    // off
-            //TODO: wait a minute or so
-            Device::setValue("Couch", 0);
+        
+        couchPresenceFiltered = filter(couchPresenceFiltered,couchPresenceChanged);
+        int newCouchPresence = quantize(couchPresenceFiltered);
+        
+        if(newCouchPresence != couchPresence) {
+            couchPresence = newCouchPresence;
+            switch(couchPresence){
+            case 25:    // presence
+                Device::setValue("Couch", 20);
+            case 75:    // near?
+                Device::setValue("Couch", 50);
+            case 100:   // Movement
+                Device::setValue("Couch", 100);
+            default:    // off
+                //TODO: wait a minute or so
+                Device::setValue("Couch", 0);
+            }
         }
         Log.info("Couch presence = %d",couchPresence);
     }
+}
+
+int filter(int sum, int value) {
+    float flSum = float(sum);
+    float flValue = float(value);
+    // Super simple, but may be enough
+    float result = (flSum * 0.5) + (flValue * 0.5);
+    return (int)result;
+}
+
+int quantize(int value) {
+    if(value < 13) return 0;
+    if(value < 38) return 25;
+    if(value < 63) return 50;
+    if(value < 88) return 75;
+    return 100;
 }
 
 void setAllActivities(int value) {
