@@ -149,29 +149,31 @@ void handleSleeping() {
 
 void handleLivingRoomMotion() {
 
-    // Timed shut-off
-    long loopTime = millis();
-    if(livingRoomMotion == true) {
-        if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
-            Log.info("LivingRoom motion stopped");
-            livingRoomMotion = false;
-            //TODO: check other things like watching, sleeping, etc.
-            Device::setValue("LeftVertical", 0);
-        }
-    }
-
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
-    if(livingRoomMotionChanged > 0 ) {         // Motion?
+
+    // Motion?
+    if(livingRoomMotionChanged > 0 ) {
         livingRoomMotion = true;
         lastLivingRoomMotion = millis();
         
         Device::setValue("LeftVertical", 50);
         
         // Determine if this is Ron getting up
-        if( partOfDay > SUNSET && sleeping > 1) {
+        if( partOfDay > SUNSET && sleeping == ASLEEP) {
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
+            }
+        }
+    } else {
+        // Timed shut-off
+        long loopTime = millis();
+        if(livingRoomMotion == true) {
+            if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
+                Log.info("LivingRoom motion stopped");
+                livingRoomMotion = false;
+                //TODO: check other things like watching, sleeping, etc.
+                Device::setValue("LeftVertical", 0);
             }
         }
     }
