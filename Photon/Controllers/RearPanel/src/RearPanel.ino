@@ -24,7 +24,7 @@ Author: Ron Lisle
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
-#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
+//#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define OFFICE_MOTION_TIMEOUT 2*60*1000
 #define OFFICE_DOOR_TIMEOUT 5*60*1000

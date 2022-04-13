@@ -29,8 +29,11 @@ Author: Ron Lisle
 #include <PatriotPIR.h>
 #include <PatriotMR24.h>
 #include <HueLight.h>
+#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
+
+byte server[4] = { 192, 168,50, 21 };
 
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
