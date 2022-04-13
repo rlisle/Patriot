@@ -28,6 +28,7 @@ Author: Ron Lisle
 #include <PatriotLight.h>
 #include <PatriotPIR.h>
 #include <PatriotMR24.h>
+#include <HueLight.h>
 
 #define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
 
@@ -55,6 +56,12 @@ void createDevices() {
     // Sensors
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
     Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
+
+    // Philips Hue Lights (currently requires internet connection)
+    Device::add(new HueLight("Bedroom", "Bedroom", "1", server, HUE_USERID));
+    Device::add(new HueLight("DeskLeft", "Office", "2", server, HUE_USERID));
+    Device::add(new HueLight("DeskRight", "Office", "3", server, HUE_USERID));
+    Device::add(new HueLight("Nook", "LivingRoom", "4", server, HUE_USERID));
 
     // Lights
     Device::add(new Light(A7, "Couch", "Living Room", 2));
@@ -197,12 +204,14 @@ void handleWatching() {
             watching = 100;
             Log.info("watching did turn on");
             Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
+            Device::setValue("Nook", 100);
 
         } else {
             watching = 0;
             //TODO: check if evening lights s/b on, etc.
             Log.info("watching did turn off");
             Device::setValue("Couch", 0);
+            Device::setValue("Nook", 0);
         }
     }
 }
@@ -274,11 +283,16 @@ void setAllLights(int value) {
     Log.info("setAllLights %d",value);
     Device::setValue("Couch", value);
     Device::setValue("LeftVertical", value);
+    Device::setValue("DeskLeft",value);
+    Device::setValue("DeskRight",value);
+    Device::setValue("Nook",value);
 }
 
 void setMorningLights() {
     Log.info("setMorningLights");
     Device::setValue("LeftVertical", 30);
+    Device::setValue("DeskLeft",100);
+    Device::setValue("DeskRight",100);
 }
 
 void setSunriseLights() {
@@ -295,10 +309,12 @@ void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
     setAllLights(0);
+    Device::setValue("Bedroom", 100);   // Turn on bedroom lamp
 }
 
 void setSleepingLights() {
     Log.info("setSleepingLights");
     setAllActivities(0);
     setAllLights(0);
+    Device::setValue("Bedroom",value);
 }

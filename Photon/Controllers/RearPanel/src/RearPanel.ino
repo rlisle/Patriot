@@ -24,7 +24,6 @@ Author: Ron Lisle
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
-#include <HueLight.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define OFFICE_MOTION_TIMEOUT 2*60*1000
@@ -79,12 +78,6 @@ void createDevices() {
     
     // Photon I/O
     Device::add(new PIR(A5, "OfficeMotion", "Office"));
-
-    // Philips Hue Lights (currently requires internet connection)
-    Device::add(new HueLight("Bedroom", "Bedroom", "1", server, HUE_USERID));
-    Device::add(new HueLight("DeskLeft", "Office", "2", server, HUE_USERID));
-    Device::add(new HueLight("DeskRight", "Office", "3", server, HUE_USERID));
-    Device::add(new HueLight("Nook", "LivingRoom", "4", server, HUE_USERID));
 
     // I2CPWM8W80C board
     // 8 Dimmers
@@ -410,13 +403,11 @@ void handleWatching() {
         if( watchingChanged > 0 ) {
             watching = 100;
             Log.info("watching did turn on");
-            Device::setValue("Nook", 100);
 
         } else {
             watching = 0;
             //TODO: check if evening lights s/b on, etc.
             Log.info("watching did turn off");
-            Device::setValue("Nook", 0);    // Do I want to just leave this on?
         }
     }
 }
@@ -449,8 +440,6 @@ void setAllActivities(int value) {
 
 void setMorningLights() {
     Log.info("setMorningLights");
-    Device::setValue("DeskLeft",100);
-    Device::setValue("DeskRight",100);
     Device::setValue("officeceiling",70);
     Device::setValue("OfficeTrim", 100);
 }
@@ -476,7 +465,6 @@ void setBedtimeLights() {
     Device::setValue("piano",70);
     setAllOutsideLights(0);
     Device::setValue("Curtain",0);
-    Device::setValue("Bedroom", 100);   // Turn on bedroom lamp
 }
 
 void setSleepingLights() {
@@ -498,10 +486,6 @@ void setAllInsideLights(int value) {
     Device::setValue("Loft", value);
     Device::setValue("Piano", value);
     Device::setValue("OfficeTrim", value);
-    Device::setValue("DeskLeft",value);
-    Device::setValue("DeskRight",value);
-    Device::setValue("Bedroom",value);
-    Device::setValue("Nook",value);
 
 }
 
