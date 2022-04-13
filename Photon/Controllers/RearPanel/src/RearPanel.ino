@@ -235,8 +235,7 @@ void loop() {
  */
 void handleAutoGoodnight() {
     if(sleeping < ASLEEP && Time.hour() == 2) {
-        //TODO: refactor
-        IoT::mqttPublish("patriot/sleeping", "3");   // AWAKE
+        IoT::mqttPublish("patriot/sleeping", "3");   // 3 = ASLEEP
         Device::setValue("sleeping", ASLEEP);
     }
 }
@@ -325,10 +324,11 @@ void handleOfficeMotion() {
     if(officeMotionChanged > 0 ) {         // Motion?
         officeMotion = true;
         lastOfficeMotion = loopTime;
-        
+
+        //TODO: change this to only happen when dark
         Device::setValue("Piano", 50);
         
-        if( partOfDay > SUNSET && sleeping != AWAKE) {
+        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
