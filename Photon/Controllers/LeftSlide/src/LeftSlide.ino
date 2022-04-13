@@ -319,5 +319,5 @@ void setSleepingLights() {
     Log.info("setSleepingLights");
     setAllActivities(0);
     setAllLights(0);
-    Device::setValue("Bedroom",value);
+    Device::setValue("Bedroom",0);
 }
