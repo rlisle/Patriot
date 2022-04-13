@@ -7,7 +7,8 @@ Author: Ron Lisle
     1. Edit this code
     2. Update IoT and plugins if needed
     3. "particle flash LeftSlide"
- 
+
+  I/O Map
     D3 HR24 sensor S1
     D4 HR24 sensor S2
     D6 DHT11/22
@@ -27,11 +28,18 @@ Author: Ron Lisle
 #include <PatriotLight.h>
 #include <PatriotPIR.h>
 #include <PatriotMR24.h>
+#include <HueLight.h>
+#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
 
+byte server[4] = { 192, 168,50, 21 };
+
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
+
+bool couchPresenceFiltered = 0;
+long lastCouchPresence = 0;
 
 int watching = 0;
 int cleaning = 0;
@@ -45,13 +53,18 @@ int sleeping = 0;
 void setup() {
     IoT::begin("192.168.50.33","LeftSlide");
     createDevices();
-    handleDaylightSavings();
 }
 
 void createDevices() {
     // Sensors
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
     Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
+
+    // Philips Hue Lights (currently requires internet connection)
+    Device::add(new HueLight("Bedroom", "Bedroom", "1", server, HUE_USERID));
+    Device::add(new HueLight("DeskLeft", "Office", "2", server, HUE_USERID));
+    Device::add(new HueLight("DeskRight", "Office", "3", server, HUE_USERID));
+    Device::add(new HueLight("Nook", "LivingRoom", "4", server, HUE_USERID));
 
     // Lights
     Device::add(new Light(A7, "Couch", "Living Room", 2));
@@ -66,82 +79,6 @@ void createDevices() {
     Device::add(new Device("sleeping", "All"));
 
 }
-
-// TODO: refactor to IoT
-// from 2nd Sunday of March through 1st Sunday of November
-// 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
-void handleDaylightSavings() {
-    int month = Time.month();
-    if(month > 3 && month < 11) {
-        Time.beginDST();
-    } else if(month == 3) {
-        handleDSTMarch();
-    } else if(month == 11) {
-        handleDSTNovember();
-    }
-}
-
-void handleDSTMarch() {
-    int weekday = Time.weekday();
-    int day = Time.day();
-    int hour = Time.hour();
-    
-    if(day <= 7) return;
-    
-    switch(weekday) {
-        case 1:     // Sunday
-            if(day == 8 && hour < 2) return;
-            break;
-        case 2:
-            if(day < 9) return;
-        case 3:
-            if(day < 10) return;
-        case 4:
-            if(day < 11) return;
-        case 5:
-            if(day < 12) return;
-        case 6:
-            if(day < 13) return;
-        case 7:     // Saturday
-        default:
-            if(day < 14) return;
-    }
-    Time.beginDST();
-}
-
-void handleDSTNovember() {
-    int weekday = Time.weekday();
-    int day = Time.day();
-    int hour = Time.hour();
-    
-    if(day > 7) return;
-    
-    switch(weekday) {
-        case 1:     // Sunday
-            if(day == 1 && hour >= 2) return;
-            break;
-        case 2:
-            if(day > 2) return;
-            break;
-        case 3:
-            if(day > 3) return;
-            break;
-        case 4:
-            if(day > 4) return;
-            break;
-        case 5:
-            if(day > 5) return;
-            break;
-        case 6:
-            if(day > 6) return;
-            break;
-        case 7:     // Saturday
-        default:
-            if(day > 7) return;
-    }
-    Time.beginDST();
-}
-
 
 void loop() {
     IoT::loop();
@@ -225,29 +162,31 @@ void handleSleeping() {
 
 void handleLivingRoomMotion() {
 
-    // Timed shut-off
-    long loopTime = millis();
-    if(livingRoomMotion == true) {
-        if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
-            Log.info("LivingRoom motion stopped");
-            livingRoomMotion = false;
-            //TODO: check other things like watching, sleeping, etc.
-            Device::setValue("LeftVertical", 0);
-        }
-    }
-
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
-    if(livingRoomMotionChanged > 0 ) {         // Motion?
+
+    // Motion?
+    if(livingRoomMotionChanged > 0 ) {
         livingRoomMotion = true;
         lastLivingRoomMotion = millis();
         
         Device::setValue("LeftVertical", 50);
         
         // Determine if this is Ron getting up
-        if( partOfDay > SUNSET && sleeping > 1) {
+        if( partOfDay > SUNSET && sleeping == ASLEEP) {
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
+            }
+        }
+    } else {
+        // Timed shut-off
+        long loopTime = millis();
+        if(livingRoomMotion == true) {
+            if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
+                Log.info("LivingRoom motion stopped");
+                livingRoomMotion = false;
+                //TODO: check other things like watching, sleeping, etc.
+                Device::setValue("LeftVertical", 0);
             }
         }
     }
@@ -268,12 +207,14 @@ void handleWatching() {
             watching = 100;
             Log.info("watching did turn on");
             Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
+            Device::setValue("Nook", 100);
 
         } else {
             watching = 0;
             //TODO: check if evening lights s/b on, etc.
             Log.info("watching did turn off");
             Device::setValue("Couch", 0);
+            Device::setValue("Nook", 0);
         }
     }
 }
@@ -298,20 +239,42 @@ void handleCleaning() {
 void handleCouchPresence() {
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     if( couchPresenceChanged != -1) {
-        couchPresence = couchPresenceChanged;
-        switch(couchPresenceChanged){
-        case 25:    // presence
-            Device::setValue("Couch", 20);
-        case 75:    // near?
-            Device::setValue("Couch", 50);
-        case 100:   // Movement
-            Device::setValue("Couch", 100);
-        default:    // off
-            //TODO: wait a minute or so
-            Device::setValue("Couch", 0);
+        
+        couchPresenceFiltered = filter(couchPresenceFiltered,couchPresenceChanged);
+        int newCouchPresence = quantize(couchPresenceFiltered);
+        
+        if(newCouchPresence != couchPresence) {
+            couchPresence = newCouchPresence;
+            switch(couchPresence){
+            case 25:    // presence
+                Device::setValue("Couch", 20);
+            case 75:    // near?
+                Device::setValue("Couch", 50);
+            case 100:   // Movement
+                Device::setValue("Couch", 100);
+            default:    // off
+                //TODO: wait a minute or so
+                Device::setValue("Couch", 0);
+            }
         }
         Log.info("Couch presence = %d",couchPresence);
     }
+}
+
+int filter(int sum, int value) {
+    float flSum = float(sum);
+    float flValue = float(value);
+    // Super simple, but may be enough
+    float result = (flSum * 0.5) + (flValue * 0.5);
+    return (int)result;
+}
+
+int quantize(int value) {
+    if(value < 13) return 0;
+    if(value < 38) return 25;
+    if(value < 63) return 50;
+    if(value < 88) return 75;
+    return 100;
 }
 
 void setAllActivities(int value) {
@@ -323,11 +286,16 @@ void setAllLights(int value) {
     Log.info("setAllLights %d",value);
     Device::setValue("Couch", value);
     Device::setValue("LeftVertical", value);
+    Device::setValue("DeskLeft",value);
+    Device::setValue("DeskRight",value);
+    Device::setValue("Nook",value);
 }
 
 void setMorningLights() {
     Log.info("setMorningLights");
     Device::setValue("LeftVertical", 30);
+    Device::setValue("DeskLeft",100);
+    Device::setValue("DeskRight",100);
 }
 
 void setSunriseLights() {
@@ -344,10 +312,12 @@ void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
     setAllLights(0);
+    Device::setValue("Bedroom", 100);   // Turn on bedroom lamp
 }
 
 void setSleepingLights() {
     Log.info("setSleepingLights");
     setAllActivities(0);
     setAllLights(0);
+    Device::setValue("Bedroom",0);
 }

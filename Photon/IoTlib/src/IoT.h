@@ -49,9 +49,6 @@ class IoT {
 
 public:
 
-//    static int partOfDay = 0;       //TODO: make enum
-//    static int sleeping = 0;        //TODO: make enum
-    
     /**
      * begin(byte * brokerIP, String connectID)
      * Call begin to initialize the object.
@@ -74,4 +71,7 @@ private:
 
     static void subscribeHandler(const char *eventName, const char *rawData);
     static void mqttHandler(char* topic, byte* payload, unsigned int length);
+    static void handleDaylightSavings();
+    static void handleDSTMarch();
+    static void handleDSTNovember();
 };
