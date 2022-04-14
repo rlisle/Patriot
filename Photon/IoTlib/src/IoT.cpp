@@ -22,6 +22,8 @@ All text above must be included in any redistribution.
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
 
+bool         isSubscribed = false;
+
 /**
  * Begin gets everything going.
  * It must be called exactly once by the sketch
@@ -34,7 +36,10 @@ void IoT::begin(String brokerIP, String controllerName)
     _mqttManager = new MQTTManager(brokerIP, connectID, controllerName);
     
     // Subscribe to events. There is a 1/second limit for events.
-    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
+    if(Particle.connected()) {
+        Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
+        isSubscribed = true;
+    }
 
     // Expose particle.io variables
     Device::expose();
@@ -143,6 +148,13 @@ void IoT::loop()
         //if (Time.month() == 3 && )
         
 //    }
+    
+    // Subscribe once the internet becomes connected
+    if(isSubscribed == false && Particle.connected()) {
+        Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
+        isSubscribed = true;
+    }
+
 }
 
 /**

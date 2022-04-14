@@ -34,15 +34,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 
     //TODO: Use GPS to determine actual timezone
     Time.zone(-6.0);    // Set timezone to Central
-    
-    //TODO: Set Daylight Savings Time as needed
-    // Begins on the 2nd Sunday in March at 2:00 am
-    // Ends on the 1st Sunday in November
-    // 2021: 3/14 - 11/7
-    // 2022: 3/13 - 11/6
-    // 2023: 3/12 - 11/5
-    //TODO: call beginDST() if between those dates
-    
+        
     //TODO: do we need this, and what should we pass?
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
 
@@ -53,6 +45,10 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 //TODO: If MQTT doesn't connect, then start 
 void MQTTManager::connect(String connectID) {
 
+    if(Particle.connected() == false) {
+        return;
+    }
+    
     _connectID = connectID;
     _lastMQTTtime = Time.now();
     _lastAliveTime = _lastMQTTtime;
@@ -84,7 +80,7 @@ void MQTTManager::connect(String connectID) {
 }
 
 bool MQTTManager::publish(String topic, String message) {
-    if(_mqtt != NULL && _mqtt->isConnected()) {
+    if(_mqtt != NULL && _mqtt->isConnected() && Particle.connected()) {
         _mqtt->publish(topic,message);
         return true;
     }
@@ -111,6 +107,9 @@ void MQTTManager::sendAlivePeriodically() {
 }
 
 void MQTTManager::reconnectCheck() {
+    //TODO: retry to connect if Wifi wasn't previously available, etc.
+    
+    
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > MQTT_TIMEOUT_SECONDS) {
         Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));

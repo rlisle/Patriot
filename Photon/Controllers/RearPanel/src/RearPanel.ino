@@ -43,6 +43,9 @@ Author: Ron Lisle
 //   Rear Porch Switch     was A4 Blue " "
 //   Rear Awning Switch    was A5 White " "
 
+// This must be run before either setup() or loop()
+SYSTEM_TREAD(ENABLED);  // Allow running without internet
+
 byte server[4] = { 192, 168,50, 21 };
 
 bool officeMotion = false;
