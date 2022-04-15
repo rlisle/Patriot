@@ -12,97 +12,95 @@
 #include <IoT.h>
 #include <PatriotLight.h>
 
-void setup() {
-    IoT::begin("192.168.10.184", "RonTest");
 
-    Device::add(new Light(7, "blueLed", false, true));
+//SYSTEM_THREAD(ENABLED)
+
+unsigned long lastScan = 0;
+unsigned long scanInterval = 15000;
+
+int blueLED = 0;
+int partOfDay = 0;
+int sleeping = 0;
+
+void setup() {
+    IoT::begin("192.168.50.33", "RonTest");
+    createDevices();
+}
+
+void createDevices() {
+    Device::add(new Light(7, "blueLed", "Office", false, true));
     
     // Basic devices allow Alexa to control the name
     // and can also turn off other activities.
-    Device::add(new Device("cleaning"));
-    Device::add(new Device("sleeping"));
-    Device::add(new Device("partofday"));
+    Device::add(new Device("partofday", "All"));
+    Device::add(new Device("sleeping", "All"));
 }
-
-//unsigned long scanInterval = 15000;
-//unsigned long lastScan;
 
 void loop() {
 
-    // Search all I2C addresses every 15 seconds - leave this here commented out for future use
-//     if(millis() > lastScan + scanInterval){
-//         lastScan = millis();
-//
-//         bool devicesFound = false;
-//         String newDevices = "Devices at: ";
-//         //Step through all 127 possible I2C addresses to scan for devices on the I2C bus.
-//         for(int i = 1; i < 128; i++){
-//             //Make a general call to device at the current address to see if anything responds.
-//             Wire.beginTransmission(i);
-//             byte status = Wire.endTransmission();
-//             if(status == 0){
-//                 //Device found so append it to our device list event string
-//                 newDevices.concat(i);
-//                 newDevices.concat(", ");
-//                 devicesFound = true;
-//             }
-//
-//         }
-//         if(devicesFound){
-//             Log.info(newDevices);
-//         }else{
-//             Log.info("No Devices Found");
-//         }
-//     }
-
     IoT::loop();
-
-    int changedSleeping = Device::getChangedValue("sleeping");
-    int changedPartOfDay = Device::getChangedValue("partofday");
-    int sleeping = Device::value("sleeping");
-    int partOfDay = Device::value("partofday");
     
-    if( changedSleeping != -1 ) {
-        
-        Log.info("sleeping has changed: %d",sleeping);
+    handlePartOfDay();  // Do this and sleeping first
+    handleSleeping();
+    
+//    scanI2Caddresses();
 
-        // Alexa, Good morning
-        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
-        if( changedSleeping == AWAKE && partOfDay > SUNSET ) {
-            Log.info("It is good morning");
-            setMorningLights();
+}
+
+void handlePartOfDay() {
+    
+    int partOfDayChanged = Device::getChangedValue("partofday");
+    if( partOfDayChanged != -1 ) {
+
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
+
+        if( partOfDayChanged == SUNRISE ) {
+            Log.info("It is sunrise");
+            setSunriseLights();
         }
 
-        // Alexa, Bedtime
-        if( changedSleeping == RETIRING ) {
-            setMorningLights();
-        }
-
-        // Alexa, Goodnight
-        if( changedSleeping == ASLEEP ) {
-            setAllInsideLights(0);
-        }
-    }
-
-    if( changedPartOfDay != -1 ) {
-
-        Log.info("PartOfDay has changed: %d", partOfDay);
-
-        // Turn off lights at sunrise
-        if( changedPartOfDay == SUNRISE ) {
-            setAllInsideLights(0);
-        }
-
-        // Turn on lights in the evening
-        if( changedPartOfDay == DUSK ) {
+        if( partOfDayChanged == DUSK ) {
+            Log.info("It is dusk");
             setEveningLights();
         }
+        partOfDay = partOfDayChanged;
     }
 }
 
-void setMorningLights() {
-    Log.info("setMorningLights");
-    Device::setValue("BlueLED", 100);
+void handleSleeping() {
+
+    int sleepingChanged = Device::getChangedValue("sleeping");
+    if( sleepingChanged != -1 ) {
+        
+        Log.info("sleeping has changed %d",sleepingChanged);
+
+        // Alexa, Good morning
+        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
+        if( sleepingChanged == AWAKE) {
+            Log.info("It is AWAKE");
+            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+                Log.info("It is morning");
+                setMorningLights();
+            }
+        }
+
+        // Alexa, Bedtime
+        if( sleepingChanged == RETIRING ) {
+            setBedtimeLights();
+        }
+
+        // Alexa, Goodnight
+        if( sleepingChanged == ASLEEP ) {
+            setSleepingLights();
+        }
+        
+        sleeping = sleepingChanged;
+    }
+}
+
+void setSunriseLights() {
+    Log.info("setSunriseLights");
+    Device::setValue("BlueLED", 0);
 }
 
 void setEveningLights() {
@@ -110,7 +108,49 @@ void setEveningLights() {
     Device::setValue("BlueLED", 100);
 }
 
-void setAllInsideLights(int value) {
-    Log.info("setAllInsideLights %d",value);
-    Device::setValue("BlueLED", value);
+void setMorningLights() {
+    Log.info("setMorningLights");
+    Device::setValue("BlueLED", 100);
+}
+
+void setBedtimeLights() {
+    Log.info("setBedtimeLights");
+    Device::setValue("BlueLED", 100);
+}
+
+void setSleepingLights() {
+    Log.info("setSleepingLights");
+    Device::setValue("BlueLED", 0);
+}
+
+
+
+// Diagnostic Functions
+// Search all I2C addresses every 15 seconds -
+// leave this here for future use (comment out if not used)
+void scanI2Caddresses() {
+    if(millis() > lastScan + scanInterval){
+        lastScan = millis();
+        
+        bool devicesFound = false;
+        String newDevices = "Devices at: ";
+        //Step through all 127 possible I2C addresses to scan for devices on the I2C bus.
+        for(int i = 1; i < 128; i++){
+            //Make a general call to device at the current address to see if anything responds.
+            Wire.beginTransmission(i);
+            byte status = Wire.endTransmission();
+            if(status == 0){
+                //Device found so append it to our device list event string
+                newDevices.concat(i);
+                newDevices.concat(", ");
+                devicesFound = true;
+            }
+            
+        }
+        if(devicesFound){
+            Log.info(newDevices);
+        }else{
+            Log.info("No Devices Found");
+        }
+    }
 }
