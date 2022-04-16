@@ -21,8 +21,8 @@ All text above must be included in any redistribution.
 #include "device.h"
 #include "MQTTManager.h"
 
-// Do NOT use 0 for this type value
-// because 0 will invoke previous restoration
+// 0 means unitialized, initial state
+// Setting to 0 may restore previous restoration
 
 // PartOfDay
 #define SUNRISE 1
@@ -42,6 +42,7 @@ All text above must be included in any redistribution.
 /**
  * Main IoT object.
  * It provides an API for creating and communicating with all others.
+ * All methods and properties are static, meaning no initialization
  */
 class IoT {
 
@@ -63,12 +64,12 @@ public:
      */
     static void loop();
     
-    static int publishValue(String name, int value);  // Sends MQTT message
+    static void publishValue(String name, int value);  // Sends MQTT message
     
 private:
     static String _controllerName;
     static MQTTManager* _mqttManager;
-
+    
     static void subscribeHandler(const char *eventName, const char *rawData);
     static void mqttHandler(char* topic, byte* payload, unsigned int length);
     static void handleDaylightSavings();

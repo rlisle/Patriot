@@ -33,6 +33,12 @@ Author: Ron Lisle
 
 #define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
 
+// This is recommended, and runs network on separate thread
+SYSTEM_THREAD(ENABLED);
+// Will manually connect, but everything automatic after that
+// This allows running loop and MQTT even if no internet available
+SYSTEM_MODE(SEMI_AUTOMATIC);
+
 byte server[4] = { 192, 168,50, 21 };
 
 bool livingRoomMotion = false;
@@ -77,7 +83,6 @@ void createDevices() {
     //Move to IoT eventually
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
-
 }
 
 void loop() {
@@ -160,6 +165,13 @@ void handleSleeping() {
     }
 }
 
+/**
+ * handleLivingRoomMotion
+ *
+ * Dependencies
+ *   int partOfDay
+ *   int sleeping
+ */
 void handleLivingRoomMotion() {
 
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
