@@ -16,6 +16,14 @@ Author: Ron Lisle
     3. "particle flash RearPanel"
  
  TODO: Add GPS board (Rx, Vin, Gnd)
+ 
+ Using SYSTEM_THREAD(ENABLED) is recommended,
+ and runs network on separate theread.
+ Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
+ manually connect, but everything is automatic
+ after that. This allows running loop and MQTT
+ even if no internet available
+
  */
 #include <IoT.h>
 #include <PatriotNCD8Light.h>

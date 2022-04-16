@@ -12,16 +12,15 @@
 #include <IoT.h>
 #include <PatriotLight.h>
 
-
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
-
 unsigned long lastScan = 0;
 unsigned long scanInterval = 15000;
 
 int blueLED = 0;
 int partOfDay = 0;
 int sleeping = 0;
+
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 void setup() {
     IoT::begin("192.168.50.33", "RonTest");

@@ -23,6 +23,13 @@
     2. Update IoT and plugins if needed
     2. "particle flash FrontPanel"
  
+ Using SYSTEM_THREAD(ENABLED) is recommended,
+ and runs network on separate theread.
+ Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
+ manually connect, but everything is automatic
+ after that. This allows running loop and MQTT
+ even if no internet available
+
  */
 #include <IoT.h>
 #include <PatriotLight.h>
@@ -32,6 +39,7 @@
 #define FRONT_DOOR_TIMEOUT 5*60*1000
 
 #define ADDRESS 1      // PWM board switches low switch on
+
 
 //IoT *iot;
 
@@ -43,6 +51,9 @@ int watching = 0;
 int cleaning = 0;
 int partOfDay = 0;
 int sleeping = 0;
+
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 void setup() {
     IoT::begin("192.168.50.33", "FrontPanel");

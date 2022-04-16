@@ -22,6 +22,12 @@ Author: Ron Lisle
     A6 (DAC) Voltage monitor R ladder
     A7 (WKP) LED1 PWM output
  
+  Using SYSTEM_THREAD(ENABLED) is recommended,
+  and runs network on separate theread.
+  Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
+  manually connect, but everything is automatic
+  after that. This allows running loop and MQTT
+  even if no internet available
  */
 
 #include <IoT.h>
