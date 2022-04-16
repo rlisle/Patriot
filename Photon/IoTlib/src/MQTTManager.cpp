@@ -34,19 +34,21 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     _connectID = connectID;
+
     connect();
 }
 
 bool MQTTManager::connect() {
 
     //TODO: could this even happen? I don't think so.
-//    if(_mqtt == NULL) {
-//        Log.error("ERROR! MQTTManager: connect called but object null");
-//    }
+    if(_mqtt == NULL) {
+        Log.error("ERROR! MQTTManager: connect called but object null");
+    }
     
     if(!WiFi.ready()) {
         WiFi.connect();
         if(!WiFi.ready()) {
+            Serial.println("MQTT connect() WiFi not ready");
             return false;
         }
     }
@@ -88,6 +90,8 @@ bool MQTTManager::publish(String topic, String message) {
     if(_mqtt->isConnected() && WiFi.ready()) {
         _mqtt->publish(topic,message);
         return true;
+    } else {
+        Serial.println("MQTT not connected: didn't publish "+topic+", "+message);
     }
     return false;
 }
@@ -98,6 +102,9 @@ void MQTTManager::loop()
     
     if(_mqtt->isConnected()) {
         sendAlivePeriodically();
+    } else {
+        Serial.println("MQTT not connected");
+        connect();
     }
 
     reconnectCheck();
