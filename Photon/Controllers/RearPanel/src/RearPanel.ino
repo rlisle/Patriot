@@ -44,7 +44,7 @@ Author: Ron Lisle
 //   Rear Awning Switch    was A5 White " "
 
 // This must be run before either setup() or loop()
-SYSTEM_TREAD(ENABLED);  // Allow running without internet
+SYSTEM_THREAD(ENABLED);  // Allow running without internet
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
 byte server[4] = { 192, 168,50, 21 };
