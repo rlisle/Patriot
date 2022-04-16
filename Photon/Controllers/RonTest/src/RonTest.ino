@@ -13,7 +13,8 @@
 #include <PatriotLight.h>
 
 
-//SYSTEM_THREAD(ENABLED)
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 unsigned long lastScan = 0;
 unsigned long scanInterval = 15000;

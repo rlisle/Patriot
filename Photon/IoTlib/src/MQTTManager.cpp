@@ -81,7 +81,7 @@ bool MQTTManager::connect() {
  * Send MQTT data
  */
 bool MQTTManager::publish(String topic, String message) {
-    if(!_mqtt->isConnected() || !Wifi.ready()) {
+    if(!_mqtt->isConnected() || !WiFi.ready()) {
         connect();
     }
     
@@ -116,7 +116,7 @@ void MQTTManager::reconnectCheck() {
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > MQTT_TIMEOUT_SECONDS) {
         Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-        connect(_connectID);    // This will perform a reconnect
+        connect();    // This will perform a reconnect
     }
 }
 

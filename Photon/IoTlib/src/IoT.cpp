@@ -29,8 +29,6 @@ MQTTManager* IoT::_mqttManager = NULL;
  */
 void IoT::begin(String brokerIP, String controllerName)
 {
-    _controllerName = controllerName;
-    
     WiFi.on();
     WiFi.connect();
     
