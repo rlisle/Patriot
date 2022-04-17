@@ -16,6 +16,14 @@ Author: Ron Lisle
     3. "particle flash RearPanel"
  
  TODO: Add GPS board (Rx, Vin, Gnd)
+ 
+ Using SYSTEM_THREAD(ENABLED) is recommended,
+ and runs network on separate theread.
+ Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
+ manually connect, but everything is automatic
+ after that. This allows running loop and MQTT
+ even if no internet available
+
  */
 #include <IoT.h>
 #include <PatriotNCD8Light.h>
@@ -42,6 +50,10 @@ Author: Ron Lisle
 //   Ramp Awning Switch    was A3 Green " "
 //   Rear Porch Switch     was A4 Blue " "
 //   Rear Awning Switch    was A5 White " "
+
+// This must be run before either setup() or loop()
+SYSTEM_THREAD(ENABLED);  // Allow running without internet
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 byte server[4] = { 192, 168,50, 21 };
 

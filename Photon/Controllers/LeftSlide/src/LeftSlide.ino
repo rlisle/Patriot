@@ -22,6 +22,12 @@ Author: Ron Lisle
     A6 (DAC) Voltage monitor R ladder
     A7 (WKP) LED1 PWM output
  
+  Using SYSTEM_THREAD(ENABLED) is recommended,
+  and runs network on separate theread.
+  Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
+  manually connect, but everything is automatic
+  after that. This allows running loop and MQTT
+  even if no internet available
  */
 
 #include <IoT.h>
@@ -32,6 +38,12 @@ Author: Ron Lisle
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
+
+// This is recommended, and runs network on separate thread
+SYSTEM_THREAD(ENABLED);
+// Will manually connect, but everything automatic after that
+// This allows running loop and MQTT even if no internet available
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 byte server[4] = { 192, 168,50, 21 };
 
@@ -77,7 +89,6 @@ void createDevices() {
     //Move to IoT eventually
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
-
 }
 
 void loop() {
@@ -160,6 +171,13 @@ void handleSleeping() {
     }
 }
 
+/**
+ * handleLivingRoomMotion
+ *
+ * Dependencies
+ *   int partOfDay
+ *   int sleeping
+ */
 void handleLivingRoomMotion() {
 
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");

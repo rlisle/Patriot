@@ -21,45 +21,41 @@ All text above must be included in any redistribution.
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {
-    int month = Time.month();
-    int day = Time.day();
-    
     _controllerName = controllerName.toLowerCase();
     _logging = 0;
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
-    _logLevel = LOG_LEVEL_ERROR;
+    _logLevel = LOG_LEVEL_WARN;     // See particle doc for options
 //    _logLevel = LOG_LEVEL_ALL;
-
-    //TODO: Use GPS to determine actual timezone
-    Time.zone(-6.0);    // Set timezone to Central
-    
-    //TODO: Set Daylight Savings Time as needed
-    // Begins on the 2nd Sunday in March at 2:00 am
-    // Ends on the 1st Sunday in November
-    // 2021: 3/14 - 11/7
-    // 2022: 3/13 - 11/6
-    // 2023: 3/12 - 11/5
-    //TODO: call beginDST() if between those dates
-    
+        
     //TODO: do we need this, and what should we pass?
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
-    connect(connectID);
+    _connectID = connectID;
+
+    connect();
 }
 
-//TODO: If MQTT doesn't connect, then start 
-void MQTTManager::connect(String connectID) {
+bool MQTTManager::connect() {
 
-    _connectID = connectID;
-    _lastMQTTtime = Time.now();
-    _lastAliveTime = _lastMQTTtime;
-
+    //TODO: could this even happen? I don't think so.
     if(_mqtt == NULL) {
         Log.error("ERROR! MQTTManager: connect called but object null");
     }
+    
+    if(!WiFi.ready()) {
+        WiFi.connect();
+        if(!WiFi.ready()) {
+            Serial.println("MQTT connect() WiFi not ready");
+            return false;
+        }
+    }
+    
+    _lastMQTTtime = Time.now();
+    _lastAliveTime = _lastMQTTtime;
+
 
     if(_mqtt->isConnected()) {
         Log.info("MQTT is connected, so reconnecting...");
@@ -67,7 +63,7 @@ void MQTTManager::connect(String connectID) {
         _mqtt->disconnect();
     }
 
-    _mqtt->connect(connectID);
+    _mqtt->connect(_connectID);
     if (_mqtt->isConnected()) {
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
@@ -80,22 +76,35 @@ void MQTTManager::connect(String connectID) {
     LogManager::instance()->addHandler(this);
 
     Log.info("MQTT Connected");
-    
+    return true;
 }
 
+/**
+ * Send MQTT data
+ */
 bool MQTTManager::publish(String topic, String message) {
-    if(_mqtt != NULL && _mqtt->isConnected()) {
+    if(!_mqtt->isConnected() || !WiFi.ready()) {
+        connect();
+    }
+    
+    if(_mqtt->isConnected() && WiFi.ready()) {
         _mqtt->publish(topic,message);
         return true;
+    } else {
+        Serial.println("MQTT not connected: didn't publish "+topic+", "+message);
     }
     return false;
 }
 
 void MQTTManager::loop()
 {
-    if(_mqtt != NULL && _mqtt->isConnected()) {
-        _mqtt->loop();
+    _mqtt->loop();
+    
+    if(_mqtt->isConnected()) {
         sendAlivePeriodically();
+    } else {
+        Serial.println("MQTT not connected");
+        connect();
     }
 
     reconnectCheck();
@@ -114,7 +123,7 @@ void MQTTManager::reconnectCheck() {
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > MQTT_TIMEOUT_SECONDS) {
         Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-        connect(_connectID);
+        connect();    // This will perform a reconnect
     }
 }
 

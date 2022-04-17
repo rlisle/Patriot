@@ -8,6 +8,10 @@ http://www.github.com/rlisle/Patriot
 
 This is a Patriot plugin. After making changes use "particle library upload", etc.
  
+ History
+   4/17/22 Was toggling between 50/100, so removed 50 level,
+         Add timer before turn-off to prevent frequent 0/100 toggling
+ 
 Written by Ron Lisle
 
 BSD license, check license.txt for more information.
@@ -38,6 +42,7 @@ MR24::MR24(int s1pin, int s2pin, String name, String room)
     _index = 0;
     _statusMessage = "Init";
     _prevStatusMessage = "Init";
+    _lastMotion = 0;
 }
 
 void MR24::begin() {
@@ -104,13 +109,21 @@ bool MR24::didSensorChange() {
 
 bool MR24::didS1S2sensorChange()
 {
-    int oldS1 = _s1value;
-    int oldS2 = _s2value;
+    int oldValue = _value;
     _s1value = digitalRead(_s1pin);
     _s2value = digitalRead(_s2pin);
-    _value = _s1value ? DETECTED_SOMEBODY_FAR : 0;
-    _value += _s2value ? DETECTED_SOMEBODY : 0;
-    return (oldS1 != _s1value || oldS2 != _s2value);
+    int newValue = (_s1value || _s2value) ? 100 : 0;
+    if(newValue != oldValue) {
+        if(newValue == 100) {
+            _lastMotion = millis();
+            _value = 100;       // Do we need a filter for turn-on?
+        } else {
+            if(millis() > _lastMotion + TURNOFF_DELAY) {
+                _value = 0;
+            }
+        }
+    }
+    return (oldValue != _value);
 }
 
 /**
@@ -124,6 +137,7 @@ bool MR24::didTxRxSensorChange()
 {
     int Msg;
     int prevValue = _value;
+    int newValue = prevValue;
 
     while(Serial1.available()) {
         Msg = Serial1.read();
@@ -131,36 +145,23 @@ bool MR24::didTxRxSensorChange()
             _index = 0;                             // Loop back to start of buffer
             parseMessage();
             int newValue = situation_judgment();    //was passing _data[5], _data[6], _data[7], _data[8], _data[9]
-
-            filterChanges(newValue);
         }
         if(_index < 14) {   // Safety check. Should not happen.
             _data[_index++] = Msg;
         }
     }
-    return _value != prevValue;
-}
-
-void MR24::filterChanges(int newValue) {
-    if(newValue == DETECTED_NOTHING) {
-        // Try ignoring these. Do we always get DETECTED_NOBODY after motion?
-        return;
-    }
-    
-    // Turning on (or getting closer)?
-    if(newValue > DETECTED_NOBODY) {
-        _lastMotion = millis();
-        //TODO: we may want to filter on states
-        _value = newValue;
-        return;
-    }
-    
-    // Turning off?
-    if(newValue == DETECTED_NOBODY && _value > DETECTED_NOBODY) {
-        if(_lastMotion + TURNOFF_DELAY < millis()) {
-            _value = newValue;
+    if(newValue != prevValue) {
+        if(newValue == 100) {
+            _lastMotion = millis();
+            _value = 100;       // Do we need a filter for turn-on?
+        } else {
+            if(millis() > _lastMotion + TURNOFF_DELAY) {
+                _value = 0;
+            }
         }
     }
+
+    return _value != prevValue;
 }
 
 void MR24::parseMessage() {
@@ -193,30 +194,30 @@ int MR24::situation_judgment()
         if(_address2 == ENVIRONMENT || _address2 == HEARTBEAT){ // 0x05, 0x01
             if(_d1 == NOBODY){                      // 0x00
                 _statusMessage = "Couch nobody";
-                return DETECTED_NOBODY;             // 0
+                return 0; // was DETECTED_NOBODY;             // 0
             }
             else if(_d1 == SOMEBODY_BE && _d2 == SOMEBODY_MOVE){
                 _statusMessage = "Couch movement";
-                return DETECTED_MOVEMENT;           // 100
+                return 100; // was DETECTED_MOVEMENT;           // 100
             }
             else if(_d1 == SOMEBODY_BE && _d2 == SOMEBODY_STOP){
                 _statusMessage = "Couch occupied stop";
-                return DETECTED_SOMEBODY;           // 50
+                return 100; // was DETECTED_SOMEBODY;           // 50
             }
         }
         else if(_address2 == CLOSE_AWAY){
             if(_d1 == CA_BE && _d2 == CA_BE){
                 if(_d3 == CA_BE){
                     _statusMessage = "Couch occupied";
-                    return DETECTED_SOMEBODY;       // 50
+                    return 100; // was DETECTED_SOMEBODY;       // 50
                 }
                 else if(_d3 == CA_CLOSE){
                     _statusMessage = "Couch occupied close";
-                    return DETECTED_SOMEBODY_CLOSE; // 75
+                    return 100; // was DETECTED_SOMEBODY_CLOSE; // 75
                 }
                 else if(_d3 == CA_AWAY){
                     _statusMessage = "Couch occupied away";
-                    return DETECTED_SOMEBODY_FAR;   // 25
+                    return 100; // was DETECTED_SOMEBODY_FAR;   // 25
                 }
             }
         }

@@ -40,7 +40,7 @@ private:
     int       _logging; // a counting semaphore to prevent recursion
 
     void      (*_callback)(char*,uint8_t*,unsigned int);
-    void      connect(String connectID);
+    bool      connect();
     void      reconnectCheck();
     int       parseValue(String message);
     void      parseLogLevel(String message);
