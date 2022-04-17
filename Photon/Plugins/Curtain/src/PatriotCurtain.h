@@ -37,7 +37,6 @@ class Curtain : public Device
  private:
     unsigned long _stopMillis;    // time to stop
 
-    int8_t  _currentState;
     int8_t  _boardAddress;
     int8_t  _relayIndex;
     
@@ -47,6 +46,7 @@ class Curtain : public Device
     void    pulse(bool start);
     bool    isCurtainRunning();
     bool    isTimeToChangePulse();
+    int     readCurrentState();
     
  public:
     Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room);
