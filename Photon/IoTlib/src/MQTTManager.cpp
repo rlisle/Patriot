@@ -26,8 +26,8 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
-//    _logLevel = LOG_LEVEL_ERROR;
-    _logLevel = LOG_LEVEL_ALL;
+    _logLevel = LOG_LEVEL_WARN;     // See particle doc for options
+//    _logLevel = LOG_LEVEL_ALL;
         
     //TODO: do we need this, and what should we pass?
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
