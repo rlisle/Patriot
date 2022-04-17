@@ -211,7 +211,7 @@ void Curtain::reset() {
  * readCurrentState
  * Return state of all 4 relays
  */
-int Curtain::readCurrenttate() {
+int Curtain::readCurrentState() {
     int retries = 0;
     int status;
     do {
