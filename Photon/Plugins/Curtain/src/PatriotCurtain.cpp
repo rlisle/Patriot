@@ -26,6 +26,7 @@
 
  Changelog:
  2021-01-16: Initial creation based on NCD8Relay
+ 2022-04-17: Fix issue turning off other relays on same board.
  */
 
 #include "PatriotCurtain.h"
@@ -50,7 +51,6 @@ Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name, String roo
 {
     _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _relayIndex  = relayIndex;      // 0 (first 2 relays)
-    _currentState = 0;
     _stopMillis = 0;
     _mode = 0;
     _stage = 0;
@@ -125,12 +125,14 @@ void Curtain::pulse(bool start) {
     
     Log.info("Curtain pulse %d",start);
 
+    int currentState = readCurrentState();
+    
     byte bitmap = 0x01 << (_relayIndex + _mode - 1);
     if(start) {
-        _currentState |= bitmap;    // Set relay's bit
+        currentState |= bitmap;    // Set relay's bit
     } else {
         bitmap = 0xff ^ bitmap;
-        _currentState &= bitmap;
+        currentState &= bitmap;
     }
 
     byte status;
@@ -138,7 +140,7 @@ void Curtain::pulse(bool start) {
     do {
         Wire.beginTransmission(_boardAddress);
         Wire.write(0x09);
-        Wire.write(_currentState);
+        Wire.write(currentState);
         status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
 
@@ -203,5 +205,32 @@ void Curtain::reset() {
         Log.error("Curtain reset write failed for relayIndex: "+String(_relayIndex)+", re-initializing board");
     }
     begin();
+}
+
+/**
+ * readCurrentState
+ * Return state of all 4 relays
+ */
+int Curtain::readCurrenttate() {
+    int retries = 0;
+    int status;
+    do {
+        Wire.beginTransmission(_boardAddress);
+        Wire.write(0x09);       // GPIO Register
+        status = Wire.endTransmission();
+    } while(status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Curtain: Error selecting GPIO register");
+    }
+    
+    Wire.requestFrom(_boardAddress, 1);      // Read 1 byte
+    
+    if (Wire.available() == 1)
+    {
+        int data = Wire.read();
+        return(data);
+    }
+    Log.error("Curtain: Error reading current state");
+    return 0;
 }
 
