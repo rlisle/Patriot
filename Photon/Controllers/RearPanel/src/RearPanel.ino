@@ -70,6 +70,7 @@ int partOfDay = 0;
 int sleeping = 0;
 
 void setup() {
+    WiFi.selectAntenna(ANT_EXTERNAL);
     IoT::begin("192.168.50.33", "RearPanel");
     createDevices();
     handleDaylightSavings();
