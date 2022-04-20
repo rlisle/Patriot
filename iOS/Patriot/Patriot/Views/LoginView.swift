@@ -37,19 +37,32 @@ struct LoginView: View {
                                 //.autocapitalization(.none)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .background(Color.gray)
-                            //TODO: submit button
-                            Button(action: {
-                                handleLogin()
-                            }, label: {
-                                Text("Login")
-                                    .padding(.horizontal, 24)
-                                    .padding(.vertical, 8)
-                                    .background(Color.blue)
-                                    .foregroundColor(Color.white)
-                                    .cornerRadius(20)
-                            })
-                            .disabled(userName == "" || password == "")
+                            HStack {
+                                Button(action: {
+                                    handleLogin()
+                                }, label: {
+                                    Text("Login")
+                                        .padding(.horizontal, 24)
+                                        .padding(.vertical, 8)
+                                        .background(Color.blue)
+                                        .foregroundColor(Color.white)
+                                        .cornerRadius(20)
+                                })
+                                .disabled(userName == "" || password == "")
+                                
+                                Button(action: {
+                                    print("Test")
+                                }) {
+                                    Text("MQTT-Only")
+                                        .padding(.horizontal, 24)
+                                        .padding(.vertical, 8)
+                                        .background(Color.blue)
+                                        .foregroundColor(Color.white)
+                                        .cornerRadius(20)
+                                }
+                            }
                             .padding(.bottom, 10)
+
                         })
                         .padding(20)
                         .frame(width: metrics.size.width * 0.75, alignment: .center)
