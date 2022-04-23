@@ -45,7 +45,16 @@ SYSTEM_THREAD(ENABLED);
 // This allows running loop and MQTT even if no internet available
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-byte server[4] = { 192, 168,50, 21 };
+
+//TODO: convert to IPAddress
+byte hueServer[4] = { 192, 168, 50, 21 };
+
+IPAddress myAddress(192,168,50,30);
+IPAddress netmask(255,255,255,0);
+IPAddress gateway(192,168,50,1);
+IPAddress dns(192,168,50,1);
+
+IPAddress mqttAddress(192, 168, 50, 33);
 
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
@@ -63,8 +72,15 @@ int sleeping = 0;
 
 
 void setup() {
+    WiFi.selectAntenna(ANT_EXTERNAL);
+    setWifiStaticIP();
     IoT::begin("192.168.50.33","LeftSlide");
     createDevices();
+}
+
+void setWifiStaticIP() {
+    WiFi.setStaticIP(myAddress, netmask, gateway, dns);
+    WiFi.useStaticIP();
 }
 
 void createDevices() {
@@ -73,10 +89,10 @@ void createDevices() {
     Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Philips Hue Lights (currently requires internet connection)
-    Device::add(new HueLight("Bedroom", "Bedroom", "1", server, HUE_USERID));
-    Device::add(new HueLight("DeskLeft", "Office", "2", server, HUE_USERID));
-    Device::add(new HueLight("DeskRight", "Office", "3", server, HUE_USERID));
-    Device::add(new HueLight("Nook", "LivingRoom", "4", server, HUE_USERID));
+    Device::add(new HueLight("Bedroom", "Bedroom", "1", hueServer, HUE_USERID));
+    Device::add(new HueLight("DeskLeft", "Office", "2", hueServer, HUE_USERID));
+    Device::add(new HueLight("DeskRight", "Office", "3", hueServer, HUE_USERID));
+    Device::add(new HueLight("Nook", "LivingRoom", "4", hueServer, HUE_USERID));
 
     // Lights
     Device::add(new Light(A7, "Couch", "Living Room", 2));

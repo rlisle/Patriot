@@ -55,7 +55,15 @@ Author: Ron Lisle
 SYSTEM_THREAD(ENABLED);  // Allow running without internet
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-byte server[4] = { 192, 168,50, 21 };
+//TODO: convert to IPAddress
+byte hueServer[4] = { 192, 168, 50, 21 };
+
+IPAddress myAddress(192,168,50,15);
+IPAddress netmask(255,255,255,0);
+IPAddress gateway(192,168,50,1);
+IPAddress dns(192,168,50,1);
+
+IPAddress mqttAddress(192, 168, 50, 33);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
@@ -71,11 +79,16 @@ int sleeping = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
+    setWifiStaticIP();
     IoT::begin("192.168.50.33", "RearPanel");
     createDevices();
     handleDaylightSavings();
 }
 
+void setWifiStaticIP() {
+    WiFi.setStaticIP(myAddress, netmask, gateway, dns);
+    WiFi.useStaticIP();
+}
 
 void createDevices() {
     Device::add(new PartOfDay());
