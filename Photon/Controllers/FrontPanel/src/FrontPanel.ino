@@ -41,7 +41,18 @@
 #define ADDRESS 1      // PWM board switches low switch on
 
 
-//IoT *iot;
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
+
+//TODO: convert to IPAddress
+byte hueServer[4] = { 192, 168, 50, 21 };
+
+IPAddress myAddress(192,168,50,17);
+IPAddress netmask(255,255,255,0);
+IPAddress gateway(192,168,50,1);
+IPAddress dns(192,168,50,1);
+
+IPAddress mqttAddress(192, 168, 50, 33);
 
 bool frontDoor = false;
 bool frontDoorCountdown = false;
@@ -52,13 +63,17 @@ int cleaning = 0;
 int partOfDay = 0;
 int sleeping = 0;
 
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
-
 void setup() {
+//    WiFi.selectAntenna(ANT_EXTERNAL); //TODO: connect external antenna
+    setWifiStaticIP();
     IoT::begin("192.168.50.33", "FrontPanel");
     createDevices();
     handleDaylightSavings();
+}
+
+void setWifiStaticIP() {
+    WiFi.setStaticIP(myAddress, netmask, gateway, dns);
+    WiFi.useStaticIP();
 }
 
 void createDevices() {
