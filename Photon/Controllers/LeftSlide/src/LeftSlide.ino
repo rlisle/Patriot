@@ -72,6 +72,7 @@ int sleeping = 0;
 
 
 void setup() {
+    WiFi.selectAntenna(ANT_EXTERNAL);
     setWifiStaticIP();
     IoT::begin("192.168.50.33","LeftSlide");
     createDevices();
