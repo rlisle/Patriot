@@ -56,11 +56,11 @@ IPAddress dns(192,168,50,1);
 
 IPAddress mqttAddress(192, 168, 50, 33);
 
-bool livingRoomMotion = false;
-long lastLivingRoomMotion = 0;
 
 bool couchPresenceFiltered = 0;
 long lastCouchPresence = 0;
+
+bool livingRoomMotion = false;
 
 int watching = 0;
 int cleaning = 0;
@@ -85,7 +85,7 @@ void setWifiStaticIP() {
 
 void createDevices() {
     // Sensors
-    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
+    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
     Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Philips Hue Lights (currently requires internet connection)
@@ -200,8 +200,10 @@ void handleLivingRoomMotion() {
 
     // Motion?
     if(livingRoomMotionChanged > 0 ) {
+        
+        Log.info("LivingRoom motion stopped");
+        
         livingRoomMotion = true;
-        lastLivingRoomMotion = millis();
         
         Device::setValue("LeftVertical", 50);
         
@@ -212,17 +214,14 @@ void handleLivingRoomMotion() {
                 Device::setValue("sleeping", AWAKE);
             }
         }
-    } else {
-        // Timed shut-off
-        long loopTime = millis();
-        if(livingRoomMotion == true) {
-            if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
-                Log.info("LivingRoom motion stopped");
-                livingRoomMotion = false;
-                //TODO: check other things like watching, sleeping, etc.
-                Device::setValue("LeftVertical", 0);
-            }
-        }
+    } else if(livingRoomMotionChanged == 0){
+        
+        Log.info("LivingRoom motion stopped");
+        
+        livingRoomMotion = false;
+        
+        //TODO: check other things like watching, sleeping, etc.
+        Device::setValue("LeftVertical", 0);
     }
 }
 

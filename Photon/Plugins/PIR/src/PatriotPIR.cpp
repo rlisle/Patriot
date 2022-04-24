@@ -25,9 +25,10 @@ All text above must be included in any redistribution.
  * @param pinNum int pin number that is connected to the sensor output
  * @param name  String name of the event to send when sensor changes
  */
-PIR::PIR(int pinNum, String name, String room)
+PIR::PIR(int pinNum, String name, String room, long timeoutMSecs)
         : Device(name, room),
-        _pin(pinNum)
+        _pin(pinNum),
+        _timeoutMSecs(timeoutMSecs)
 {
     _type  = 'M';
     _value = 0;
@@ -84,17 +85,17 @@ bool PIR::didSensorChange()
 }
 
 bool PIR::filterChanges(int newValue) {
-    // Turning on (or getting closer)?
-    if(newValue > _value) {
+    if(newValue > 0) {
         _lastMotion = millis();
-        _value = newValue;
-        return true;
-    }
-    
-    // Turning off?
-    if(newValue < _value) {
-        if(_lastMotion + TURNOFF_DELAY < millis()) {
+        if(_value != newValue) {
             _value = newValue;
+            return true;
+        }
+
+    } else if(_value != 0){
+        // Turning off?
+        if(_lastMotion + _timeoutMSecs < millis()) {
+            _value = 0;
             return true;
         }
     }

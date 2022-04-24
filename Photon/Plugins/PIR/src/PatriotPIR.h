@@ -24,6 +24,7 @@ private:
     int        _pin;
     long       _lastPollTime;
     long       _lastMotion;
+    long       _timeoutMSecs;
 
     bool      isTimeToCheckSensor();
     bool      didSensorChange();
@@ -31,7 +32,7 @@ private:
     void      notify();
     
 public:
-    PIR(int pinNum, String name, String room);
+    PIR(int pinNum, String name, String room, long timeoutMSecs);
 
     void begin();
     void loop();
