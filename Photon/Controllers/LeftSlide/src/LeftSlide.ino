@@ -102,6 +102,8 @@ void createDevices() {
     Device::add(new Device("cleaning", "All"));
     Device::add(new Device("watching", "All"));
     
+    Device::add(new Device("desk", "Office")); // Groups both desk lamps together
+    
     //Move to IoT eventually
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
@@ -116,6 +118,7 @@ void loop() {
     handleWatching();
     handleCleaning();
     handleCouchPresence();
+    handleDesk();
 }
 
 /**
@@ -269,6 +272,14 @@ void handleCleaning() {
     }
 }
 
+void handleDesk() {
+    int deskChanged = Device::getChangedValue("desk");
+    if( deskChanged != -1 ) {
+        Log.info("desk changed");
+        setDeskLamps( deskChanged );
+    }
+}
+
 void handleCouchPresence() {
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     if( couchPresenceChanged != -1) {
@@ -322,6 +333,12 @@ void setAllLights(int value) {
     Device::setValue("DeskLeft",value);
     Device::setValue("DeskRight",value);
     Device::setValue("Nook",value);
+}
+
+void setDeskLamps(int value) {
+    Log.info("setDeskLamps");
+    Device::setValue("DeskLeft",value);
+    Device::setValue("DeskRight",value);
 }
 
 void setMorningLights() {

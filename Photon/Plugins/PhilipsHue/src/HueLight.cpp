@@ -72,6 +72,7 @@ void HueLight::writeToHue() {
     //TODO: lookup ID from name
     if(_tcpClient.connect(_server,80)) {
 
+        //TODO: set percentage instead of just on/off
         String json = _value > 0 ? "{\"on\":true}" : "{\"on\":false}";
 
         _tcpClient.print("PUT /api/");
