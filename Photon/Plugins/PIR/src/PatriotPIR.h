@@ -25,6 +25,7 @@ private:
     long       _lastPollTime;
     long       _lastMotion;
     long       _timeoutMSecs;
+    int        _filterValue;
 
     bool      isTimeToCheckSensor();
     bool      didSensorChange();

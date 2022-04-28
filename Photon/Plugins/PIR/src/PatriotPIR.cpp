@@ -18,7 +18,7 @@ All text above must be included in any redistribution.
 #include "PatriotPIR.h"
 #include "IoT.h"
 
-#define POLL_INTERVAL_MILLIS 100
+#define POLL_INTERVAL_MILLIS 500
 
 /**
  * Constructor
@@ -32,6 +32,7 @@ PIR::PIR(int pinNum, String name, String room, long timeoutMSecs)
 {
     _type  = 'M';
     _value = 0;
+    _filterValue = 0;
 }
 
 void PIR::begin() {
@@ -84,18 +85,35 @@ bool PIR::didSensorChange()
     return filterChanges(newValue);
 }
 
+// Delay turn off until no motion for timeoutMSecs
 bool PIR::filterChanges(int newValue) {
+    // Filter the value
     if(newValue > 0) {
+        _filterValue += 25;
+        if(_filterValue > 100) {
+            _filterValue = 100;
+        }
+    } else {
+        _filterValue -= 25;
+        if(_filterValue < 0) {
+            _filterValue = 0;
+        }
+    }
+    Log.info("PIR %d, filter: %d",newValue,_filterValue);
+    
+    if(_filterValue == 100) {
         _lastMotion = millis();
-        if(_value != newValue) {
-            _value = newValue;
+        if(_value < 100) {  // Was it off previously
+            _value = 100;
+            Log.info("PIR turning on");
             return true;
         }
 
-    } else if(_value != 0){
+    } else if(_filterValue == 0 && _value != 0){
         // Turning off?
         if(_lastMotion + _timeoutMSecs < millis()) {
             _value = 0;
+            Log.info("PIR turning off");
             return true;
         }
     }
