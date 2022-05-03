@@ -72,13 +72,18 @@ void HueLight::writeToHue() {
     //TODO: lookup ID from name
     if(_tcpClient.connect(_server,80)) {
 
-        // Convert 0-100% to 0-254
-        int newValue = (_value * 254) / 100;
-        if(newValue > 254) newValue = 254;
+        String json;
         
-        Log.info("Setting HUE light %d = %d",_hueId,newValue);
-        String json = "{\"on\":true, \"bri\": " + String(newValue) + "}";
-        Log.info("json = " + json);
+        if(_value == 0) {
+            json = "{\"on\":false}";
+
+        } else {
+            // Convert 0-100% to 0-254
+            int newValue = (_value * 254) / 100;
+            if(newValue > 254) newValue = 254;
+            json = "{\"on\":true, \"bri\": " + String(newValue) + "}";
+        }
+        Log.info("Hue json = " + json);
 
         _tcpClient.print("PUT /api/");
         _tcpClient.print(_userID);
