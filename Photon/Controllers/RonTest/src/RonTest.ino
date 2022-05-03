@@ -12,6 +12,19 @@
 #include <IoT.h>
 #include <PatriotLight.h>
 
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
+
+//TODO: convert to IPAddress
+byte hueServer[4] = { 192, 168, 50, 21 };
+
+IPAddress myAddress(192,168,50,40);
+IPAddress netmask(255,255,255,0);
+IPAddress gateway(192,168,50,1);
+IPAddress dns(192,168,50,1);
+
+IPAddress mqttAddress(192, 168, 50, 33);
+
 unsigned long lastScan = 0;
 unsigned long scanInterval = 15000;
 
@@ -19,12 +32,16 @@ int blueLED = 0;
 int partOfDay = 0;
 int sleeping = 0;
 
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
-
 void setup() {
+//    WiFi.selectAntenna(ANT_EXTERNAL); //TODO: connect external antenna
+    setWifiStaticIP();
     IoT::begin("192.168.50.33", "RonTest");
     createDevices();
+}
+
+void setWifiStaticIP() {
+    WiFi.setStaticIP(myAddress, netmask, gateway, dns);
+    WiFi.useStaticIP();
 }
 
 void createDevices() {

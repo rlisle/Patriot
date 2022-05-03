@@ -22,20 +22,34 @@ Changelog:
 
 #include <IoT.h>
 #include <PatriotPIR.h>
+#include <PatriotLight.h>
 
-IoT *iot;
+#define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
 
 void setup() {
-    iot = IoT::getInstance();
-    iot->begin();
+
+    // MQTT Broker IP Address, and name of your Photon
+    IoT::begin("192.168.?.??","MyPhoton");
 
     // Create PIR sensor
-    PIR *pir1 = new PIR(D0, "Movement");
+    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
+    
+    // Add a device to control (built-in blue LED)
+    Device::add(new Light(D7, "BlueLED", "Living Room", 0));
 
-    // Add it to IoT
-    iot->addDevice(pir1);
 }
 
 void loop() {
-    iot->loop();
+    IoT::loop();
+
+    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+
+    // Motion?
+    if(livingRoomMotionChanged > 0 ) {
+        Log.info("LivingRoom motion detected");
+        Device::setValue("BlueLED", 100);
+    } else if(livingRoomMotionChanged == 0){
+        Log.info("LivingRoom motion stopped");
+        Device::setValue("BlueLED", 0);
+    }
 }

@@ -48,7 +48,7 @@ void HueLight::begin() {
  */
 void HueLight::loop()
 {
-    //Nothing to do?
+    //May want to implement fading?
 }
 
 /**
@@ -66,13 +66,19 @@ void HueLight::setValue(int value) {
 
 
 // Private Helper Methods
-// This is currently just simple on/off.
+// Using the HUE API, we'll set on/off and bri
 // Much more is possible through the API.
 void HueLight::writeToHue() {
     //TODO: lookup ID from name
     if(_tcpClient.connect(_server,80)) {
 
-        String json = _value > 0 ? "{\"on\":true}" : "{\"on\":false}";
+        // Convert 0-100% to 0-254
+        int newValue = (_value * 254) / 100;
+        if(newValue > 254) newValue = 254;
+        
+        Log.info("Setting HUE light %d = %d",_hueId,newValue);
+        String json = "{\"on\":true, \"bri\": " + String(newValue) + "}";
+        Log.info("json = " + json);
 
         _tcpClient.print("PUT /api/");
         _tcpClient.print(_userID);

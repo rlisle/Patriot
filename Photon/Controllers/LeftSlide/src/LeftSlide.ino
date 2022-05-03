@@ -37,14 +37,10 @@ Author: Ron Lisle
 #include <HueLight.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
-#define LIVINGROOM_MOTION_TIMEOUT 2*60*1000
+#define LIVINGROOM_MOTION_TIMEOUT 15*1000
 
-// This is recommended, and runs network on separate thread
 SYSTEM_THREAD(ENABLED);
-// Will manually connect, but everything automatic after that
-// This allows running loop and MQTT even if no internet available
 SYSTEM_MODE(SEMI_AUTOMATIC);
-
 
 //TODO: convert to IPAddress
 byte hueServer[4] = { 192, 168, 50, 21 };
@@ -56,11 +52,11 @@ IPAddress dns(192,168,50,1);
 
 IPAddress mqttAddress(192, 168, 50, 33);
 
-bool livingRoomMotion = false;
-long lastLivingRoomMotion = 0;
 
 bool couchPresenceFiltered = 0;
 long lastCouchPresence = 0;
+
+bool livingRoomMotion = false;
 
 int watching = 0;
 int cleaning = 0;
@@ -85,7 +81,7 @@ void setWifiStaticIP() {
 
 void createDevices() {
     // Sensors
-    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room"));
+    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
     Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Philips Hue Lights (currently requires internet connection)
@@ -102,6 +98,8 @@ void createDevices() {
     Device::add(new Device("cleaning", "All"));
     Device::add(new Device("watching", "All"));
     
+    Device::add(new Device("desk", "Office")); // Groups both desk lamps together
+    
     //Move to IoT eventually
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
@@ -116,6 +114,7 @@ void loop() {
     handleWatching();
     handleCleaning();
     handleCouchPresence();
+    handleDesk();
 }
 
 /**
@@ -197,33 +196,25 @@ void handleSleeping() {
 void handleLivingRoomMotion() {
 
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
-
-    // Motion?
-    if(livingRoomMotionChanged > 0 ) {
-        livingRoomMotion = true;
-        lastLivingRoomMotion = millis();
-        
+    if(livingRoomMotionChanged == 100) {
         Device::setValue("LeftVertical", 50);
-        
+
         // Determine if this is Ron getting up
         if( partOfDay > SUNSET && sleeping == ASLEEP) {
-            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+            if(Time.hour() > 4 && Time.hour() < 10) {   // Motion after 5:00 is wakeup
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
             }
         }
-    } else {
-        // Timed shut-off
-        long loopTime = millis();
-        if(livingRoomMotion == true) {
-            if(loopTime >= lastLivingRoomMotion+LIVINGROOM_MOTION_TIMEOUT) {
-                Log.info("LivingRoom motion stopped");
-                livingRoomMotion = false;
-                //TODO: check other things like watching, sleeping, etc.
-                Device::setValue("LeftVertical", 0);
-            }
-        }
-    }
+        livingRoomMotion = true;
+
+    } else if(livingRoomMotionChanged == 0) {
+        Device::setValue("LeftVertical", 0);
+        livingRoomMotion = false;
+
+    } // Ignore -1
+    
+    return;
 }
 
 /**
@@ -267,6 +258,14 @@ void handleCleaning() {
             Log.info("cleaning did turn off");
             setAllLights( 0 );
         }
+    }
+}
+
+void handleDesk() {
+    int deskChanged = Device::getChangedValue("desk");
+    if( deskChanged != -1 ) {
+        Log.info("desk changed");
+        setDeskLamps( deskChanged );
     }
 }
 
@@ -323,6 +322,12 @@ void setAllLights(int value) {
     Device::setValue("DeskLeft",value);
     Device::setValue("DeskRight",value);
     Device::setValue("Nook",value);
+}
+
+void setDeskLamps(int value) {
+    Log.info("setDeskLamps");
+    Device::setValue("DeskLeft",value);
+    Device::setValue("DeskRight",value);
 }
 
 void setMorningLights() {

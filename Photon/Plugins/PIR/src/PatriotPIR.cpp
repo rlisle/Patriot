@@ -18,16 +18,19 @@ All text above must be included in any redistribution.
 #include "PatriotPIR.h"
 #include "IoT.h"
 
-#define POLL_INTERVAL_MILLIS 100
+#define POLL_INTERVAL_MILLIS 500
 
 /**
  * Constructor
  * @param pinNum int pin number that is connected to the sensor output
  * @param name  String name of the event to send when sensor changes
+ * @param room String
+ * @parm timeoutMSecs #msecs to keep on after motion stops
  */
-PIR::PIR(int pinNum, String name, String room)
+PIR::PIR(int pinNum, String name, String room, long timeoutMSecs)
         : Device(name, room),
-        _pin(pinNum)
+        _pin(pinNum),
+        _timeoutMSecs(timeoutMSecs)
 {
     _type  = 'M';
     _value = 0;
@@ -80,27 +83,23 @@ bool PIR::didSensorChange()
 {
     int pinState = digitalRead(_pin);
     int newValue = pinState ? 100 : 0;
-    return filterChanges(newValue);
-}
-
-bool PIR::filterChanges(int newValue) {
-    // Turning on (or getting closer)?
-    if(newValue > _value) {
+    
+    if(newValue == 100) {
         _lastMotion = millis();
+    
+    // Turn off only after delay
+    } else {
+        if(_lastMotion + _timeoutMSecs < millis()) {
+            return false;
+        }
+    }
+    
+    if(newValue != _value) {
         _value = newValue;
         return true;
     }
-    
-    // Turning off?
-    if(newValue < _value) {
-        if(_lastMotion + TURNOFF_DELAY < millis()) {
-            _value = newValue;
-            return true;
-        }
-    }
     return false;
 }
-
 
 /**
  * notify()

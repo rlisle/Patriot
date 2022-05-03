@@ -103,7 +103,7 @@ void createDevices() {
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
     
     // Photon I/O
-    Device::add(new PIR(A5, "OfficeMotion", "Office"));
+    Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // I2CPWM8W80C board
     // 8 Dimmers
@@ -346,32 +346,23 @@ void handleOfficeMotion() {
 
     long loopTime = millis();
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
-    
-    if(officeMotionChanged > 0 ) {         // Motion?
-        officeMotion = true;
-        lastOfficeMotion = loopTime;
 
-        //TODO: change this to only happen when dark
+    if(officeMotionChanged == 100) {
         Device::setValue("Piano", 50);
-        
+        officeMotion = true;
+
         if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
             if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
             }
         }
-        return;
-    }
-        
-    // Timed shut-off
-    if(officeMotion == true) {
-        if(loopTime >= lastOfficeMotion+OFFICE_MOTION_TIMEOUT) {
-            Log.info("Office motion timed out");
-            officeMotion = false;
-            //TODO: check other things like watching, sleeping, etc.
-            Device::setValue("Piano", 0);
-        }
-    }
+
+    } else if(officeMotionChanged == 0) {
+        Device::setValue("Piano", 0);
+        officeMotion = false;
+
+    } // Ignore -1
 }
 
 /**
