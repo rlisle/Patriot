@@ -346,32 +346,39 @@ void handleOfficeMotion() {
 
     long loopTime = millis();
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
-    
-    if(officeMotionChanged > 0 ) {         // Motion?
-        officeMotion = true;
-        lastOfficeMotion = loopTime;
 
-        //TODO: change this to only happen when dark
+    if(officeMotionChanged == 100) {
         Device::setValue("Piano", 50);
-        
-        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
-            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
-                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
-                Device::setValue("sleeping", AWAKE);
-            }
-        }
-        return;
-    }
-        
-    // Timed shut-off
-    if(officeMotion == true) {
-        if(loopTime >= lastOfficeMotion+OFFICE_MOTION_TIMEOUT) {
-            Log.info("Office motion timed out");
-            officeMotion = false;
-            //TODO: check other things like watching, sleeping, etc.
-            Device::setValue("Piano", 0);
-        }
-    }
+
+    } else if(officeMotionChanged == 0) {
+        Device::setValue("Piano", 0);
+
+    } // Ignore -1
+//    if(officeMotionChanged > 0 ) {         // Motion?
+//        officeMotion = true;
+//        lastOfficeMotion = loopTime;
+//
+//        //TODO: change this to only happen when dark
+//        Device::setValue("Piano", 50);
+//
+//        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
+//            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+//                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
+//                Device::setValue("sleeping", AWAKE);
+//            }
+//        }
+//        return;
+//    }
+//
+//    // Timed shut-off
+//    if(officeMotion == true) {
+//        if(loopTime >= lastOfficeMotion+OFFICE_MOTION_TIMEOUT) {
+//            Log.info("Office motion timed out");
+//            officeMotion = false;
+//            //TODO: check other things like watching, sleeping, etc.
+//            Device::setValue("Piano", 0);
+//        }
+//    }
 }
 
 /**

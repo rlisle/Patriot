@@ -37,7 +37,7 @@ Author: Ron Lisle
 #include <HueLight.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
-#define LIVINGROOM_MOTION_TIMEOUT 5*1000
+#define LIVINGROOM_MOTION_TIMEOUT 15*1000
 
 // This is recommended, and runs network on separate thread
 SYSTEM_THREAD(ENABLED);
@@ -85,7 +85,7 @@ void setWifiStaticIP() {
 
 void createDevices() {
     // Sensors
-//    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
+    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
     Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Philips Hue Lights (currently requires internet connection)
@@ -114,7 +114,7 @@ void loop() {
 
     handlePartOfDay();
     handleSleeping();
-//    handleLivingRoomMotion();
+    handleLivingRoomMotion();
     handleWatching();
     handleCleaning();
     handleCouchPresence();
@@ -197,11 +197,19 @@ void handleSleeping() {
  *   int partOfDay
  *   int sleeping
  */
-// Disabling until faulty PIR sensor replaced
-/*void handleLivingRoomMotion() {
+void handleLivingRoomMotion() {
 
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
 
+    if(livingRoomMotionChanged == 100) {
+//        Device::setValue("LeftVertical", 50);
+
+    } else if(livingRoomMotionChanged == 0) {
+//        Device::setValue("LeftVertical", 0);
+
+    } // Ignore -1
+    return;
+    
     // Motion?
     if(livingRoomMotionChanged > 0 ) {
         
@@ -223,7 +231,7 @@ void handleSleeping() {
         //TODO: check other things like watching, sleeping, etc.
         Device::setValue("LeftVertical", 0);
     }
-}*/
+}
 
 /**
  * handleWatching

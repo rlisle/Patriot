@@ -8,7 +8,7 @@ Author: Ron Lisle
 
 Hardware
  - built-in blue LED     D7
- - PIR                   D0
+ - PIR                   A5
  
 To update controller: particle flash RonPIRTest
  
@@ -17,15 +17,31 @@ To update controller: particle flash RonPIRTest
 #include <IoT.h>
 #include <PatriotPIR.h>
 
-#define PIR_PIN D0
+#define PIR_PIN A5
+
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
+
+IPAddress myAddress(192,168,50,40);
+IPAddress netmask(255,255,255,0);
+IPAddress gateway(192,168,50,1);
+IPAddress dns(192,168,50,1);
 
 void setup() {
-    IoT::begin("192.168.50.33", "RearPanel");
 
-    Device::add(new PIR(PIR_PIN, "Movement", "Office"));
+    WiFi.selectAntenna(ANT_INTERNAL);
+    setWifiStaticIP();
+    IoT::begin("192.168.50.33", "RonTest");
+
+    Device::add(new PIR(PIR_PIN, "Movement", "Office", 500));
 
     RGB.control(true);
     RGB.color(255,0,0);     // Red
+}
+
+void setWifiStaticIP() {
+    WiFi.setStaticIP(myAddress, netmask, gateway, dns);
+    WiFi.useStaticIP();
 }
 
 void loop() {
@@ -34,7 +50,7 @@ void loop() {
 
     int motionChanged = Device::getChangedValue("Movement");
     if( motionChanged != -1 ) {
-        Log.info("office movement changed %d",motionChanged);
+        Log.info("Movement changed %d",motionChanged);
         if( motionChanged == 0 ) {
             RGB.color(0,255,0);
         } else {

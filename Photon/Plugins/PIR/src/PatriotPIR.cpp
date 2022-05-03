@@ -24,6 +24,8 @@ All text above must be included in any redistribution.
  * Constructor
  * @param pinNum int pin number that is connected to the sensor output
  * @param name  String name of the event to send when sensor changes
+ * @param room String
+ * @parm timeoutMSecs #msecs to keep on after motion stops
  */
 PIR::PIR(int pinNum, String name, String room, long timeoutMSecs)
         : Device(name, room),
@@ -82,44 +84,23 @@ bool PIR::didSensorChange()
 {
     int pinState = digitalRead(_pin);
     int newValue = pinState ? 100 : 0;
-    return filterChanges(newValue);
-}
-
-// Delay turn off until no motion for timeoutMSecs
-bool PIR::filterChanges(int newValue) {
-    // Filter the value
-    if(newValue > 0) {
-        _filterValue += 25;
-        if(_filterValue > 100) {
-            _filterValue = 100;
-        }
+    
+    if(newValue == 100) {
+        _lastMotion = millis();
+    
+    // Turn off only after delay
     } else {
-        _filterValue -= 25;
-        if(_filterValue < 0) {
-            _filterValue = 0;
+        if(_lastMotion + _timeoutMSecs < millis()) {
+            return false;
         }
     }
-    Log.info("PIR %d, filter: %d",newValue,_filterValue);
     
-    if(_filterValue == 100) {
-        _lastMotion = millis();
-        if(_value < 100) {  // Was it off previously
-            _value = 100;
-            Log.info("PIR turning on");
-            return true;
-        }
-
-    } else if(_filterValue == 0 && _value != 0){
-        // Turning off?
-        if(_lastMotion + _timeoutMSecs < millis()) {
-            _value = 0;
-            Log.info("PIR turning off");
-            return true;
-        }
+    if(newValue != _value) {
+        _value = newValue;
+        return true;
     }
     return false;
 }
-
 
 /**
  * notify()
