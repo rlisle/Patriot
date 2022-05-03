@@ -64,7 +64,7 @@ int partOfDay = 0;
 int sleeping = 0;
 
 void setup() {
-//    WiFi.selectAntenna(ANT_EXTERNAL); //TODO: connect external antenna
+    WiFi.selectAntenna(ANT_INTERNAL);
     setWifiStaticIP();
     IoT::begin("192.168.50.33", "FrontPanel");
     createDevices();
@@ -197,7 +197,7 @@ void loop() {
     // - update light dimming
     IoT::loop();
     
-    int blueledChanged   = Device::getChangedValue("blueled");
+//    int blueledChanged   = Device::getChangedValue("blueled");
     int cleaningChanged  = Device::getChangedValue("cleaning");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int sleepingChanged  = Device::getChangedValue("sleeping");
@@ -215,9 +215,9 @@ void loop() {
         handleCleaningChange(cleaningChanged);
     }
 
-    if( blueledChanged != -1 ) {
-        handleBlueledChange(blueledChanged);
-    }
+//    if( blueledChanged != -1 ) {
+//        handleBlueledChange(blueledChanged);
+//    }
 
     if( watchingChanged != -1 ) {
         handleWatchingChange(watchingChanged);
@@ -289,15 +289,15 @@ void handlePartOfDayChange(int partOfDay) {
     }
 }
 
-void handleBlueledChange(int blueled) {
-    if( blueled > 0 ) {
-        Log.info("blueled did turn on");
-        setBlueledLights(100);
-    } else {
-        Log.info("blueled did turn off");
-        setBlueledLights(0);
-    }
-}
+//void handleBlueledChange(int blueled) {
+//    if( blueled > 0 ) {
+//        Log.info("blueled did turn on");
+//        setBlueledLights(100);
+//    } else {
+//        Log.info("blueled did turn off");
+//        setBlueledLights(0);
+//    }
+//}
 
 void handleCleaningChange(int cleaning) {
     if( cleaning > 0 ) {
@@ -358,16 +358,16 @@ void setSleepingLights() {
 }
 
 // This is currently the livingroom "Turn on lights" Huh???
-void setBlueledLights(int value) {  // 0 = Off, else On
-    Log.info("setBlueledLights %d", value);
-    
-    if( value > 0 ) {   // Turn on TV lights
-        Device::setValue("Sink", 50);
-        
-    } else {    // Turn off TV lights
-        Device::setValue("Sink", 0);
-    }
-}
+//void setBlueledLights(int value) {  // 0 = Off, else On
+//    Log.info("setBlueledLights %d", value);
+//
+//    if( value > 0 ) {   // Turn on TV lights
+//        Device::setValue("Sink", 50);
+//
+//    } else {    // Turn off TV lights
+//        Device::setValue("Sink", 0);
+//    }
+//}
 
 // "Alexa, watch tv"
 void setWatchingLights(int value) {
