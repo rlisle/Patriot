@@ -39,12 +39,8 @@ Author: Ron Lisle
 
 #define LIVINGROOM_MOTION_TIMEOUT 15*1000
 
-// This is recommended, and runs network on separate thread
 SYSTEM_THREAD(ENABLED);
-// Will manually connect, but everything automatic after that
-// This allows running loop and MQTT even if no internet available
 SYSTEM_MODE(SEMI_AUTOMATIC);
-
 
 //TODO: convert to IPAddress
 byte hueServer[4] = { 192, 168, 50, 21 };
@@ -200,23 +196,9 @@ void handleSleeping() {
 void handleLivingRoomMotion() {
 
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
-
     if(livingRoomMotionChanged == 100) {
-//        Device::setValue("LeftVertical", 50);
-
-    } else if(livingRoomMotionChanged == 0) {
-//        Device::setValue("LeftVertical", 0);
-
-    } // Ignore -1
-    return;
-    
-    // Motion?
-    if(livingRoomMotionChanged > 0 ) {
-        
-        livingRoomMotion = true;
-        
         Device::setValue("LeftVertical", 50);
-        
+
         // Determine if this is Ron getting up
         if( partOfDay > SUNSET && sleeping == ASLEEP) {
             if(Time.hour() > 4 && Time.hour() < 10) {   // Motion after 5:00 is wakeup
@@ -224,13 +206,15 @@ void handleLivingRoomMotion() {
                 Device::setValue("sleeping", AWAKE);
             }
         }
-    } else if(livingRoomMotionChanged == 0){
-        
-        livingRoomMotion = false;
-        
-        //TODO: check other things like watching, sleeping, etc.
+        livingRoomMotion = true;
+
+    } else if(livingRoomMotionChanged == 0) {
         Device::setValue("LeftVertical", 0);
-    }
+        livingRoomMotion = false;
+
+    } // Ignore -1
+    
+    return;
 }
 
 /**
