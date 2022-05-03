@@ -29,7 +29,7 @@ IPAddress dns(192,168,50,1);
 
 void setup() {
 
-    WiFi.selectAntenna(ANT_INTERNAL);
+    WiFi.selectAntenna(ANT_EXTERNAL);
     setWifiStaticIP();
     IoT::begin("192.168.50.33", "RonTest");
 
