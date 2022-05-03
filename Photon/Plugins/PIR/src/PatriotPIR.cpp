@@ -34,7 +34,6 @@ PIR::PIR(int pinNum, String name, String room, long timeoutMSecs)
 {
     _type  = 'M';
     _value = 0;
-    _filterValue = 0;
 }
 
 void PIR::begin() {
