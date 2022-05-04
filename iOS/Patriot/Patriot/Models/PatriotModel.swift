@@ -197,6 +197,23 @@ extension PatriotModel: DevicePublishing {
     }
 }
 
+// Hardcoded Devices
+extension PatriotModel {
+    func setHardcodedDevices() {
+        devices = [
+            Device(name: "Good Morning", type: .Light, percent: 0, isFavorite: true),
+            Device(name: "Watch TV", type: .Light, isFavorite: true),
+            Device(name: "Bedtime", type: .Switch, isFavorite: true),
+            Device(name: "Good Night", type: .Switch, isFavorite: true),
+            Device(name: "Nook", type: .Light),
+            Device(name: "Desk", type: .Light),
+            Device(name: "Piano", type: .Light),
+            Device(name: "Sink", type: .Light)
+        ]
+    }
+}
+
+// Test Devices
 extension PatriotModel {
     func getTestDevices() -> [Device] {
         return [

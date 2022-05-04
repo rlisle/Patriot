@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		27473020265D182E00C8EFDE /* PatriotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747301F265D182E00C8EFDE /* PatriotApp.swift */; };
-		27473022265D182E00C8EFDE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473021265D182E00C8EFDE /* ContentView.swift */; };
+		27473022265D182E00C8EFDE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473021265D182E00C8EFDE /* HomeView.swift */; };
 		27473024265D182E00C8EFDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27473023265D182E00C8EFDE /* Assets.xcassets */; };
 		27473027265D182E00C8EFDE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27473026265D182E00C8EFDE /* Preview Assets.xcassets */; };
 		27473032265D182F00C8EFDE /* PatriotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473031265D182F00C8EFDE /* PatriotTests.swift */; };
@@ -56,7 +56,7 @@
 /* Begin PBXFileReference section */
 		2747301C265D182E00C8EFDE /* Patriot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Patriot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2747301F265D182E00C8EFDE /* PatriotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotApp.swift; sourceTree = "<group>"; };
-		27473021265D182E00C8EFDE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		27473021265D182E00C8EFDE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		27473023265D182E00C8EFDE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		27473026265D182E00C8EFDE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		27473028265D182E00C8EFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -193,7 +193,7 @@
 		2747304B265D519100C8EFDE /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				27473021265D182E00C8EFDE /* ContentView.swift */,
+				27473021265D182E00C8EFDE /* HomeView.swift */,
 				2747308C265FC77800C8EFDE /* LoginView.swift */,
 				274D66C3269A51DD00303F1E /* DeviceView.swift */,
 				274D66C7269DBDBD00303F1E /* MainView.swift */,
@@ -452,7 +452,7 @@
 				27473084265D54A800C8EFDE /* DeviceType.swift in Sources */,
 				27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */,
 				274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */,
-				27473022265D182E00C8EFDE /* ContentView.swift in Sources */,
+				27473022265D182E00C8EFDE /* HomeView.swift in Sources */,
 				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27473051265D533400C8EFDE /* PhotonManager.swift in Sources */,

@@ -51,8 +51,7 @@ struct LoginView: View {
                                 .disabled(userName == "" || password == "")
                                 
                                 Button(action: {
-                                    print("MQTT Only")
-                                    devices.needsLogIn = false
+                                    handleMQTTOnly()
                                 }) {
                                     Text("MQTT-Only")
                                         .padding(.horizontal, 24)
@@ -95,6 +94,11 @@ struct LoginView: View {
     
     func fetchDevices() {
         //TODO:
+    }
+    
+    func handleMQTTOnly() {
+        devices.setHardcodedDevices()
+        devices.needsLogIn = false
     }
 }
 
