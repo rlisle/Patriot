@@ -14,7 +14,7 @@ struct PatriotApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
                 .environmentObject(model)
         }
     }
