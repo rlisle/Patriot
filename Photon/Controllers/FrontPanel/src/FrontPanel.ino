@@ -106,11 +106,14 @@ void createDevices() {
 
     // Other devices we monitor
     // TODO: could we define these automatically when getChangedValue is called?
-    Device::add(new Device("blueled", "Test"));
     Device::add(new Device("cleaning", "All"));
     Device::add(new Device("partofday", "All"));
     Device::add(new Device("sleeping", "All"));
     Device::add(new Device("watching", "All"));
+    
+    // Rooms
+    Device::add(new Device("kitchen", "Rooms"));
+    Device::add(new Device("livingroom", "Rooms"));
 }
 
 // TODO: refactor to IoT
@@ -197,7 +200,6 @@ void loop() {
     // - update light dimming
     IoT::loop();
     
-//    int blueledChanged   = Device::getChangedValue("blueled");
     int cleaningChanged  = Device::getChangedValue("cleaning");
     int partOfDayChanged = Device::getChangedValue("partofday");
     int sleepingChanged  = Device::getChangedValue("sleeping");
@@ -215,15 +217,11 @@ void loop() {
         handleCleaningChange(cleaningChanged);
     }
 
-//    if( blueledChanged != -1 ) {
-//        handleBlueledChange(blueledChanged);
-//    }
-
     if( watchingChanged != -1 ) {
         handleWatchingChange(watchingChanged);
     }
     
-    //TODO: Convert to resallable light switches
+    //TODO: Convert to resellable light switches
     handleLightSwitches();
 }
 
