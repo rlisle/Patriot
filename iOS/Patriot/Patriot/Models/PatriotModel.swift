@@ -202,54 +202,46 @@ extension PatriotModel: DevicePublishing {
 // Hardcoded Devices
 extension PatriotModel {
     func setHardcodedDevices() {
+        //TODO; set favorites (from local settings)
         var deviceInfos = [
-        ]
-        
-        devices = [
-            // Favorites
-            // These are already in the side menu
-//            Device(name: "Good Morning", type: .Light, percent: 0, isFavorite: true),
-//            Device(name: "Watch TV", type: .Light, isFavorite: true),
-//            Device(name: "Bedtime", type: .Switch, isFavorite: true),
-//            Device(name: "Good Night", type: .Switch, isFavorite: true),
-
             // Bedroom
             DeviceInfo(photonName: "LeftSlide", name: "Bedroom", type: .Light, percent: 0, room: "Bedroom"),
-
+            
             // Kitchen
-            Device(name: "Sink", type: .Light, room: "Kitchen", isFavorite: true),
-            Device(name: "KitchenCeiling", type: .Light, room: "Kitchen"),
-            Device(name: "Cabinets", type: .Light, room: "Kitchen"),
+            DeviceInfo(photonName: "FrontPanel", name: "Sink", type: .Light, percent: 0, room: "Kitchen"),
+            DeviceInfo(photonName: "FrontPanel", name: "KitchenCeiling", type: .Light, percent: 0, room: "Kitchen"),
+            DeviceInfo(photonName: "FrontPanel", name: "Cabinets", type: .Light, percent: 0, room: "Kitchen"),
 
             // Living Room
-            Device(name: "Ceiling", type: .Light, room: "Living Room"),
-            Device(name: "Couch", type: .Light, room: "Living Room"),
-            Device(name: "Curtain", type: .Curtain, room: "Office", isFavorite: true),
-            Device(name: "Nook", type: .Light, room: "Living Room"),
-            Device(name: "LeftVertical", type: .Light, room: "Living Room"),
-            Device(name: "LeftTrim", type: .Light, room: "Living Room"),
-            Device(name: "RightTrim", type: .Light, room: "Living Room"),
+            DeviceInfo(photonName: "FrontPanel", name: "Ceiling", type: .Light, percent: 0, room: "Living Room"),
+            DeviceInfo(photonName: "LeftSlide", name: "Couch", type: .Light, percent: 0, room: "Living Room"),
+            DeviceInfo(photonName: "RearPanel", name: "Curtain", type: .Curtain, percent: 0, room: "Office"),
+            DeviceInfo(photonName: "LeftSlide", name: "Nook", type: .Light, percent: 0, room: "Living Room"),
+            DeviceInfo(photonName: "LeftSlide", name: "LeftVertical", type: .Light, percent: 0, room: "Living Room"),
+            DeviceInfo(photonName: "FrontPanel", name: "LeftTrim", type: .Light, percent: 0, room: "Living Room"),
+            DeviceInfo(photonName: "FrontPanel", name: "RightTrim", type: .Light, percent: 0, room: "Living Room"),
 
             // Office
-            Device(name: "Desk", type: .Light, room: "Office"),
-            Device(name: "DeskLeft", type: .Light, room: "Office"),
-            Device(name: "DeskRight", type: .Light, room: "Office"),
-            Device(name: "Piano", type: .Light, room: "Office"),
-            Device(name: "OfficeTrim", type: .Light, room: "Office"),
-            Device(name: "OfficeCeiling", type: .Light, room: "Office"),
-            Device(name: "Loft", type: .Light, room: "Office"),
+            DeviceInfo(photonName: "RearPanel", name: "Desk", type: .Light, percent: 0, room: "Office"),
+            DeviceInfo(photonName: "RearPanel", name: "DeskLeft", type: .Light, percent: 0, room: "Office"),
+            DeviceInfo(photonName: "RearPanel", name: "DeskRight", type: .Light, percent: 0, room: "Office"),
+            DeviceInfo(photonName: "RearPanel", name: "Piano", type: .Light, percent: 0, room: "Office"),
+            DeviceInfo(photonName: "RearPanel", name: "OfficeTrim", type: .Light, percent: 0, room: "Office"),
+            DeviceInfo(photonName: "RearPanel", name: "OfficeCeiling", type: .Light, percent: 0, room: "Office"),
+            DeviceInfo(photonName: "RearPanel", name: "Loft", type: .Light, percent: 0, room: "Office"),
 
             // Outside
-            Device(name: "DoorSide", type: .Light, room: "Outside"),
-            Device(name: "OtherSide", type: .Light, room: "Outside"),
-            Device(name: "FrontPorch", type: .Light, room: "Outside"),
-            Device(name: "FrontAwning", type: .Light, room: "Outside"),
-            Device(name: "RampAwning", type: .Light, room: "Outside"),
-            Device(name: "RampPorch", type: .Light, room: "Outside"),
-            Device(name: "RearAwning", type: .Light, room: "Outside"),
-            Device(name: "RearPorch", type: .Light, room: "Outside"),
-
+            DeviceInfo(photonName: "FrontPanel", name: "DoorSide", type: .Light, percent: 0, room: "Outside"),
+            DeviceInfo(photonName: "FrontPanel", name: "OtherSide", type: .Light, percent: 0, room: "Outside"),
+            DeviceInfo(photonName: "FrontPanel", name: "FrontPorch", type: .Light, percent: 0, room: "Outside"),
+            DeviceInfo(photonName: "FrontPanel", name: "FrontAwning", type: .Light, percent: 0, room: "Outside"),
+            DeviceInfo(photonName: "RearPanel", name: "RampAwning", type: .Light, percent: 0, room: "Outside"),
+            DeviceInfo(photonName: "RearPanel", name: "RampPorch", type: .Light, percent: 0, room: "Outside"),
+            DeviceInfo(photonName: "RearPanel", name: "RearAwning", type: .Light, percent: 0, room: "Outside"),
+            DeviceInfo(photonName: "RearPanel", name: "RearPorch", type: .Light, percent: 0, room: "Outside")
         ]
+        
+        addDeviceInfos(deviceInfos)
     }
 }
 
