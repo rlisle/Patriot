@@ -18,7 +18,7 @@ class PatriotModel: ObservableObject
 {
     @Published var devices: [Device] = []
     @Published var favoritesList:  [String]   //TODO: delete & refactor using devices only             // List of favorite device names
-    @Published var needsLogIn: Bool = true
+    @Published var showingLogin: Bool = false
     
     let photonManager:  PhotonManager
     let mqtt:           MQTTManager
@@ -45,7 +45,9 @@ class PatriotModel: ObservableObject
         if forTest {
             devices = getTestDevices()
         } else {
-            performAutoLogin()                  // During login all photons & devices will be created
+            // Don't auto-login. Instead use MQTT to get list of devices
+            //performAutoLogin()                  // During login all photons & devices will be created
+            setHardcodedDevices()
         }
     }
 
@@ -63,11 +65,11 @@ extension PatriotModel {
     func login(user: String, password: String) {
         photonManager.login(user: user, password: password) { error in
             guard error == nil else {
-                self.needsLogIn = true
+                self.showingLogin = true
                 print("Error auto logging in: \(error!)")
                 return
             }
-            self.needsLogIn = false
+            self.showingLogin = false
             // TODO: loading indicator or better yet progressive updates?
             self.photonManager.getAllPhotonDevices { deviceInfos, error in
                 if error == nil {
@@ -81,7 +83,7 @@ extension PatriotModel {
     func logout() {
         photonManager.logout()
         self.devices = []
-        self.needsLogIn = true
+        self.showingLogin = true
     }
     
     func performAutoLogin() {
@@ -200,15 +202,53 @@ extension PatriotModel: DevicePublishing {
 // Hardcoded Devices
 extension PatriotModel {
     func setHardcodedDevices() {
+        var deviceInfos = [
+        ]
+        
         devices = [
-            Device(name: "Good Morning", type: .Light, percent: 0, isFavorite: true),
-            Device(name: "Watch TV", type: .Light, isFavorite: true),
-            Device(name: "Bedtime", type: .Switch, isFavorite: true),
-            Device(name: "Good Night", type: .Switch, isFavorite: true),
-            Device(name: "Nook", type: .Light),
-            Device(name: "Desk", type: .Light),
-            Device(name: "Piano", type: .Light),
-            Device(name: "Sink", type: .Light)
+            // Favorites
+            // These are already in the side menu
+//            Device(name: "Good Morning", type: .Light, percent: 0, isFavorite: true),
+//            Device(name: "Watch TV", type: .Light, isFavorite: true),
+//            Device(name: "Bedtime", type: .Switch, isFavorite: true),
+//            Device(name: "Good Night", type: .Switch, isFavorite: true),
+
+            // Bedroom
+            DeviceInfo(photonName: "LeftSlide", name: "Bedroom", type: .Light, percent: 0, room: "Bedroom"),
+
+            // Kitchen
+            Device(name: "Sink", type: .Light, room: "Kitchen", isFavorite: true),
+            Device(name: "KitchenCeiling", type: .Light, room: "Kitchen"),
+            Device(name: "Cabinets", type: .Light, room: "Kitchen"),
+
+            // Living Room
+            Device(name: "Ceiling", type: .Light, room: "Living Room"),
+            Device(name: "Couch", type: .Light, room: "Living Room"),
+            Device(name: "Curtain", type: .Curtain, room: "Office", isFavorite: true),
+            Device(name: "Nook", type: .Light, room: "Living Room"),
+            Device(name: "LeftVertical", type: .Light, room: "Living Room"),
+            Device(name: "LeftTrim", type: .Light, room: "Living Room"),
+            Device(name: "RightTrim", type: .Light, room: "Living Room"),
+
+            // Office
+            Device(name: "Desk", type: .Light, room: "Office"),
+            Device(name: "DeskLeft", type: .Light, room: "Office"),
+            Device(name: "DeskRight", type: .Light, room: "Office"),
+            Device(name: "Piano", type: .Light, room: "Office"),
+            Device(name: "OfficeTrim", type: .Light, room: "Office"),
+            Device(name: "OfficeCeiling", type: .Light, room: "Office"),
+            Device(name: "Loft", type: .Light, room: "Office"),
+
+            // Outside
+            Device(name: "DoorSide", type: .Light, room: "Outside"),
+            Device(name: "OtherSide", type: .Light, room: "Outside"),
+            Device(name: "FrontPorch", type: .Light, room: "Outside"),
+            Device(name: "FrontAwning", type: .Light, room: "Outside"),
+            Device(name: "RampAwning", type: .Light, room: "Outside"),
+            Device(name: "RampPorch", type: .Light, room: "Outside"),
+            Device(name: "RearAwning", type: .Light, room: "Outside"),
+            Device(name: "RearPorch", type: .Light, room: "Outside"),
+
         ]
     }
 }

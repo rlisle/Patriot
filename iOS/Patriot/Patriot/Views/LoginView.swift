@@ -86,7 +86,7 @@ struct LoginView: View {
                 //TODO: display an error message, but stay on this screen
                 return
             }
-            devices.needsLogIn = false
+            devices.showingLogin = false
             
             fetchDevices()
         }
@@ -98,7 +98,7 @@ struct LoginView: View {
     
     func handleMQTTOnly() {
         devices.setHardcodedDevices()
-        devices.needsLogIn = false
+        devices.showingLogin = false
     }
 }
 

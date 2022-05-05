@@ -80,7 +80,7 @@ struct MainView: View {
         }
         .padding(.top, 16)
         .background(Color(.black).ignoresSafeArea())
-        .sheet(isPresented: $model.needsLogIn) {
+        .sheet(isPresented: $model.showingLogin) {
             LoginView()
         }
     }
