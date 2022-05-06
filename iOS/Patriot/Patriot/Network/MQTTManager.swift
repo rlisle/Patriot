@@ -77,8 +77,8 @@ extension MQTTManager: CocoaMQTTDelegate {
     
     func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
         print("MQTT didConnectAck")
-        mqttDelegate?.connectionDidChange(isConnected: true)
         mqtt.subscribe(mqttTopic)
+        mqttDelegate?.connectionDidChange(isConnected: true)
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {

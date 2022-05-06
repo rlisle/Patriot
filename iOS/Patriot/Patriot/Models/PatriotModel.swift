@@ -48,6 +48,7 @@ class PatriotModel: ObservableObject
             // Don't auto-login. Instead use MQTT to get list of devices
             //performAutoLogin()                  // During login all photons & devices will be created
             setHardcodedDevices()
+            //Note: we query state in connectionDidChange
         }
     }
 
@@ -98,7 +99,13 @@ extension PatriotModel {
 extension PatriotModel: MQTTReceiving {
     
     func connectionDidChange(isConnected: Bool) {
-        print("Connection changed")
+        guard isConnected == true else {
+            print("Connected disconnected")
+            return
+        }
+        print("MQTT is connected")
+        // This needs to be done here so subscribe is already set
+        mqtt.sendMessage(topic: "patriot/query", message: "all")
     }
 
     func sendMessage(device: Device)
