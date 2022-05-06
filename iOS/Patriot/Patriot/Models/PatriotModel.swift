@@ -117,14 +117,22 @@ extension PatriotModel: MQTTReceiving {
     
     // MQTT or Particle.io message received
     func didReceiveMessage(topic: String, message: String) {
-        // Parse out device commands: "patriot/<devicename>"
+        // Parse out device commands: "patriot/<devicename> value"
+        //TODO: also parse "patriot/state/<devicename> value"
         let splitTopic = topic.components(separatedBy: "/")
         guard splitTopic.count >= 2 else {
             print("Message invalid topic: \(topic)")
             return
         }
+        var name = splitTopic[1].lowercased()
+        if name == "state" {
+            guard splitTopic.count >= 3 else {
+                print("State message invalid \(topic)")
+                return
+            }
+            name = splitTopic[2].lowercased()
+        }
         
-        let name = splitTopic[1].lowercased()
         if let percent: Int = Int(message), percent >= 0, percent <= 255
         {
             if let device = devices.first(where: {$0.name == name}) {
