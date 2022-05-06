@@ -135,7 +135,7 @@ extension PatriotModel: MQTTReceiving {
         
         if let percent: Int = Int(message), percent >= 0, percent <= 255
         {
-            if let device = devices.first(where: {$0.name == name}) {
+            if let device = devices.first(where: {$0.name.lowercased() == name}) {
                 device.percent = percent
             }
         }
