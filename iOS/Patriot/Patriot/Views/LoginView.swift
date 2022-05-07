@@ -97,7 +97,7 @@ struct LoginView: View {
     }
     
     func handleMQTTOnly() {
-        devices.setHardcodedDevices()
+//        devices.setHardcodedDevices()
         devices.showingLogin = false
     }
 }

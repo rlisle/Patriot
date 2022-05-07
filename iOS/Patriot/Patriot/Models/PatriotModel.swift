@@ -44,11 +44,6 @@ class PatriotModel: ObservableObject
         photonManager.particleIoDelegate = self // Receives particle.io messages
         if forTest {
             devices = getTestDevices()
-        } else {
-            // Don't auto-login. Instead use MQTT to get list of devices
-            //performAutoLogin()                  // During login all photons & devices will be created
-            setHardcodedDevices()
-            //Note: we query state in connectionDidChange
         }
     }
 
@@ -139,19 +134,25 @@ extension PatriotModel: MQTTReceiving {
             
         case ("state", 5):
             let room = splitTopic[2]
-            let type = splitTopic[3]
+            let type = splitTopic[3].uppercased()
             let deviceName = splitTopic[4]
             if let device = getDevice(room: room, device: deviceName) {
                 // Set existing device value
                 device.percent = percent
-            } else {
+                print("Setting device \(room):\(deviceName) to \(percent)")
+            } else if isDisplayableDevice(type: type) {
                 // create new device
-                devices.append(Device(name: deviceName, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
+                print("Creating device \(room):\(deviceName) with value \(percent)")
+                addDevice(Device(name: deviceName, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
             }
 
         default:
             print("Message unrecognized or deprecated: \(topic), \(message)")
         }
+    }
+    
+    func isDisplayableDevice(type: String) -> Bool {
+        return type == "C" || type == "F" || type == "L";
     }
     
     func getDevice(room: String, device: String) -> Device? {
@@ -192,6 +193,14 @@ extension PatriotModel {
         self.devices = Array(accumulatedDevices)
         print("Devices.count now \(devices.count)")
     }
+    
+    func addDevice(_ device: Device)
+    {
+        print("PatriotModel addDevice \(device.name)")
+        devices.append(device)
+        device.publisher = self
+        device.isFavorite = favoritesList.contains(device.name)
+    }
 }
 
 // Called when MQTT or particle.io device message received
@@ -222,48 +231,48 @@ extension PatriotModel: DevicePublishing {
 
 // Hardcoded Devices
 extension PatriotModel {
-    func setHardcodedDevices() {
-        //TODO; set favorites (from local settings)
-        var deviceInfos = [
-            // Bedroom
-            DeviceInfo(photonName: "LeftSlide", name: "Bedroom", type: .Light, percent: 0, room: "Bedroom"),
-            
-            // Kitchen
-            DeviceInfo(photonName: "FrontPanel", name: "Sink", type: .Light, percent: 0, room: "Kitchen"),
-            DeviceInfo(photonName: "FrontPanel", name: "KitchenCeiling", type: .Light, percent: 0, room: "Kitchen"),
-            DeviceInfo(photonName: "FrontPanel", name: "Cabinets", type: .Light, percent: 0, room: "Kitchen"),
-
-            // Living Room
-            DeviceInfo(photonName: "FrontPanel", name: "Ceiling", type: .Light, percent: 0, room: "Living Room"),
-            DeviceInfo(photonName: "LeftSlide", name: "Couch", type: .Light, percent: 0, room: "Living Room"),
-            DeviceInfo(photonName: "RearPanel", name: "Curtain", type: .Curtain, percent: 0, room: "Office"),
-            DeviceInfo(photonName: "LeftSlide", name: "Nook", type: .Light, percent: 0, room: "Living Room"),
-            DeviceInfo(photonName: "LeftSlide", name: "LeftVertical", type: .Light, percent: 0, room: "Living Room"),
-            DeviceInfo(photonName: "FrontPanel", name: "LeftTrim", type: .Light, percent: 0, room: "Living Room"),
-            DeviceInfo(photonName: "FrontPanel", name: "RightTrim", type: .Light, percent: 0, room: "Living Room"),
-
-            // Office
-            DeviceInfo(photonName: "RearPanel", name: "Desk", type: .Light, percent: 0, room: "Office"),
-            DeviceInfo(photonName: "RearPanel", name: "DeskLeft", type: .Light, percent: 0, room: "Office"),
-            DeviceInfo(photonName: "RearPanel", name: "DeskRight", type: .Light, percent: 0, room: "Office"),
-            DeviceInfo(photonName: "RearPanel", name: "Piano", type: .Light, percent: 0, room: "Office"),
-            DeviceInfo(photonName: "RearPanel", name: "OfficeTrim", type: .Light, percent: 0, room: "Office"),
-            DeviceInfo(photonName: "RearPanel", name: "OfficeCeiling", type: .Light, percent: 0, room: "Office"),
-            DeviceInfo(photonName: "RearPanel", name: "Loft", type: .Light, percent: 0, room: "Office"),
-
-            // Outside
-            DeviceInfo(photonName: "FrontPanel", name: "DoorSide", type: .Light, percent: 0, room: "Outside"),
-            DeviceInfo(photonName: "FrontPanel", name: "OtherSide", type: .Light, percent: 0, room: "Outside"),
-            DeviceInfo(photonName: "FrontPanel", name: "FrontPorch", type: .Light, percent: 0, room: "Outside"),
-            DeviceInfo(photonName: "FrontPanel", name: "FrontAwning", type: .Light, percent: 0, room: "Outside"),
-            DeviceInfo(photonName: "RearPanel", name: "RampAwning", type: .Light, percent: 0, room: "Outside"),
-            DeviceInfo(photonName: "RearPanel", name: "RampPorch", type: .Light, percent: 0, room: "Outside"),
-            DeviceInfo(photonName: "RearPanel", name: "RearAwning", type: .Light, percent: 0, room: "Outside"),
-            DeviceInfo(photonName: "RearPanel", name: "RearPorch", type: .Light, percent: 0, room: "Outside")
-        ]
-        
-        addDeviceInfos(deviceInfos)
-    }
+//    func setHardcodedDevices() {
+//        //TODO; set favorites (from local settings)
+//        var deviceInfos = [
+//            // Bedroom
+//            DeviceInfo(photonName: "LeftSlide", name: "Bedroom", type: .Light, percent: 0, room: "Bedroom"),
+//
+//            // Kitchen
+//            DeviceInfo(photonName: "FrontPanel", name: "Sink", type: .Light, percent: 0, room: "Kitchen"),
+//            DeviceInfo(photonName: "FrontPanel", name: "KitchenCeiling", type: .Light, percent: 0, room: "Kitchen"),
+//            DeviceInfo(photonName: "FrontPanel", name: "Cabinets", type: .Light, percent: 0, room: "Kitchen"),
+//
+//            // Living Room
+//            DeviceInfo(photonName: "FrontPanel", name: "Ceiling", type: .Light, percent: 0, room: "Living Room"),
+//            DeviceInfo(photonName: "LeftSlide", name: "Couch", type: .Light, percent: 0, room: "Living Room"),
+//            DeviceInfo(photonName: "RearPanel", name: "Curtain", type: .Curtain, percent: 0, room: "Office"),
+//            DeviceInfo(photonName: "LeftSlide", name: "Nook", type: .Light, percent: 0, room: "Living Room"),
+//            DeviceInfo(photonName: "LeftSlide", name: "LeftVertical", type: .Light, percent: 0, room: "Living Room"),
+//            DeviceInfo(photonName: "FrontPanel", name: "LeftTrim", type: .Light, percent: 0, room: "Living Room"),
+//            DeviceInfo(photonName: "FrontPanel", name: "RightTrim", type: .Light, percent: 0, room: "Living Room"),
+//
+//            // Office
+//            DeviceInfo(photonName: "RearPanel", name: "Desk", type: .Light, percent: 0, room: "Office"),
+//            DeviceInfo(photonName: "RearPanel", name: "DeskLeft", type: .Light, percent: 0, room: "Office"),
+//            DeviceInfo(photonName: "RearPanel", name: "DeskRight", type: .Light, percent: 0, room: "Office"),
+//            DeviceInfo(photonName: "RearPanel", name: "Piano", type: .Light, percent: 0, room: "Office"),
+//            DeviceInfo(photonName: "RearPanel", name: "OfficeTrim", type: .Light, percent: 0, room: "Office"),
+//            DeviceInfo(photonName: "RearPanel", name: "OfficeCeiling", type: .Light, percent: 0, room: "Office"),
+//            DeviceInfo(photonName: "RearPanel", name: "Loft", type: .Light, percent: 0, room: "Office"),
+//
+//            // Outside
+//            DeviceInfo(photonName: "FrontPanel", name: "DoorSide", type: .Light, percent: 0, room: "Outside"),
+//            DeviceInfo(photonName: "FrontPanel", name: "OtherSide", type: .Light, percent: 0, room: "Outside"),
+//            DeviceInfo(photonName: "FrontPanel", name: "FrontPorch", type: .Light, percent: 0, room: "Outside"),
+//            DeviceInfo(photonName: "FrontPanel", name: "FrontAwning", type: .Light, percent: 0, room: "Outside"),
+//            DeviceInfo(photonName: "RearPanel", name: "RampAwning", type: .Light, percent: 0, room: "Outside"),
+//            DeviceInfo(photonName: "RearPanel", name: "RampPorch", type: .Light, percent: 0, room: "Outside"),
+//            DeviceInfo(photonName: "RearPanel", name: "RearAwning", type: .Light, percent: 0, room: "Outside"),
+//            DeviceInfo(photonName: "RearPanel", name: "RearPorch", type: .Light, percent: 0, room: "Outside")
+//        ]
+//
+//        addDeviceInfos(deviceInfos)
+//    }
 }
 
 // Test Devices
