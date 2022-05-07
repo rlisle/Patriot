@@ -123,33 +123,39 @@ extension PatriotModel: MQTTReceiving {
     }
     
     // MQTT or Particle.io message received
+    // New state format: "patriot/state/room/<t>/name value"
     func didReceiveMessage(topic: String, message: String) {
-        // Parse out device commands: "patriot/<devicename> value"
-        //TODO: also parse "patriot/state/<devicename> value"
-        let splitTopic = topic.components(separatedBy: "/")
-        guard splitTopic.count >= 2 else {
-            print("Message invalid topic: \(topic)")
-            return
-        }
-        var name = splitTopic[1].lowercased()
-        if name == "state" {
-            guard splitTopic.count >= 3 else {
-                print("State message invalid \(topic)")
-                return
-            }
-            name = splitTopic[2].lowercased()
-        }
-        
-        if let percent: Int = Int(message), percent >= 0, percent <= 255
-        {
-            if let device = devices.first(where: {$0.name.lowercased() == name}) {
+        // Parse out known messages
+        let lcTopic = topic.lowercased()
+        let splitTopic = lcTopic.components(separatedBy: "/")
+        let percent: Int = Int(message) ?? -1
+        let command = splitTopic[1]
+        switch (command, splitTopic.count) {
+            
+        case (_, 2):
+            if let device = devices.first(where: {$0.name.lowercased() == command}) {
                 device.percent = percent
             }
+            
+        case ("state", 5):
+            let room = splitTopic[2]
+            let type = splitTopic[3]
+            let deviceName = splitTopic[4]
+            if let device = getDevice(room: room, device: deviceName) {
+                // Set existing device value
+                device.percent = percent
+            } else {
+                // create new device
+                devices.append(Device(name: deviceName, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
+            }
+
+        default:
+            print("Message unrecognized or deprecated: \(topic), \(message)")
         }
-        else
-        {
-            print("Event data is not a valid number: \(message)")
-        }
+    }
+    
+    func getDevice(room: String, device: String) -> Device? {
+        return devices.first(where: {$0.name.lowercased() == device && $0.room.lowercased() == room})
     }
 }
 
