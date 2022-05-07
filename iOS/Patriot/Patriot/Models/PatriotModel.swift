@@ -121,14 +121,13 @@ extension PatriotModel: MQTTReceiving {
     // New state format: "patriot/state/room/<t>/name value"
     func didReceiveMessage(topic: String, message: String) {
         // Parse out known messages
-        let lcTopic = topic.lowercased()
-        let splitTopic = lcTopic.components(separatedBy: "/")
+        let splitTopic = topic.components(separatedBy: "/")
         let percent: Int = Int(message) ?? -1
         let command = splitTopic[1]
         switch (command, splitTopic.count) {
             
         case (_, 2):
-            if let device = devices.first(where: {$0.name.lowercased() == command}) {
+            if let device = devices.first(where: {$0.name.lowercased() == command.lowercased()}) {
                 device.percent = percent
             }
             
@@ -156,7 +155,7 @@ extension PatriotModel: MQTTReceiving {
     }
     
     func getDevice(room: String, device: String) -> Device? {
-        return devices.first(where: {$0.name.lowercased() == device && $0.room.lowercased() == room})
+        return devices.first(where: {$0.name.lowercased() == device.lowercased() && $0.room.lowercased() == room.lowercased() })
     }
 }
 
