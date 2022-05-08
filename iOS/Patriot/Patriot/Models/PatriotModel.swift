@@ -18,7 +18,7 @@ class PatriotModel: ObservableObject
 {
     @Published var devices: [Device] = []
     @Published var favoritesList:  [String]   //TODO: delete & refactor using devices only             // List of favorite device names
-    @Published var needsLogIn: Bool = true
+    @Published var showingLogin: Bool = false
     
     let photonManager:  PhotonManager
     let mqtt:           MQTTManager
@@ -44,8 +44,6 @@ class PatriotModel: ObservableObject
         photonManager.particleIoDelegate = self // Receives particle.io messages
         if forTest {
             devices = getTestDevices()
-        } else {
-            performAutoLogin()                  // During login all photons & devices will be created
         }
     }
 
@@ -63,11 +61,11 @@ extension PatriotModel {
     func login(user: String, password: String) {
         photonManager.login(user: user, password: password) { error in
             guard error == nil else {
-                self.needsLogIn = true
+                self.showingLogin = true
                 print("Error auto logging in: \(error!)")
                 return
             }
-            self.needsLogIn = false
+            self.showingLogin = false
             // TODO: loading indicator or better yet progressive updates?
             self.photonManager.getAllPhotonDevices { deviceInfos, error in
                 if error == nil {
@@ -81,7 +79,7 @@ extension PatriotModel {
     func logout() {
         photonManager.logout()
         self.devices = []
-        self.needsLogIn = true
+        self.showingLogin = true
     }
     
     func performAutoLogin() {
@@ -96,7 +94,13 @@ extension PatriotModel {
 extension PatriotModel: MQTTReceiving {
     
     func connectionDidChange(isConnected: Bool) {
-        print("Connection changed")
+        guard isConnected == true else {
+            print("Connected disconnected")
+            return
+        }
+        print("MQTT is connected")
+        // This needs to be done here so subscribe is already set
+        mqtt.sendMessage(topic: "patriot/query", message: "all")
     }
 
     func sendMessage(device: Device)
@@ -114,25 +118,44 @@ extension PatriotModel: MQTTReceiving {
     }
     
     // MQTT or Particle.io message received
+    // New state format: "patriot/state/room/<t>/name value"
     func didReceiveMessage(topic: String, message: String) {
-        // Parse out device commands: "patriot/<devicename>"
+        // Parse out known messages
         let splitTopic = topic.components(separatedBy: "/")
-        guard splitTopic.count >= 2 else {
-            print("Message invalid topic: \(topic)")
-            return
-        }
-        
-        let name = splitTopic[1].lowercased()
-        if let percent: Int = Int(message), percent >= 0, percent <= 255
-        {
-            if let device = devices.first(where: {$0.name == name}) {
+        let percent: Int = Int(message) ?? -1
+        let command = splitTopic[1]
+        switch (command, splitTopic.count) {
+            
+        case (_, 2):
+            if let device = devices.first(where: {$0.name.lowercased() == command.lowercased()}) {
                 device.percent = percent
             }
+            
+        case ("state", 5):
+            let room = splitTopic[2]
+            let type = splitTopic[3].uppercased()
+            let deviceName = splitTopic[4]
+            if let device = getDevice(room: room, device: deviceName) {
+                // Set existing device value
+                device.percent = percent
+                print("Setting device \(room):\(deviceName) to \(percent)")
+            } else if isDisplayableDevice(type: type) {
+                // create new device
+                print("Creating device \(room):\(deviceName) with value \(percent)")
+                addDevice(Device(name: deviceName, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
+            }
+
+        default:
+            print("Message unrecognized or deprecated: \(topic), \(message)")
         }
-        else
-        {
-            print("Event data is not a valid number: \(message)")
-        }
+    }
+    
+    func isDisplayableDevice(type: String) -> Bool {
+        return type == "C" || type == "F" || type == "L";
+    }
+    
+    func getDevice(room: String, device: String) -> Device? {
+        return devices.first(where: {$0.name.lowercased() == device.lowercased() && $0.room.lowercased() == room.lowercased() })
     }
 }
 
@@ -169,6 +192,14 @@ extension PatriotModel {
         self.devices = Array(accumulatedDevices)
         print("Devices.count now \(devices.count)")
     }
+    
+    func addDevice(_ device: Device)
+    {
+        print("PatriotModel addDevice \(device.name)")
+        devices.append(device)
+        device.publisher = self
+        device.isFavorite = favoritesList.contains(device.name)
+    }
 }
 
 // Called when MQTT or particle.io device message received
@@ -197,6 +228,7 @@ extension PatriotModel: DevicePublishing {
     }
 }
 
+// Test Devices
 extension PatriotModel {
     func getTestDevices() -> [Device] {
         return [

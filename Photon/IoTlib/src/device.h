@@ -49,6 +49,8 @@ public:
     virtual void reset() {};
 
     virtual String name() { return _name; };
+    virtual String room() { return _room; };
+    virtual String type() { return String(_type); };
     
     virtual int value() { return _value; };
     virtual void setValue(int value);

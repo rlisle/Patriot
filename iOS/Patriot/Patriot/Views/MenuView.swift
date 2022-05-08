@@ -13,6 +13,10 @@ struct MenuView: View {
     
     @EnvironmentObject var model: PatriotModel
 
+    var isLoggedIn: Bool {  // Convenience
+        return model.photonManager.isLoggedIn
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             Button(action: {
@@ -66,8 +70,12 @@ struct MenuView: View {
                 .padding(.top, 30)
             }
             Button(action: {
-                print("Logout")
-                model.logout()
+                print(isLoggedIn ? "Logout" : "Login")
+                if isLoggedIn {
+                    model.logout()
+                } else {
+                    model.showingLogin = true
+                }
             }) {
                 HStack {
                     Image(systemName: "person")

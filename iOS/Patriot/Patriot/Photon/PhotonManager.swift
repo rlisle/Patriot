@@ -26,7 +26,7 @@ import Particle_SDK
 class PhotonManager: NSObject
 {
     var subscribeHandler:  Any?                 // Particle.io subscribe handle
-    private var isLoggedIn = false              // Is this needed?
+    var isLoggedIn = false                      // False if MQTT only mode
     var photons: [String: Photon] = [: ]        // All the particle devices attached to logged-in user's account
     let eventName          = "patriot"
     var particleIoDelegate: DeviceNotifying?    // Called when particle.io subscribe device message received

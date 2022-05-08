@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  HomeView.swift
 //  Patriot
 //
 //  Created by Ron Lisle on 5/25/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
 
     @State var showMenu = false
     
@@ -100,9 +100,9 @@ extension View {
     self.navigationBarColor(UIColor.black, textColor: UIColor.white)
   }
 }
-struct ContentView_Previews: PreviewProvider {
+struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        HomeView()
             .environmentObject(PatriotModel(
                                 devices: [
                                     Device(name: "Light", type: .Light),

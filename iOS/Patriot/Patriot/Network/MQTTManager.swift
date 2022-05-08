@@ -25,7 +25,7 @@ protocol MQTTReceiving
 
 class MQTTManager {
 
-    let mqttURL = "192.168.50.33"   // was "rons-mac-mini"
+    let mqttURL = "192.168.50.33"
     let mqttPort: UInt16 = 1883
     let mqttTopic = "#"             // For now we're receiving everything
     
@@ -77,8 +77,8 @@ extension MQTTManager: CocoaMQTTDelegate {
     
     func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
         print("MQTT didConnectAck")
-        mqttDelegate?.connectionDidChange(isConnected: true)
         mqtt.subscribe(mqttTopic)
+        mqttDelegate?.connectionDidChange(isConnected: true)
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {

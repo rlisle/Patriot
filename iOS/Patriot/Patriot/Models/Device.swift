@@ -18,11 +18,11 @@ class Device: ObservableObject
     @Published var percent:     Int
     @Published var isFavorite:  Bool
 
-    let name:      String
+    let name:      String       // Mixed case, spaces allowed
     var onImage:   UIImage
     var offImage:  UIImage
     var type:      DeviceType
-    var room:      String
+    var room:      String       // Mixed case, spaces allowed
 
     weak var publisher: DevicePublishing?
     
