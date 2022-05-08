@@ -88,7 +88,7 @@ void createDevices() {
     Device::add(new HueLight("Bedroom", "Bedroom", "1", hueServer, HUE_USERID));
     Device::add(new HueLight("DeskLeft", "Office", "2", hueServer, HUE_USERID));
     Device::add(new HueLight("DeskRight", "Office", "3", hueServer, HUE_USERID));
-    Device::add(new HueLight("Nook", "LivingRoom", "4", hueServer, HUE_USERID));
+    Device::add(new HueLight("Nook", "Living Room", "4", hueServer, HUE_USERID));
 
     // Lights
     Device::add(new Light(A7, "Couch", "Living Room", 2));
