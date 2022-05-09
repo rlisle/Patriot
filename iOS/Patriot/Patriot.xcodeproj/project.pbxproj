@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27209B0028292E48005A8C2A /* PartOfDay.swift */; };
 		27473020265D182E00C8EFDE /* PatriotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747301F265D182E00C8EFDE /* PatriotApp.swift */; };
 		27473022265D182E00C8EFDE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473021265D182E00C8EFDE /* HomeView.swift */; };
 		27473024265D182E00C8EFDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27473023265D182E00C8EFDE /* Assets.xcassets */; };
@@ -54,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		27209B0028292E48005A8C2A /* PartOfDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOfDay.swift; sourceTree = "<group>"; };
 		2747301C265D182E00C8EFDE /* Patriot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Patriot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2747301F265D182E00C8EFDE /* PatriotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotApp.swift; sourceTree = "<group>"; };
 		27473021265D182E00C8EFDE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 				2747307E265D54A800C8EFDE /* PhotonError.swift */,
 				274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */,
 				2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */,
+				27209B0028292E48005A8C2A /* PartOfDay.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -455,6 +458,7 @@
 				27473022265D182E00C8EFDE /* HomeView.swift in Sources */,
 				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
+				27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */,
 				27473051265D533400C8EFDE /* PhotonManager.swift in Sources */,
 				27473089265D54A800C8EFDE /* PhotonError.swift in Sources */,
 				27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */,

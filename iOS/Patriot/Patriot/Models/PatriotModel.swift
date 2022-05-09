@@ -28,10 +28,11 @@ class PatriotModel: ObservableObject
         return devices.filter { $0.isFavorite == true }
     }
 
+    // List of actually named rooms (ignores All, Default, etc)
     var rooms: [ String ] {
-        let rawRooms = devices.map { $0.room }
+        let rawRooms = devices.map { $0.room }.filter { $0 != "All" && $0 != "Default" && $0 != "Test" }
         let uniqueRooms = Set<String>(rawRooms)
-        return Array(uniqueRooms)               // May want to sort
+        return Array(uniqueRooms).sorted()
     }
     
     init(forTest: Bool = false)

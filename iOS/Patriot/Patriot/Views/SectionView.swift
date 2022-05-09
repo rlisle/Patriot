@@ -36,7 +36,7 @@ struct SectionView: View {
                 }
             }
         .padding(.horizontal)
-        .background(Color(.black).ignoresSafeArea())
+        //.background(Color(.black).ignoresSafeArea())
     }
 }
 
@@ -44,10 +44,10 @@ struct SectionView_Previews: PreviewProvider {
     static var previews: some View {
         SectionView(title: "Living Room",
                     devices: [
-                    Device(name: "Light1", type: .Light, percent: 0, isFavorite: true),
-                    Device(name: "Switch1", type: .Switch),
+                        Device(name: "Light1", type: .Light, percent: 0, room: "Living Room", isFavorite: true),
+                    Device(name: "Switch1", type: .Switch, room: "Living Room"),
                     Device(name: "Curtain1", type: .Curtain),
-                    Device(name: "Light2", type: .Light, percent: 100),
+                    Device(name: "Light2", type: .Light, percent: 100, room: "Living Room"),
                     Device(name: "Switch2", type: .Switch),
                     Device(name: "Light3", type: .Light)
                     ]

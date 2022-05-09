@@ -11,6 +11,14 @@ struct HomeView: View {
 
     @State var showMenu = false
     
+    init() {
+        //Use this if NavigationBarTitle is with Large Font
+        //UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+
+        //Use this if NavigationBarTitle is with displayMode = .inline
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
+    }
+    
     var body: some View {
         
         let drag = DragGesture()
@@ -25,7 +33,6 @@ struct HomeView: View {
         return NavigationView {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
-                    Color.black.edgesIgnoringSafeArea(.all)
                     MainView(showMenu: self.$showMenu)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .offset(x: self.showMenu ? geometry.size.width/2 : 0)
@@ -39,80 +46,60 @@ struct HomeView: View {
                 }
                 .gesture(drag)
             }
-            .blackNavigation
-            .navigationBarTitle("Patriot", displayMode: .inline)
-            .navigationBarItems(leading: (
-                Button(action: {
-                    withAnimation {
-                        self.showMenu.toggle()
-                    }
-                }) {
-                    Image(systemName: "line.horizontal.3")
-                        .imageScale(.large)
+
+            .navigationTitle("Patriot").foregroundColor(.white)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+
+                    Button(action: {
+                        withAnimation {
+                            self.showMenu.toggle()
+                        }
+                    }) {
+                        Image(systemName: "line.horizontal.3")
+                            .imageScale(.large)
+                    }.foregroundColor(.white)
+                    
                 }
-            ))
-        }
-    }
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        withAnimation {
+                            print("Sleeping")
+                        }
+                    }) {
+                        Image(systemName: "bed.double.circle")
+                            .imageScale(.large)
+                    }.foregroundColor(.white)
+                    
+                    Button(action: {
+                        withAnimation {
+                            print("PartOfDay")
+                        }
+                    }) {
+                        Image(systemName: "sun.and.horizon")
+                            .imageScale(.large)
+                    }.foregroundColor(.white)
+
+                }
+
+            }
+        }//navView
+    }//body
 }
 
-struct NavigationBarModifier: ViewModifier {
-  var backgroundColor: UIColor
-  var textColor: UIColor
-
-  init(backgroundColor: UIColor, textColor: UIColor) {
-    self.backgroundColor = backgroundColor
-    self.textColor = textColor
-    let coloredAppearance = UINavigationBarAppearance()
-    coloredAppearance.configureWithTransparentBackground()
-    coloredAppearance.backgroundColor = .clear
-    coloredAppearance.titleTextAttributes = [.foregroundColor: textColor]
-    coloredAppearance.largeTitleTextAttributes = [.foregroundColor: textColor]
-
-    UINavigationBar.appearance().standardAppearance = coloredAppearance
-    UINavigationBar.appearance().compactAppearance = coloredAppearance
-    UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
-    UINavigationBar.appearance().tintColor = textColor
-  }
-
-  func body(content: Content) -> some View {
-    ZStack{
-       content
-        VStack {
-          GeometryReader { geometry in
-             Color(self.backgroundColor)
-                .frame(height: geometry.safeAreaInsets.top)
-                .edgesIgnoringSafeArea(.top)
-              Spacer()
-          }
-        }
-     }
-  }
-}
-
-extension View {
-  func navigationBarColor(_ backgroundColor: UIColor, textColor: UIColor) -> some View {
-    self.modifier(NavigationBarModifier(backgroundColor: backgroundColor, textColor: textColor))
-  }
-}
-
-extension View {
-  var blackNavigation: some View {
-    self.navigationBarColor(UIColor.black, textColor: UIColor.white)
-  }
-}
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(PatriotModel(
                                 devices: [
-                                    Device(name: "Light", type: .Light),
-                                    Device(name: "Switch", type: .Switch),
-                                    Device(name: "Curtain", type: .Curtain),
-                                    Device(name: "Light2", type: .Light),
-                                    Device(name: "Switch2", type: .Switch),
-                                    Device(name: "Light3", type: .Light),
-                                    Device(name: "Curtain2", type: .Curtain),
-                                    Device(name: "Light4", type: .Light)
+                                    Device(name: "Light", type: .Light, percent: 0, room: "Office", isFavorite: true),
+                                    Device(name: "Switch", type: .Switch, percent: 0, room: "Office", isFavorite: false),
+                                    Device(name: "Curtain", type: .Curtain, percent: 0, room: "Office", isFavorite: true),
+                                    Device(name: "Light2", type: .Light, percent: 100, room: "Office", isFavorite: false),
+                                    Device(name: "Switch2", type: .Switch, percent: 0, room: "Bedroom", isFavorite: false),
+                                    Device(name: "Light3", type: .Light, percent: 0, room: "Bedroom", isFavorite: false),
+                                    Device(name: "Light4", type: .Light, percent: 100, room: "Bedroom", isFavorite: false)
                                 ]))
     }
 }

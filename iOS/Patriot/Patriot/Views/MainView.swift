@@ -48,7 +48,7 @@ struct MainView: View {
                         }
                     }
                 .padding(.horizontal)
-                .background(Color(.black).ignoresSafeArea())
+                //.background(Color(.black).ignoresSafeArea())
 
                 // Rooms
                 ForEach(model.rooms, id: \.self) { room in
@@ -72,7 +72,7 @@ struct MainView: View {
                             }
                         }
                     .padding(.horizontal)
-                    .background(Color(.black).ignoresSafeArea())
+                    //.background(Color(.black).ignoresSafeArea())
                 }
 
                 
