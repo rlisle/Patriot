@@ -29,52 +29,16 @@ struct MainView: View {
 //                )
 
                 // Favorites
-                if model.favorites.count > 0 {
-                    Section(
-                        header:
-                            HStack {
-                                Spacer()
-                                Text("Favorites")
-                                Spacer()
-                            }
-                            .foregroundColor(.white)
-                            .background(Color(.gray))
-                        ) {
-                            LazyVGrid(columns: columns, spacing: 20) {
-                                ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
-                                    DeviceView(device: device)
-                                        .aspectRatio(1, contentMode: .fill)
-                                        .padding()
-                                }
-                            }
-                        }
-                    .padding(.horizontal)
-                    //.background(Color(.black).ignoresSafeArea())
+                if model.devices.filter { $0.isFavorite == true }.count > 0 {
+                    FavoritesView().environmentObject(model)
                 }
                 
                 // Rooms
                 ForEach(model.rooms, id: \.self) { room in
                 
-                    Section(
-                        header:
-                            HStack {
-                                Spacer()
-                                Text(room)
-                                Spacer()
-                            }
-                            .foregroundColor(.white)
-                            .background(Color(.gray))
-                        ) {
-                            LazyVGrid(columns: columns, spacing: 20) {
-                                ForEach(model.devices.filter { $0.isFavorite == false  && $0.room == room}, id: \.self) { device in
-                                    DeviceView(device: device)
-                                        .aspectRatio(1, contentMode: .fill)
-                                        .padding()
-                                }
-                            }
-                        }
-                    .padding(.horizontal)
-                    //.background(Color(.black).ignoresSafeArea())
+//                    SectionView(title: room, devices: model.devices.filter { /*$0.isFavorite == false  &&*/ $0.room == room})
+//                        .environmentObject(model)
+                    RoomView(room: room)
                 }
 
                 
@@ -85,6 +49,69 @@ struct MainView: View {
         .sheet(isPresented: $model.showingLogin) {
             LoginView()
         }
+    }
+}
+
+struct FavoritesView: View {
+    
+    @EnvironmentObject var model: PatriotModel
+    
+    let columns = [
+        GridItem(.adaptive(minimum: 80, maximum: 160))
+    ]
+    
+    var body: some View {
+        Section(
+            header:
+                HStack {
+                    Spacer()
+                    Text("Favorites")
+                    Spacer()
+                }
+                .foregroundColor(.white)
+                .background(Color(.gray))
+            ) {
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
+                        DeviceView(device: device)
+                            .aspectRatio(1, contentMode: .fill)
+                            .padding()
+                    }
+                }
+            }
+        .padding(.horizontal)
+    }
+}
+
+struct RoomView: View {
+    
+    @EnvironmentObject var model: PatriotModel
+    var room: String
+    
+    let columns = [
+        GridItem(.adaptive(minimum: 80, maximum: 160))
+    ]
+    
+    var body: some View {
+        Section(
+            header:
+                HStack {
+                    Spacer()
+                    Text(room)
+                    Spacer()
+                }
+                .foregroundColor(.white)
+                .background(Color(.gray))
+            ) {
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(model.devices.filter { /*$0.isFavorite == false  &&*/ $0.room == room}, id: \.self) { device in
+                        DeviceView(device: device)
+                            .aspectRatio(1, contentMode: .fill)
+                            .padding()
+                    }
+                }
+            }
+        .padding(.horizontal)
     }
 }
 

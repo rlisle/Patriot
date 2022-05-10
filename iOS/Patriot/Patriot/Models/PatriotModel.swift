@@ -24,9 +24,9 @@ class PatriotModel: ObservableObject
     let mqtt:           MQTTManager
     let settings:       Settings
     
-    var favorites: [ Device ] {
-        return devices.filter { $0.isFavorite == true }
-    }
+//    var favorites: [ Device ] {
+//        return devices.filter { $0.isFavorite == true }
+//    }
 
     // List of actually named rooms (ignores All, Default, etc)
     var rooms: [ String ] {
