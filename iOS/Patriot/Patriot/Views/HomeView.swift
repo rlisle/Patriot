@@ -129,15 +129,6 @@ struct SleepView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
-            .environmentObject(PatriotModel(
-                                devices: [
-                                    Device(name: "Light", type: .Light, percent: 0, room: "Office", isFavorite: true),
-                                    Device(name: "Switch", type: .Switch, percent: 0, room: "Office", isFavorite: false),
-                                    Device(name: "Curtain", type: .Curtain, percent: 0, room: "Office", isFavorite: true),
-                                    Device(name: "Light2", type: .Light, percent: 100, room: "Office", isFavorite: false),
-                                    Device(name: "Switch2", type: .Switch, percent: 0, room: "Bedroom", isFavorite: false),
-                                    Device(name: "Light3", type: .Light, percent: 0, room: "Bedroom", isFavorite: false),
-                                    Device(name: "Light4", type: .Light, percent: 100, room: "Bedroom", isFavorite: false)
-                                ]))
+            .environmentObject(PatriotModel(forTest: true))
     }
 }
