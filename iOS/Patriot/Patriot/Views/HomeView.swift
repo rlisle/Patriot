@@ -21,7 +21,7 @@ struct HomeView: View {
     
     var body: some View {
         
-        let drag = DragGesture()
+        let dragToClose = DragGesture()
             .onEnded {
                 if $0.translation.width < -100 {
                     withAnimation {
@@ -30,7 +30,7 @@ struct HomeView: View {
                 }
             }
         
-        return NavigationView {
+        NavigationView {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     MainView(showMenu: self.$showMenu)
@@ -41,48 +41,22 @@ struct HomeView: View {
                     if self.showMenu {
                         MenuView()
                             .frame(width: geometry.size.width/2)
-
                     }
                 }
-                .gesture(drag)
+                .gesture(dragToClose)
             }
 
-            .navigationBarTitle("Patriot").foregroundColor(.white)
+            .navigationBarTitle("Patriot")
+            .navigationBarTitleDisplayMode(.inline)
+            .foregroundColor(.white)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
-
-                    Button(action: {
-                        withAnimation {
-                            self.showMenu.toggle()
-                        }
-                    }) {
-                        Image(systemName: "line.horizontal.3")
-                            .imageScale(.large)
-                    }.foregroundColor(.white)
-
+                    SideMenuButton(showMenu: $showMenu)
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        withAnimation {
-                            print("Sleeping")
-                            //TODO: Cycle through states
-                        }
-                    }) {
-                        //TODO: Display current sleeping state
-                        SleepView(sleeping: .Awake)
-                    }.foregroundColor(.white)
-
-                    Button(action: {
-                        withAnimation {
-                            print("PartOfDay")
-                        }
-                    }) {
-                        Image(systemName: "sun.and.horizon")
-                            .imageScale(.large)
-                    }.foregroundColor(.white)
-
+                    SleepingButton()
+                    PartOfDayButton()
                 }
-
             }
             
         }//navView
@@ -90,6 +64,52 @@ struct HomeView: View {
         .navigationViewStyle(StackNavigationViewStyle())
 
     }//body
+}
+
+struct SideMenuButton: View {
+
+    @Binding var showMenu: Bool
+
+    var body: some View {
+
+        Button(action: {
+            withAnimation {
+                self.showMenu.toggle()
+            }
+        }) {
+            Image(systemName: "line.horizontal.3")
+                .imageScale(.large)
+        }.foregroundColor(.white)
+    }
+}
+
+struct SleepingButton: View {
+    var body: some View {
+        Button(action: {
+            withAnimation {
+                print("Sleeping")
+                //TODO: Cycle through states
+            }
+        }) {
+            //TODO: Display current sleeping state
+            SleepView(sleeping: .Awake)
+        }.foregroundColor(.white)
+
+    }
+}
+
+struct PartOfDayButton: View {
+
+    var body: some View {
+        Button(action: {
+            withAnimation {
+                print("PartOfDay")
+            }
+        }) {
+            Image(systemName: "sun.and.horizon")
+                .imageScale(.large)
+        }.foregroundColor(.white)
+    }
 }
 
 struct SleepView: View {
