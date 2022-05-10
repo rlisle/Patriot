@@ -139,10 +139,10 @@ extension PatriotModel: MQTTReceiving {
             if let device = getDevice(room: room, device: deviceName) {
                 // Set existing device value
                 device.percent = percent
-                print("Setting device \(room):\(deviceName) to \(percent)")
+                //print("Setting device \(room):\(deviceName) to \(percent)")
             } else if isDisplayableDevice(type: type) {
                 // create new device
-                print("Creating device \(room):\(deviceName) with value \(percent)")
+                //print("Creating device \(room):\(deviceName) with value \(percent)")
                 addDevice(Device(name: deviceName, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
             }
 
@@ -181,7 +181,7 @@ extension PatriotModel {
     
     func addDeviceInfos(_ deviceInfos: [DeviceInfo])
     {
-        print("PatriotModel addDeviceInfos, count: \(deviceInfos.count)")
+        //print("PatriotModel addDeviceInfos, count: \(deviceInfos.count)")
         var accumulatedDevices: Set<Device> = Set<Device>(devices)
         for deviceInfo in deviceInfos
         {
@@ -191,12 +191,12 @@ extension PatriotModel {
             accumulatedDevices.insert(newDevice)
         }
         self.devices = Array(accumulatedDevices)
-        print("Devices.count now \(devices.count)")
+        //print("Devices.count now \(devices.count)")
     }
     
     func addDevice(_ device: Device)
     {
-        print("PatriotModel addDevice \(device.name)")
+        //print("PatriotModel addDevice \(device.name)")
         devices.append(device)
         device.publisher = self
         device.isFavorite = favoritesList.contains(device.name)
@@ -208,10 +208,10 @@ extension PatriotModel: DeviceNotifying
 {
     func deviceChanged(name: String, percent: Int)
     {
-        print("DeviceManager: DeviceChanged: \(name)")
+        //print("DeviceManager: DeviceChanged: \(name)")
         if let index = devices.firstIndex(where: {$0.name == name})
         {
-            print("   index of device = \(index)")
+            //print("   index of device = \(index)")
             devices[index].percent = percent
         }
     }
@@ -220,7 +220,7 @@ extension PatriotModel: DeviceNotifying
 // Called by a device when manually changed
 extension PatriotModel: DevicePublishing {
     func devicePercentChanged(device: Device) {
-        print("PatriotModel: devicePercentChanged: \(device.name), \(device.type) = \(device.percent)")
+        //print("PatriotModel: devicePercentChanged: \(device.name), \(device.type) = \(device.percent)")
         sendMessage(device: device)
     }
 

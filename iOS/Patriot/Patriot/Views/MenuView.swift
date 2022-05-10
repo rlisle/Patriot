@@ -22,7 +22,7 @@ struct MenuView: View {
             Button(action: {
                 print("Invoking Wakeup")
                 if let device = model.devices.first(where: {$0.name == "sleeping"}) {
-                    device.manualSet(percent: Sleeping.Awake)
+                    device.manualSet(percent: Sleeping.Awake.rawValue)
                 }
 
             }) {
@@ -39,7 +39,7 @@ struct MenuView: View {
             Button(action: {
                 print("Invoking Bedtime")
                 if let device = model.devices.first(where: {$0.name == "sleeping"}) {
-                    device.manualSet(percent: Sleeping.Retiring)
+                    device.manualSet(percent: Sleeping.Retiring.rawValue)
                 }
 
             }) {

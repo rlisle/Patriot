@@ -37,18 +37,17 @@ struct HomeView: View {
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .offset(x: self.showMenu ? geometry.size.width/2 : 0)
                         .disabled(self.showMenu ? true : false)
-                    
+
                     if self.showMenu {
                         MenuView()
                             .frame(width: geometry.size.width/2)
-                        
+
                     }
                 }
                 .gesture(drag)
             }
 
-            .navigationTitle("Patriot").foregroundColor(.white)
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitle("Patriot").foregroundColor(.white)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
 
@@ -60,18 +59,19 @@ struct HomeView: View {
                         Image(systemName: "line.horizontal.3")
                             .imageScale(.large)
                     }.foregroundColor(.white)
-                    
+
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button(action: {
                         withAnimation {
                             print("Sleeping")
+                            //TODO: Cycle through states
                         }
                     }) {
-                        Image(systemName: "bed.double.circle")
-                            .imageScale(.large)
+                        //TODO: Display current sleeping state
+                        SleepView(sleeping: .Awake)
                     }.foregroundColor(.white)
-                    
+
                     Button(action: {
                         withAnimation {
                             print("PartOfDay")
@@ -84,8 +84,26 @@ struct HomeView: View {
                 }
 
             }
+            
         }//navView
+        // This fixes the layout constraint warnings
+        .navigationViewStyle(StackNavigationViewStyle())
+
     }//body
+}
+
+struct SleepView: View {
+
+    @State var sleeping: Sleeping
+    
+    var body: some View {
+        Image(systemName: sleepIcon())
+            .imageScale(.large)
+    }
+    
+    func sleepIcon() -> String {
+        return "bed.double.circle"
+    }
 }
 
 struct HomeView_Previews: PreviewProvider {

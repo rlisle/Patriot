@@ -2,6 +2,11 @@
 //  StatefulPreviewWrapper.swift
 //  Patriot
 //
+//  This is used for previewing a view with a binding
+//  instead of creating a 2nd class just for previewing
+//
+//  See example in MainView preview
+//
 //  Created by Ron Lisle on 7/13/21.
 //
 

@@ -47,7 +47,7 @@ class MQTTManager {
 extension MQTTManager: MQTTSending
 {
     func sendMessage(topic: String, message: String) {
-        print("MQTT sendMessage \(topic) \(message)")
+        //print("MQTT sendMessage \(topic) \(message)")
         mqtt.publish(topic, withString: message)
     }
     
@@ -63,30 +63,30 @@ extension MQTTManager: CocoaMQTTDelegate {
     
     func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
         if let payload: String = message.string {
-            let topic = message.topic
-            print("MQTT didReceiveMessage: \(topic), \(payload)")
+            //let topic = message.topic
+            //print("MQTT didReceiveMessage: \(topic), \(payload)")
             self.mqttDelegate?.didReceiveMessage(topic: message.topic, message: payload)
         }
     }
     
     // Other required methods for CocoaMQTTDelegate
     func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
-        print("MQTT didReceive trust: \(trust)")
+        //print("MQTT didReceive trust: \(trust)")
         completionHandler(true)
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
-        print("MQTT didConnectAck")
+        //print("MQTT didConnectAck")
         mqtt.subscribe(mqttTopic)
         mqttDelegate?.connectionDidChange(isConnected: true)
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
-        print("MQTT didPublishMessage: \(message.topic), \(String(describing: message.string))")
+        //print("MQTT didPublishMessage: \(message.topic), \(String(describing: message.string))")
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didPublishAck id: UInt16) {
-        print("MQTT didPublishAck id: \(id)")
+        //print("MQTT didPublishAck id: \(id)")
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didSubscribeTopic topics: [String]) {
@@ -100,11 +100,11 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
     
     func mqttDidPing(_ mqtt: CocoaMQTT) {
-        print("MQTT ping")
+        //print("MQTT ping")
     }
     
     func mqttDidReceivePong(_ mqtt: CocoaMQTT) {
-        print("MQTT pong")
+        //print("MQTT pong")
     }
     
     func mqttDidDisconnect(_ mqtt: CocoaMQTT, withError err: Error?) {

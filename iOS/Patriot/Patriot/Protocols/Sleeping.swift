@@ -9,8 +9,8 @@
 
 import Foundation
 
-struct Sleeping {
-    static let Awake = 1
-    static let Retiring = 2
-    static let Asleep = 3
+enum Sleeping: Int {
+    case Awake = 1
+    case Retiring = 2
+    case Asleep = 3
 }
