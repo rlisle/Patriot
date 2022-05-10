@@ -29,27 +29,29 @@ struct MainView: View {
 //                )
 
                 // Favorites
-                Section(
-                    header:
-                        HStack {
-                            Spacer()
-                            Text("Favorites")
-                            Spacer()
-                        }
-                        .foregroundColor(.white)
-                        .background(Color(.gray))
-                    ) {
-                        LazyVGrid(columns: columns, spacing: 20) {
-                            ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
-                                DeviceView(device: device)
-                                    .aspectRatio(1, contentMode: .fill)
-                                    .padding()
+                if model.favorites.count > 0 {
+                    Section(
+                        header:
+                            HStack {
+                                Spacer()
+                                Text("Favorites")
+                                Spacer()
+                            }
+                            .foregroundColor(.white)
+                            .background(Color(.gray))
+                        ) {
+                            LazyVGrid(columns: columns, spacing: 20) {
+                                ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
+                                    DeviceView(device: device)
+                                        .aspectRatio(1, contentMode: .fill)
+                                        .padding()
+                                }
                             }
                         }
-                    }
-                .padding(.horizontal)
-                //.background(Color(.black).ignoresSafeArea())
-
+                    .padding(.horizontal)
+                    //.background(Color(.black).ignoresSafeArea())
+                }
+                
                 // Rooms
                 ForEach(model.rooms, id: \.self) { room in
                 
