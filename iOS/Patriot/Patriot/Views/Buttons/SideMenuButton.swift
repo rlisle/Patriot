@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SideMenuButton: View {
 
+    @EnvironmentObject var model: PatriotModel
     @Binding var showMenu: Bool
 
     var body: some View {

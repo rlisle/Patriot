@@ -51,11 +51,11 @@ struct DeviceView_Previews: PreviewProvider {
         Group {
             DeviceView(device: Device(name: "Light", type: .Light, percent: 0, isFavorite: false))
                 .previewLayout(PreviewLayout.fixed(width: 160, height: 160))
-                 .previewDisplayName("Device Off")
+                .previewDisplayName("Device Off")
             
             DeviceView(device: Device(name: "Light", type: .Light, percent: 100, isFavorite: true))
-                .previewLayout(PreviewLayout.fixed(width: 80, height: 80))
-                 .previewDisplayName("Device Favorite On")
+                .previewLayout(PreviewLayout.fixed(width: 160, height: 160))
+                .previewDisplayName("Device Favorite On")
         }
     }
 }

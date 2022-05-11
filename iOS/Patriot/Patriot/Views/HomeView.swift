@@ -10,7 +10,8 @@ import SwiftUI
 struct HomeView: View {
 
     @State var showMenu = false
-    
+    @EnvironmentObject var model: PatriotModel
+
     init() {
         //Use this if NavigationBarTitle is with Large Font
         //UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]

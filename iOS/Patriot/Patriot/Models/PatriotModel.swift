@@ -19,6 +19,8 @@ class PatriotModel: ObservableObject
     @Published var devices: [Device] = []
     @Published var favoritesList:  [String]   //TODO: delete & refactor using devices only             // List of favorite device names
     @Published var showingLogin: Bool = false
+    @Published var sleeping: Sleeping = .Awake
+    @Published var partOfDay: PartOfDay = .Afternoon
     
     let photonManager:  PhotonManager
     let mqtt:           MQTTManager
@@ -35,7 +37,10 @@ class PatriotModel: ObservableObject
         return Array(uniqueRooms).sorted()
     }
     
-    init(forTest: Bool = false)
+    init(forTest: Bool = false,
+         sleeping: Sleeping = .Awake,
+         partOfDay: PartOfDay = .Afternoon
+        )
     {
         photonManager = PhotonManager()
         mqtt = MQTTManager()
@@ -45,6 +50,8 @@ class PatriotModel: ObservableObject
         photonManager.particleIoDelegate = self // Receives particle.io messages
         if forTest {
             devices = getTestDevices()
+            self.sleeping = sleeping
+            self.partOfDay = partOfDay
         }
     }
 

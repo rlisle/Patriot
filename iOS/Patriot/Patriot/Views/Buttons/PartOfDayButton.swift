@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PartOfDayButton: View {
+    
+    @EnvironmentObject var model: PatriotModel
 
     var body: some View {
         Button(action: {
@@ -24,6 +26,7 @@ struct PartOfDayButton: View {
 struct PartOfDayButton_Previews: PreviewProvider {
     static var previews: some View {
         PartOfDayButton()
+            .environmentObject(PatriotModel(forTest: true))
             .previewLayout(.sizeThatFits)
             .padding()
             .previewDisplayName("PartOfDay Button")

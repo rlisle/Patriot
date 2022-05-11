@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct SleepingButton: View {
+    
+    @EnvironmentObject var model: PatriotModel
+    
     var body: some View {
         Button(action: {
             withAnimation {
@@ -16,7 +19,7 @@ struct SleepingButton: View {
             }
         }) {
             //TODO: Display current sleeping state
-            SleepView(sleeping: .Awake)
+            SleepView()
         }.foregroundColor(.white)
 
     }
@@ -24,7 +27,7 @@ struct SleepingButton: View {
 
 struct SleepView: View {
 
-    @State var sleeping: Sleeping
+    @EnvironmentObject var model: PatriotModel
     
     var body: some View {
         Image(systemName: sleepIcon())
@@ -32,7 +35,14 @@ struct SleepView: View {
     }
     
     func sleepIcon() -> String {
-        return "bed.double.circle"
+        switch model.sleeping {
+        case .Awake:
+            return "figure.walk"
+        case .Retiring:
+            return "bed.double"
+        case .Asleep:
+            return "moon.zzz"
+        }
     }
 }
 
@@ -40,11 +50,27 @@ struct SleepView: View {
 struct SleepingButton_Previews: PreviewProvider {
     static var previews: some View {
 //        StatefulPreviewWrapper(false) { SideMenuButton(showMenu: $0) }
-//            .environmentObject(PatriotModel(forTest: true))
-        SleepingButton()
-            .previewLayout(.sizeThatFits)
-            .padding()
-            .previewDisplayName("Sleeping Button")
-            .background(.black)
+        Group {
+            SleepingButton()
+                .environmentObject(PatriotModel(forTest: true, sleeping: .Awake))
+                .previewLayout(.sizeThatFits)
+                .padding()
+                .previewDisplayName("Awake")
+                .background(.black)
+            
+            SleepingButton()
+                .environmentObject(PatriotModel(forTest: true, sleeping: .Retiring))
+                .previewLayout(.sizeThatFits)
+                .padding()
+                .previewDisplayName("Bedtime")
+                .background(.black)
+
+            SleepingButton()
+                .environmentObject(PatriotModel(forTest: true, sleeping: .Asleep))
+                .previewLayout(.sizeThatFits)
+                .padding()
+                .previewDisplayName("Sleeping")
+                .background(.black)
+        }
     }
 }

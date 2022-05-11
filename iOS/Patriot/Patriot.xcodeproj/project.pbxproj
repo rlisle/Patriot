@@ -201,7 +201,6 @@
 		2747304B265D519100C8EFDE /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				27917121282BCBAD007F4CA5 /* Buttons */,
 				27473021265D182E00C8EFDE /* HomeView.swift */,
 				2747308C265FC77800C8EFDE /* LoginView.swift */,
 				274D66C3269A51DD00303F1E /* DeviceView.swift */,
@@ -209,6 +208,7 @@
 				274D66C9269DC06700303F1E /* MenuView.swift */,
 				274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */,
 				2798A07D26A455B3002FA6F4 /* SectionView.swift */,
+				27917121282BCBAD007F4CA5 /* Buttons */,
 			);
 			path = Views;
 			sourceTree = "<group>";

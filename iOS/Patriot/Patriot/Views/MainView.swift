@@ -9,10 +9,9 @@ import SwiftUI
 
 struct MainView: View {
     
+    @Binding var showMenu: Bool
     @EnvironmentObject var model: PatriotModel
 
-    @Binding var showMenu: Bool
-    
     let columns = [
         GridItem(.adaptive(minimum: 80, maximum: 160))
     ]
