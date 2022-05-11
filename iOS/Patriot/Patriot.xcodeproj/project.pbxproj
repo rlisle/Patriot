@@ -32,6 +32,9 @@
 		274D66C8269DBDBD00303F1E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C7269DBDBD00303F1E /* MainView.swift */; };
 		274D66CA269DC06700303F1E /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C9269DC06700303F1E /* MenuView.swift */; };
 		274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */; };
+		27917123282BCBCF007F4CA5 /* SideMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917122282BCBCF007F4CA5 /* SideMenuButton.swift */; };
+		27917125282BCCF5007F4CA5 /* SleepingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917124282BCCF5007F4CA5 /* SleepingButton.swift */; };
+		27917127282BCD6A007F4CA5 /* PartOfDayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */; };
 		2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */; };
 		2798A07E26A455B3002FA6F4 /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2798A07D26A455B3002FA6F4 /* SectionView.swift */; };
 		70978BAF9E1437D62C231FEE /* Pods_Patriot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80622165AF65D442821D750D /* Pods_Patriot.framework */; };
@@ -86,6 +89,9 @@
 		274D66C7269DBDBD00303F1E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		274D66C9269DC06700303F1E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatefulPreviewWrapper.swift; sourceTree = "<group>"; };
+		27917122282BCBCF007F4CA5 /* SideMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuButton.swift; sourceTree = "<group>"; };
+		27917124282BCCF5007F4CA5 /* SleepingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepingButton.swift; sourceTree = "<group>"; };
+		27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOfDayButton.swift; sourceTree = "<group>"; };
 		2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sleeping.swift; sourceTree = "<group>"; };
 		2798A07D26A455B3002FA6F4 /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.debug.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.debug.xcconfig"; sourceTree = "<group>"; };
@@ -195,6 +201,7 @@
 		2747304B265D519100C8EFDE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				27917121282BCBAD007F4CA5 /* Buttons */,
 				27473021265D182E00C8EFDE /* HomeView.swift */,
 				2747308C265FC77800C8EFDE /* LoginView.swift */,
 				274D66C3269A51DD00303F1E /* DeviceView.swift */,
@@ -254,6 +261,16 @@
 				274D66BE2699F51D00303F1E /* MQTTManager.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		27917121282BCBAD007F4CA5 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				27917122282BCBCF007F4CA5 /* SideMenuButton.swift */,
+				27917124282BCCF5007F4CA5 /* SleepingButton.swift */,
+				27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */,
+			);
+			path = Buttons;
 			sourceTree = "<group>";
 		};
 		D27112F62ACE9251195A69A2 /* Pods */ = {
@@ -448,6 +465,7 @@
 			files = (
 				2747308F266002D700C8EFDE /* ViewExtensions.swift in Sources */,
 				274D66C8269DBDBD00303F1E /* MainView.swift in Sources */,
+				27917127282BCD6A007F4CA5 /* PartOfDayButton.swift in Sources */,
 				2798A07E26A455B3002FA6F4 /* SectionView.swift in Sources */,
 				27473083265D54A800C8EFDE /* ParticleSDKError.swift in Sources */,
 				274D66CA269DC06700303F1E /* MenuView.swift in Sources */,
@@ -459,6 +477,7 @@
 				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */,
+				27917125282BCCF5007F4CA5 /* SleepingButton.swift in Sources */,
 				27473051265D533400C8EFDE /* PhotonManager.swift in Sources */,
 				27473089265D54A800C8EFDE /* PhotonError.swift in Sources */,
 				27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */,
@@ -467,6 +486,7 @@
 				2747308D265FC77800C8EFDE /* LoginView.swift in Sources */,
 				27473053265D533400C8EFDE /* Photon.swift in Sources */,
 				27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */,
+				27917123282BCBCF007F4CA5 /* SideMenuButton.swift in Sources */,
 				27473071265D53DE00C8EFDE /* Device.swift in Sources */,
 				274D66C4269A51DD00303F1E /* DeviceView.swift in Sources */,
 			);

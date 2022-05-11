@@ -66,66 +66,6 @@ struct HomeView: View {
     }//body
 }
 
-struct SideMenuButton: View {
-
-    @Binding var showMenu: Bool
-
-    var body: some View {
-
-        Button(action: {
-            withAnimation {
-                self.showMenu.toggle()
-            }
-        }) {
-            Image(systemName: "line.horizontal.3")
-                .imageScale(.large)
-        }.foregroundColor(.white)
-    }
-}
-
-struct SleepingButton: View {
-    var body: some View {
-        Button(action: {
-            withAnimation {
-                print("Sleeping")
-                //TODO: Cycle through states
-            }
-        }) {
-            //TODO: Display current sleeping state
-            SleepView(sleeping: .Awake)
-        }.foregroundColor(.white)
-
-    }
-}
-
-struct PartOfDayButton: View {
-
-    var body: some View {
-        Button(action: {
-            withAnimation {
-                print("PartOfDay")
-            }
-        }) {
-            Image(systemName: "sun.and.horizon")
-                .imageScale(.large)
-        }.foregroundColor(.white)
-    }
-}
-
-struct SleepView: View {
-
-    @State var sleeping: Sleeping
-    
-    var body: some View {
-        Image(systemName: sleepIcon())
-            .imageScale(.large)
-    }
-    
-    func sleepIcon() -> String {
-        return "bed.double.circle"
-    }
-}
-
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
