@@ -9,6 +9,16 @@
 
 import SwiftUI
 
+extension String {
+    func camelCaseToWords() -> String {
+        return unicodeScalars.dropFirst().reduce(String(prefix(1))) {
+            return CharacterSet.uppercaseLetters.contains($1)
+                ? $0 + " " + String($1)
+                : $0 + String($1)
+        }
+    }
+}
+
 struct DeviceView: View {
     
     @ObservedObject var device: Device
@@ -35,7 +45,7 @@ struct DeviceView: View {
                         }
                     }
                     Spacer()
-                    Text(device.name)
+                    Text(device.name.camelCaseToWords())
                         .font(.subheadline)
                         .foregroundColor(.white)
                 }
@@ -49,11 +59,11 @@ struct DeviceView: View {
 struct DeviceView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            DeviceView(device: Device(name: "Light", type: .Light, percent: 0, isFavorite: false))
+            DeviceView(device: Device(name: "LeftTrim", type: .Light, percent: 0, isFavorite: false))
                 .previewLayout(PreviewLayout.fixed(width: 160, height: 160))
                 .previewDisplayName("Device Off")
             
-            DeviceView(device: Device(name: "Light", type: .Light, percent: 100, isFavorite: true))
+            DeviceView(device: Device(name: "RightTrim", type: .Light, percent: 100, isFavorite: true))
                 .previewLayout(PreviewLayout.fixed(width: 160, height: 160))
                 .previewDisplayName("Device Favorite On")
         }
