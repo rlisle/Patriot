@@ -110,7 +110,7 @@ extension PatriotModel: MQTTReceiving {
 
     func sendMessage(device: Device)
     {
-        print("PatriotModel sendMessage \(device.name) to \(device.percent)")
+        //print("PatriotModel sendMessage \(device.name) to \(device.percent)")
         if mqtt.isConnected {
             mqtt.sendPatriotMessage(device: device.name, percent: device.percent)
         } else {
@@ -126,7 +126,7 @@ extension PatriotModel: MQTTReceiving {
     // New state format: "patriot/state/room/<t>/name value"
     func didReceiveMessage(topic: String, message: String) {
         
-        print("didReceiveMessage: \(topic), \(message)")
+        //print("didReceiveMessage: \(topic), \(message)")
         
         // Parse out known messages
         let splitTopic = topic.components(separatedBy: "/")
@@ -164,11 +164,11 @@ extension PatriotModel {
         if let device = getDevice(name: name, room: room) {
             // Set existing device value
             device.percent = percent
-            print("Setting device \(room):\(name) to \(percent)")
+            //print("Setting device \(room):\(name) to \(percent)")
             
         } else if isDisplayableDevice(type: type) {
             // create new device
-            print("Creating device \(room):\(name) with value \(percent)")
+            //print("Creating device \(room):\(name) with value \(percent)")
             addDevice(Device(name: name, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
         }
     }
@@ -184,8 +184,6 @@ extension PatriotModel {
     }
     
     func handleSpecialNames(name: String, percent: Int) -> Bool {
-        
-        print("handleSpecialNames")
         
         if name.caseInsensitiveCompare("sleeping") == .orderedSame {
             print("Sleeping = \(percent)")
