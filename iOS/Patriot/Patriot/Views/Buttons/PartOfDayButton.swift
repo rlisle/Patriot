@@ -41,6 +41,8 @@ struct PartOfDayView: View {
             return "sun.and.horizon"
         case .Noon:
             return "sun.max"
+        case .unknown:
+            return "questionmark"
         default:
             return "sun.min"
         }

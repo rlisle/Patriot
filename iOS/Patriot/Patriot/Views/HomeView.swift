@@ -55,7 +55,7 @@ struct HomeView: View {
                     SideMenuButton(showMenu: $showMenu)
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    SleepingButton()
+                    SleepingButton(sleeping: model.sleeping)
                     PartOfDayButton()
                 }
             }

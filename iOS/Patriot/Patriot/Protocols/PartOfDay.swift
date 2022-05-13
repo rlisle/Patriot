@@ -8,6 +8,7 @@
 import Foundation
 
 enum PartOfDay: Int {
+    case unknown = 0
     case Sunrise = 1
     case Morning = 2
     case Noon = 3

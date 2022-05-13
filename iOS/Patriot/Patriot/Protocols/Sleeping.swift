@@ -10,6 +10,7 @@
 import Foundation
 
 enum Sleeping: Int {
+    case unknown = 0
     case Awake = 1
     case Retiring = 2
     case Asleep = 3

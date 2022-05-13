@@ -26,11 +26,6 @@ class PatriotModel: ObservableObject
     let mqtt:           MQTTManager
     let settings:       Settings
     
-//    var favorites: [ Device ] {
-//        return devices.filter { $0.isFavorite == true }
-//    }
-
-    // List of actually named rooms (ignores All, Default, etc)
     var rooms: [ String ] {
         let rawRooms = devices.map { $0.room }.filter { $0 != "All" && $0 != "Default" && $0 != "Test" }
         let uniqueRooms = Set<String>(rawRooms)
@@ -69,8 +64,8 @@ extension PatriotModel {
     func login(user: String, password: String) {
         photonManager.login(user: user, password: password) { error in
             guard error == nil else {
-                self.showingLogin = true
                 print("Error auto logging in: \(error!)")
+                self.showingLogin = true
                 return
             }
             self.showingLogin = false
@@ -91,6 +86,7 @@ extension PatriotModel {
     }
     
     func performAutoLogin() {
+        print("Perform auto-login")
         if let user = settings.particleUser, let password = settings.particlePassword {
             print("Performing auto-login \(user), \(password)")
             login(user: user, password: password)
@@ -104,6 +100,7 @@ extension PatriotModel: MQTTReceiving {
     func connectionDidChange(isConnected: Bool) {
         guard isConnected == true else {
             print("Connected disconnected")
+            showingLogin = true
             return
         }
         print("MQTT is connected")
@@ -128,6 +125,9 @@ extension PatriotModel: MQTTReceiving {
     // MQTT or Particle.io message received
     // New state format: "patriot/state/room/<t>/name value"
     func didReceiveMessage(topic: String, message: String) {
+        
+        print("didReceiveMessage: \(topic), \(message)")
+        
         // Parse out known messages
         let splitTopic = topic.components(separatedBy: "/")
         let percent: Int = Int(message) ?? -1
@@ -135,23 +135,13 @@ extension PatriotModel: MQTTReceiving {
         switch (command, splitTopic.count) {
             
         case (_, 2):
-            if let device = devices.first(where: {$0.name.lowercased() == command.lowercased()}) {
-                device.percent = percent
-            }
+            handleLegacyCommand(name: command, percent: percent)
             
         case ("state", 5):
             let room = splitTopic[2]
             let type = splitTopic[3].uppercased()
             let deviceName = splitTopic[4]
-            if let device = getDevice(room: room, device: deviceName) {
-                // Set existing device value
-                device.percent = percent
-                //print("Setting device \(room):\(deviceName) to \(percent)")
-            } else if isDisplayableDevice(type: type) {
-                // create new device
-                //print("Creating device \(room):\(deviceName) with value \(percent)")
-                addDevice(Device(name: deviceName, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
-            }
+            handleState(name: deviceName, room: room, type: type, percent: percent)
 
         default:
             print("Message unrecognized or deprecated: \(topic), \(message)")
@@ -161,12 +151,56 @@ extension PatriotModel: MQTTReceiving {
     func isDisplayableDevice(type: String) -> Bool {
         return type == "C" || type == "F" || type == "L";
     }
-    
-    func getDevice(room: String, device: String) -> Device? {
-        return devices.first(where: {$0.name.lowercased() == device.lowercased() && $0.room.lowercased() == room.lowercased() })
-    }
 }
 
+extension PatriotModel {
+    
+    func handleState(name: String, room: String, type: String, percent: Int) {
+
+        guard handleSpecialNames(name: name, percent: percent) == false else {
+            return
+        }
+            
+        if let device = getDevice(name: name, room: room) {
+            // Set existing device value
+            device.percent = percent
+            print("Setting device \(room):\(name) to \(percent)")
+            
+        } else if isDisplayableDevice(type: type) {
+            // create new device
+            print("Creating device \(room):\(name) with value \(percent)")
+            addDevice(Device(name: name, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
+        }
+    }
+    
+    func handleLegacyCommand(name: String, percent: Int) {
+        guard handleSpecialNames(name: name, percent: percent) == false else {
+            return
+        }
+
+        if let device = getDevice(name: name) {
+            device.percent = percent
+        }
+    }
+    
+    func handleSpecialNames(name: String, percent: Int) -> Bool {
+        
+        print("handleSpecialNames")
+        
+        if name.caseInsensitiveCompare("sleeping") == .orderedSame {
+            print("Sleeping = \(percent)")
+            self.sleeping = Sleeping(rawValue: percent) ?? .unknown
+            return true
+            
+        } else if name.caseInsensitiveCompare("partofday") == .orderedSame {
+            print("PartOfDay = \(percent)")
+            self.partOfDay = PartOfDay(rawValue:percent) ?? .unknown
+            return true
+
+        }
+        return false
+    }
+}
 
 // Favorites
 extension PatriotModel {
@@ -183,9 +217,18 @@ extension PatriotModel {
     }
 }
 
-// Add
+// Devices
 extension PatriotModel {
     
+    func getDevice(name: String, room: String? = nil) -> Device? {
+        if let room = room {
+            return devices.first(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame
+                && $0.room.caseInsensitiveCompare(room) == .orderedSame })
+        } else {
+            return devices.first(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame } )
+        }
+    }
+
     func addDeviceInfos(_ deviceInfos: [DeviceInfo])
     {
         //print("PatriotModel addDeviceInfos, count: \(deviceInfos.count)")
