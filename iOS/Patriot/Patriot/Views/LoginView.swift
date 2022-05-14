@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum LoginFocusable: Hashable {
+    case username
+    case password
+}
+
 struct LoginView: View {
     
     @EnvironmentObject var devices: PatriotModel
@@ -15,6 +20,8 @@ struct LoginView: View {
     @State private var password = ""
     
     @State private var hideSpinner = true
+    
+    @FocusState private var loginInFocus: LoginFocusable?
     
     var body: some View {
         ZStack {
@@ -32,11 +39,11 @@ struct LoginView: View {
                             TextField("User name", text: $userName)
                                 .autocapitalization(.none)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .background(Color.gray)
+                                //.background(Color.gray)
                             SecureField("Password", text: $password)
                                 //.autocapitalization(.none)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .background(Color.gray)
+                                //.background(Color.gray)
                             HStack {
                                 Button(action: {
                                     handleLogin()
@@ -66,7 +73,7 @@ struct LoginView: View {
                         })
                         .padding(20)
                         .frame(width: metrics.size.width * 0.75, alignment: .center)
-                        .background(Color.gray)
+                        .background(Color.indigo) //TODO: dark gray
                         .cornerRadius(30)
                         .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
                         Spacer()
