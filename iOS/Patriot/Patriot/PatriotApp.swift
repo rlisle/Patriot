@@ -10,6 +10,8 @@ import SwiftUI
 @main
 struct PatriotApp: App {
 
+//    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     @StateObject var model = PatriotModel()
     
     var body: some Scene {

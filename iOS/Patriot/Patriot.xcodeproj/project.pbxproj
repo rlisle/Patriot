@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27209B0028292E48005A8C2A /* PartOfDay.swift */; };
+		2741D16E283119640077E6CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2741D16D283119640077E6CA /* AppDelegate.swift */; };
+		2741D170283126090077E6CA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 2741D16F283126090077E6CA /* Intents.intentdefinition */; };
 		27473020265D182E00C8EFDE /* PatriotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747301F265D182E00C8EFDE /* PatriotApp.swift */; };
 		27473022265D182E00C8EFDE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473021265D182E00C8EFDE /* HomeView.swift */; };
 		27473024265D182E00C8EFDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27473023265D182E00C8EFDE /* Assets.xcassets */; };
@@ -60,6 +62,9 @@
 
 /* Begin PBXFileReference section */
 		27209B0028292E48005A8C2A /* PartOfDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOfDay.swift; sourceTree = "<group>"; };
+		2741D16D283119640077E6CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2741D16F283126090077E6CA /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
+		2741D1732831342F0077E6CA /* Patriot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Patriot.entitlements; sourceTree = "<group>"; };
 		2747301C265D182E00C8EFDE /* Patriot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Patriot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2747301F265D182E00C8EFDE /* PatriotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotApp.swift; sourceTree = "<group>"; };
 		27473021265D182E00C8EFDE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -127,6 +132,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2741D172283126590077E6CA /* CustomIntents */ = {
+			isa = PBXGroup;
+			children = (
+				2741D16F283126090077E6CA /* Intents.intentdefinition */,
+			);
+			name = CustomIntents;
+			sourceTree = "<group>";
+		};
 		27473013265D182E00C8EFDE = {
 			isa = PBXGroup;
 			children = (
@@ -152,7 +165,10 @@
 		2747301E265D182E00C8EFDE /* Patriot */ = {
 			isa = PBXGroup;
 			children = (
+				2741D1732831342F0077E6CA /* Patriot.entitlements */,
+				2741D172283126590077E6CA /* CustomIntents */,
 				2747301F265D182E00C8EFDE /* PatriotApp.swift */,
+				2741D16D283119640077E6CA /* AppDelegate.swift */,
 				274D66BD2699F50700303F1E /* Network */,
 				27473075265D545500C8EFDE /* Protocols */,
 				2747304D265D51C500C8EFDE /* Supporting Files */,
@@ -470,12 +486,14 @@
 				274D66C8269DBDBD00303F1E /* MainView.swift in Sources */,
 				27917127282BCD6A007F4CA5 /* PartOfDayButton.swift in Sources */,
 				2798A07E26A455B3002FA6F4 /* SectionView.swift in Sources */,
+				2741D16E283119640077E6CA /* AppDelegate.swift in Sources */,
 				27473083265D54A800C8EFDE /* ParticleSDKError.swift in Sources */,
 				274D66CA269DC06700303F1E /* MenuView.swift in Sources */,
 				274D66C12699F9E900303F1E /* PhotonDeviceNotifying.swift in Sources */,
 				2780FB66282E739800BD32F5 /* EntryTextField.swift in Sources */,
 				27473084265D54A800C8EFDE /* DeviceType.swift in Sources */,
 				27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */,
+				2741D170283126090077E6CA /* Intents.intentdefinition in Sources */,
 				274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */,
 				27473022265D182E00C8EFDE /* HomeView.swift in Sources */,
 				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
@@ -650,6 +668,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Patriot/Patriot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Patriot/Preview Content\"";
 				DEVELOPMENT_TEAM = 65NFWK9633;
@@ -673,6 +692,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Patriot/Patriot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Patriot/Preview Content\"";
 				DEVELOPMENT_TEAM = 65NFWK9633;
