@@ -10,6 +10,13 @@
 		27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27209B0028292E48005A8C2A /* PartOfDay.swift */; };
 		2741D16E283119640077E6CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2741D16D283119640077E6CA /* AppDelegate.swift */; };
 		2741D170283126090077E6CA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 2741D16F283126090077E6CA /* Intents.intentdefinition */; };
+		2741D17A283138F40077E6CA /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2741D179283138F40077E6CA /* Intents.framework */; };
+		2741D17D283138F40077E6CA /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2741D17C283138F40077E6CA /* IntentHandler.swift */; };
+		2741D185283138F40077E6CA /* IntentsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2741D184283138F40077E6CA /* IntentsUI.framework */; };
+		2741D188283138F40077E6CA /* IntentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2741D187283138F40077E6CA /* IntentViewController.swift */; };
+		2741D18B283138F40077E6CA /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2741D189283138F40077E6CA /* MainInterface.storyboard */; };
+		2741D18F283138F40077E6CA /* PatriotIntentUI.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2741D183283138F40077E6CA /* PatriotIntentUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		2741D192283138F40077E6CA /* PatriotIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2741D178283138F40077E6CA /* PatriotIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		27473020265D182E00C8EFDE /* PatriotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747301F265D182E00C8EFDE /* PatriotApp.swift */; };
 		27473022265D182E00C8EFDE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473021265D182E00C8EFDE /* HomeView.swift */; };
 		27473024265D182E00C8EFDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27473023265D182E00C8EFDE /* Assets.xcassets */; };
@@ -44,6 +51,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2741D18D283138F40077E6CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27473014265D182E00C8EFDE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2741D182283138F40077E6CA;
+			remoteInfo = PatriotIntentUI;
+		};
+		2741D190283138F40077E6CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27473014265D182E00C8EFDE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2741D177283138F40077E6CA;
+			remoteInfo = PatriotIntent;
+		};
 		2747302E265D182F00C8EFDE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 27473014265D182E00C8EFDE /* Project object */;
@@ -60,11 +81,35 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		2741D199283138F40077E6CA /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2741D192283138F40077E6CA /* PatriotIntent.appex in Embed App Extensions */,
+				2741D18F283138F40077E6CA /* PatriotIntentUI.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		27209B0028292E48005A8C2A /* PartOfDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOfDay.swift; sourceTree = "<group>"; };
 		2741D16D283119640077E6CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2741D16F283126090077E6CA /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
 		2741D1732831342F0077E6CA /* Patriot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Patriot.entitlements; sourceTree = "<group>"; };
+		2741D178283138F40077E6CA /* PatriotIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PatriotIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2741D179283138F40077E6CA /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		2741D17C283138F40077E6CA /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		2741D17E283138F40077E6CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2741D183283138F40077E6CA /* PatriotIntentUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PatriotIntentUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2741D184283138F40077E6CA /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
+		2741D187283138F40077E6CA /* IntentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentViewController.swift; sourceTree = "<group>"; };
+		2741D18A283138F40077E6CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		2741D18C283138F40077E6CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2747301C265D182E00C8EFDE /* Patriot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Patriot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2747301F265D182E00C8EFDE /* PatriotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotApp.swift; sourceTree = "<group>"; };
 		27473021265D182E00C8EFDE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -107,6 +152,22 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2741D175283138F40077E6CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2741D17A283138F40077E6CA /* Intents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2741D180283138F40077E6CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2741D185283138F40077E6CA /* IntentsUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		27473019265D182E00C8EFDE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -140,12 +201,33 @@
 			name = CustomIntents;
 			sourceTree = "<group>";
 		};
+		2741D17B283138F40077E6CA /* PatriotIntent */ = {
+			isa = PBXGroup;
+			children = (
+				2741D17C283138F40077E6CA /* IntentHandler.swift */,
+				2741D17E283138F40077E6CA /* Info.plist */,
+			);
+			path = PatriotIntent;
+			sourceTree = "<group>";
+		};
+		2741D186283138F40077E6CA /* PatriotIntentUI */ = {
+			isa = PBXGroup;
+			children = (
+				2741D187283138F40077E6CA /* IntentViewController.swift */,
+				2741D189283138F40077E6CA /* MainInterface.storyboard */,
+				2741D18C283138F40077E6CA /* Info.plist */,
+			);
+			path = PatriotIntentUI;
+			sourceTree = "<group>";
+		};
 		27473013265D182E00C8EFDE = {
 			isa = PBXGroup;
 			children = (
 				2747301E265D182E00C8EFDE /* Patriot */,
 				27473030265D182F00C8EFDE /* PatriotTests */,
 				2747303B265D182F00C8EFDE /* PatriotUITests */,
+				2741D17B283138F40077E6CA /* PatriotIntent */,
+				2741D186283138F40077E6CA /* PatriotIntentUI */,
 				2747301D265D182E00C8EFDE /* Products */,
 				D27112F62ACE9251195A69A2 /* Pods */,
 				FB4C5A647ECC4E394243E9CF /* Frameworks */,
@@ -158,6 +240,8 @@
 				2747301C265D182E00C8EFDE /* Patriot.app */,
 				2747302D265D182F00C8EFDE /* PatriotTests.xctest */,
 				27473038265D182F00C8EFDE /* PatriotUITests.xctest */,
+				2741D178283138F40077E6CA /* PatriotIntent.appex */,
+				2741D183283138F40077E6CA /* PatriotIntentUI.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -305,6 +389,8 @@
 			isa = PBXGroup;
 			children = (
 				80622165AF65D442821D750D /* Pods_Patriot.framework */,
+				2741D179283138F40077E6CA /* Intents.framework */,
+				2741D184283138F40077E6CA /* IntentsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -312,6 +398,40 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2741D177283138F40077E6CA /* PatriotIntent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2741D196283138F40077E6CA /* Build configuration list for PBXNativeTarget "PatriotIntent" */;
+			buildPhases = (
+				2741D174283138F40077E6CA /* Sources */,
+				2741D175283138F40077E6CA /* Frameworks */,
+				2741D176283138F40077E6CA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PatriotIntent;
+			productName = PatriotIntent;
+			productReference = 2741D178283138F40077E6CA /* PatriotIntent.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		2741D182283138F40077E6CA /* PatriotIntentUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2741D193283138F40077E6CA /* Build configuration list for PBXNativeTarget "PatriotIntentUI" */;
+			buildPhases = (
+				2741D17F283138F40077E6CA /* Sources */,
+				2741D180283138F40077E6CA /* Frameworks */,
+				2741D181283138F40077E6CA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PatriotIntentUI;
+			productName = PatriotIntentUI;
+			productReference = 2741D183283138F40077E6CA /* PatriotIntentUI.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		2747301B265D182E00C8EFDE /* Patriot */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 27473041265D182F00C8EFDE /* Build configuration list for PBXNativeTarget "Patriot" */;
@@ -321,10 +441,13 @@
 				27473019265D182E00C8EFDE /* Frameworks */,
 				2747301A265D182E00C8EFDE /* Resources */,
 				943FC5C9851F0B0B98A0E15A /* [CP] Embed Pods Frameworks */,
+				2741D199283138F40077E6CA /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2741D18E283138F40077E6CA /* PBXTargetDependency */,
+				2741D191283138F40077E6CA /* PBXTargetDependency */,
 			);
 			name = Patriot;
 			productName = Patriot;
@@ -373,9 +496,15 @@
 		27473014265D182E00C8EFDE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1250;
+				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
+					2741D177283138F40077E6CA = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
+					2741D182283138F40077E6CA = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
 					2747301B265D182E00C8EFDE = {
 						CreatedOnToolsVersion = 12.5;
 					};
@@ -405,11 +534,28 @@
 				2747301B265D182E00C8EFDE /* Patriot */,
 				2747302C265D182F00C8EFDE /* PatriotTests */,
 				27473037265D182F00C8EFDE /* PatriotUITests */,
+				2741D177283138F40077E6CA /* PatriotIntent */,
+				2741D182283138F40077E6CA /* PatriotIntentUI */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2741D176283138F40077E6CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2741D181283138F40077E6CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2741D18B283138F40077E6CA /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2747301A265D182E00C8EFDE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -478,6 +624,22 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2741D174283138F40077E6CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2741D17D283138F40077E6CA /* IntentHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2741D17F283138F40077E6CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2741D188283138F40077E6CA /* IntentViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		27473018265D182E00C8EFDE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -533,6 +695,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2741D18E283138F40077E6CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2741D182283138F40077E6CA /* PatriotIntentUI */;
+			targetProxy = 2741D18D283138F40077E6CA /* PBXContainerItemProxy */;
+		};
+		2741D191283138F40077E6CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2741D177283138F40077E6CA /* PatriotIntent */;
+			targetProxy = 2741D190283138F40077E6CA /* PBXContainerItemProxy */;
+		};
 		2747302F265D182F00C8EFDE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2747301B265D182E00C8EFDE /* Patriot */;
@@ -545,7 +717,122 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		2741D189283138F40077E6CA /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2741D18A283138F40077E6CA /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		2741D194283138F40077E6CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PatriotIntentUI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PatriotIntentUI;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot.PatriotIntentUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2741D195283138F40077E6CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PatriotIntentUI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PatriotIntentUI;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot.PatriotIntentUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2741D197283138F40077E6CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PatriotIntent/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PatriotIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot.PatriotIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2741D198283138F40077E6CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PatriotIntent/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PatriotIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.Patriot.PatriotIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		2747303F265D182F00C8EFDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -666,6 +953,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Patriot/Patriot.entitlements;
@@ -690,6 +978,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F5038F88DA1AC3AB5283BC42 /* Pods-Patriot.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Patriot/Patriot.entitlements;
@@ -797,6 +1086,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2741D193283138F40077E6CA /* Build configuration list for PBXNativeTarget "PatriotIntentUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2741D194283138F40077E6CA /* Debug */,
+				2741D195283138F40077E6CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2741D196283138F40077E6CA /* Build configuration list for PBXNativeTarget "PatriotIntent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2741D197283138F40077E6CA /* Debug */,
+				2741D198283138F40077E6CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		27473017265D182E00C8EFDE /* Build configuration list for PBXProject "Patriot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
