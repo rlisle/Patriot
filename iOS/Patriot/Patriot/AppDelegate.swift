@@ -11,11 +11,21 @@ import SwiftUI
 import Intents
 import IntentsUI
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     // Just to confirm this is working
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         print("applicationDidFinishLaunching")
         return true
+    }
+    
+    // This shouldn't be needed if plist is specifying UISceneDelegateClassName, but takes priority if so
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+    
+        print("connectingSceneSessions")
+        
+        let sceneConfig = UISceneConfiguration(name: "SceneDelegate", sessionRole: connectingSceneSession.role)
+        sceneConfig.delegateClass = SceneDelegate.self
+        return sceneConfig
     }
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
@@ -26,10 +36,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             return WakingUpHandler(application: application)
         case is RetiringIntent:
             print("Returning RetiringHandler")
-            return WakingUpHandler(application: application)
+            return WakingUpHandler(application: application)    // TODO:
         case is SleepingIntent:
             print("Returning SleepingHandler")
-            return WakingUpHandler(application: application)
+            return WakingUpHandler(application: application)    // TODO:
+        case is CurtainsIntent:
+            print("Returning CurtainsHandler")
+            return WakingUpHandler(application: application)    // TODO:
         default:
             print("Unhandled intent")
             return nil
@@ -37,6 +50,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        
+        print("continue restorationHandler")
+        
         guard userActivity.activityType == "WakingUp" else {
             return false
         }

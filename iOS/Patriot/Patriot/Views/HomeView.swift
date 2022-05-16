@@ -11,6 +11,8 @@ struct HomeView: View {
 
     @State var showMenu = false
     @EnvironmentObject var model: PatriotModel
+    @EnvironmentObject var appDelegate: AppDelegate
+    @EnvironmentObject var sceneDelegate: SceneDelegate
 
     init() {
         //Use this if NavigationBarTitle is with Large Font
