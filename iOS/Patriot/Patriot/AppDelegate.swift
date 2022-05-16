@@ -35,6 +35,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             return nil
         }
     }
+    
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard userActivity.activityType == "WakingUp" else {
+            return false
+        }
+        
+//        guard let window = window,
+//            let rootViewController = window.rootViewController as? SwitchViewController else {
+//                return false
+//        }
+//
+//        restorationHandler([rootViewController])
+        return true
+    }
 }
 
 class WakingUpHandler: NSObject, WakingUpIntentHandling {

@@ -32,7 +32,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Set bedtime lighting</string>
+					<string>Turn on lights upon waking up</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>RPEPo3</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -48,7 +48,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Set morning lights after waking up</string>
+					<string>Turn on lights upon waking up</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>KRxxfi</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -136,6 +136,10 @@
 				<key>INIntentResponseCodes</key>
 				<array>
 					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Ok, ready for bed</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>rI1SuM</string>
 						<key>INIntentResponseCodeName</key>
 						<string>success</string>
 						<key>INIntentResponseCodeSuccess</key>
@@ -190,7 +194,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Turn off lights while asleep</string>
+					<string>Turn off lights while sleeping</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>itFdVE</string>
 				</dict>
@@ -200,6 +204,10 @@
 				<key>INIntentResponseCodes</key>
 				<array>
 					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Ok, lights out.</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>z2JtUA</string>
 						<key>INIntentResponseCodeName</key>
 						<string>success</string>
 						<key>INIntentResponseCodeSuccess</key>
