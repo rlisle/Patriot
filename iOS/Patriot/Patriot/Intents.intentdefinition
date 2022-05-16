@@ -31,20 +31,32 @@
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Set bedtime lighting</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>RPEPo3</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
 					<true/>
 				</dict>
 			</dict>
 			<key>INIntentName</key>
-			<string>GoodMorning</string>
+			<string>WakingUp</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
 				<key></key>
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Set morning lights after waking up</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>KRxxfi</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Waking Up</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>jn7vYS</string>
 				</dict>
 			</dict>
 			<key>INIntentResponse</key>
@@ -72,9 +84,305 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Good Morning</string>
+			<string>Waking Up</string>
 			<key>INIntentTitleID</key>
 			<string>BeqiXu</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentVerb</key>
+			<string>Do</string>
+		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>generic</string>
+			<key>INIntentConfigurable</key>
+			<true/>
+			<key>INIntentDescription</key>
+			<string>Set bedtime lighting</string>
+			<key>INIntentDescriptionID</key>
+			<string>a6c0u7</string>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Set bedtime lighting</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>4kIGC6</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
+			<key>INIntentName</key>
+			<string>Retiring</string>
+			<key>INIntentParameterCombinations</key>
+			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<true/>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Set bedtime lighting</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>Ll2qDN</string>
+				</dict>
+			</dict>
+			<key>INIntentResponse</key>
+			<dict>
+				<key>INIntentResponseCodes</key>
+				<array>
+					<dict>
+						<key>INIntentResponseCodeName</key>
+						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+				</array>
+			</dict>
+			<key>INIntentTitle</key>
+			<string>Retiring</string>
+			<key>INIntentTitleID</key>
+			<string>Wj9ZxD</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentVerb</key>
+			<string>Do</string>
+		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>generic</string>
+			<key>INIntentConfigurable</key>
+			<true/>
+			<key>INIntentDescription</key>
+			<string>Turn off all lights while sleeping</string>
+			<key>INIntentDescriptionID</key>
+			<string>WjmO6a</string>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Turn off lights while asleep</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>LKwfwB</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
+			<key>INIntentName</key>
+			<string>Sleeping</string>
+			<key>INIntentParameterCombinations</key>
+			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<true/>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Turn off lights while asleep</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>itFdVE</string>
+				</dict>
+			</dict>
+			<key>INIntentResponse</key>
+			<dict>
+				<key>INIntentResponseCodes</key>
+				<array>
+					<dict>
+						<key>INIntentResponseCodeName</key>
+						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+				</array>
+			</dict>
+			<key>INIntentTitle</key>
+			<string>Sleeping</string>
+			<key>INIntentTitleID</key>
+			<string>5i8C1M</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentVerb</key>
+			<string>Do</string>
+		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>generic</string>
+			<key>INIntentConfigurable</key>
+			<true/>
+			<key>INIntentDescription</key>
+			<string>Open or close curtains</string>
+			<key>INIntentDescriptionID</key>
+			<string>AEG2Zd</string>
+			<key>INIntentInput</key>
+			<string>percent</string>
+			<key>INIntentKeyParameter</key>
+			<string>percent</string>
+			<key>INIntentLastParameterTag</key>
+			<integer>2</integer>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key>percent</key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Open curtains specified percentage</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>XeVopA</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
+			<key>INIntentName</key>
+			<string>Curtains</string>
+			<key>INIntentParameterCombinations</key>
+			<dict>
+				<key>percent</key>
+				<dict>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Open curtains to the specified percentage</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>mDY5WY</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Open curtains specified percentage</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>bQYytW</string>
+				</dict>
+			</dict>
+			<key>INIntentParameters</key>
+			<array>
+				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
+					<key>INIntentParameterDisplayName</key>
+					<string>Percent</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>1Bv1Yl</string>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>1</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataMaximumValue</key>
+						<integer>100</integer>
+						<key>INIntentParameterMetadataType</key>
+						<string>Field</string>
+					</dict>
+					<key>INIntentParameterName</key>
+					<string>percent</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>What percentage?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>5sGTN9</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsResolution</key>
+					<true/>
+					<key>INIntentParameterTag</key>
+					<integer>2</integer>
+					<key>INIntentParameterType</key>
+					<string>Integer</string>
+					<key>INIntentParameterUnsupportedReasons</key>
+					<array>
+						<dict>
+							<key>INIntentParameterUnsupportedReasonCode</key>
+							<string>negativeNumbersNotSupported</string>
+							<key>INIntentParameterUnsupportedReasonDefault</key>
+							<true/>
+							<key>INIntentParameterUnsupportedReasonFormatString</key>
+							<string>${displayName} can’t be negative.</string>
+							<key>INIntentParameterUnsupportedReasonFormatStringID</key>
+							<string>UqlcTJ</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterUnsupportedReasonCode</key>
+							<string>greaterThanMaximumValue</string>
+							<key>INIntentParameterUnsupportedReasonDefault</key>
+							<true/>
+							<key>INIntentParameterUnsupportedReasonFormatString</key>
+							<string>${displayName} can’t be higher than ${maximumValue}.</string>
+							<key>INIntentParameterUnsupportedReasonFormatStringID</key>
+							<string>TfPAjC</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterUnsupportedReasonCode</key>
+							<string>lessThanMinimumValue</string>
+							<key>INIntentParameterUnsupportedReasonDefault</key>
+							<true/>
+							<key>INIntentParameterUnsupportedReasonFormatString</key>
+							<string>${displayName} can’t be lower than ${minimumValue}.</string>
+							<key>INIntentParameterUnsupportedReasonFormatStringID</key>
+							<string>2Gybqz</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+			<key>INIntentResponse</key>
+			<dict>
+				<key>INIntentResponseCodes</key>
+				<array>
+					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Ok</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>T31AFD</string>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Ok</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>DqKU7B</string>
+						<key>INIntentResponseCodeName</key>
+						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Sorry</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>X0UGnd</string>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Sorry</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>hh1YAs</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+				</array>
+			</dict>
+			<key>INIntentTitle</key>
+			<string>Curtains</string>
+			<key>INIntentTitleID</key>
+			<string>WmtD4g</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
 			<key>INIntentVerb</key>

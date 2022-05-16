@@ -22,10 +22,11 @@ struct PatriotApp: App {
             HomeView()
                 .environmentObject(model)
         }
-        .onChange(of: scenePhase) { phase in
-            INPreferences.requestSiriAuthorization({ status in
-                // Handle errors here
-            })
-        }
+        // We don't need to request authorization if custom intents only
+//        .onChange(of: scenePhase) { phase in
+//            INPreferences.requestSiriAuthorization({ status in
+//                // Handle errors here
+//            })
+//        }
     }
 }

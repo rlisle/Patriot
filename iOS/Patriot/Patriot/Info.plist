@@ -20,9 +20,14 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSSiriUsageDescription</key>
+	<string>Siri support is used to control Patriot devices</string>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>GoodMorningIntent</string>
+		<string>CurtainsIntent</string>
+		<string>RetiringIntent</string>
+		<string>SleepingIntent</string>
+		<string>WakingUpIntent</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -50,7 +55,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSSiriUsageDescription</key>
-	<string>Siri support is used to control Patriot devices</string>
 </dict>
 </plist>

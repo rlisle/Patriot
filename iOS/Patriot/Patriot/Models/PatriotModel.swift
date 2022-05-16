@@ -149,7 +149,7 @@ extension PatriotModel: MQTTReceiving {
     }
     
     func isDisplayableDevice(type: String) -> Bool {
-        let displayableTypes = "CFLR"
+        //let displayableTypes = "CFLR"
         return /*displayableTypes.contains(type)*/ type == "C" || type == "F" || type == "L" || type == "R"
     }
 }
