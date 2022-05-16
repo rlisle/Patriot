@@ -11,10 +11,11 @@ import Intents
 @main
 struct PatriotApp: App {
 
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+//    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+
     @Environment(\.scenePhase) private var scenePhase
-    
-//    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
     @StateObject var model = PatriotModel()
     
     var body: some Scene {
