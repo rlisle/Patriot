@@ -19,10 +19,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     }
     
     // This shouldn't be needed if plist is specifying UISceneDelegateClassName, but takes priority if so
+    // plist doesn't appear to be working, so will use this instead since it is working
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-    
+
         print("connectingSceneSessions")
-        
+
         let sceneConfig = UISceneConfiguration(name: "SceneDelegate", sessionRole: connectingSceneSession.role)
         sceneConfig.delegateClass = SceneDelegate.self
         return sceneConfig
