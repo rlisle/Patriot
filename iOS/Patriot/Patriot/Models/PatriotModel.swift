@@ -16,6 +16,9 @@ import Combine
 
 class PatriotModel: ObservableObject
 {
+    // Can an observed object also be a singleton?
+    static var shared = PatriotModel()
+
     @Published var devices: [Device] = []
     @Published var favoritesList:  [String]   //TODO: delete & refactor using devices only             // List of favorite device names
     @Published var showingLogin: Bool = false
@@ -26,13 +29,15 @@ class PatriotModel: ObservableObject
     let mqtt:           MQTTManager
     let settings:       Settings
     
+    var didQueryDevices = false
+    
     var rooms: [ String ] {
         let rawRooms = devices.map { $0.room }.filter { $0 != "All" && $0 != "Default" && $0 != "Test" }
         let uniqueRooms = Set<String>(rawRooms)
         return Array(uniqueRooms).sorted()
     }
     
-    init(forTest: Bool = false,
+    init(forTest: Bool = true,          // For test/debug without Wifi, etc.
          sleeping: Sleeping = .Awake,
          partOfDay: PartOfDay = .Afternoon
         )
@@ -98,14 +103,22 @@ extension PatriotModel {
 extension PatriotModel: MQTTReceiving {
     
     func connectionDidChange(isConnected: Bool) {
-        guard isConnected == true else {
-            print("Connected disconnected")
-            showingLogin = true
-            return
+        if isConnected == false {
+            print("MQTT disconnected, reconnecting")
+            mqtt.reconnect()
+            
+            if isConnected == false {
+                showingLogin = true
+                return
+            }
         }
+        
         print("MQTT is connected")
         // This needs to be done here so subscribe is already set
-        mqtt.sendMessage(topic: "patriot/query", message: "all")
+        if didQueryDevices == false {
+            didQueryDevices = true
+            mqtt.sendMessage(topic: "patriot/query", message: "all")
+        }
     }
 
     func sendMessage(device: Device)

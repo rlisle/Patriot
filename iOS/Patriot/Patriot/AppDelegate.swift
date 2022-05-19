@@ -12,17 +12,12 @@ import Intents
 import IntentsUI
 
 class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
-    // Just to confirm this is working
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        print("applicationDidFinishLaunching")
-        return true
-    }
-    
+
     // This shouldn't be needed if plist is specifying UISceneDelegateClassName, but takes priority if so
     // plist doesn't appear to be working, so will use this instead since it is working
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 
-        print("connectingSceneSessions")
+        print("AppDelegate connectingSceneSessions")
 
         let sceneConfig = UISceneConfiguration(name: "SceneDelegate", sessionRole: connectingSceneSession.role)
         sceneConfig.delegateClass = SceneDelegate.self
@@ -43,7 +38,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
             return WakingUpHandler(application: application)    // TODO:
         case is CurtainsIntent:
             print("Returning CurtainsHandler")
-            return WakingUpHandler(application: application)    // TODO:
+            return CurtainsHandler(application: application)    // TODO:
         default:
             print("Unhandled intent")
             return nil
@@ -51,43 +46,73 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        
-        print("continue restorationHandler")
-        
+
+        print("AppDelegate continue restorationHandler")
+
         guard userActivity.activityType == "WakingUp" else {
             return false
         }
-        
+
 //        guard let window = window,
-//            let rootViewController = window.rootViewController as? SwitchViewController else {
+//            let rootViewController = window.rootViewController as? HomeView else {
 //                return false
 //        }
-//
+
 //        restorationHandler([rootViewController])
         return true
     }
 }
 
-class WakingUpHandler: NSObject, WakingUpIntentHandling {
-    let application: UIApplication
-    
-    init(application: UIApplication) {
-        self.application = application
-    }
-    
-    func handle(intent: WakingUpIntent,
-        completion: @escaping (WakingUpIntentResponse) -> Void) {
-        
-        print("WakingUpHandler")
-        
-            if application.applicationState == .background {
-                completion(WakingUpIntentResponse(code: .continueInApp, userActivity: nil))
-            } else {
-                
-                // Update UI
-                
-                completion(WakingUpIntentResponse(code: .success, userActivity: nil))
-            }
-        
-    }
-}
+//class WakingUpHandler: NSObject, WakingUpIntentHandling {
+//    let application: UIApplication
+//
+//    init(application: UIApplication) {
+//        self.application = application
+//    }
+//
+//    func handle(intent: WakingUpIntent,
+//        completion: @escaping (WakingUpIntentResponse) -> Void) {
+//
+//        print("AppDelegate handle WakingUp")
+//
+//            if application.applicationState == .background {
+//                print("AppDelegate in background")
+//                completion(WakingUpIntentResponse(code: .continueInApp, userActivity: nil))
+//
+//            } else {
+//                print("AppDelegate in foreground")
+//
+//                // Update UI
+//
+//                completion(WakingUpIntentResponse(code: .success, userActivity: nil))
+//            }
+//
+//    }
+//}
+
+//class CurtainsHandler: NSObject, CurtainsIntentHandling {
+//    
+//    let application: UIApplication
+//    
+//    init(application: UIApplication) {
+//        self.application = application
+//    }
+//    
+//    func handle(intent: CurtainsIntent, completion: @escaping (CurtainsIntentResponse) -> Void) {
+//        
+//        print("AppDelegate handle Curtains")
+//        
+//            if application.applicationState == .background {
+//                print("AppDelegate in background")
+//                completion(CurtainsIntentResponse(code: .continueInApp, userActivity: nil))
+//                
+//            } else {
+//                print("AppDelegate in foreground")
+//                
+//                // Update UI
+//                
+//                completion(CurtainsIntentResponse(code: .success, userActivity: nil))
+//            }
+//        
+//    }
+//}

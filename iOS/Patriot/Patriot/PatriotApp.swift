@@ -10,13 +10,10 @@ import Intents
 
 @main
 struct PatriotApp: App {
-
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-//    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
-
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject var model = PatriotModel()
+    @StateObject var model = PatriotModel.shared
     
     var body: some Scene {
         WindowGroup {

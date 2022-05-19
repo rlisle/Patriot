@@ -23,26 +23,34 @@ class SceneDelegate: NSObject, UIWindowSceneDelegate, ObservableObject {
         print("sceneWillResignActive")
     }
     
-    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        handleUserActivity(userActivity)
-    }
-    
-    func handleUserActivity(_ userActivity: NSUserActivity) {
-        
-        print("handleUserActivity")
-        
-        guard let window = window,
-            let rootViewController = window.rootViewController as? UINavigationController,
-            let interaction = userActivity.interaction else {
-                print("handlerUserActivity missing info")
-                return
-        }
-
+//    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+//        print("scene continue userActivity")
+//        handleUserActivity(userActivity)
+//    }
+//
+//    func handleUserActivity(_ userActivity: NSUserActivity) {
+//
+//        print("Scene handleUserActivity")
+//
+//        guard let interaction = userActivity.interaction else {
+//            print("Scene interaction not set")
+//            return
+//        }
+//        guard let window = window else {
+//            print("Scene window not set")
+//            return
+//        }
+//        guard let rootViewController = window.rootViewController as? UINavigationController else {
+//            print("Scene rootViewController not set")
+//            return
+//        }
+//
+//        print("Scene TODO: handle it")
 //        if let intent = interaction.intent as? ShowDirectionsIntent,
 //           let recipe = intent.recipe,
 //           let viewController = rootViewController.viewControllers.last as? NextStepProviding {
 //            viewController.nextStep(recipe: recipe)
 //        }
-    }
+//    }
 
 }

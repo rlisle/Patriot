@@ -39,6 +39,11 @@ class MQTTManager {
         let clientID = "Patriot" + String(ProcessInfo().processIdentifier)
         mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort)
         mqtt.delegate = self
+        reconnect()
+    }
+    
+    func reconnect() {
+        // TODO: is a retry loop necessary?
         isConnected = mqtt.connect()
         print("MQTT init connected: \(isConnected)")
     }

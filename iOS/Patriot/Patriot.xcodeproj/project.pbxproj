@@ -42,6 +42,8 @@
 		274D66CA269DC06700303F1E /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C9269DC06700303F1E /* MenuView.swift */; };
 		274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */; };
 		2780FB66282E739800BD32F5 /* EntryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2780FB65282E739800BD32F5 /* EntryTextField.swift */; };
+		278888862835137C0021DF91 /* WakeUpIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278888852835137C0021DF91 /* WakeUpIntentHandler.swift */; };
+		278888882835138B0021DF91 /* CurtainsIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278888872835138B0021DF91 /* CurtainsIntentHandler.swift */; };
 		27917123282BCBCF007F4CA5 /* SideMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917122282BCBCF007F4CA5 /* SideMenuButton.swift */; };
 		27917125282BCCF5007F4CA5 /* SleepingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917124282BCCF5007F4CA5 /* SleepingButton.swift */; };
 		27917127282BCD6A007F4CA5 /* PartOfDayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */; };
@@ -142,6 +144,8 @@
 		274D66C9269DC06700303F1E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatefulPreviewWrapper.swift; sourceTree = "<group>"; };
 		2780FB65282E739800BD32F5 /* EntryTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryTextField.swift; sourceTree = "<group>"; };
+		278888852835137C0021DF91 /* WakeUpIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WakeUpIntentHandler.swift; sourceTree = "<group>"; };
+		278888872835138B0021DF91 /* CurtainsIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurtainsIntentHandler.swift; sourceTree = "<group>"; };
 		27917122282BCBCF007F4CA5 /* SideMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuButton.swift; sourceTree = "<group>"; };
 		27917124282BCCF5007F4CA5 /* SleepingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepingButton.swift; sourceTree = "<group>"; };
 		27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOfDayButton.swift; sourceTree = "<group>"; };
@@ -199,6 +203,8 @@
 			isa = PBXGroup;
 			children = (
 				2741D16F283126090077E6CA /* Intents.intentdefinition */,
+				278888852835137C0021DF91 /* WakeUpIntentHandler.swift */,
+				278888872835138B0021DF91 /* CurtainsIntentHandler.swift */,
 			);
 			name = CustomIntents;
 			sourceTree = "<group>";
@@ -252,10 +258,10 @@
 			isa = PBXGroup;
 			children = (
 				2741D1732831342F0077E6CA /* Patriot.entitlements */,
-				2741D172283126590077E6CA /* CustomIntents */,
 				2747301F265D182E00C8EFDE /* PatriotApp.swift */,
 				2741D16D283119640077E6CA /* AppDelegate.swift */,
 				27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */,
+				2741D172283126590077E6CA /* CustomIntents */,
 				274D66BD2699F50700303F1E /* Network */,
 				27473075265D545500C8EFDE /* Protocols */,
 				2747304D265D51C500C8EFDE /* Supporting Files */,
@@ -662,6 +668,7 @@
 				2741D170283126090077E6CA /* Intents.intentdefinition in Sources */,
 				274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */,
 				27473022265D182E00C8EFDE /* HomeView.swift in Sources */,
+				278888882835138B0021DF91 /* CurtainsIntentHandler.swift in Sources */,
 				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */,
@@ -677,6 +684,7 @@
 				27917123282BCBCF007F4CA5 /* SideMenuButton.swift in Sources */,
 				27473071265D53DE00C8EFDE /* Device.swift in Sources */,
 				274D66C4269A51DD00303F1E /* DeviceView.swift in Sources */,
+				278888862835137C0021DF91 /* WakeUpIntentHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
