@@ -25,11 +25,11 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
         
             if application.applicationState == .background {
                 // If app is in background, return .continueInApp to launch app
-                print("AppDelegate in background")
+                print("PatriotHandler in background")
                 completion(PatriotIntentResponse(code: .continueInApp, userActivity: nil))
                 
             } else {
-                print("AppDelegate in foreground")
+                print("PatriotHandler in foreground")
                 
                 // Update UI
                 
@@ -37,6 +37,21 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
             }
         
     }
+    
+    func resolveDevice(for intent: PatriotIntent, with completion: @escaping (INStringResolutionResult) -> Swift.Void) {
+
+        
+        //TODO:
+        if let device = intent.device as? String {
+            completion(INStringResolutionResult.success(with: device))
+        } else {
+            completion(INStringResolutionResult.needsValue())
+        }
+        
+        completion(INStringResolutionResult.success(with: intent.device as! String))
+    }
+    
+
     func resolvePercent(for intent: PatriotIntent, with completion: @escaping (PatriotPercentResolutionResult) -> Swift.Void) {
 
         
@@ -49,5 +64,7 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
         
         completion(PatriotPercentResolutionResult.success(with: intent.percent as! Int))
     }
+    
+    //TODO: Add confirm method
     
 }
