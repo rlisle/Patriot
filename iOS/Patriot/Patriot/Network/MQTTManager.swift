@@ -52,12 +52,19 @@ class MQTTManager {
 extension MQTTManager: MQTTSending
 {
     func sendMessage(topic: String, message: String) {
-        //print("MQTT sendMessage \(topic) \(message)")
+        guard isConnected == true else {
+            print("No MQTT: Cannot send \(topic), \(message)")
+            return
+        }
         mqtt.publish(topic, withString: message)
     }
     
     func sendPatriotMessage(device: String, percent: Int)
     {
+        guard isConnected == true else {
+            print("No MQTT: Cannot send patriot/\(device), \(percent)")
+            return
+        }
         let topic = "patriot/"+device
         let message = String(percent)
         sendMessage(topic: topic, message: message)

@@ -135,6 +135,24 @@ extension PatriotModel: MQTTReceiving {
         }
     }
     
+    func sendMessage(topic: String, message: String)
+    {
+        print("PatriotModel sendMessage \(topic), \(message)")
+        if mqtt.isConnected {
+            print("Sending to MQTT")
+            mqtt.sendMessage(topic: topic, message: message)
+        } else if photonManager.isLoggedIn {
+            print("Sending to Particle.io")
+            photonManager.publish(event: topic + ":" + message) { (error) in
+                if let error = error {
+                    print("sendMessage particle.io error: \(error)")
+                }
+            }
+        } else {
+            print("sendMessage \(topic), \(message) not sent. No connection.")
+        }
+    }
+    
     // MQTT or Particle.io message received
     // New state format: "patriot/state/room/<t>/name value"
     func didReceiveMessage(topic: String, message: String) {

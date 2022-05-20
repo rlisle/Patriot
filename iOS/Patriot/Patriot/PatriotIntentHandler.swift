@@ -22,19 +22,29 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
         
         print("PatriotHandler handle PatriotIntent")
         
-            if application.applicationState == .background {
-                // If app is in background, return .continueInApp to launch app
-                print("PatriotHandler in background")
-                completion(PatriotIntentResponse(code: .continueInApp, userActivity: nil))
-                
-            } else {
-                print("PatriotHandler in foreground")
-                
-                // Update UI
-                
-                completion(PatriotIntentResponse(code: .success, userActivity: nil))
-            }
+        guard let device = intent.device,
+              let percent = intent.percent as? Int else {
+            print("handle(intent) missing arguments")
+            completion(PatriotIntentResponse(code: .failure, userActivity: nil))
+            return
+        }
         
+        if application.applicationState == .background {
+            // If app is in background, return .continueInApp to launch app
+            print("PatriotHandler in background")
+
+            PatriotModel.shared.sendMessage(topic: "patriot/\(device)", message: "\(percent)")
+            
+            completion(PatriotIntentResponse(code: .success, userActivity: nil))
+            //completion(PatriotIntentResponse(code: .continueInApp, userActivity: nil))
+            
+        } else {
+            print("PatriotHandler in foreground")
+            
+            // Update UI
+            
+            completion(PatriotIntentResponse(code: .success, userActivity: nil))
+        }
     }
     
     func resolveDevice(for intent: PatriotIntent, with completion: @escaping (INStringResolutionResult) -> Swift.Void) {
@@ -47,8 +57,6 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
         } else {
             completion(INStringResolutionResult.needsValue())
         }
-        
-        completion(INStringResolutionResult.success(with: intent.device as! String))
     }
     
 
@@ -62,8 +70,6 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
         } else {
             completion(PatriotPercentResolutionResult.needsValue())
         }
-        
-        completion(PatriotPercentResolutionResult.success(with: intent.percent as! Int))
     }
     
     //TODO: Add confirm method

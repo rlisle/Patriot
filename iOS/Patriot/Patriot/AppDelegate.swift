@@ -39,6 +39,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         case is CurtainsIntent:
             print("Returning CurtainsHandler")
             return CurtainsHandler(application: application)    // TODO:
+        case is PatriotIntent:
+            print("Returning PatriotHandler")
+            return PatriotHandler(application: application)    // TODO:
         default:
             print("Unhandled intent")
             return nil
@@ -62,57 +65,3 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         return true
     }
 }
-
-//class WakingUpHandler: NSObject, WakingUpIntentHandling {
-//    let application: UIApplication
-//
-//    init(application: UIApplication) {
-//        self.application = application
-//    }
-//
-//    func handle(intent: WakingUpIntent,
-//        completion: @escaping (WakingUpIntentResponse) -> Void) {
-//
-//        print("AppDelegate handle WakingUp")
-//
-//            if application.applicationState == .background {
-//                print("AppDelegate in background")
-//                completion(WakingUpIntentResponse(code: .continueInApp, userActivity: nil))
-//
-//            } else {
-//                print("AppDelegate in foreground")
-//
-//                // Update UI
-//
-//                completion(WakingUpIntentResponse(code: .success, userActivity: nil))
-//            }
-//
-//    }
-//}
-
-//class CurtainsHandler: NSObject, CurtainsIntentHandling {
-//    
-//    let application: UIApplication
-//    
-//    init(application: UIApplication) {
-//        self.application = application
-//    }
-//    
-//    func handle(intent: CurtainsIntent, completion: @escaping (CurtainsIntentResponse) -> Void) {
-//        
-//        print("AppDelegate handle Curtains")
-//        
-//            if application.applicationState == .background {
-//                print("AppDelegate in background")
-//                completion(CurtainsIntentResponse(code: .continueInApp, userActivity: nil))
-//                
-//            } else {
-//                print("AppDelegate in foreground")
-//                
-//                // Update UI
-//                
-//                completion(CurtainsIntentResponse(code: .success, userActivity: nil))
-//            }
-//        
-//    }
-//}
