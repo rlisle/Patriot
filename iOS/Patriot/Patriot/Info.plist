@@ -32,7 +32,7 @@
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>CurtainsIntent</string>
-		<string>LightIntent</string>
+		<string>LightUpIntent</string>
 		<string>RetiringIntent</string>
 		<string>SleepingIntent</string>
 		<string>WakingUpIntent</string>
