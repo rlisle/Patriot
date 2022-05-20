@@ -37,7 +37,7 @@ class MQTTManager {
     
     init() {
         let clientID = "Patriot" + String(ProcessInfo().processIdentifier)
-        mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort)
+        mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort) // TODO: mqtt5?
         mqtt.delegate = self
         reconnect()
     }
@@ -88,7 +88,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
-        //print("MQTT didConnectAck")
+        print("MQTT didConnectAck")
         mqtt.subscribe(mqttTopic)
         mqttDelegate?.connectionDidChange(isConnected: true)
     }
