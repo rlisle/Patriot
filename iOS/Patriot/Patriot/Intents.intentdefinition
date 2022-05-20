@@ -419,7 +419,7 @@
 		</dict>
 		<dict>
 			<key>INIntentCategory</key>
-			<string>set</string>
+			<string>generic</string>
 			<key>INIntentConfigurable</key>
 			<true/>
 			<key>INIntentDescription</key>
@@ -658,7 +658,7 @@
 			<key>INIntentType</key>
 			<string>Custom</string>
 			<key>INIntentVerb</key>
-			<string>Set</string>
+			<string>Do</string>
 		</dict>
 	</array>
 	<key>INTypes</key>

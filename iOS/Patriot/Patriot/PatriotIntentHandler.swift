@@ -16,8 +16,7 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
         self.application = application
     }
 
-//    @objc(handlePatriot:completion:)
-//    func handle(intent: PatriotIntent) async -> PatriotIntentResponse
+    //TODO: convert to async/await (see protocol)
 
     func handle(intent: PatriotIntent, completion: @escaping (PatriotIntentResponse) -> Void) {
         
@@ -40,6 +39,7 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
     
     func resolveDevice(for intent: PatriotIntent, with completion: @escaping (INStringResolutionResult) -> Swift.Void) {
 
+        print("PatriotHandler resolveDevice")
         
         //TODO:
         if let device = intent.device as? String {
@@ -53,8 +53,9 @@ class PatriotHandler: NSObject, PatriotIntentHandling {
     
 
     func resolvePercent(for intent: PatriotIntent, with completion: @escaping (PatriotPercentResolutionResult) -> Swift.Void) {
-
         
+        print("PatriotHandler resolvePercent")
+
         //TODO:
         if let percent = intent.percent as? Int {
             completion(PatriotPercentResolutionResult.success(with: percent))
