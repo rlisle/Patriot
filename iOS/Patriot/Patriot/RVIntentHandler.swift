@@ -1,5 +1,5 @@
 //
-//  PatriotIntentHandler.swift
+//  RVIntentHandler.swift
 //  Patriot
 //
 //  Created by Ron Lisle on 5/20/22.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Intents
 
-class PatriotHandler: NSObject, PatriotIntentHandling {
+class RVHandler: NSObject, PatriotIntentHandling {
     
     let application: UIApplication
     
