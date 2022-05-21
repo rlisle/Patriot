@@ -14,7 +14,7 @@
 		27473022265D182E00C8EFDE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473021265D182E00C8EFDE /* HomeView.swift */; };
 		27473024265D182E00C8EFDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27473023265D182E00C8EFDE /* Assets.xcassets */; };
 		27473027265D182E00C8EFDE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27473026265D182E00C8EFDE /* Preview Assets.xcassets */; };
-		27473032265D182F00C8EFDE /* PatriotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473031265D182F00C8EFDE /* PatriotTests.swift */; };
+		27473032265D182F00C8EFDE /* PatriotModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473031265D182F00C8EFDE /* PatriotModelTests.swift */; };
 		2747303D265D182F00C8EFDE /* PatriotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747303C265D182F00C8EFDE /* PatriotUITests.swift */; };
 		27473051265D533400C8EFDE /* PhotonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747304E265D533400C8EFDE /* PhotonManager.swift */; };
 		27473053265D533400C8EFDE /* Photon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473050265D533400C8EFDE /* Photon.swift */; };
@@ -41,6 +41,7 @@
 		27917127282BCD6A007F4CA5 /* PartOfDayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */; };
 		2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */; };
 		2798A07E26A455B3002FA6F4 /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2798A07D26A455B3002FA6F4 /* SectionView.swift */; };
+		27D46756283972A000C5CD5A /* MQTTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D46755283972A000C5CD5A /* MQTTTests.swift */; };
 		27EF59FC2832E37C00E801E2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */; };
 		70978BAF9E1437D62C231FEE /* Pods_Patriot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80622165AF65D442821D750D /* Pods_Patriot.framework */; };
 /* End PBXBuildFile section */
@@ -89,7 +90,7 @@
 		27473026265D182E00C8EFDE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		27473028265D182E00C8EFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2747302D265D182F00C8EFDE /* PatriotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PatriotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		27473031265D182F00C8EFDE /* PatriotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotTests.swift; sourceTree = "<group>"; };
+		27473031265D182F00C8EFDE /* PatriotModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotModelTests.swift; sourceTree = "<group>"; };
 		27473033265D182F00C8EFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		27473038265D182F00C8EFDE /* PatriotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PatriotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2747303C265D182F00C8EFDE /* PatriotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotUITests.swift; sourceTree = "<group>"; };
@@ -119,6 +120,7 @@
 		27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOfDayButton.swift; sourceTree = "<group>"; };
 		2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sleeping.swift; sourceTree = "<group>"; };
 		2798A07D26A455B3002FA6F4 /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
+		27D46755283972A000C5CD5A /* MQTTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTTests.swift; sourceTree = "<group>"; };
 		27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.debug.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.debug.xcconfig"; sourceTree = "<group>"; };
 		80622165AF65D442821D750D /* Pods_Patriot.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Patriot.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -213,8 +215,9 @@
 		27473030265D182F00C8EFDE /* PatriotTests */ = {
 			isa = PBXGroup;
 			children = (
-				27473031265D182F00C8EFDE /* PatriotTests.swift */,
+				27473031265D182F00C8EFDE /* PatriotModelTests.swift */,
 				27473033265D182F00C8EFDE /* Info.plist */,
+				27D46755283972A000C5CD5A /* MQTTTests.swift */,
 			);
 			path = PatriotTests;
 			sourceTree = "<group>";
@@ -544,7 +547,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				27473032265D182F00C8EFDE /* PatriotTests.swift in Sources */,
+				27473032265D182F00C8EFDE /* PatriotModelTests.swift in Sources */,
+				27D46756283972A000C5CD5A /* MQTTTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -32,10 +32,12 @@ class MQTTManager {
     let mqtt: CocoaMQTT!
     
     var isConnected: Bool = false
+    var isTesting: Bool = false
     
     var mqttDelegate: MQTTReceiving?
     
-    init() {
+    init(forTest: Bool = false) {
+        isTesting = forTest
         let clientID = "Patriot" + String(ProcessInfo().processIdentifier)
         mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort) // TODO: mqtt5?
         mqtt.delegate = self
