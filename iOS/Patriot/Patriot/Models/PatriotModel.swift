@@ -42,9 +42,10 @@ class PatriotModel: ObservableObject
          partOfDay: PartOfDay = .Afternoon
         )
     {
-        photonManager = PhotonManager()
-        mqtt = MQTTManager()        //TODO: disable if forTest
         settings = Settings(store: UserDefaultsSettingsStore())
+        devices = settings.devices ?? []  // Initialize with cached devices
+        photonManager = PhotonManager()
+        mqtt = MQTTManager(forTest: forTest)
         favoritesList = settings.favorites ?? []
         mqtt.mqttDelegate = self          // Receives MQTT messages
         photonManager.particleIoDelegate = self // Receives particle.io messages

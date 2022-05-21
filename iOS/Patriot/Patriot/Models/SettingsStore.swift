@@ -16,6 +16,7 @@ enum SettingsKey: String
     case particleUser
     case particlePassword
     case favorites
+    case devices
 }
 
 protocol SettingsStore
@@ -136,12 +137,12 @@ extension Settings
         }
     }
     
-    var devices: [String]? {
+    var devices: [Device]? {
         get {
-            return store.getStringArray(forKey: .favorites)
+            return store.getDeviceArray(forKey: .devices)
         }
         set {
-            store.set(newValue, forKey: .favorites)
+            store.set(newValue, forKey: .devices)
         }
     }
 
