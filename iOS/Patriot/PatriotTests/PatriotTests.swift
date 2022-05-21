@@ -16,16 +16,18 @@ class PatriotTests: XCTestCase {
         model = PatriotModel(forTest: true)
     }
 
-    func testInstantiation() {
-        XCTAssertNotNil(model)
-    }
     
-    func testNumberOfFavorites() {
-        XCTAssertEqual(model.devices.filter { $0.isFavorite == true }.count, 2)
+    func testNumberOfDevices() {
+        XCTAssertEqual(model.devices.count, 21)
     }
-    
+
     func testNumberOfRooms() {
         XCTAssertEqual(model.rooms.count, 4)
+    }
+    
+    func testUpdateFavoritesList() {
+        model.updateFavoritesList()
+        XCTAssertEqual(model.favoritesList.count, 2)
     }
 
 }
