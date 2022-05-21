@@ -25,34 +25,22 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     }
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
-        print("AppDelegate handlerFor")
+        //print("AppDelegate handlerFor")
         switch intent {
-        case is WakingUpIntent:
-            print("Returning WakingUpHandler")
-            return WakingUpHandler(application: application)
-        case is RetiringIntent:
-            print("Returning RetiringHandler")
-            return WakingUpHandler(application: application)    // TODO:
-        case is SleepingIntent:
-            print("Returning SleepingHandler")
-            return WakingUpHandler(application: application)    // TODO:
-        case is CurtainsIntent:
-            print("Returning CurtainsHandler")
-            return CurtainsHandler(application: application)    // TODO:
-        case is PatriotIntent:
-            print("Returning PatriotHandler")
-            return PatriotHandler(application: application)    // TODO:
+        case is RVIntent:
+            //print("Returning RVHandler")
+            return RVHandler(application: application)    // TODO:
         default:
-            print("Unhandled intent")
+            print("AppDelegate: Unhandled intent")
             return nil
         }
     }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
 
-        print("AppDelegate continue restorationHandler")
+        print("AppDelegate continue restorationHandler, activityType = \(userActivity.activityType)")
 
-        guard userActivity.activityType == "WakingUp" else {
+        guard userActivity.activityType == "RV" else {
             return false
         }
 

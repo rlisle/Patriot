@@ -8,7 +8,7 @@
 import SwiftUI
 import Intents
 
-class RVHandler: NSObject, PatriotIntentHandling {
+class RVHandler: NSObject, RVIntentHandling {
     
     let application: UIApplication
     
@@ -18,58 +18,73 @@ class RVHandler: NSObject, PatriotIntentHandling {
 
     //TODO: convert to async/await (see protocol)
 
-    func handle(intent: PatriotIntent, completion: @escaping (PatriotIntentResponse) -> Void) {
+    func handle(intent: RVIntent, completion: @escaping (RVIntentResponse) -> Void) {
         
-        print("PatriotHandler handle PatriotIntent")
+        print("RVHandler handle RVIntent")
         
         guard let device = intent.device,
               let percent = intent.percent as? Int else {
             print("handle(intent) missing arguments")
-            completion(PatriotIntentResponse(code: .failure, userActivity: nil))
+            completion(RVIntentResponse(code: .failure, userActivity: nil))
             return
         }
         
         if application.applicationState == .background {
             // If app is in background, return .continueInApp to launch app
-            print("PatriotHandler in background")
+            print("RVHandler in background")
 
             PatriotModel.shared.sendMessage(topic: "patriot/\(device)", message: "\(percent)")
             
-            completion(PatriotIntentResponse(code: .success, userActivity: nil))
-            //completion(PatriotIntentResponse(code: .continueInApp, userActivity: nil))
+            completion(RVIntentResponse(code: .success, userActivity: nil))
+            //completion(RVIntentResponse(code: .continueInApp, userActivity: nil))
             
         } else {
-            print("PatriotHandler in foreground")
+            print("RVHandler in foreground")
             
             // Update UI
             
-            completion(PatriotIntentResponse(code: .success, userActivity: nil))
+            completion(RVIntentResponse(code: .success, userActivity: nil))
         }
     }
     
-    func resolveDevice(for intent: PatriotIntent, with completion: @escaping (INStringResolutionResult) -> Swift.Void) {
-
-        print("PatriotHandler resolveDevice")
+    func resolveDevice(for intent: RVIntent, with completion: @escaping (INStringResolutionResult) -> Swift.Void) {
         
-        //TODO:
-        if let device = intent.device as? String {
-            completion(INStringResolutionResult.success(with: device))
-        } else {
+        guard let device = intent.device else {
+            print("RVHandler resolveDevice: needsValue")
             completion(INStringResolutionResult.needsValue())
+            return
         }
+        
+        print("RVHandler resolveDevice: \(device)")
+        
+        //TODO: compare to list of devices
+        switch(device.lowercased()) {
+        case "sink", "desk", "officeceiling", "piano":
+            print("RVHandler resolveDevice: recognized device \(device)")
+        default:
+            print("RVHandler resolveDevice: unrecognized device \(device)")
+            completion(INStringResolutionResult.needsValue())
+            return
+        }
+        
+        completion(INStringResolutionResult.success(with: device))
     }
     
 
-    func resolvePercent(for intent: PatriotIntent, with completion: @escaping (PatriotPercentResolutionResult) -> Swift.Void) {
+    func resolvePercent(for intent: RVIntent, with completion: @escaping (RVPercentResolutionResult) -> Swift.Void) {
         
-        print("PatriotHandler resolvePercent")
+        print("RVHandler resolvePercent")
 
         //TODO:
-        if let percent = intent.percent as? Int {
-            completion(PatriotPercentResolutionResult.success(with: percent))
-        } else {
-            completion(PatriotPercentResolutionResult.needsValue())
+        guard let percent = intent.percent as? Int else {
+            print("RVHandler resolvePercent: needsValue")
+            completion(RVPercentResolutionResult.needsValue())
+            return
         }
+        var goodPercent = percent
+        if goodPercent > 100 { goodPercent = 100 }
+        if goodPercent < 0 { goodPercent = 0 }
+        completion(RVPercentResolutionResult.success(with: goodPercent))
     }
     
     //TODO: Add confirm method
