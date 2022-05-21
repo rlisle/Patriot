@@ -37,7 +37,7 @@ class PatriotModel: ObservableObject
         return Array(uniqueRooms).sorted()
     }
     
-    init(forTest: Bool = true,          // For test/debug without Wifi, etc.
+    init(forTest: Bool = false,
          sleeping: Sleeping = .Awake,
          partOfDay: PartOfDay = .Afternoon
         )
