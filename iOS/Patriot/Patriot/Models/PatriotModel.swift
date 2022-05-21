@@ -30,6 +30,7 @@ class PatriotModel: ObservableObject
     let settings:       Settings
     
     var didQueryDevices = false
+    var didReceiveDevices = false
     
     var rooms: [ String ] {
         let rawRooms = devices.map { $0.room }.filter { $0 != "All" && $0 != "Default" && $0 != "Test" }
@@ -170,6 +171,11 @@ extension PatriotModel: MQTTReceiving {
             handleLegacyCommand(name: command, percent: percent)
             
         case ("state", 5):
+            if didReceiveDevices == false {
+                print("Receiving devices by MQTT")
+                devices = []
+                didReceiveDevices = true
+            }
             let room = splitTopic[2]
             let type = splitTopic[3].uppercased()
             let deviceName = splitTopic[4]
