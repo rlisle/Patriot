@@ -45,7 +45,10 @@ class MQTTManager {
     }
     
     func reconnect() {
-        // TODO: is a retry loop necessary?
+        guard isTesting == false else {
+            print("MQTT init testing so not connecting")
+            return
+        }
         isConnected = mqtt.connect()
         print("MQTT init connected: \(isConnected)")
     }
@@ -54,6 +57,9 @@ class MQTTManager {
 extension MQTTManager: MQTTSending
 {
     func sendMessage(topic: String, message: String) {
+        guard isTesting == false else {
+            return
+        }
         guard isConnected == true else {
             print("No MQTT: Cannot send \(topic), \(message)")
             return
@@ -63,6 +69,9 @@ extension MQTTManager: MQTTSending
     
     func sendPatriotMessage(device: String, percent: Int)
     {
+        guard isTesting == false else {
+            return
+        }
         guard isConnected == true else {
             print("No MQTT: Cannot send patriot/\(device), \(percent)")
             return

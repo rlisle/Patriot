@@ -216,8 +216,8 @@
 			isa = PBXGroup;
 			children = (
 				27473031265D182F00C8EFDE /* PatriotModelTests.swift */,
-				27473033265D182F00C8EFDE /* Info.plist */,
 				27D46755283972A000C5CD5A /* MQTTTests.swift */,
+				27473033265D182F00C8EFDE /* Info.plist */,
 			);
 			path = PatriotTests;
 			sourceTree = "<group>";
