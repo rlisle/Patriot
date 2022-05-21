@@ -10,12 +10,22 @@ import XCTest
 
 class PatriotTests: XCTestCase {
 
+    var model: PatriotModel!
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        model = PatriotModel(forTest: true)
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testInstantiation() {
+        XCTAssertNotNil(model)
     }
+    
+    func testNumberOfFavorites() {
+        XCTAssertEqual(model.devices.filter { $0.isFavorite == true }.count, 2)
+    }
+    
+    func testNumberOfRooms() {
+        XCTAssertEqual(model.rooms.count, 4)
+    }
+
 }
