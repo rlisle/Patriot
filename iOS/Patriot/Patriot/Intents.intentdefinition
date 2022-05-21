@@ -11,9 +11,9 @@
 	<key>INIntentDefinitionSystemVersion</key>
 	<string>21E258</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>13E500a</string>
+	<string>13F17a</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>13.3.1</string>
+	<string>13.4</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -73,7 +73,7 @@
 					<key>INIntentParameterMetadata</key>
 					<dict>
 						<key>INIntentParameterMetadataCapitalization</key>
-						<string>Sentences</string>
+						<string>None</string>
 						<key>INIntentParameterMetadataDefaultValue</key>
 						<string>Sink</string>
 						<key>INIntentParameterMetadataDefaultValueID</key>

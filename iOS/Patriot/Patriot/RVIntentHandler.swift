@@ -57,16 +57,13 @@ class RVHandler: NSObject, RVIntentHandling {
         
         print("RVHandler resolveDevice: \(device)")
         
-        //TODO: compare to list of devices
-        switch(device.lowercased()) {
-        case "sink", "desk", "officeceiling", "piano":
-            print("RVHandler resolveDevice: recognized device \(device)")
-        default:
+        guard PatriotModel.shared.getDevice(name: device) != nil else {
             print("RVHandler resolveDevice: unrecognized device \(device)")
             completion(INStringResolutionResult.needsValue())
             return
         }
         
+        print("RVHandler resolveDevice: recognized device \(device)")
         completion(INStringResolutionResult.success(with: device))
     }
     
