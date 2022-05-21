@@ -37,8 +37,13 @@ class MQTTManager {
     
     init() {
         let clientID = "Patriot" + String(ProcessInfo().processIdentifier)
-        mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort)
+        mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort) // TODO: mqtt5?
         mqtt.delegate = self
+        reconnect()
+    }
+    
+    func reconnect() {
+        // TODO: is a retry loop necessary?
         isConnected = mqtt.connect()
         print("MQTT init connected: \(isConnected)")
     }
@@ -47,12 +52,19 @@ class MQTTManager {
 extension MQTTManager: MQTTSending
 {
     func sendMessage(topic: String, message: String) {
-        //print("MQTT sendMessage \(topic) \(message)")
+        guard isConnected == true else {
+            print("No MQTT: Cannot send \(topic), \(message)")
+            return
+        }
         mqtt.publish(topic, withString: message)
     }
     
     func sendPatriotMessage(device: String, percent: Int)
     {
+        guard isConnected == true else {
+            print("No MQTT: Cannot send patriot/\(device), \(percent)")
+            return
+        }
         let topic = "patriot/"+device
         let message = String(percent)
         sendMessage(topic: topic, message: message)
@@ -76,7 +88,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
-        //print("MQTT didConnectAck")
+        print("MQTT didConnectAck")
         mqtt.subscribe(mqttTopic)
         mqttDelegate?.connectionDidChange(isConnected: true)
     }

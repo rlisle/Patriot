@@ -16,6 +16,9 @@ import Combine
 
 class PatriotModel: ObservableObject
 {
+    // Can an observed object also be a singleton?
+    static var shared = PatriotModel()
+
     @Published var devices: [Device] = []
     @Published var favoritesList:  [String]   //TODO: delete & refactor using devices only             // List of favorite device names
     @Published var showingLogin: Bool = false
@@ -25,6 +28,8 @@ class PatriotModel: ObservableObject
     let photonManager:  PhotonManager
     let mqtt:           MQTTManager
     let settings:       Settings
+    
+    var didQueryDevices = false
     
     var rooms: [ String ] {
         let rawRooms = devices.map { $0.room }.filter { $0 != "All" && $0 != "Default" && $0 != "Test" }
@@ -98,14 +103,22 @@ extension PatriotModel {
 extension PatriotModel: MQTTReceiving {
     
     func connectionDidChange(isConnected: Bool) {
-        guard isConnected == true else {
-            print("Connected disconnected")
-            showingLogin = true
-            return
+        if isConnected == false {
+            print("MQTT disconnected, reconnecting")
+            mqtt.reconnect()
+            
+            if isConnected == false {
+                showingLogin = true
+                return
+            }
         }
+        
         print("MQTT is connected")
         // This needs to be done here so subscribe is already set
-        mqtt.sendMessage(topic: "patriot/query", message: "all")
+        if didQueryDevices == false {
+            didQueryDevices = true
+            mqtt.sendMessage(topic: "patriot/query", message: "all")
+        }
     }
 
     func sendMessage(device: Device)
@@ -119,6 +132,24 @@ extension PatriotModel: MQTTReceiving {
                     print("sendMessage particle.io error: \(error)")
                 }
             }
+        }
+    }
+    
+    func sendMessage(topic: String, message: String)
+    {
+        print("PatriotModel sendMessage \(topic), \(message)")
+        if mqtt.isConnected {
+            print("Sending to MQTT")
+            mqtt.sendMessage(topic: topic, message: message)
+        } else if photonManager.isLoggedIn {
+            print("Sending to Particle.io")
+            photonManager.publish(event: topic + ":" + message) { (error) in
+                if let error = error {
+                    print("sendMessage particle.io error: \(error)")
+                }
+            }
+        } else {
+            print("sendMessage \(topic), \(message) not sent. No connection.")
         }
     }
     
@@ -149,7 +180,7 @@ extension PatriotModel: MQTTReceiving {
     }
     
     func isDisplayableDevice(type: String) -> Bool {
-        let displayableTypes = "CFLR"
+        //let displayableTypes = "CFLR"
         return /*displayableTypes.contains(type)*/ type == "C" || type == "F" || type == "L" || type == "R"
     }
 }
