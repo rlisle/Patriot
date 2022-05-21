@@ -43,7 +43,7 @@ class PatriotModel: ObservableObject
         )
     {
         photonManager = PhotonManager()
-        mqtt = MQTTManager()
+        mqtt = MQTTManager()        //TODO: disable if forTest
         settings = Settings(store: UserDefaultsSettingsStore())
         favoritesList = settings.favorites ?? []
         mqtt.mqttDelegate = self          // Receives MQTT messages
