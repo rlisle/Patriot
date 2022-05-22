@@ -187,7 +187,6 @@
 		2747301E265D182E00C8EFDE /* Patriot */ = {
 			isa = PBXGroup;
 			children = (
-				2741D1732831342F0077E6CA /* Patriot.entitlements */,
 				2747301F265D182E00C8EFDE /* PatriotApp.swift */,
 				2741D16D283119640077E6CA /* AppDelegate.swift */,
 				27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */,
@@ -199,6 +198,7 @@
 				2747304B265D519100C8EFDE /* Views */,
 				2747304A265D517F00C8EFDE /* Photon */,
 				27473028265D182E00C8EFDE /* Info.plist */,
+				2741D1732831342F0077E6CA /* Patriot.entitlements */,
 				27473025265D182E00C8EFDE /* Preview Content */,
 			);
 			path = Patriot;
