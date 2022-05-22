@@ -700,7 +700,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Patriot/Patriot.entitlements;
@@ -726,7 +725,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F5038F88DA1AC3AB5283BC42 /* Pods-Patriot.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Patriot/Patriot.entitlements;
@@ -751,7 +749,6 @@
 		27473045265D182F00C8EFDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 65NFWK9633;
@@ -773,7 +770,6 @@
 		27473046265D182F00C8EFDE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 65NFWK9633;
@@ -795,7 +791,6 @@
 		27473048265D182F00C8EFDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 65NFWK9633;
 				INFOPLIST_FILE = PatriotUITests/Info.plist;
@@ -815,7 +810,6 @@
 		27473049265D182F00C8EFDE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 65NFWK9633;
 				INFOPLIST_FILE = PatriotUITests/Info.plist;
