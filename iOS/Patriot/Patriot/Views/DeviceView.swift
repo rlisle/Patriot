@@ -20,10 +20,16 @@ extension String {
 }
 
 struct DeviceView: View {
-    
+
+    @EnvironmentObject var model: PatriotModel
+
     @ObservedObject var device: Device
 
+    @GestureState var longPressed = false
+
+    
     var body: some View {
+
         GeometryReader { geometry in
             ZStack {
                 VStack {
@@ -56,6 +62,16 @@ struct DeviceView: View {
             }
             .frame(width: geometry.size.width, height: geometry.size.width)
             .background(Color.black)
+            .gesture(
+                LongPressGesture(minimumDuration: 0.5)
+                        .updating($longPressed) { currentState, gestureState, transaction in
+                            gestureState = currentState
+                        }
+                    .onEnded { value in
+                        model.selectedDevice = self.device
+                        model.showingDetails = true
+                    }
+                )
         }
     }
 }

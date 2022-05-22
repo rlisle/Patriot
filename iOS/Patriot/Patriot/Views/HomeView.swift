@@ -10,9 +10,7 @@ import SwiftUI
 struct HomeView: View {
 
     let sideMenuWidth: CGFloat = 200
-    
-    @State var showMenu = false
-    @State var showDetails = false
+        
     @EnvironmentObject var model: PatriotModel
     @EnvironmentObject var appDelegate: AppDelegate
     @EnvironmentObject var sceneDelegate: SceneDelegate
@@ -27,18 +25,23 @@ struct HomeView: View {
             .onEnded {
                 if $0.translation.width < -100 {
                     withAnimation {
-                        self.showMenu = false
+                        model.showingMenu = false
                     }
                 }
             }
         
         NavigationView {
             ZStack(alignment: .leading) {
-                MainView(showMenu: self.$showMenu)
-                    .offset(x: self.showMenu ? sideMenuWidth : 0)
-                    .disabled(self.showMenu ? true : false)
+                if model.showingDetails {
+                    DeviceDetailView()
+                    
+                } else {
+                    MainView()
+                        .offset(x: model.showingMenu ? sideMenuWidth : 0)
+                        .disabled(model.showingMenu ? true : false)
+                }
 
-                if self.showMenu {
+                if model.showingMenu {
                     MenuView()
                         .frame(width: sideMenuWidth)
                 }
@@ -51,7 +54,7 @@ struct HomeView: View {
             .foregroundColor(.white)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
-                    SideMenuButton(showMenu: $showMenu)
+                    SideMenuButton(showMenu: $model.showingMenu)
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     SleepingButton(sleeping: model.sleeping)

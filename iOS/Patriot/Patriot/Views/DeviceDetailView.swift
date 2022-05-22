@@ -8,20 +8,21 @@
 import SwiftUI
 
 struct DeviceDetailView: View {
-    
-    let device: Device
+
+    @EnvironmentObject var model: PatriotModel
     
     var body: some View {
         //TODO: add more stuff'
         VStack {
-            Text("Room: \(device.room)")
-            Text(device.name)
+            Text("Room: \(model.selectedDevice.room)")
+            Text(model.selectedDevice.name)
         }
     }
 }
 
 struct DeviceDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DeviceDetailView(device: Device(name: "Test Device", type: .Light))
+        DeviceDetailView()
+            .environmentObject(PatriotModel(forTest: true))
     }
 }
