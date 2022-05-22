@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
 
+    let sideMenuWidth: CGFloat = 200
+    
     @State var showMenu = false
     @State var showDetails = false
     @EnvironmentObject var model: PatriotModel
@@ -35,20 +37,18 @@ struct HomeView: View {
             }
         
         NavigationView {
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    MainView(showMenu: self.$showMenu)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .offset(x: self.showMenu ? geometry.size.width/2 : 0)
-                        .disabled(self.showMenu ? true : false)
+            ZStack(alignment: .leading) {
+                MainView(showMenu: self.$showMenu)
+                    .offset(x: self.showMenu ? sideMenuWidth : 0)
+                    .disabled(self.showMenu ? true : false)
 
-                    if self.showMenu {
-                        MenuView()
-                            .frame(width: geometry.size.width/2)
-                    }
+                if self.showMenu {
+                    MenuView()
+                        .frame(width: sideMenuWidth)
                 }
-                .gesture(dragToClose)
             }
+            .background(Color.black)
+            .gesture(dragToClose)
 
             .navigationBarTitle("Patriot")
             .navigationBarTitleDisplayMode(.inline)
