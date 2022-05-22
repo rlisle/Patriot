@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
 
     @State var showMenu = false
+    @State var showDetails = false
     @EnvironmentObject var model: PatriotModel
     @EnvironmentObject var appDelegate: AppDelegate
     @EnvironmentObject var sceneDelegate: SceneDelegate
