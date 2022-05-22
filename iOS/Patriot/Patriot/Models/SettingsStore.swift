@@ -16,6 +16,7 @@ enum SettingsKey: String
     case particleUser
     case particlePassword
     case favorites
+    case devices
 }
 
 protocol SettingsStore
@@ -28,6 +29,8 @@ protocol SettingsStore
     func set(_ string: String?, forKey: SettingsKey)
     func getStringArray(forKey: SettingsKey) -> [String]?
     func set(_ array: [String]?, forKey: SettingsKey)
+    func getDeviceArray(forKey: SettingsKey) -> [Device]?
+    func set(_ array: [Device]?, forKey: SettingsKey)
 }
 
 class UserDefaultsSettingsStore: SettingsStore
@@ -79,6 +82,17 @@ class UserDefaultsSettingsStore: SettingsStore
     {
         userDefaults.set(stringArray, forKey: key.rawValue)
     }
+    
+    func getDeviceArray(forKey key: SettingsKey) -> [Device]?
+    {
+        return userDefaults.array(forKey: key.rawValue) as? [Device]
+    }
+    
+    
+    func set(_ deviceArray: [Device]?, forKey key: SettingsKey)
+    {
+        userDefaults.set(deviceArray, forKey: key.rawValue)
+    }
 }
 
 class Settings
@@ -122,4 +136,14 @@ extension Settings
             store.set(newValue, forKey: .favorites)
         }
     }
+    
+    var devices: [Device]? {
+        get {
+            return store.getDeviceArray(forKey: .devices)
+        }
+        set {
+            store.set(newValue, forKey: .devices)
+        }
+    }
+
 }

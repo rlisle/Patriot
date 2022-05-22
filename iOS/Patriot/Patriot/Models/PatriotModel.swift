@@ -30,7 +30,17 @@ class PatriotModel: ObservableObject
     let settings:       Settings
     
     var didQueryDevices = false
+    var didReceiveDevices = false
     
+    var alive: [ String : String ] = [:]      // eg. rearpanel : Sun 04:52
+    var logs: [ String ] = []
+    var loglevels: [ String : String ] = [:]  // eg. rearpanel : warn
+    var memory: String = ""                   // TODO: provide controller + int
+    var pings: [ String : Date ] = [:]
+    var pongs: [ String : Date ] = [:]
+    var queries: [ String : Date ] = [:]
+    var resets: [ String : Date ] = [:]
+
     var rooms: [ String ] {
         let rawRooms = devices.map { $0.room }.filter { $0 != "All" && $0 != "Default" && $0 != "Test" }
         let uniqueRooms = Set<String>(rawRooms)
@@ -42,9 +52,10 @@ class PatriotModel: ObservableObject
          partOfDay: PartOfDay = .Afternoon
         )
     {
-        photonManager = PhotonManager()
-        mqtt = MQTTManager()        //TODO: disable if forTest
         settings = Settings(store: UserDefaultsSettingsStore())
+        devices = settings.devices ?? []  // Initialize with cached devices
+        photonManager = PhotonManager()
+        mqtt = MQTTManager(forTest: forTest)
         favoritesList = settings.favorites ?? []
         mqtt.mqttDelegate = self          // Receives MQTT messages
         photonManager.particleIoDelegate = self // Receives particle.io messages
@@ -163,12 +174,45 @@ extension PatriotModel: MQTTReceiving {
         let splitTopic = topic.components(separatedBy: "/")
         let percent: Int = Int(message) ?? -1
         let command = splitTopic[1]
+        
         switch (command, splitTopic.count) {
             
+        case (_, 1):                                    // Topic: patriot, Message: device:percent
+            handleLegacyCommand(message: message)
+            
         case (_, 2):
-            handleLegacyCommand(name: command, percent: percent)
+            handleCommand(name: command, percent:percent)
+            
+        case ("alive", 3):
+            alive[ splitTopic[2] ] = message
+            
+        case ("log", 3):
+            logs.append( splitTopic[2] + message )
+            
+        case ("loglevel", 3):
+            loglevels[ splitTopic[2] ] = message
+            
+        case ("memory", 2):
+            memory = message
+
+        case ("ping", 2):
+            pings[ message ] = Date()
+            
+        case ("pong", 2):
+            pongs[ message ] = Date()
+
+        case ("query", 2):
+            queries[ message ] = Date()
+            
+        case ("reset", 2):
+            resets[ message ] = Date()
             
         case ("state", 5):
+            if didReceiveDevices == false {
+                print("Receiving devices by MQTT")
+                devices = []
+                didReceiveDevices = true
+            }
             let room = splitTopic[2]
             let type = splitTopic[3].uppercased()
             let deviceName = splitTopic[4]
@@ -205,7 +249,24 @@ extension PatriotModel {
         }
     }
     
-    func handleLegacyCommand(name: String, percent: Int) {
+    func handleLegacyCommand(message: String) {
+        let splitMessage = message.components(separatedBy: ":")
+        guard splitMessage.count == 2 else {
+            print("Legacy command missing colon")
+            return
+        }
+        let percent: Int = Int(splitMessage[1]) ?? -1
+        let deviceName = splitMessage[0]
+        guard handleSpecialNames(name: deviceName, percent: percent) == false else {
+            return
+        }
+
+        if let device = getDevice(name: deviceName) {
+            device.percent = percent
+        }
+    }
+    
+    func handleCommand(name: String, percent: Int) {
         guard handleSpecialNames(name: name, percent: percent) == false else {
             return
         }
