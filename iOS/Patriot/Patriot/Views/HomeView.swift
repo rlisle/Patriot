@@ -18,10 +18,6 @@ struct HomeView: View {
     @EnvironmentObject var sceneDelegate: SceneDelegate
 
     init() {
-        //Use this if NavigationBarTitle is with Large Font
-        //UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-
-        //Use this if NavigationBarTitle is with displayMode = .inline
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
     }
     
