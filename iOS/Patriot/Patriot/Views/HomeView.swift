@@ -60,11 +60,11 @@ struct HomeView: View {
                 }
             }
             
-        }//navView
+        }
         // This fixes the layout constraint warnings
         .navigationViewStyle(StackNavigationViewStyle())
 
-    }//body
+    }
 }
 
 struct HomeView_Previews: PreviewProvider {
