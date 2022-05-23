@@ -35,7 +35,6 @@ struct DeviceView: View {
                     .scaledToFit()
                     .padding(0)
                     .opacity(brighten ? 1.0 : 0.8)
-                    //TODO: Make brighter while holding down/tapping
                     .onTapGesture {
                         device.manualToggle()
                     }

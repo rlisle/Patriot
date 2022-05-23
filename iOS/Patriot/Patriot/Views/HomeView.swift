@@ -32,14 +32,12 @@ struct HomeView: View {
         
         NavigationView {
             ZStack(alignment: .leading) {
-                if model.showingDetails {
+                NavigationLink("", isActive: $model.showingDetails, destination: {
                     DeviceDetailView()
-                    
-                } else {
-                    MainView()
-                        .offset(x: model.showingMenu ? sideMenuWidth : 0)
-                        .disabled(model.showingMenu ? true : false)
-                }
+                })
+                MainView()
+                .offset(x: model.showingMenu ? sideMenuWidth : 0)
+                .disabled(model.showingMenu ? true : false)
 
                 if model.showingMenu {
                     MenuView()
