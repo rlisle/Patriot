@@ -44,7 +44,6 @@
 		27D46756283972A000C5CD5A /* MQTTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D46755283972A000C5CD5A /* MQTTTests.swift */; };
 		27D46758283A645100C5CD5A /* DeviceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D46757283A645100C5CD5A /* DeviceDetailView.swift */; };
 		27EF59FC2832E37C00E801E2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */; };
-		70978BAF9E1437D62C231FEE /* Pods_Patriot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80622165AF65D442821D750D /* Pods_Patriot.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,9 +123,6 @@
 		27D46755283972A000C5CD5A /* MQTTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTTests.swift; sourceTree = "<group>"; };
 		27D46757283A645100C5CD5A /* DeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailView.swift; sourceTree = "<group>"; };
 		27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.debug.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.debug.xcconfig"; sourceTree = "<group>"; };
-		80622165AF65D442821D750D /* Pods_Patriot.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Patriot.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5038F88DA1AC3AB5283BC42 /* Pods-Patriot.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.release.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,7 +130,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70978BAF9E1437D62C231FEE /* Pods_Patriot.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,8 +317,6 @@
 		D27112F62ACE9251195A69A2 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */,
-				F5038F88DA1AC3AB5283BC42 /* Pods-Patriot.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -331,7 +324,6 @@
 		FB4C5A647ECC4E394243E9CF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				80622165AF65D442821D750D /* Pods_Patriot.framework */,
 				2741D179283138F40077E6CA /* Intents.framework */,
 				2741D184283138F40077E6CA /* IntentsUI.framework */,
 			);
@@ -345,11 +337,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 27473041265D182F00C8EFDE /* Build configuration list for PBXNativeTarget "Patriot" */;
 			buildPhases = (
-				EF9CC3A53D81C789942C7670 /* [CP] Check Pods Manifest.lock */,
 				27473018265D182E00C8EFDE /* Sources */,
 				27473019265D182E00C8EFDE /* Frameworks */,
 				2747301A265D182E00C8EFDE /* Resources */,
-				943FC5C9851F0B0B98A0E15A /* [CP] Embed Pods Frameworks */,
 				2741D199283138F40077E6CA /* Embed App Extensions */,
 			);
 			buildRules = (
@@ -464,48 +454,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		943FC5C9851F0B0B98A0E15A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Patriot/Pods-Patriot-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Patriot/Pods-Patriot-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Patriot/Pods-Patriot-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EF9CC3A53D81C789942C7670 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Patriot-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		27473018265D182E00C8EFDE /* Sources */ = {
@@ -698,7 +646,6 @@
 		};
 		27473042265D182F00C8EFDE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -723,7 +670,6 @@
 		};
 		27473043265D182F00C8EFDE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F5038F88DA1AC3AB5283BC42 /* Pods-Patriot.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
