@@ -20,19 +20,32 @@ extension String {
 }
 
 struct DeviceView: View {
-    
+
+    @EnvironmentObject var model: PatriotModel
     @ObservedObject var device: Device
+    @State var brighten = false
 
     var body: some View {
+
         GeometryReader { geometry in
             ZStack {
                 VStack {
-                    Button(action: device.manualToggle) {
-                        Image(uiImage: device.percent > 0 ? device.onImage : device.offImage)
-                            .resizable()
-                            .scaledToFit()
-                            .padding(0)
+                    Image(uiImage: device.percent > 0 ? device.onImage : device.offImage)
+                    .resizable()
+                    .scaledToFit()
+                    .padding(0)
+                    .opacity(brighten ? 1.0 : 0.8)
+                    .onTapGesture {
+                        device.manualToggle()
                     }
+                    .onLongPressGesture(minimumDuration: 1.0, perform: {
+                        print("longPress")
+                        model.selectedDevice = self.device
+                        model.showingDetails = true
+                    }, onPressingChanged: { pressed in
+                        print("pressing changed \(pressed)")
+                        brighten = pressed
+                    })
                     Spacer()
                 }
                 VStack {

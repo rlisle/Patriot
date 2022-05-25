@@ -42,6 +42,7 @@
 		2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */; };
 		2798A07E26A455B3002FA6F4 /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2798A07D26A455B3002FA6F4 /* SectionView.swift */; };
 		27D46756283972A000C5CD5A /* MQTTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D46755283972A000C5CD5A /* MQTTTests.swift */; };
+		27D46758283A645100C5CD5A /* DeviceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D46757283A645100C5CD5A /* DeviceDetailView.swift */; };
 		27EF59FC2832E37C00E801E2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */; };
 		70978BAF9E1437D62C231FEE /* Pods_Patriot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80622165AF65D442821D750D /* Pods_Patriot.framework */; };
 /* End PBXBuildFile section */
@@ -121,6 +122,7 @@
 		2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sleeping.swift; sourceTree = "<group>"; };
 		2798A07D26A455B3002FA6F4 /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		27D46755283972A000C5CD5A /* MQTTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTTests.swift; sourceTree = "<group>"; };
+		27D46757283A645100C5CD5A /* DeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailView.swift; sourceTree = "<group>"; };
 		27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Patriot.debug.xcconfig"; path = "Target Support Files/Pods-Patriot/Pods-Patriot.debug.xcconfig"; sourceTree = "<group>"; };
 		80622165AF65D442821D750D /* Pods_Patriot.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Patriot.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -246,6 +248,7 @@
 				27473021265D182E00C8EFDE /* HomeView.swift */,
 				2747308C265FC77800C8EFDE /* LoginView.swift */,
 				274D66C3269A51DD00303F1E /* DeviceView.swift */,
+				27D46757283A645100C5CD5A /* DeviceDetailView.swift */,
 				274D66C7269DBDBD00303F1E /* MainView.swift */,
 				274D66C9269DC06700303F1E /* MenuView.swift */,
 				274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */,
@@ -524,6 +527,7 @@
 				2741D170283126090077E6CA /* Intents.intentdefinition in Sources */,
 				274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */,
 				27473022265D182E00C8EFDE /* HomeView.swift in Sources */,
+				27D46758283A645100C5CD5A /* DeviceDetailView.swift in Sources */,
 				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */,
@@ -696,7 +700,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 68EF19C16F4B3CEA6AE94ABB /* Pods-Patriot.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Patriot/Patriot.entitlements;
@@ -722,7 +725,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F5038F88DA1AC3AB5283BC42 /* Pods-Patriot.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Patriot/Patriot.entitlements;
@@ -747,7 +749,6 @@
 		27473045265D182F00C8EFDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 65NFWK9633;
@@ -769,7 +770,6 @@
 		27473046265D182F00C8EFDE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 65NFWK9633;
@@ -791,7 +791,6 @@
 		27473048265D182F00C8EFDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 65NFWK9633;
 				INFOPLIST_FILE = PatriotUITests/Info.plist;
@@ -811,7 +810,6 @@
 		27473049265D182F00C8EFDE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 65NFWK9633;
 				INFOPLIST_FILE = PatriotUITests/Info.plist;

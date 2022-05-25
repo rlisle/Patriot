@@ -9,16 +9,13 @@ import SwiftUI
 
 struct HomeView: View {
 
-    @State var showMenu = false
+    let sideMenuWidth: CGFloat = 200
+        
     @EnvironmentObject var model: PatriotModel
     @EnvironmentObject var appDelegate: AppDelegate
     @EnvironmentObject var sceneDelegate: SceneDelegate
 
     init() {
-        //Use this if NavigationBarTitle is with Large Font
-        //UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-
-        //Use this if NavigationBarTitle is with displayMode = .inline
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
     }
     
@@ -28,33 +25,34 @@ struct HomeView: View {
             .onEnded {
                 if $0.translation.width < -100 {
                     withAnimation {
-                        self.showMenu = false
+                        model.showingMenu = false
                     }
                 }
             }
         
         NavigationView {
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    MainView(showMenu: self.$showMenu)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .offset(x: self.showMenu ? geometry.size.width/2 : 0)
-                        .disabled(self.showMenu ? true : false)
+            ZStack(alignment: .leading) {
+                NavigationLink("", isActive: $model.showingDetails, destination: {
+                    DeviceDetailView()
+                })
+                MainView()
+                .offset(x: model.showingMenu ? sideMenuWidth : 0)
+                .disabled(model.showingMenu ? true : false)
 
-                    if self.showMenu {
-                        MenuView()
-                            .frame(width: geometry.size.width/2)
-                    }
+                if model.showingMenu {
+                    MenuView()
+                        .frame(width: sideMenuWidth)
                 }
-                .gesture(dragToClose)
             }
+            .background(Color.black)
+            .gesture(dragToClose)
 
             .navigationBarTitle("Patriot")
             .navigationBarTitleDisplayMode(.inline)
             .foregroundColor(.white)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
-                    SideMenuButton(showMenu: $showMenu)
+                    SideMenuButton(showMenu: $model.showingMenu)
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     SleepingButton(sleeping: model.sleeping)
@@ -62,11 +60,11 @@ struct HomeView: View {
                 }
             }
             
-        }//navView
+        }
         // This fixes the layout constraint warnings
         .navigationViewStyle(StackNavigationViewStyle())
 
-    }//body
+    }
 }
 
 struct HomeView_Previews: PreviewProvider {

@@ -16,12 +16,17 @@ import Combine
 
 class PatriotModel: ObservableObject
 {
-    // Can an observed object also be a singleton?
+    // Singleton
     static var shared = PatriotModel()
 
+    // Convenience binding for sidemenu, details
+    @Published var showingMenu = false
+    @Published var showingLogin = false
+    @Published var showingDetails = false
+    var selectedDevice = Device(name: "none", type: .Light)
+    
     @Published var devices: [Device] = []
     @Published var favoritesList:  [String]   //TODO: delete & refactor using devices only             // List of favorite device names
-    @Published var showingLogin: Bool = false
     @Published var sleeping: Sleeping = .Awake
     @Published var partOfDay: PartOfDay = .Afternoon
     
