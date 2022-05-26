@@ -13,7 +13,7 @@ protocol DevicePublishing: AnyObject {
     func isFavoriteChanged(device: Device)
 }
 
-class Device: ObservableObject
+class Device: ObservableObject, Codable
 {
     @Published var percent:     Int
     @Published var isFavorite:  Bool
@@ -25,6 +25,26 @@ class Device: ObservableObject
     var room:           String       // Mixed case, spaces allowed
 
     weak var publisher: DevicePublishing?
+    
+    private enum CodingKeys: CodingKey {
+        case percent, isFavorite, name, onImageName, offImageName, type, room
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(percent, forKey: .percent)
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        percent = try container.decode(Int.self, forKey: .percent)
+        isFavorite = try container.decode(Bool.self, forKey: .isFavorite)
+        name = try container.decode(String.self, forKey: .name)
+        onImageName = try container.decode(String.self, forKey: .onImageName)
+        offImageName = try container.decode(String.self, forKey: .offImageName)
+        type = try container.decode(DeviceType.self, forKey: .type)
+        room = try container.decode(String.self, forKey: .room)
+    }
     
     public init(name: String, type: DeviceType, percent: Int = 0, room: String = "Default", isFavorite: Bool = false) {
         self.name        = name
