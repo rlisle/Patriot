@@ -33,6 +33,12 @@ class Device: ObservableObject, Codable
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(percent, forKey: .percent)
+        try container.encode(isFavorite, forKey: .isFavorite)
+        try container.encode(name, forKey: .name)
+        try container.encode(onImageName, forKey: .onImageName)
+        try container.encode(offImageName, forKey: .offImageName)
+        try container.encode(type, forKey: .type)
+        try container.encode(room, forKey: .room)
     }
 
     required init(from decoder: Decoder) throws {
