@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,20 +16,14 @@
 		27473027265D182E00C8EFDE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27473026265D182E00C8EFDE /* Preview Assets.xcassets */; };
 		27473032265D182F00C8EFDE /* PatriotModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473031265D182F00C8EFDE /* PatriotModelTests.swift */; };
 		2747303D265D182F00C8EFDE /* PatriotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747303C265D182F00C8EFDE /* PatriotUITests.swift */; };
-		27473051265D533400C8EFDE /* PhotonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747304E265D533400C8EFDE /* PhotonManager.swift */; };
-		27473053265D533400C8EFDE /* Photon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473050265D533400C8EFDE /* Photon.swift */; };
 		27473071265D53DE00C8EFDE /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306C265D53DE00C8EFDE /* Device.swift */; };
 		27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306D265D53DE00C8EFDE /* PatriotModel.swift */; };
 		27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306F265D53DE00C8EFDE /* SettingsStore.swift */; };
 		27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473077265D54A800C8EFDE /* DeviceNotifying.swift */; };
-		27473083265D54A800C8EFDE /* ParticleSDKError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473078265D54A800C8EFDE /* ParticleSDKError.swift */; };
 		27473084265D54A800C8EFDE /* DeviceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473079265D54A800C8EFDE /* DeviceType.swift */; };
 		27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307C265D54A800C8EFDE /* DeviceInfo.swift */; };
-		27473089265D54A800C8EFDE /* PhotonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307E265D54A800C8EFDE /* PhotonError.swift */; };
-		2747308D265FC77800C8EFDE /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747308C265FC77800C8EFDE /* LoginView.swift */; };
 		2747308F266002D700C8EFDE /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747308E266002D700C8EFDE /* ViewExtensions.swift */; };
 		274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66BE2699F51D00303F1E /* MQTTManager.swift */; };
-		274D66C12699F9E900303F1E /* PhotonDeviceNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */; };
 		274D66C4269A51DD00303F1E /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C3269A51DD00303F1E /* DeviceView.swift */; };
 		274D66C8269DBDBD00303F1E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C7269DBDBD00303F1E /* MainView.swift */; };
 		274D66CA269DC06700303F1E /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C9269DC06700303F1E /* MenuView.swift */; };
@@ -44,6 +38,7 @@
 		27D46756283972A000C5CD5A /* MQTTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D46755283972A000C5CD5A /* MQTTTests.swift */; };
 		27D46758283A645100C5CD5A /* DeviceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D46757283A645100C5CD5A /* DeviceDetailView.swift */; };
 		27EF59FC2832E37C00E801E2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27EF59FB2832E37C00E801E2 /* SceneDelegate.swift */; };
+		27FCDDC9283E54D400632BAE /* CocoaMQTT in Frameworks */ = {isa = PBXBuildFile; productRef = 27FCDDC8283E54D400632BAE /* CocoaMQTT */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,20 +90,14 @@
 		27473038265D182F00C8EFDE /* PatriotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PatriotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2747303C265D182F00C8EFDE /* PatriotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotUITests.swift; sourceTree = "<group>"; };
 		2747303E265D182F00C8EFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2747304E265D533400C8EFDE /* PhotonManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonManager.swift; sourceTree = "<group>"; };
-		27473050265D533400C8EFDE /* Photon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photon.swift; sourceTree = "<group>"; };
 		2747306C265D53DE00C8EFDE /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		2747306D265D53DE00C8EFDE /* PatriotModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatriotModel.swift; sourceTree = "<group>"; };
 		2747306F265D53DE00C8EFDE /* SettingsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		27473077265D54A800C8EFDE /* DeviceNotifying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceNotifying.swift; sourceTree = "<group>"; };
-		27473078265D54A800C8EFDE /* ParticleSDKError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticleSDKError.swift; sourceTree = "<group>"; };
 		27473079265D54A800C8EFDE /* DeviceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceType.swift; sourceTree = "<group>"; };
 		2747307C265D54A800C8EFDE /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
-		2747307E265D54A800C8EFDE /* PhotonError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonError.swift; sourceTree = "<group>"; };
-		2747308C265FC77800C8EFDE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		2747308E266002D700C8EFDE /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		274D66BE2699F51D00303F1E /* MQTTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTManager.swift; sourceTree = "<group>"; };
-		274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotonDeviceNotifying.swift; sourceTree = "<group>"; };
 		274D66C3269A51DD00303F1E /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
 		274D66C7269DBDBD00303F1E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		274D66C9269DC06700303F1E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
@@ -130,6 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27FCDDC9283E54D400632BAE /* CocoaMQTT in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,7 +183,6 @@
 				2747304D265D51C500C8EFDE /* Supporting Files */,
 				2747304C265D51B200C8EFDE /* Models */,
 				2747304B265D519100C8EFDE /* Views */,
-				2747304A265D517F00C8EFDE /* Photon */,
 				27473028265D182E00C8EFDE /* Info.plist */,
 				2741D1732831342F0077E6CA /* Patriot.entitlements */,
 				27473025265D182E00C8EFDE /* Preview Content */,
@@ -228,20 +217,10 @@
 			path = PatriotUITests;
 			sourceTree = "<group>";
 		};
-		2747304A265D517F00C8EFDE /* Photon */ = {
-			isa = PBXGroup;
-			children = (
-				27473050265D533400C8EFDE /* Photon.swift */,
-				2747304E265D533400C8EFDE /* PhotonManager.swift */,
-			);
-			path = Photon;
-			sourceTree = "<group>";
-		};
 		2747304B265D519100C8EFDE /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				27473021265D182E00C8EFDE /* HomeView.swift */,
-				2747308C265FC77800C8EFDE /* LoginView.swift */,
 				274D66C3269A51DD00303F1E /* DeviceView.swift */,
 				27D46757283A645100C5CD5A /* DeviceDetailView.swift */,
 				274D66C7269DBDBD00303F1E /* MainView.swift */,
@@ -279,9 +258,6 @@
 			children = (
 				27473077265D54A800C8EFDE /* DeviceNotifying.swift */,
 				27473079265D54A800C8EFDE /* DeviceType.swift */,
-				27473078265D54A800C8EFDE /* ParticleSDKError.swift */,
-				2747307E265D54A800C8EFDE /* PhotonError.swift */,
-				274D66C02699F9E900303F1E /* PhotonDeviceNotifying.swift */,
 				2798A07B26A3B0E2002FA6F4 /* Sleeping.swift */,
 				27209B0028292E48005A8C2A /* PartOfDay.swift */,
 			);
@@ -347,6 +323,9 @@
 			dependencies = (
 			);
 			name = Patriot;
+			packageProductDependencies = (
+				27FCDDC8283E54D400632BAE /* CocoaMQTT */,
+			);
 			productName = Patriot;
 			productReference = 2747301C265D182E00C8EFDE /* Patriot.app */;
 			productType = "com.apple.product-type.application";
@@ -418,6 +397,9 @@
 				Base,
 			);
 			mainGroup = 27473013265D182E00C8EFDE;
+			packageReferences = (
+				27FCDDC7283E54D400632BAE /* XCRemoteSwiftPackageReference "CocoaMQTT" */,
+			);
 			productRefGroup = 2747301D265D182E00C8EFDE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -466,9 +448,7 @@
 				2798A07E26A455B3002FA6F4 /* SectionView.swift in Sources */,
 				2741D16E283119640077E6CA /* AppDelegate.swift in Sources */,
 				27EF59FC2832E37C00E801E2 /* SceneDelegate.swift in Sources */,
-				27473083265D54A800C8EFDE /* ParticleSDKError.swift in Sources */,
 				274D66CA269DC06700303F1E /* MenuView.swift in Sources */,
-				274D66C12699F9E900303F1E /* PhotonDeviceNotifying.swift in Sources */,
 				2780FB66282E739800BD32F5 /* EntryTextField.swift in Sources */,
 				27473084265D54A800C8EFDE /* DeviceType.swift in Sources */,
 				27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */,
@@ -480,13 +460,9 @@
 				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */,
 				27917125282BCCF5007F4CA5 /* SleepingButton.swift in Sources */,
-				27473051265D533400C8EFDE /* PhotonManager.swift in Sources */,
-				27473089265D54A800C8EFDE /* PhotonError.swift in Sources */,
 				27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */,
 				27473020265D182E00C8EFDE /* PatriotApp.swift in Sources */,
 				274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */,
-				2747308D265FC77800C8EFDE /* LoginView.swift in Sources */,
-				27473053265D533400C8EFDE /* Photon.swift in Sources */,
 				27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */,
 				27917123282BCBCF007F4CA5 /* SideMenuButton.swift in Sources */,
 				27473071265D53DE00C8EFDE /* Device.swift in Sources */,
@@ -812,6 +788,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		27FCDDC7283E54D400632BAE /* XCRemoteSwiftPackageReference "CocoaMQTT" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/emqx/CocoaMQTT";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		27FCDDC8283E54D400632BAE /* CocoaMQTT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 27FCDDC7283E54D400632BAE /* XCRemoteSwiftPackageReference "CocoaMQTT" */;
+			productName = CocoaMQTT;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 27473014265D182E00C8EFDE /* Project object */;
 }

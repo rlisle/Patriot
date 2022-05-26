@@ -13,10 +13,6 @@ struct MenuView: View {
     
     @EnvironmentObject var model: PatriotModel
 
-    var isLoggedIn: Bool {  // Convenience
-        return model.photonManager.isLoggedIn
-    }
-    
     var body: some View {
         VStack(alignment: .leading) {
             Button(action: {
@@ -64,24 +60,6 @@ struct MenuView: View {
                         .foregroundColor(.gray)
                         .imageScale(.large)
                     Text("Watch TV")
-                        .foregroundColor(.gray)
-                        .font(.headline)
-                }
-                .padding(.top, 30)
-            }
-            Button(action: {
-                print(isLoggedIn ? "Logout" : "Login")
-                if isLoggedIn {
-                    model.logout()
-                } else {
-                    model.showingLogin = true
-                }
-            }) {
-                HStack {
-                    Image(systemName: "person")
-                        .foregroundColor(.gray)
-                        .imageScale(.large)
-                    Text("Logout")
                         .foregroundColor(.gray)
                         .font(.headline)
                 }

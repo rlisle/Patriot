@@ -84,21 +84,6 @@ struct LoginView: View {
         }
     }
     
-    func handleLogin() {
-        hideSpinner = false
-        devices.photonManager.login(user: userName, password: password) { (error) in
-            hideSpinner = true
-            if let error = error {
-                print("Error logging in: \(error)")
-                //TODO: display an error message, but stay on this screen
-                return
-            }
-            devices.showingLogin = false
-            
-            fetchDevices()
-        }
-    }
-    
     func fetchDevices() {
         //TODO:
     }

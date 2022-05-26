@@ -21,7 +21,6 @@ class PatriotModel: ObservableObject
 
     // Convenience binding for sidemenu, details
     @Published var showingMenu = false
-    @Published var showingLogin = false
     @Published var showingDetails = false
     var selectedDevice = Device(name: "none", type: .Light)
     
@@ -30,7 +29,6 @@ class PatriotModel: ObservableObject
     @Published var sleeping: Sleeping = .Awake
     @Published var partOfDay: PartOfDay = .Afternoon
     
-    let photonManager:  PhotonManager
     let mqtt:           MQTTManager
     let settings:       Settings
     
@@ -59,11 +57,9 @@ class PatriotModel: ObservableObject
     {
         settings = Settings(store: UserDefaultsSettingsStore())
         devices = settings.devices ?? []  // Initialize with cached devices
-        photonManager = PhotonManager()
         mqtt = MQTTManager(forTest: forTest)
         favoritesList = settings.favorites ?? []
         mqtt.mqttDelegate = self          // Receives MQTT messages
-        photonManager.particleIoDelegate = self // Receives particle.io messages
         if forTest {
             devices = getTestDevices()
             self.sleeping = sleeping
@@ -79,42 +75,6 @@ class PatriotModel: ObservableObject
 }
 
 
-// LogIn
-extension PatriotModel {
-    
-    func login(user: String, password: String) {
-        photonManager.login(user: user, password: password) { error in
-            guard error == nil else {
-                print("Error auto logging in: \(error!)")
-                self.showingLogin = true
-                return
-            }
-            self.showingLogin = false
-            // TODO: loading indicator or better yet progressive updates?
-            self.photonManager.getAllPhotonDevices { deviceInfos, error in
-                if error == nil {
-                    print("Found \(deviceInfos.count) photon devices")
-                    self.addDeviceInfos(deviceInfos)
-                }
-            }
-        }
-    }
-    
-    func logout() {
-        photonManager.logout()
-        self.devices = []
-        self.showingLogin = true
-    }
-    
-    func performAutoLogin() {
-        print("Perform auto-login")
-        if let user = settings.particleUser, let password = settings.particlePassword {
-            print("Performing auto-login \(user), \(password)")
-            login(user: user, password: password)
-        }
-    }
-}
-
 // Device Messaging
 extension PatriotModel: MQTTReceiving {
     
@@ -124,7 +84,6 @@ extension PatriotModel: MQTTReceiving {
             mqtt.reconnect()
             
             if isConnected == false {
-                showingLogin = true
                 return
             }
         }
@@ -142,12 +101,6 @@ extension PatriotModel: MQTTReceiving {
         //print("PatriotModel sendMessage \(device.name) to \(device.percent)")
         if mqtt.isConnected {
             mqtt.sendPatriotMessage(device: device.name, percent: device.percent)
-        } else {
-            photonManager.sendCommand(device: device) { (error) in
-                if let error = error {
-                    print("sendMessage particle.io error: \(error)")
-                }
-            }
         }
     }
     
@@ -157,13 +110,6 @@ extension PatriotModel: MQTTReceiving {
         if mqtt.isConnected {
             print("Sending to MQTT")
             mqtt.sendMessage(topic: topic, message: message)
-        } else if photonManager.isLoggedIn {
-            print("Sending to Particle.io")
-            photonManager.publish(event: topic + ":" + message) { (error) in
-                if let error = error {
-                    print("sendMessage particle.io error: \(error)")
-                }
-            }
         } else {
             print("sendMessage \(topic), \(message) not sent. No connection.")
         }
