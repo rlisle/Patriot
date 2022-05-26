@@ -154,7 +154,6 @@
 				27473030265D182F00C8EFDE /* PatriotTests */,
 				2747303B265D182F00C8EFDE /* PatriotUITests */,
 				2747301D265D182E00C8EFDE /* Products */,
-				D27112F62ACE9251195A69A2 /* Pods */,
 				FB4C5A647ECC4E394243E9CF /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -285,13 +284,6 @@
 				27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */,
 			);
 			path = Buttons;
-			sourceTree = "<group>";
-		};
-		D27112F62ACE9251195A69A2 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		FB4C5A647ECC4E394243E9CF /* Frameworks */ = {

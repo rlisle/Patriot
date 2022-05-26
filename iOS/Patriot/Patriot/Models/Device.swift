@@ -18,11 +18,11 @@ class Device: ObservableObject
     @Published var percent:     Int
     @Published var isFavorite:  Bool
 
-    let name:      String       // Mixed case, spaces allowed
-    var onImage:   UIImage
-    var offImage:  UIImage
-    var type:      DeviceType
-    var room:      String       // Mixed case, spaces allowed
+    let name:           String       // Mixed case, spaces allowed
+    var onImageName:    String
+    var offImageName:   String
+    var type:           DeviceType
+    var room:           String       // Mixed case, spaces allowed
 
     weak var publisher: DevicePublishing?
     
@@ -36,14 +36,14 @@ class Device: ObservableObject
         
         switch type {
         case .Curtain:
-            self.onImage = #imageLiteral(resourceName: "CurtainOpen")
-            self.offImage = #imageLiteral(resourceName: "CurtainClosed")
+            self.onImageName = "CurtainOpen"
+            self.offImageName = "CurtainClosed"
         case .Switch:
-            self.onImage = #imageLiteral(resourceName: "SwitchOn")
-            self.offImage = #imageLiteral(resourceName: "SwitchOff")
+            self.onImageName = "SwitchOn"
+            self.offImageName = "SwitchOff"
         default:
-            self.onImage = #imageLiteral(resourceName: "LightOn")
-            self.offImage = #imageLiteral(resourceName: "LightOff")
+            self.onImageName = "LightOn"
+            self.offImageName = "LightOff"
         }
     }
     

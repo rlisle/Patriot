@@ -30,7 +30,7 @@ struct DeviceView: View {
         GeometryReader { geometry in
             ZStack {
                 VStack {
-                    Image(uiImage: device.percent > 0 ? device.onImage : device.offImage)
+                    Image(device.percent > 0 ? device.onImageName : device.offImageName)
                     .resizable()
                     .scaledToFit()
                     .padding(0)
