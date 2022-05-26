@@ -271,21 +271,6 @@ extension PatriotModel {
         }
     }
 
-    func addDeviceInfos(_ deviceInfos: [DeviceInfo])
-    {
-        //print("PatriotModel addDeviceInfos, count: \(deviceInfos.count)")
-        var accumulatedDevices: Set<Device> = Set<Device>(devices)
-        for deviceInfo in deviceInfos
-        {
-            let newDevice = Device(deviceInfo)
-            newDevice.publisher = self
-            newDevice.isFavorite = favoritesList.contains(deviceInfo.name)
-            accumulatedDevices.insert(newDevice)
-        }
-        self.devices = Array(accumulatedDevices)
-        //print("Devices.count now \(devices.count)")
-    }
-    
     func addDevice(_ device: Device)
     {
         //print("PatriotModel addDevice \(device.name)")

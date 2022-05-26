@@ -47,15 +47,6 @@ class Device: ObservableObject
         }
     }
     
-    convenience init(_ info: DeviceInfo) {
-        self.init(
-            name: info.name,
-            type: info.type,
-            percent: info.percent,
-            room: info.room
-        )
-    }
-    
     func manualToggle() {
         manualSet(percent: percent == 0 ? 100 : 0)
     }
