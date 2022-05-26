@@ -83,6 +83,20 @@ extension MQTTManager: MQTTSending
 }
 
 extension MQTTManager: CocoaMQTTDelegate {
+        
+    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
+        print("MQTT didConnectAck")
+        mqtt.subscribe(mqttTopic)
+        mqttDelegate?.connectionDidChange(isConnected: true)
+    }
+
+    func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
+        //print("MQTT didPublishMessage: \(message.topic), \(String(describing: message.string))")
+    }
+    
+    func mqtt(_ mqtt: CocoaMQTT, didPublishAck id: UInt16) {
+        //print("MQTT didPublishAck")
+    }
     
     func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
         if let payload: String = message.string {
@@ -91,37 +105,17 @@ extension MQTTManager: CocoaMQTTDelegate {
             self.mqttDelegate?.didReceiveMessage(topic: message.topic, message: payload)
         }
     }
-    
-    // Other required methods for CocoaMQTTDelegate
-    func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
-        //print("MQTT didReceive trust: \(trust)")
-        completionHandler(true)
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
-        print("MQTT didConnectAck")
-        mqtt.subscribe(mqttTopic)
-        mqttDelegate?.connectionDidChange(isConnected: true)
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
-        //print("MQTT didPublishMessage: \(message.topic), \(String(describing: message.string))")
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didPublishAck id: UInt16) {
-        //print("MQTT didPublishAck id: \(id)")
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didSubscribeTopic topics: [String]) {
-        for topic in topics {
+
+    func mqtt(_ mqtt: CocoaMQTT, didSubscribeTopics success: NSDictionary, failed: [String]) {
+        for topic in success {
             print("MQTT didSubscribeTopic: \(topic)")
         }
     }
     
-    func mqtt(_ mqtt: CocoaMQTT, didUnsubscribeTopic topic: String) {
-        print("MQTT didUnsubscribeTopic: \(topic)")
+    func mqtt(_ mqtt: CocoaMQTT, didUnsubscribeTopics topics: [String]) {
+        print("MQTT didUnsubscribeTopic: \(topics)")
     }
-    
+
     func mqttDidPing(_ mqtt: CocoaMQTT) {
         //print("MQTT ping")
     }
@@ -135,7 +129,20 @@ extension MQTTManager: CocoaMQTTDelegate {
         isConnected = false
         mqttDelegate?.connectionDidChange(isConnected: false)
     }
+
+    func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
+        //print("MQTT didReceive trust: \(trust)")
+        completionHandler(true)
+    }
     
+    func mqtt(_ mqtt: CocoaMQTT, didPublishComplete id: UInt16) {
+        //print("MQTT didPublishAck id: \(id)")
+    }
+    
+    func mqtt(_ mqtt: CocoaMQTT, didStateChangeTo state: CocoaMQTTConnState) {
+        print("MQTT didStateChange")
+    }
+
     func _console(_ info: String) {
         //AdLog.text("MQTT console: \(info)", type: .debug)
     }

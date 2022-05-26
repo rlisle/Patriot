@@ -21,7 +21,7 @@
 //
 
 import Foundation
-import Particle_SDK
+import particle
 
 class PhotonManager: NSObject
 {
