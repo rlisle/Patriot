@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum DeviceType: String {
+enum DeviceType: String, Codable {
     case Unknown = "?"
     case Curtain = "C"
     case Fan = "F"

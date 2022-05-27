@@ -30,7 +30,7 @@ struct DeviceView: View {
         GeometryReader { geometry in
             ZStack {
                 VStack {
-                    Image(uiImage: device.percent > 0 ? device.onImage : device.offImage)
+                    Image(device.percent > 0 ? device.onImageName : device.offImageName)
                     .resizable()
                     .scaledToFit()
                     .padding(0)
@@ -39,11 +39,9 @@ struct DeviceView: View {
                         device.manualToggle()
                     }
                     .onLongPressGesture(minimumDuration: 1.0, perform: {
-                        print("longPress")
                         model.selectedDevice = self.device
                         model.showingDetails = true
                     }, onPressingChanged: { pressed in
-                        print("pressing changed \(pressed)")
                         brighten = pressed
                     })
                     Spacer()
@@ -57,7 +55,6 @@ struct DeviceView: View {
                                 .resizable()
                                 .foregroundColor(device.isFavorite ? .yellow : .gray)
                                 .padding(4)
-                                //TODO: specify sizes smarter
                                 .frame(width: geometry.size.width/4, height: geometry.size.width/4)
                         }
                     }

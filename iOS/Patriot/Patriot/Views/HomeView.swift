@@ -14,7 +14,7 @@ struct HomeView: View {
     @EnvironmentObject var model: PatriotModel
     @EnvironmentObject var appDelegate: AppDelegate
     @EnvironmentObject var sceneDelegate: SceneDelegate
-
+    
     init() {
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
     }
@@ -63,7 +63,6 @@ struct HomeView: View {
         }
         // This fixes the layout constraint warnings
         .navigationViewStyle(StackNavigationViewStyle())
-
     }
 }
 

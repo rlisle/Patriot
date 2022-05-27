@@ -13,18 +13,44 @@ protocol DevicePublishing: AnyObject {
     func isFavoriteChanged(device: Device)
 }
 
-class Device: ObservableObject
+class Device: ObservableObject, Codable
 {
     @Published var percent:     Int
     @Published var isFavorite:  Bool
 
-    let name:      String       // Mixed case, spaces allowed
-    var onImage:   UIImage
-    var offImage:  UIImage
-    var type:      DeviceType
-    var room:      String       // Mixed case, spaces allowed
+    let name:           String       // Mixed case, spaces allowed
+    var onImageName:    String
+    var offImageName:   String
+    var type:           DeviceType
+    var room:           String       // Mixed case, spaces allowed
 
     weak var publisher: DevicePublishing?
+    
+    private enum CodingKeys: CodingKey {
+        case percent, isFavorite, name, onImageName, offImageName, type, room
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(percent, forKey: .percent)
+        try container.encode(isFavorite, forKey: .isFavorite)
+        try container.encode(name, forKey: .name)
+        try container.encode(onImageName, forKey: .onImageName)
+        try container.encode(offImageName, forKey: .offImageName)
+        try container.encode(type, forKey: .type)
+        try container.encode(room, forKey: .room)
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        percent = try container.decode(Int.self, forKey: .percent)
+        isFavorite = try container.decode(Bool.self, forKey: .isFavorite)
+        name = try container.decode(String.self, forKey: .name)
+        onImageName = try container.decode(String.self, forKey: .onImageName)
+        offImageName = try container.decode(String.self, forKey: .offImageName)
+        type = try container.decode(DeviceType.self, forKey: .type)
+        room = try container.decode(String.self, forKey: .room)
+    }
     
     public init(name: String, type: DeviceType, percent: Int = 0, room: String = "Default", isFavorite: Bool = false) {
         self.name        = name
@@ -36,24 +62,15 @@ class Device: ObservableObject
         
         switch type {
         case .Curtain:
-            self.onImage = #imageLiteral(resourceName: "CurtainOpen")
-            self.offImage = #imageLiteral(resourceName: "CurtainClosed")
+            self.onImageName = "CurtainOpen"
+            self.offImageName = "CurtainClosed"
         case .Switch:
-            self.onImage = #imageLiteral(resourceName: "SwitchOn")
-            self.offImage = #imageLiteral(resourceName: "SwitchOff")
+            self.onImageName = "SwitchOn"
+            self.offImageName = "SwitchOff"
         default:
-            self.onImage = #imageLiteral(resourceName: "LightOn")
-            self.offImage = #imageLiteral(resourceName: "LightOff")
+            self.onImageName = "LightOn"
+            self.offImageName = "LightOff"
         }
-    }
-    
-    convenience init(_ info: DeviceInfo) {
-        self.init(
-            name: info.name,
-            type: info.type,
-            percent: info.percent,
-            room: info.room
-        )
     }
     
     func manualToggle() {
@@ -62,6 +79,9 @@ class Device: ObservableObject
     
     func manualSet(percent: Int) {
         self.percent = percent
+        if publisher == nil {
+            print("publisher nil !!!")
+        }
         publisher?.devicePercentChanged(device: self)
     }
     

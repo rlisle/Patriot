@@ -65,6 +65,20 @@ struct MenuView: View {
                 }
                 .padding(.top, 30)
             }
+            Button(action: {
+                print("Reset Devices")
+                model.resetDevices()
+            }) {
+                HStack {
+                    Image(systemName: "tv")
+                        .foregroundColor(.gray)
+                        .imageScale(.large)
+                    Text("Reset Devices")
+                        .foregroundColor(.gray)
+                        .font(.headline)
+                }
+                .padding(.top, 30)
+            }
             Spacer()
         }
         .padding()

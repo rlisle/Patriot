@@ -21,7 +21,6 @@
 		27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306F265D53DE00C8EFDE /* SettingsStore.swift */; };
 		27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473077265D54A800C8EFDE /* DeviceNotifying.swift */; };
 		27473084265D54A800C8EFDE /* DeviceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473079265D54A800C8EFDE /* DeviceType.swift */; };
-		27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747307C265D54A800C8EFDE /* DeviceInfo.swift */; };
 		2747308F266002D700C8EFDE /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747308E266002D700C8EFDE /* ViewExtensions.swift */; };
 		274D66BF2699F51D00303F1E /* MQTTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66BE2699F51D00303F1E /* MQTTManager.swift */; };
 		274D66C4269A51DD00303F1E /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C3269A51DD00303F1E /* DeviceView.swift */; };
@@ -95,7 +94,6 @@
 		2747306F265D53DE00C8EFDE /* SettingsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		27473077265D54A800C8EFDE /* DeviceNotifying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceNotifying.swift; sourceTree = "<group>"; };
 		27473079265D54A800C8EFDE /* DeviceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceType.swift; sourceTree = "<group>"; };
-		2747307C265D54A800C8EFDE /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		2747308E266002D700C8EFDE /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		274D66BE2699F51D00303F1E /* MQTTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTManager.swift; sourceTree = "<group>"; };
 		274D66C3269A51DD00303F1E /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
@@ -156,7 +154,6 @@
 				27473030265D182F00C8EFDE /* PatriotTests */,
 				2747303B265D182F00C8EFDE /* PatriotUITests */,
 				2747301D265D182E00C8EFDE /* Products */,
-				D27112F62ACE9251195A69A2 /* Pods */,
 				FB4C5A647ECC4E394243E9CF /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -237,7 +234,6 @@
 			isa = PBXGroup;
 			children = (
 				2747306C265D53DE00C8EFDE /* Device.swift */,
-				2747307C265D54A800C8EFDE /* DeviceInfo.swift */,
 				2747306D265D53DE00C8EFDE /* PatriotModel.swift */,
 				2747306F265D53DE00C8EFDE /* SettingsStore.swift */,
 			);
@@ -288,13 +284,6 @@
 				27917126282BCD6A007F4CA5 /* PartOfDayButton.swift */,
 			);
 			path = Buttons;
-			sourceTree = "<group>";
-		};
-		D27112F62ACE9251195A69A2 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		FB4C5A647ECC4E394243E9CF /* Frameworks */ = {
@@ -457,7 +446,6 @@
 				27473022265D182E00C8EFDE /* HomeView.swift in Sources */,
 				27D46758283A645100C5CD5A /* DeviceDetailView.swift in Sources */,
 				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
-				27473087265D54A800C8EFDE /* DeviceInfo.swift in Sources */,
 				27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */,
 				27917125282BCCF5007F4CA5 /* SleepingButton.swift in Sources */,
 				27473074265D53DE00C8EFDE /* SettingsStore.swift in Sources */,
