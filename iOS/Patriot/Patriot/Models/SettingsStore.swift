@@ -29,8 +29,8 @@ protocol SettingsStore
     func set(_ string: String?, forKey: SettingsKey)
     func getStringArray(forKey: SettingsKey) -> [String]?
     func set(_ array: [String]?, forKey: SettingsKey)
-    func getDeviceArray(forKey: SettingsKey) -> [Device]?
-    func set(_ array: [Device]?, forKey: SettingsKey)
+    func getDeviceArray(forKey: SettingsKey) -> [Device]
+    func set(_ array: [Device], forKey: SettingsKey)
 }
 
 class UserDefaultsSettingsStore: SettingsStore
@@ -83,15 +83,22 @@ class UserDefaultsSettingsStore: SettingsStore
         userDefaults.set(stringArray, forKey: key.rawValue)
     }
     
-    func getDeviceArray(forKey key: SettingsKey) -> [Device]?
+    func getDeviceArray(forKey key: SettingsKey) -> [Device]
     {
-        return userDefaults.array(forKey: key.rawValue) as? [Device]
+        if let data = userDefaults.object(forKey: key.rawValue) as? Data,
+           let devices = try? PropertyListDecoder().decode([Device].self, from: data) {
+            print("Restoring \(devices.count) devices")
+            return devices
+        }
+        return []
     }
     
-    
-    func set(_ deviceArray: [Device]?, forKey key: SettingsKey)
+    func set(_ deviceArray: [Device], forKey key: SettingsKey)
     {
-        userDefaults.set(deviceArray, forKey: key.rawValue)
+        print("Saving \(deviceArray) to userDefaults")
+        if let encoded = try? PropertyListEncoder().encode(deviceArray) {
+            userDefaults.set(encoded, forKey: key.rawValue)
+        }
     }
 }
 
@@ -137,7 +144,7 @@ extension Settings
         }
     }
     
-    var devices: [Device]? {
+    var devices: [Device] {
         get {
             return store.getDeviceArray(forKey: .devices)
         }

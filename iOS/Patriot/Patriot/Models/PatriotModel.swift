@@ -32,9 +32,6 @@ class PatriotModel: ObservableObject
     let mqtt:           MQTTManager
     let settings:       Settings
     
-    var didQueryDevices = false
-    var didReceiveDevices = false
-    
     var alive: [ String : String ] = [:]      // eg. rearpanel : Sun 04:52
     var logs: [ String ] = []
     var loglevels: [ String : String ] = [:]  // eg. rearpanel : warn
@@ -56,10 +53,13 @@ class PatriotModel: ObservableObject
         )
     {
         settings = Settings(store: UserDefaultsSettingsStore())
-        devices = settings.devices ?? []  // Initialize with cached devices
-        mqtt = MQTTManager(forTest: forTest)
         favoritesList = settings.favorites ?? []
-        mqtt.mqttDelegate = self          // Receives MQTT messages
+        devices = settings.devices
+        mqtt = MQTTManager(forTest: forTest)
+        mqtt.mqttDelegate = self
+        for device in devices {
+            device.publisher = self
+        }
         if forTest {
             devices = getTestDevices()
             self.sleeping = sleeping
@@ -71,6 +71,10 @@ class PatriotModel: ObservableObject
     convenience init(devices: [Device]) {
         self.init(forTest: true)
         self.devices = Array(Set(devices))
+    }
+    
+    func queryDevices() {
+        mqtt.sendMessage(topic: "patriot/query", message: "all")
     }
 }
 
@@ -89,11 +93,8 @@ extension PatriotModel: MQTTReceiving {
         }
         
         print("MQTT is connected")
-        // This needs to be done here so subscribe is already set
-        if didQueryDevices == false {
-            didQueryDevices = true
-            mqtt.sendMessage(topic: "patriot/query", message: "all")
-        }
+        print("Querying devices")
+        queryDevices()
     }
 
     func sendMessage(device: Device)
@@ -159,11 +160,6 @@ extension PatriotModel: MQTTReceiving {
             resets[ message ] = Date()
             
         case ("state", 5):
-            if didReceiveDevices == false {
-                print("Receiving devices by MQTT")
-                devices = []
-                didReceiveDevices = true
-            }
             let room = splitTopic[2]
             let type = splitTopic[3].uppercased()
             let deviceName = splitTopic[4]
@@ -191,11 +187,11 @@ extension PatriotModel {
         if let device = getDevice(name: name, room: room) {
             // Set existing device value
             device.percent = percent
-            //print("Setting device \(room):\(name) to \(percent)")
+            print("Setting device \(room):\(name) to \(percent)")
             
         } else if isDisplayableDevice(type: type) {
             // create new device
-            //print("Creating device \(room):\(name) with value \(percent)")
+            print("Creating device \(room):\(name) with value \(percent)")
             addDevice(Device(name: name, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
         }
     }
@@ -277,6 +273,12 @@ extension PatriotModel {
         devices.append(device)
         device.publisher = self
         device.isFavorite = favoritesList.contains(device.name)
+        settings.devices = devices
+    }
+    
+    func resetDevices() {
+        devices = []
+        
     }
 }
 

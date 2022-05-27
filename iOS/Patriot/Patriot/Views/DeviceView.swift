@@ -36,14 +36,15 @@ struct DeviceView: View {
                     .padding(0)
                     .opacity(brighten ? 1.0 : 0.8)
                     .onTapGesture {
+                        print("Tap device \(device.name)")
                         device.manualToggle()
                     }
                     .onLongPressGesture(minimumDuration: 1.0, perform: {
-                        print("longPress")
+                        print("longPress device \(device.name)")
                         model.selectedDevice = self.device
                         model.showingDetails = true
                     }, onPressingChanged: { pressed in
-                        print("pressing changed \(pressed)")
+                        print("pressing \(device.name) \(pressed)")
                         brighten = pressed
                     })
                     Spacer()
@@ -57,7 +58,6 @@ struct DeviceView: View {
                                 .resizable()
                                 .foregroundColor(device.isFavorite ? .yellow : .gray)
                                 .padding(4)
-                                //TODO: specify sizes smarter
                                 .frame(width: geometry.size.width/4, height: geometry.size.width/4)
                         }
                     }

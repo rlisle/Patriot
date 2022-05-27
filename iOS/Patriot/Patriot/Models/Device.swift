@@ -79,6 +79,9 @@ class Device: ObservableObject, Codable
     
     func manualSet(percent: Int) {
         self.percent = percent
+        if publisher == nil {
+            print("publisher nil !!!")
+        }
         publisher?.devicePercentChanged(device: self)
     }
     
