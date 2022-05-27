@@ -92,15 +92,11 @@ extension PatriotModel: MQTTReceiving {
                 return
             }
         }
-        
-        print("MQTT is connected")
-        print("Querying devices")
         queryDevices()
     }
 
     func sendMessage(device: Device)
     {
-        //print("PatriotModel sendMessage \(device.name) to \(device.percent)")
         if mqtt.isConnected {
             mqtt.sendPatriotMessage(device: device.name, percent: device.percent)
         }
@@ -108,9 +104,7 @@ extension PatriotModel: MQTTReceiving {
     
     func sendMessage(topic: String, message: String)
     {
-        print("PatriotModel sendMessage \(topic), \(message)")
         if mqtt.isConnected {
-            print("Sending to MQTT")
             mqtt.sendMessage(topic: topic, message: message)
         } else {
             print("sendMessage \(topic), \(message) not sent. No connection.")
@@ -120,8 +114,6 @@ extension PatriotModel: MQTTReceiving {
     // MQTT or Particle.io message received
     // New state format: "patriot/state/room/<t>/name value"
     func didReceiveMessage(topic: String, message: String) {
-        
-        //print("didReceiveMessage: \(topic), \(message)")
         
         // Parse out known messages
         let splitTopic = topic.components(separatedBy: "/")
@@ -186,13 +178,9 @@ extension PatriotModel {
         }
             
         if let device = getDevice(name: name, room: room) {
-            // Set existing device value
             device.percent = percent
-            print("Setting device \(room):\(name) to \(percent)")
             
         } else if isDisplayableDevice(type: type) {
-            // create new device
-            print("Creating device \(room):\(name) with value \(percent)")
             addDevice(Device(name: name, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
         }
     }
@@ -270,7 +258,6 @@ extension PatriotModel {
 
     func addDevice(_ device: Device)
     {
-        //print("PatriotModel addDevice \(device.name)")
         devices.append(device)
         device.publisher = self
         device.isFavorite = favoritesList.contains(device.name)
@@ -288,10 +275,8 @@ extension PatriotModel: DeviceNotifying
 {
     func deviceChanged(name: String, percent: Int)
     {
-        //print("DeviceManager: DeviceChanged: \(name)")
         if let index = devices.firstIndex(where: {$0.name == name})
         {
-            //print("   index of device = \(index)")
             devices[index].percent = percent
         }
     }
@@ -300,7 +285,6 @@ extension PatriotModel: DeviceNotifying
 // Called by a device when manually changed
 extension PatriotModel: DevicePublishing {
     func devicePercentChanged(device: Device) {
-        //print("PatriotModel: devicePercentChanged: \(device.name), \(device.type) = \(device.percent)")
         sendMessage(device: device)
     }
 

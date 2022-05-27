@@ -101,7 +101,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
         if let payload: String = message.string {
             let topic = message.topic
-            print("MQTT didReceiveMessage: \(topic), \(payload)")
+            //print("MQTT didReceiveMessage: \(topic), \(payload)")
             self.mqttDelegate?.didReceiveMessage(topic: message.topic, message: payload)
         }
     }

@@ -12,25 +12,25 @@ class SceneDelegate: NSObject, UIWindowSceneDelegate, ObservableObject {
     var window: UIWindow?
     
     func sceneWillEnterForeground(_ scene: UIScene) {
-        print("sceneWillEnterForeground")
+        //print("sceneWillEnterForeground")
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
-        print("sceneDidBecomeActive")
+        //print("sceneDidBecomeActive")
     }
     
     func sceneWillResignActive(_ scene: UIScene) {
-        print("sceneWillResignActive")
+        //print("sceneWillResignActive")
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        print("scene continue userActivity")
+        //print("scene continue userActivity")
         handleUserActivity(userActivity)
     }
 
     func handleUserActivity(_ userActivity: NSUserActivity) {
 
-        print("Scene handleUserActivity")
+        //print("Scene handleUserActivity")
 
         guard let interaction = userActivity.interaction else {
             print("Scene interaction not set")
@@ -45,7 +45,7 @@ class SceneDelegate: NSObject, UIWindowSceneDelegate, ObservableObject {
             return
         }
 
-        print("Scene TODO: handle it")
+        //print("Scene TODO: handle it")
         if let intent = interaction.intent as? RVIntent,
            let device = intent.device,
            let percent = intent.percent {
