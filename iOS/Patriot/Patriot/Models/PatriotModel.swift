@@ -54,16 +54,17 @@ class PatriotModel: ObservableObject
     {
         settings = Settings(store: UserDefaultsSettingsStore())
         favoritesList = settings.favorites ?? []
-        devices = settings.devices
         mqtt = MQTTManager(forTest: forTest)
         mqtt.mqttDelegate = self
-        for device in devices {
-            device.publisher = self
-        }
         if forTest {
             devices = getTestDevices()
             self.sleeping = sleeping
             self.partOfDay = partOfDay
+        } else {
+            devices = settings.devices
+        }
+        for device in devices {
+            device.publisher = self
         }
     }
 
