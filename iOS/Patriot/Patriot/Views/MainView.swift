@@ -26,7 +26,7 @@ struct MainView: View {
             }
         }
         .padding(.top, 16)
-        .background(Color(.black).ignoresSafeArea())
+        .background(Color("Maroon").ignoresSafeArea())
     }
 }
 
@@ -46,8 +46,8 @@ struct FavoritesView: View {
                     Text("Favorites")
                     Spacer()
                 }
-                .foregroundColor(.white)
-                .background(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .foregroundColor(Color("LightPink"))
+                .background(Color("Maroon"))
             ) {
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
@@ -78,8 +78,8 @@ struct RoomView: View {
                     Text(room)
                     Spacer()
                 }
-                .foregroundColor(.white)
-                .background(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .foregroundColor(Color("LightPink"))
+                .background(Color("Maroon"))
             ) {
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(model.devices.filter { /*$0.isFavorite == false  &&*/ $0.room == room}, id: \.self) { device in

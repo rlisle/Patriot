@@ -53,7 +53,7 @@ struct DeviceView: View {
                             Image(systemName: device.isFavorite ? "star.fill" : "star")
                                 .renderingMode(.template)
                                 .resizable()
-                                .foregroundColor(device.isFavorite ? .yellow : .gray)
+                                .foregroundColor(device.isFavorite ? Color("HotPink") : Color("LightPink"))
                                 .padding(4)
                                 .frame(width: geometry.size.width/4, height: geometry.size.width/4)
                         }
@@ -61,11 +61,11 @@ struct DeviceView: View {
                     Spacer()
                     Text(device.name.camelCaseToWords())
                         .font(.subheadline)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("LightPink"))
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.width)
-            .background(Color.black)
+            .background(Color("Maroon"))
         }
     }
 }

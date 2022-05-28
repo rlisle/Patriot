@@ -44,12 +44,12 @@ struct HomeView: View {
                         .frame(width: sideMenuWidth)
                 }
             }
-            .background(Color.black)
+            .background(Color("Moroon"))
             .gesture(dragToClose)
 
             .navigationBarTitle("Patriot")
             .navigationBarTitleDisplayMode(.inline)
-            .foregroundColor(.white)
+            .foregroundColor(Color("LightPink"))
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     SideMenuButton(showMenu: $model.showingMenu)

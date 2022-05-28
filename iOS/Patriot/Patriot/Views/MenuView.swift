@@ -24,10 +24,10 @@ struct MenuView: View {
             }) {
                 HStack {
                     Image(systemName: "sunrise")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("LightPink"))
                         .imageScale(.large)
                     Text("Awake")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("LightPink"))
                         .font(.headline)
                 }
                 .padding(.top, 100)
@@ -41,10 +41,10 @@ struct MenuView: View {
             }) {
                 HStack {
                     Image(systemName: "bed.double")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("LightPink"))
                         .imageScale(.large)
                     Text("Bedtime")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("LightPink"))
                         .font(.headline)
                 }
                 .padding(.top, 30)
@@ -57,10 +57,10 @@ struct MenuView: View {
             }) {
                 HStack {
                     Image(systemName: "tv")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("LightPink"))
                         .imageScale(.large)
                     Text("Watch TV")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("LightPink"))
                         .font(.headline)
                 }
                 .padding(.top, 30)
@@ -71,10 +71,10 @@ struct MenuView: View {
             }) {
                 HStack {
                     Image(systemName: "tv")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("LightPink"))
                         .imageScale(.large)
                     Text("Reset Devices")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("LightPink"))
                         .font(.headline)
                 }
                 .padding(.top, 30)
@@ -83,7 +83,7 @@ struct MenuView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(red: 32/255, green: 32/255, blue: 32/255))
+        .background(Color("Maroon"))
         .edgesIgnoringSafeArea(.all)
     }
 }
