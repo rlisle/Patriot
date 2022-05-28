@@ -40,7 +40,7 @@ CMakeLists.txt
 # Xcode files
 *.xcuserstate
 xcuserdata/
-xcshareddata/
+#xcshareddata/ Need to include Package.resolved
 Secrets.swift
 Packages
 
