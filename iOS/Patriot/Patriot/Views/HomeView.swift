@@ -44,7 +44,7 @@ struct HomeView: View {
                         .frame(width: sideMenuWidth)
                 }
             }
-            .background(Color("Moroon"))
+            .background(Color("Maroon"))
             .gesture(dragToClose)
 
             .navigationBarTitle("Patriot")
