@@ -33,7 +33,7 @@ struct DeviceView: View {
                     Image(device.percent > 0 ? device.onImageName : device.offImageName)
                     .resizable()
                     .scaledToFit()
-                    .padding(0)
+                    .padding(.top, 8)
                     .opacity(brighten ? 1.0 : 0.8)
                     .onTapGesture {
                         device.manualToggle()
@@ -45,6 +45,12 @@ struct DeviceView: View {
                         brighten = pressed
                     })
                     Spacer()
+                    Text(device.name.camelCaseToWords())
+                        .font(.subheadline)
+                        .foregroundColor(Color("TextColor"))
+                        .lineLimit(1)
+                        .padding(.bottom, 8)
+
                 }
                 VStack {
                     HStack {
@@ -53,19 +59,19 @@ struct DeviceView: View {
                             Image(systemName: device.isFavorite ? "star.fill" : "star")
                                 .renderingMode(.template)
                                 .resizable()
-                                .foregroundColor(device.isFavorite ? Color("HotPink") : Color("LightPink"))
+                                .foregroundColor(device.isFavorite ? Color("AccentColor") : Color("TextColor"))
                                 .padding(4)
                                 .frame(width: geometry.size.width/4, height: geometry.size.width/4)
                         }
                     }
                     Spacer()
-                    Text(device.name.camelCaseToWords())
-                        .font(.subheadline)
-                        .foregroundColor(Color("LightPink"))
+//                    Text(device.name.camelCaseToWords())
+//                        .font(.subheadline)
+//                        .foregroundColor(Color("TextColor"))
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.width)
-            .background(Color("Maroon"))
+            .background(Color("BackgroundColor"))
         }
     }
 }
