@@ -27,7 +27,7 @@ struct DeviceView: View {
 
     var body: some View {
 
-        GeometryReader { geometry in
+        GeometryReader { geometry in    // Use to calculate star size
             ZStack {
                 VStack {
                     Image(device.percent > 0 ? device.onImageName : device.offImageName)
@@ -49,7 +49,7 @@ struct DeviceView: View {
                         .font(.subheadline)
                         .foregroundColor(Color("TextColor"))
                         .lineLimit(1)
-                        .minimumScaleFactor(0.01)
+                        .minimumScaleFactor(0.7)
                         .padding(.bottom, 8)
 
                 }

@@ -13,7 +13,7 @@ struct SectionView: View {
     var section: String
 
     let columns = [
-        GridItem(.adaptive(minimum: 80, maximum: 160))
+        GridItem(.adaptive(minimum: 100, maximum: 160))
     ]
     
     var body: some View {
@@ -29,7 +29,8 @@ struct SectionView: View {
                 .background(Color("HeadingBackground"))
 
             ) {
-                LazyVGrid(columns: columns, spacing: 8) {
+                LazyVGrid(columns: columns, spacing: 8)
+                {
                     if section == "Favorites" {
                         ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
                             DeviceView(device: device)
@@ -47,7 +48,6 @@ struct SectionView: View {
                 }
             }
             .background(Color("BackgroundColor").ignoresSafeArea())
-        .padding(.horizontal)
     }
 }
 
