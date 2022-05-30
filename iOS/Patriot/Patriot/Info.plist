@@ -52,7 +52,7 @@
 		<key>UIImageRespectsSafeAreaInsets</key>
 		<true/>
 		<key>UIImageName</key>
-		<string>LightOff</string>
+		<string>LightOn</string>
 		<key>UIColorName</key>
 		<string>LaunchScreenBackground</string>
 	</dict>

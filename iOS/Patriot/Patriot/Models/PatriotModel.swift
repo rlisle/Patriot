@@ -317,7 +317,7 @@ extension PatriotModel {
             Device(name: "Light15", type: .Light, percent: 0, room: "Kitchen"),
             Device(name: "Relay16", type: .Relay, percent: 0, room: "Bedroom"),
             Device(name: "Light17", type: .Light, percent: 100, room: "Living Room"),
-            Device(name: "Light18", type: .Light, percent: 0, room: "Living Room")
+            Device(name: "Patriot", type: .Light, percent:100, room: "Living Room")
         ]
     }
 }
