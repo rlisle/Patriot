@@ -49,9 +49,11 @@ struct DeviceView: View {
                         .font(.subheadline)
                         .foregroundColor(Color("TextColor"))
                         .lineLimit(1)
+                        .minimumScaleFactor(0.01)
                         .padding(.bottom, 8)
 
                 }
+                // Favorite Star
                 VStack {
                     HStack {
                         Spacer()
@@ -59,15 +61,12 @@ struct DeviceView: View {
                             Image(systemName: device.isFavorite ? "star.fill" : "star")
                                 .renderingMode(.template)
                                 .resizable()
-                                .foregroundColor(device.isFavorite ? Color("AccentColor") : Color("TextColor"))
+                                .foregroundColor(device.isFavorite ? Color(.white) : Color("TextColor"))
                                 .padding(4)
                                 .frame(width: geometry.size.width/4, height: geometry.size.width/4)
                         }
                     }
                     Spacer()
-//                    Text(device.name.camelCaseToWords())
-//                        .font(.subheadline)
-//                        .foregroundColor(Color("TextColor"))
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.width)
@@ -80,11 +79,11 @@ struct DeviceView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             DeviceView(device: Device(name: "LeftTrim", type: .Light, percent: 0, isFavorite: false))
-                .previewLayout(PreviewLayout.fixed(width: 100, height: 100))
+                .previewLayout(PreviewLayout.fixed(width:200, height: 200))
                 .previewDisplayName("Device Off")
             
             DeviceView(device: Device(name: "KitchenCeiling", type: .Light, percent: 100, isFavorite: true))
-                .previewLayout(PreviewLayout.fixed(width: 100, height: 100))
+                .previewLayout(PreviewLayout.fixed(width: 200, height: 200))
                 .previewDisplayName("Device Favorite On")
         }
     }

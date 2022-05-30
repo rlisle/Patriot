@@ -16,80 +16,16 @@ struct MainView: View {
 
             // Favorites
             if model.devices.filter { $0.isFavorite == true }.count > 0 {
-                FavoritesView().environmentObject(model)
+                SectionView(section: "Favorites")
             }
 
             // Rooms
             ForEach(model.rooms, id: \.self) { room in
-            
-                RoomView(room: room)
+                SectionView(section: room)
             }
         }
         .padding(.top, 16)
         .background(Color("BackgroundColor").ignoresSafeArea())
-    }
-}
-
-struct FavoritesView: View {
-    
-    @EnvironmentObject var model: PatriotModel
-    
-    let columns = [
-        GridItem(.adaptive(minimum: 80, maximum: 160))
-    ]
-    
-    var body: some View {
-        Section(
-            header:
-                HStack {
-                    Spacer()
-                    Text("Favorites")
-                    Spacer()
-                }
-                .foregroundColor(Color("TextColor"))
-                .background(Color("BackgroundColor"))
-            ) {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
-                        DeviceView(device: device)
-                        .aspectRatio(1, contentMode: .fill)
-                        .padding()
-                    }
-                }
-            }
-        .padding(.horizontal)
-    }
-}
-
-struct RoomView: View {
-    
-    @EnvironmentObject var model: PatriotModel
-    var room: String
-    
-    let columns = [
-        GridItem(.adaptive(minimum: 80, maximum: 160))
-    ]
-    
-    var body: some View {
-        Section(
-            header:
-                HStack {
-                    Spacer()
-                    Text(room)
-                    Spacer()
-                }
-                .foregroundColor(Color("AccentTextColor"))
-                .background(Color("AccentColor"))
-            ) {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(model.devices.filter { /*$0.isFavorite == false  &&*/ $0.room == room}, id: \.self) { device in
-                        DeviceView(device: device)
-                        .aspectRatio(1, contentMode: .fill)
-                        .padding()
-                    }
-                }
-            }
-        .padding(.horizontal)
     }
 }
 
