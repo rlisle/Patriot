@@ -36,6 +36,7 @@ struct HomeView: View {
                     DeviceDetailView()
                 })
                 MainView()
+
                 .offset(x: model.showingMenu ? sideMenuWidth : 0)
                 .disabled(model.showingMenu ? true : false)
 
@@ -61,6 +62,7 @@ struct HomeView: View {
             }
             
         }
+        
         // This fixes the layout constraint warnings
         .navigationViewStyle(StackNavigationViewStyle())
     }

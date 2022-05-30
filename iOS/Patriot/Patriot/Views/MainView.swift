@@ -22,10 +22,10 @@ struct MainView: View {
             // Rooms
             ForEach(model.rooms, id: \.self) { room in
                 SectionView(section: room)
+                
             }
         }
-        .padding(.top, 16)
-        .background(Color("BackgroundColor").ignoresSafeArea())
+        .background(Color("BackgroundColor"))
     }
 }
 

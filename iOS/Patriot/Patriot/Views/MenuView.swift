@@ -24,10 +24,10 @@ struct MenuView: View {
             }) {
                 HStack {
                     Image(systemName: "sunrise")
-                        .foregroundColor(Color("TextColor"))
+                        .foregroundColor(Color("HeadingTextColor"))
                         .imageScale(.large)
                     Text("Awake")
-                        .foregroundColor(Color("TextColor"))
+                        .foregroundColor(Color("HeadingTextColor"))
                         .font(.headline)
                 }
                 .padding(.top, 100)
@@ -41,10 +41,10 @@ struct MenuView: View {
             }) {
                 HStack {
                     Image(systemName: "bed.double")
-                        .foregroundColor(Color("TextColor"))
+                        .foregroundColor(Color("HeadingTextColor"))
                         .imageScale(.large)
                     Text("Bedtime")
-                        .foregroundColor(Color("TextColor"))
+                        .foregroundColor(Color("HeadingTextColor"))
                         .font(.headline)
                 }
                 .padding(.top, 30)
@@ -57,10 +57,10 @@ struct MenuView: View {
             }) {
                 HStack {
                     Image(systemName: "tv")
-                        .foregroundColor(Color("TextColor"))
+                        .foregroundColor(Color("HeadingTextColor"))
                         .imageScale(.large)
                     Text("Watch TV")
-                        .foregroundColor(Color("TextColor"))
+                        .foregroundColor(Color("HeadingTextColor"))
                         .font(.headline)
                 }
                 .padding(.top, 30)
@@ -71,10 +71,10 @@ struct MenuView: View {
             }) {
                 HStack {
                     Image(systemName: "tv")
-                        .foregroundColor(Color("TextColor"))
+                        .foregroundColor(Color("HeadingTextColor"))
                         .imageScale(.large)
                     Text("Reset Devices")
-                        .foregroundColor(Color("TextColor"))
+                        .foregroundColor(Color("HeadingTextColor"))
                         .font(.headline)
                 }
                 .padding(.top, 30)
@@ -83,7 +83,7 @@ struct MenuView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color("BackgroundColor"))
+        .background(Color("HeadingBackground"))
         .edgesIgnoringSafeArea(.all)
     }
 }

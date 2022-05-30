@@ -24,10 +24,10 @@ struct SectionView: View {
                     Text(section)
                     Spacer()
                 }
-                .foregroundColor(Color("HeadingTextColor"))
                 .padding(.vertical, 8)
-                .padding(.horizontal, 0)
+                .foregroundColor(Color("HeadingTextColor"))
                 .background(Color("HeadingBackground"))
+
             ) {
                 LazyVGrid(columns: columns, spacing: 8) {
                     if section == "Favorites" {
@@ -53,8 +53,6 @@ struct SectionView: View {
 
 struct SectionView_Previews: PreviewProvider {
     static var previews: some View {
-//        SectionView(section: "LivingRoom")
-//            .environmentObject(PatriotModel(forTest: true))
         SectionView(section: "Favorites")
             .environmentObject(PatriotModel(forTest: true))
     }
