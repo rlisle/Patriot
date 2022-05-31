@@ -58,6 +58,7 @@ struct DeviceView: View {
                     HStack {
                         Spacer()
                         Button(action: device.flipFavorite) {
+                            // Vector images not working.
                             Image(systemName: device.isFavorite ? "star.fill" : "star")
                                 .renderingMode(.template)
                                 .resizable()

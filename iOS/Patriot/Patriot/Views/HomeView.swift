@@ -15,9 +15,10 @@ struct HomeView: View {
     @EnvironmentObject var appDelegate: AppDelegate
     @EnvironmentObject var sceneDelegate: SceneDelegate
     
-    init() {
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
-    }
+//    init() {
+//        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(.white)]
+//        UINavigationBar.appearance().backgroundColor = [.foregroundColor: UIColor(.white)]
+//    }
     
     var body: some View {
         
@@ -50,7 +51,7 @@ struct HomeView: View {
 
             .navigationBarTitle("Patriot")
             .navigationBarTitleDisplayMode(.inline)
-            .foregroundColor(Color("TextColor"))
+//            .foregroundColor(.white)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     SideMenuButton(showMenu: $model.showingMenu)
@@ -63,8 +64,18 @@ struct HomeView: View {
             
         }
         
+        
         // This fixes the layout constraint warnings
         .navigationViewStyle(StackNavigationViewStyle())
+        
+        .onAppear {
+             let appearance = UINavigationBarAppearance()
+//             appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+             appearance.backgroundColor = UIColor(Color("HeadingBackground"))
+            appearance.titleTextAttributes = [.foregroundColor: UIColor(.white)]
+             UINavigationBar.appearance().standardAppearance = appearance
+             UINavigationBar.appearance().scrollEdgeAppearance = appearance
+         }
     }
 }
 
