@@ -46,6 +46,7 @@ struct SectionView: View {
                         }
                     }
                 }
+                .padding(.trailing, 8)
             }
             .background(Color("BackgroundColor").ignoresSafeArea())
     }
