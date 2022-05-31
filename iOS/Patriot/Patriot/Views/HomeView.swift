@@ -15,11 +15,6 @@ struct HomeView: View {
     @EnvironmentObject var appDelegate: AppDelegate
     @EnvironmentObject var sceneDelegate: SceneDelegate
     
-//    init() {
-//        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(.white)]
-//        UINavigationBar.appearance().backgroundColor = [.foregroundColor: UIColor(.white)]
-//    }
-    
     var body: some View {
         
         let dragToClose = DragGesture()
@@ -51,7 +46,7 @@ struct HomeView: View {
 
             .navigationBarTitle("Patriot")
             .navigationBarTitleDisplayMode(.inline)
-//            .foregroundColor(.white)
+            .foregroundColor(Color("TextColor"))
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     SideMenuButton(showMenu: $model.showingMenu)
@@ -70,9 +65,9 @@ struct HomeView: View {
         
         .onAppear {
              let appearance = UINavigationBarAppearance()
-//             appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
-             appearance.backgroundColor = UIColor(Color("HeadingBackground"))
-            appearance.titleTextAttributes = [.foregroundColor: UIColor(.white)]
+             appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+             appearance.backgroundColor = UIColor(Color("BackgroundColor"))
+            appearance.titleTextAttributes = [.foregroundColor: UIColor(Color("HeadingBackground"))]
              UINavigationBar.appearance().standardAppearance = appearance
              UINavigationBar.appearance().scrollEdgeAppearance = appearance
          }

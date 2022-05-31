@@ -18,7 +18,7 @@ struct PartOfDayButton: View {
             }
         }) {
             PartOfDayView()
-        }.foregroundColor(.white)
+        }.foregroundColor(Color("TextColor"))
     }
 }
 
@@ -57,49 +57,49 @@ struct PartOfDayButton_Previews: PreviewProvider {
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Night")
-                .background(.black)
+                .background(Color("BackgroundColor"))
 
             PartOfDayButton()
                 .environmentObject(PatriotModel(forTest: true, partOfDay: .Sunrise))
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Sunrise")
-                .background(.black)
+                .background(Color("BackgroundColor"))
 
             PartOfDayButton()
                 .environmentObject(PatriotModel(forTest: true, partOfDay: .Morning))
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Morning")
-                .background(.black)
+                .background(Color("BackgroundColor"))
 
             PartOfDayButton()
                 .environmentObject(PatriotModel(forTest: true, partOfDay: .Noon))
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Noon")
-                .background(.black)
+                .background(Color("BackgroundColor"))
 
             PartOfDayButton()
                 .environmentObject(PatriotModel(forTest: true, partOfDay: .Afternoon))
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Afternoon")
-                .background(.black)
+                .background(Color("BackgroundColor"))
 
             PartOfDayButton()
                 .environmentObject(PatriotModel(forTest: true, partOfDay: .Sunset))
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Sunset")
-                .background(.black)
+                .background(Color("BackgroundColor"))
 
             PartOfDayButton()
                 .environmentObject(PatriotModel(forTest: true, partOfDay: .Dusk))
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Dusk")
-                .background(.black)
+                .background(Color("BackgroundColor"))
         }
     }
 }
