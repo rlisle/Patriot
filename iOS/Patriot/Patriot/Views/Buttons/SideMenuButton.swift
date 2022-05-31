@@ -21,7 +21,7 @@ struct SideMenuButton: View {
         }) {
             Image(systemName: "line.horizontal.3")
                 .imageScale(.large)
-        }.foregroundColor(.white)
+        }.foregroundColor(Color("TextColor"))
     }
 }
 
@@ -32,6 +32,6 @@ struct SideMenuButton_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
             .padding()
             .previewDisplayName("SideMenu Button")
-            .background(.black)
+            .background(Color("BackgroundColor"))
     }
 }

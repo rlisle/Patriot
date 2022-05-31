@@ -27,13 +27,13 @@ struct DeviceView: View {
 
     var body: some View {
 
-        GeometryReader { geometry in
+        GeometryReader { geometry in    // Use to calculate star size
             ZStack {
                 VStack {
                     Image(device.percent > 0 ? device.onImageName : device.offImageName)
                     .resizable()
                     .scaledToFit()
-                    .padding(0)
+                    .padding(.top, 8)
                     .opacity(brighten ? 1.0 : 0.8)
                     .onTapGesture {
                         device.manualToggle()
@@ -45,27 +45,33 @@ struct DeviceView: View {
                         brighten = pressed
                     })
                     Spacer()
+                    Text(device.name.camelCaseToWords())
+                        .font(.subheadline)
+                        .foregroundColor(Color("TextColor"))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .padding(.bottom, 8)
+
                 }
+                // Favorite Star
                 VStack {
                     HStack {
                         Spacer()
                         Button(action: device.flipFavorite) {
+                            // Vector images not working.
                             Image(systemName: device.isFavorite ? "star.fill" : "star")
                                 .renderingMode(.template)
                                 .resizable()
-                                .foregroundColor(device.isFavorite ? .yellow : .gray)
+                                .foregroundColor(device.isFavorite ? Color(.white) : Color("TextColor"))
                                 .padding(4)
                                 .frame(width: geometry.size.width/4, height: geometry.size.width/4)
                         }
                     }
                     Spacer()
-                    Text(device.name.camelCaseToWords())
-                        .font(.subheadline)
-                        .foregroundColor(.white)
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.width)
-            .background(Color.black)
+            .background(Color("BackgroundColor"))
         }
     }
 }
@@ -74,11 +80,11 @@ struct DeviceView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             DeviceView(device: Device(name: "LeftTrim", type: .Light, percent: 0, isFavorite: false))
-                .previewLayout(PreviewLayout.fixed(width: 100, height: 100))
+                .previewLayout(PreviewLayout.fixed(width:200, height: 200))
                 .previewDisplayName("Device Off")
             
             DeviceView(device: Device(name: "KitchenCeiling", type: .Light, percent: 100, isFavorite: true))
-                .previewLayout(PreviewLayout.fixed(width: 100, height: 100))
+                .previewLayout(PreviewLayout.fixed(width: 200, height: 200))
                 .previewDisplayName("Device Favorite On")
         }
     }

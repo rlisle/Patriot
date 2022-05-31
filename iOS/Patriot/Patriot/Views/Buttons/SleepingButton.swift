@@ -20,7 +20,7 @@ struct SleepingButton: View {
         }) {
             //TODO: Display current sleeping state
             SleepView(sleeping: sleeping)
-        }.foregroundColor(.white)
+        }.foregroundColor(Color("TextColor"))
 
     }
 }
@@ -58,19 +58,19 @@ struct SleepingButton_Previews: PreviewProvider {
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Awake")
-                .background(.black)
+                .background(Color("BackgroundColor"))
             
             SleepingButton(sleeping: .Retiring)
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Bedtime")
-                .background(.black)
+                .background(Color("BackgroundColor"))
 
             SleepingButton(sleeping: .Asleep)
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Sleeping")
-                .background(.black)
+                .background(Color("BackgroundColor"))
         }
     }
 }

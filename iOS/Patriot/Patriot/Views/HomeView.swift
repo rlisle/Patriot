@@ -15,10 +15,6 @@ struct HomeView: View {
     @EnvironmentObject var appDelegate: AppDelegate
     @EnvironmentObject var sceneDelegate: SceneDelegate
     
-    init() {
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
-    }
-    
     var body: some View {
         
         let dragToClose = DragGesture()
@@ -36,6 +32,7 @@ struct HomeView: View {
                     DeviceDetailView()
                 })
                 MainView()
+
                 .offset(x: model.showingMenu ? sideMenuWidth : 0)
                 .disabled(model.showingMenu ? true : false)
 
@@ -44,12 +41,12 @@ struct HomeView: View {
                         .frame(width: sideMenuWidth)
                 }
             }
-            .background(Color.black)
+            .background(Color("BackgroundColor"))
             .gesture(dragToClose)
 
             .navigationBarTitle("Patriot")
             .navigationBarTitleDisplayMode(.inline)
-            .foregroundColor(.white)
+            .foregroundColor(Color("TextColor"))
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     SideMenuButton(showMenu: $model.showingMenu)
@@ -61,8 +58,19 @@ struct HomeView: View {
             }
             
         }
+        
+        
         // This fixes the layout constraint warnings
         .navigationViewStyle(StackNavigationViewStyle())
+        
+        .onAppear {
+             let appearance = UINavigationBarAppearance()
+             appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+             appearance.backgroundColor = UIColor(Color("BackgroundColor"))
+            appearance.titleTextAttributes = [.foregroundColor: UIColor(Color("HeadingBackground"))]
+             UINavigationBar.appearance().standardAppearance = appearance
+             UINavigationBar.appearance().scrollEdgeAppearance = appearance
+         }
     }
 }
 

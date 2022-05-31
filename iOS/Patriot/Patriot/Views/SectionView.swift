@@ -10,10 +10,10 @@ import SwiftUI
 struct SectionView: View {
     
     @EnvironmentObject var model: PatriotModel
-    var room: String
+    var section: String
 
     let columns = [
-        GridItem(.adaptive(minimum: 80, maximum: 160))
+        GridItem(.adaptive(minimum: 100, maximum: 160))
     ]
     
     var body: some View {
@@ -21,28 +21,40 @@ struct SectionView: View {
             header:
                 HStack {
                     Spacer()
-                    Text(room)
+                    Text(section)
                     Spacer()
                 }
-                .foregroundColor(.white)
-                .background(Color(.gray))
+                .padding(.vertical, 8)
+                .foregroundColor(Color("HeadingTextColor"))
+                .background(Color("HeadingBackground"))
+
             ) {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(model.devices.filter { $0.room == room }, id: \.self) { device in
-                        DeviceView(device: device)
+                LazyVGrid(columns: columns, spacing: 8)
+                {
+                    if section == "Favorites" {
+                        ForEach(model.devices.filter { $0.isFavorite }, id: \.self) { device in
+                            DeviceView(device: device)
                             .aspectRatio(1, contentMode: .fill)
-                            .padding()
+                            .padding(4)
+                        }
+
+                    } else {
+                        ForEach(model.devices.filter { $0.room == section }, id: \.self) { device in
+                            DeviceView(device: device)
+                                .aspectRatio(1, contentMode: .fill)
+                                .padding(4)
+                        }
                     }
                 }
+                .padding(.trailing, 8)
             }
-            .background(Color(.black).ignoresSafeArea())
-        .padding(.horizontal)
+            .background(Color("BackgroundColor").ignoresSafeArea())
     }
 }
 
 struct SectionView_Previews: PreviewProvider {
     static var previews: some View {
-        SectionView(room: "Living Room")
+        SectionView(section: "Favorites")
             .environmentObject(PatriotModel(forTest: true))
     }
 }
