@@ -28,6 +28,7 @@
 		274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */; };
 		2762F18A2846C6FF00C30529 /* HomeViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2762F1892846C6FF00C30529 /* HomeViewTests.swift */; };
 		2762F18E284777DF00C30529 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 2762F18D284777DF00C30529 /* SnapshotTesting */; };
+		2762F19028477C7000C30529 /* DeviceDetailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2762F18F28477C7000C30529 /* DeviceDetailTests.swift */; };
 		2780FB66282E739800BD32F5 /* EntryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2780FB65282E739800BD32F5 /* EntryTextField.swift */; };
 		2784435A2837AD6E004176F6 /* RVIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278443592837AD6E004176F6 /* RVIntentHandler.swift */; };
 		27917123282BCBCF007F4CA5 /* SideMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917122282BCBCF007F4CA5 /* SideMenuButton.swift */; };
@@ -94,6 +95,7 @@
 		274D66C9269DC06700303F1E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatefulPreviewWrapper.swift; sourceTree = "<group>"; };
 		2762F1892846C6FF00C30529 /* HomeViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewTests.swift; sourceTree = "<group>"; };
+		2762F18F28477C7000C30529 /* DeviceDetailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailTests.swift; sourceTree = "<group>"; };
 		2780FB65282E739800BD32F5 /* EntryTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryTextField.swift; sourceTree = "<group>"; };
 		278443592837AD6E004176F6 /* RVIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RVIntentHandler.swift; sourceTree = "<group>"; };
 		27917122282BCBCF007F4CA5 /* SideMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuButton.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				27D46755283972A000C5CD5A /* MQTTTests.swift */,
 				27473033265D182F00C8EFDE /* Info.plist */,
 				2762F1892846C6FF00C30529 /* HomeViewTests.swift */,
+				2762F18F28477C7000C30529 /* DeviceDetailTests.swift */,
 			);
 			path = PatriotTests;
 			sourceTree = "<group>";
@@ -425,6 +428,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2762F19028477C7000C30529 /* DeviceDetailTests.swift in Sources */,
 				2762F18A2846C6FF00C30529 /* HomeViewTests.swift in Sources */,
 				27473032265D182F00C8EFDE /* PatriotModelTests.swift in Sources */,
 				27D46756283972A000C5CD5A /* MQTTTests.swift in Sources */,

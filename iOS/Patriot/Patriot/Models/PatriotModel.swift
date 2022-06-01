@@ -60,6 +60,7 @@ class PatriotModel: ObservableObject
             devices = getTestDevices()
             self.sleeping = sleeping
             self.partOfDay = partOfDay
+            self.selectedDevice = devices[0]
         } else {
             devices = settings.devices
         }
