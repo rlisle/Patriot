@@ -12,13 +12,17 @@ import SnapshotTesting
 @testable import Patriot
 
 class HomeViewTests: XCTestCase {
+
+    var viewController: UIViewController!
     
-//  let modelView = PatriotModel(forTest: true)
-//
-//  func testHomeView() throws {
-//    let homeView = HomeView() //.environmentObject(PatriotModel(forTest: true))
-//
-//    let view: UIView = UIHostingController(rootView: homeView).view
-//    assertSnapshot(matching: view, as: .image(size: view.intrinsicContentSize))
-//  }
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        let modelView = PatriotModel(forTest: true)
+        let homeView = HomeView().environmentObject(modelView)
+        viewController = UIHostingController(rootView: homeView)
+    }
+
+  func testHomeView() throws {
+    assertSnapshot(matching: viewController, as: .image(on: .iPhoneX))
+  }
 }
