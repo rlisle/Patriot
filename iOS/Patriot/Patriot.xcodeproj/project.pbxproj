@@ -30,6 +30,7 @@
 		2762F18E284777DF00C30529 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 2762F18D284777DF00C30529 /* SnapshotTesting */; };
 		2762F19028477C7000C30529 /* DeviceDetailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2762F18F28477C7000C30529 /* DeviceDetailTests.swift */; };
 		2762F19228477DC700C30529 /* MenuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2762F19128477DC700C30529 /* MenuTests.swift */; };
+		2762F19A28478A2200C30529 /* PatriotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2762F19928478A2200C30529 /* PatriotUITests.swift */; };
 		2780FB66282E739800BD32F5 /* EntryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2780FB65282E739800BD32F5 /* EntryTextField.swift */; };
 		2784435A2837AD6E004176F6 /* RVIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278443592837AD6E004176F6 /* RVIntentHandler.swift */; };
 		27917123282BCBCF007F4CA5 /* SideMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917122282BCBCF007F4CA5 /* SideMenuButton.swift */; };
@@ -45,6 +46,13 @@
 
 /* Begin PBXContainerItemProxy section */
 		2747302E265D182F00C8EFDE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27473014265D182E00C8EFDE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2747301B265D182E00C8EFDE;
+			remoteInfo = Patriot;
+		};
+		2762F19D28478A2200C30529 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 27473014265D182E00C8EFDE /* Project object */;
 			proxyType = 1;
@@ -82,7 +90,6 @@
 		2747302D265D182F00C8EFDE /* PatriotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PatriotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		27473031265D182F00C8EFDE /* PatriotModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotModelTests.swift; sourceTree = "<group>"; };
 		27473033265D182F00C8EFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2747303C265D182F00C8EFDE /* PatriotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotUITests.swift; sourceTree = "<group>"; };
 		2747303E265D182F00C8EFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2747306C265D53DE00C8EFDE /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		2747306D265D53DE00C8EFDE /* PatriotModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatriotModel.swift; sourceTree = "<group>"; };
@@ -98,6 +105,8 @@
 		2762F1892846C6FF00C30529 /* HomeViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewTests.swift; sourceTree = "<group>"; };
 		2762F18F28477C7000C30529 /* DeviceDetailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailTests.swift; sourceTree = "<group>"; };
 		2762F19128477DC700C30529 /* MenuTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTests.swift; sourceTree = "<group>"; };
+		2762F19728478A2200C30529 /* PatriotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PatriotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2762F19928478A2200C30529 /* PatriotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatriotUITests.swift; sourceTree = "<group>"; };
 		2780FB65282E739800BD32F5 /* EntryTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryTextField.swift; sourceTree = "<group>"; };
 		278443592837AD6E004176F6 /* RVIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RVIntentHandler.swift; sourceTree = "<group>"; };
 		27917122282BCBCF007F4CA5 /* SideMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuButton.swift; sourceTree = "<group>"; };
@@ -124,6 +133,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				2762F18E284777DF00C30529 /* SnapshotTesting in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2762F19428478A2200C30529 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,6 +171,7 @@
 			children = (
 				2747301C265D182E00C8EFDE /* Patriot.app */,
 				2747302D265D182F00C8EFDE /* PatriotTests.xctest */,
+				2762F19728478A2200C30529 /* PatriotUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -202,7 +219,7 @@
 		2747303B265D182F00C8EFDE /* PatriotUITests */ = {
 			isa = PBXGroup;
 			children = (
-				2747303C265D182F00C8EFDE /* PatriotUITests.swift */,
+				2762F19928478A2200C30529 /* PatriotUITests.swift */,
 				2747303E265D182F00C8EFDE /* Info.plist */,
 			);
 			path = PatriotUITests;
@@ -334,13 +351,31 @@
 			productReference = 2747302D265D182F00C8EFDE /* PatriotTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		2762F19628478A2200C30529 /* PatriotUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2762F19F28478A2200C30529 /* Build configuration list for PBXNativeTarget "PatriotUITests" */;
+			buildPhases = (
+				2762F19328478A2200C30529 /* Sources */,
+				2762F19428478A2200C30529 /* Frameworks */,
+				2762F19528478A2200C30529 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2762F19E28478A2200C30529 /* PBXTargetDependency */,
+			);
+			name = PatriotUITests;
+			productName = PatriotUITests;
+			productReference = 2762F19728478A2200C30529 /* PatriotUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		27473014265D182E00C8EFDE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1330;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					2747301B265D182E00C8EFDE = {
@@ -348,6 +383,10 @@
 					};
 					2747302C265D182F00C8EFDE = {
 						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 2747301B265D182E00C8EFDE;
+					};
+					2762F19628478A2200C30529 = {
+						CreatedOnToolsVersion = 13.4;
 						TestTargetID = 2747301B265D182E00C8EFDE;
 					};
 				};
@@ -371,6 +410,7 @@
 			targets = (
 				2747301B265D182E00C8EFDE /* Patriot */,
 				2747302C265D182F00C8EFDE /* PatriotTests */,
+				2762F19628478A2200C30529 /* PatriotUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -386,6 +426,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2747302B265D182F00C8EFDE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2762F19528478A2200C30529 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -439,6 +486,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2762F19328478A2200C30529 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2762F19A28478A2200C30529 /* PatriotUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -446,6 +501,11 @@
 			isa = PBXTargetDependency;
 			target = 2747301B265D182E00C8EFDE /* Patriot */;
 			targetProxy = 2747302E265D182F00C8EFDE /* PBXContainerItemProxy */;
+		};
+		2762F19E28478A2200C30529 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2747301B265D182E00C8EFDE /* Patriot */;
+			targetProxy = 2762F19D28478A2200C30529 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -656,6 +716,44 @@
 			};
 			name = Release;
 		};
+		2762F1A028478A2200C30529 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.PatriotUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Patriot;
+			};
+			name = Debug;
+		};
+		2762F1A128478A2200C30529 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 65NFWK9633;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.lisles.PatriotUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Patriot;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -682,6 +780,15 @@
 			buildConfigurations = (
 				27473045265D182F00C8EFDE /* Debug */,
 				27473046265D182F00C8EFDE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2762F19F28478A2200C30529 /* Build configuration list for PBXNativeTarget "PatriotUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2762F1A028478A2200C30529 /* Debug */,
+				2762F1A128478A2200C30529 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
