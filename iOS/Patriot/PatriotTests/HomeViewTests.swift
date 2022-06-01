@@ -13,20 +13,18 @@ import SnapshotTesting
 
 class HomeViewTests: XCTestCase {
     
-    var viewController: UIViewController!
-    
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    func testHomeView() throws {
         let modelView = PatriotModel(forTest: true)
         let homeView = HomeView().environmentObject(modelView)
-        viewController = UIHostingController(rootView: homeView)
-    }
-    
-    func testHomeView() throws {
+        let viewController = UIHostingController(rootView: homeView)
         assertSnapshot(matching: viewController, as: .image(on: .iPhoneX))
     }
     
-    func testDeviceDetailView() throws {
+    func testHomeViewWithChangedLights() throws {
+        let modelView = PatriotModel(forTest: true)
+        modelView.devices[0].percent = 100
+        let homeView = HomeView().environmentObject(modelView)
+        let viewController = UIHostingController(rootView: homeView)
         assertSnapshot(matching: viewController, as: .image(on: .iPhoneX))
     }
 }
