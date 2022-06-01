@@ -27,6 +27,9 @@
 		274D66C8269DBDBD00303F1E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C7269DBDBD00303F1E /* MainView.swift */; };
 		274D66CA269DC06700303F1E /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66C9269DC06700303F1E /* MenuView.swift */; };
 		274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */; };
+		2762F1882846599A00C30529 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 2762F1872846599A00C30529 /* SnapshotTesting */; };
+		2762F18A2846C6FF00C30529 /* HomeViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2762F1892846C6FF00C30529 /* HomeViewTests.swift */; };
+		2762F18C2846C8C700C30529 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 2762F18B2846C8C700C30529 /* SnapshotTesting */; };
 		2780FB66282E739800BD32F5 /* EntryTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2780FB65282E739800BD32F5 /* EntryTextField.swift */; };
 		2784435A2837AD6E004176F6 /* RVIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278443592837AD6E004176F6 /* RVIntentHandler.swift */; };
 		27917123282BCBCF007F4CA5 /* SideMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27917122282BCBCF007F4CA5 /* SideMenuButton.swift */; };
@@ -100,6 +103,7 @@
 		274D66C7269DBDBD00303F1E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		274D66C9269DC06700303F1E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatefulPreviewWrapper.swift; sourceTree = "<group>"; };
+		2762F1892846C6FF00C30529 /* HomeViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewTests.swift; sourceTree = "<group>"; };
 		2780FB65282E739800BD32F5 /* EntryTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryTextField.swift; sourceTree = "<group>"; };
 		278443592837AD6E004176F6 /* RVIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RVIntentHandler.swift; sourceTree = "<group>"; };
 		27917122282BCBCF007F4CA5 /* SideMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuButton.swift; sourceTree = "<group>"; };
@@ -125,6 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2762F18C2846C8C700C30529 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2762F1882846599A00C30529 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,6 +207,7 @@
 				27473031265D182F00C8EFDE /* PatriotModelTests.swift */,
 				27D46755283972A000C5CD5A /* MQTTTests.swift */,
 				27473033265D182F00C8EFDE /* Info.plist */,
+				2762F1892846C6FF00C30529 /* HomeViewTests.swift */,
 			);
 			path = PatriotTests;
 			sourceTree = "<group>";
@@ -333,6 +340,9 @@
 				2747302F265D182F00C8EFDE /* PBXTargetDependency */,
 			);
 			name = PatriotTests;
+			packageProductDependencies = (
+				2762F18B2846C8C700C30529 /* SnapshotTesting */,
+			);
 			productName = PatriotTests;
 			productReference = 2747302D265D182F00C8EFDE /* PatriotTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -351,6 +361,9 @@
 				2747303A265D182F00C8EFDE /* PBXTargetDependency */,
 			);
 			name = PatriotUITests;
+			packageProductDependencies = (
+				2762F1872846599A00C30529 /* SnapshotTesting */,
+			);
 			productName = PatriotUITests;
 			productReference = 27473038265D182F00C8EFDE /* PatriotUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -388,6 +401,7 @@
 			mainGroup = 27473013265D182E00C8EFDE;
 			packageReferences = (
 				27FCDDC7283E54D400632BAE /* XCRemoteSwiftPackageReference "CocoaMQTT" */,
+				2762F1862846599A00C30529 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			productRefGroup = 2747301D265D182E00C8EFDE /* Products */;
 			projectDirPath = "";
@@ -463,6 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2762F18A2846C6FF00C30529 /* HomeViewTests.swift in Sources */,
 				27473032265D182F00C8EFDE /* PatriotModelTests.swift in Sources */,
 				27D46756283972A000C5CD5A /* MQTTTests.swift in Sources */,
 			);
@@ -778,6 +793,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2762F1862846599A00C30529 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		27FCDDC7283E54D400632BAE /* XCRemoteSwiftPackageReference "CocoaMQTT" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/emqx/CocoaMQTT";
@@ -789,6 +812,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2762F1872846599A00C30529 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2762F1862846599A00C30529 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		2762F18B2846C8C700C30529 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2762F1862846599A00C30529 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
 		27FCDDC8283E54D400632BAE /* CocoaMQTT */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 27FCDDC7283E54D400632BAE /* XCRemoteSwiftPackageReference "CocoaMQTT" */;
