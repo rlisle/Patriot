@@ -53,8 +53,12 @@ struct HomeView: View {
                     SideMenuButton(showMenu: $model.showingMenu)
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    MQTTButton(isConnected: true)           //TODO: pass connected state
+                        .padding(.horizontal, -8)
                     SleepingButton(sleeping: model.sleeping)
+                        .padding(.horizontal, -8)
                     PartOfDayButton()
+                        .padding(.horizontal, -8)
                 }
             }
             
