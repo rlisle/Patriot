@@ -46,11 +46,11 @@ class MQTTManager {
     
     func reconnect() {
         guard isTesting == false else {
-            print("MQTT init testing so not connecting")
+            print("MQTT testing so not connecting")
             return
         }
         isConnected = mqtt.connect()
-        print("MQTT init connected: \(isConnected)")
+        print("MQTT connected: \(isConnected)")
     }
 }
 
@@ -99,10 +99,11 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
-        if let payload: String = message.string {
+        if let payload: String = message.string
+        {
             let topic = message.topic
             //print("MQTT didReceiveMessage: \(topic), \(payload)")
-            self.mqttDelegate?.didReceiveMessage(topic: message.topic, message: payload)
+            self.mqttDelegate?.didReceiveMessage(topic: topic, message: payload)
         }
     }
 
@@ -131,7 +132,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
 
     func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
-        //print("MQTT didReceive trust: \(trust)")
+        print("MQTT didReceive trust: \(trust)")
         completionHandler(true)
     }
     
@@ -140,7 +141,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didStateChangeTo state: CocoaMQTTConnState) {
-        print("MQTT didStateChange")
+        print("MQTT didStateChange \(state), doing nothing.")
     }
 
     func _console(_ info: String) {

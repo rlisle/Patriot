@@ -25,9 +25,10 @@ class PatriotModel: ObservableObject
     var selectedDevice = Device(name: "none", type: .Light)
     
     @Published var devices: [Device] = []
-    @Published var favoritesList:  [String]   //TODO: delete & refactor using devices only             // List of favorite device names
+    @Published var favoritesList:  [String] = []    // List of favorite device names
     @Published var sleeping: Sleeping = .Awake
     @Published var partOfDay: PartOfDay = .Afternoon
+    @Published var isConnected: Bool = false
     
     let mqtt:           MQTTManager
     let settings:       Settings
@@ -53,10 +54,14 @@ class PatriotModel: ObservableObject
         )
     {
         settings = Settings(store: UserDefaultsSettingsStore())
+//        loadFavorites(settings: settings)
         favoritesList = settings.favorites ?? []
+
         mqtt = MQTTManager(forTest: forTest)
         mqtt.mqttDelegate = self
+
         if forTest {
+            print("*** Testing Mode ***")
             devices = getTestDevices()
             self.sleeping = sleeping
             self.partOfDay = partOfDay
@@ -88,11 +93,10 @@ extension PatriotModel: MQTTReceiving {
         if isConnected == false {
             print("MQTT disconnected, reconnecting")
             mqtt.reconnect()
-            
-            if isConnected == false {
-                return
-            }
+            return
         }
+        self.isConnected = isConnected
+        print("MQTT connected, querying devices")
         queryDevices()
     }
 
@@ -233,7 +237,17 @@ extension PatriotModel {
 // Favorites
 extension PatriotModel {
 
-    func updateFavoritesList() {
+    // Pass in settings to all methods to allow testing
+    
+    func loadFavorites(settings: Settings) {
+        favoritesList = settings.favorites ?? []
+    }
+
+    func saveFavorites(settings: Settings) {
+        settings.favorites = favoritesList
+    }
+    
+    func updateFavoritesList(settings: Settings) {
         favoritesList = []
         for device in devices
         {
@@ -290,7 +304,7 @@ extension PatriotModel: DevicePublishing {
     }
 
     func isFavoriteChanged(device: Device) {
-        updateFavoritesList()
+        updateFavoritesList(settings: settings)
     }
 }
 
