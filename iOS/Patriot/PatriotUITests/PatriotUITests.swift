@@ -39,7 +39,6 @@ class PatriotUITests: XCTestCase {
         lightoffImage/*@START_MENU_TOKEN@*/.press(forDuration: 1.4);/*[[".tap()",".press(forDuration: 1.4);"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
         
         XCTAssert(app.staticTexts["Room: Kitchen"].exists)
-        XCTAssert(app.staticTexts["Sink"].exists)
         
         app.navigationBars["_TtGC7SwiftUI19UIHosting"].buttons["Patriot"].tap()
 
