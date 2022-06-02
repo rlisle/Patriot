@@ -38,6 +38,7 @@ struct HomeView: View {
 
                 if model.showingMenu {
                     MenuView()
+                        .transition(.move(edge: .leading))
                         .frame(width: sideMenuWidth)
                 }
             }
@@ -57,7 +58,7 @@ struct HomeView: View {
                 }
             }
             
-        }
+        }.accentColor(.black)
         
         
         // This fixes the layout constraint warnings
