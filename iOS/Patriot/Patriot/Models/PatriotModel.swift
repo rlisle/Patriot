@@ -36,6 +36,7 @@ class PatriotModel: ObservableObject
     @Published var sleeping: Sleeping = .Awake
     @Published var partOfDay: PartOfDay = .Afternoon
     @Published var isConnected: Bool = false
+    @Published var state: LoadingState = .unloaded
     
     let mqtt:           MQTTManager
     let settings:       Settings
@@ -60,8 +61,8 @@ class PatriotModel: ObservableObject
          partOfDay: PartOfDay = .Afternoon
         )
     {
+        state = .unloaded
         settings = Settings(store: UserDefaultsSettingsStore())
-//        loadFavorites(settings: settings)
         favoritesList = settings.favorites ?? []
 
         mqtt = MQTTManager(forTest: forTest)
@@ -73,8 +74,10 @@ class PatriotModel: ObservableObject
             self.sleeping = sleeping
             self.partOfDay = partOfDay
             self.selectedDevice = devices[0]
+            state = .loaded
         } else {
             devices = settings.devices
+            state = .restored
         }
         for device in devices {
             device.publisher = self
@@ -84,10 +87,13 @@ class PatriotModel: ObservableObject
     // For Test/Preview
     convenience init(devices: [Device]) {
         self.init(forTest: true)
+        state = .unloaded
         self.devices = Array(Set(devices))
+        state = .loaded
     }
     
     func queryDevices() {
+        state = .loading
         mqtt.sendMessage(topic: "patriot/query", message: "all")
     }
 }
@@ -195,6 +201,8 @@ extension PatriotModel {
         } else if isDisplayableDevice(type: type) {
             addDevice(Device(name: name, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
         }
+        //TODO: reset timeout timer
+        state = .loaded
     }
     
     func handleLegacyCommand(message: String) {
