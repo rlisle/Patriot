@@ -12,10 +12,16 @@ struct DeviceDetailView: View {
     @EnvironmentObject var model: PatriotModel
     
     var body: some View {
-        //TODO: add more stuff'
-        VStack {
-            Text("Room: \(model.selectedDevice.room)")
-            Text(model.selectedDevice.name)
+        NavigationView {
+            ScrollView {
+                //TODO: add more stuff'
+                VStack {
+                    Text("Room: \(model.selectedDevice.room)")
+                    Text(model.selectedDevice.name)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color("BackgroundColor"))
         }
     }
 }
