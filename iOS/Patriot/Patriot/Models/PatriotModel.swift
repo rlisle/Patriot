@@ -12,7 +12,14 @@
 //
 
 import SwiftUI
-import Combine
+
+enum LoadingState {
+    case unloaded
+    case restored
+    case loading
+    case loaded
+    case timedout
+}
 
 class PatriotModel: ObservableObject
 {
