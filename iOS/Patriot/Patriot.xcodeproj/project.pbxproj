@@ -17,7 +17,7 @@
 		27473032265D182F00C8EFDE /* PatriotModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473031265D182F00C8EFDE /* PatriotModelTests.swift */; };
 		27473071265D53DE00C8EFDE /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306C265D53DE00C8EFDE /* Device.swift */; };
 		27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306D265D53DE00C8EFDE /* PatriotModel.swift */; };
-		27473074265D53DE00C8EFDE /* SettingsProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306F265D53DE00C8EFDE /* SettingsProviding.swift */; };
+		27473074265D53DE00C8EFDE /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747306F265D53DE00C8EFDE /* Settings.swift */; };
 		27473082265D54A800C8EFDE /* DeviceNotifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473077265D54A800C8EFDE /* DeviceNotifying.swift */; };
 		27473084265D54A800C8EFDE /* DeviceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27473079265D54A800C8EFDE /* DeviceType.swift */; };
 		2747308F266002D700C8EFDE /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2747308E266002D700C8EFDE /* ViewExtensions.swift */; };
@@ -94,7 +94,7 @@
 		2747303E265D182F00C8EFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2747306C265D53DE00C8EFDE /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		2747306D265D53DE00C8EFDE /* PatriotModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatriotModel.swift; sourceTree = "<group>"; };
-		2747306F265D53DE00C8EFDE /* SettingsProviding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsProviding.swift; sourceTree = "<group>"; };
+		2747306F265D53DE00C8EFDE /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		27473077265D54A800C8EFDE /* DeviceNotifying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceNotifying.swift; sourceTree = "<group>"; };
 		27473079265D54A800C8EFDE /* DeviceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceType.swift; sourceTree = "<group>"; };
 		2747308E266002D700C8EFDE /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
@@ -248,7 +248,7 @@
 			children = (
 				2747306C265D53DE00C8EFDE /* Device.swift */,
 				2747306D265D53DE00C8EFDE /* PatriotModel.swift */,
-				2747306F265D53DE00C8EFDE /* SettingsProviding.swift */,
+				2747306F265D53DE00C8EFDE /* Settings.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -467,7 +467,7 @@
 				2798A07C26A3B0E2002FA6F4 /* Sleeping.swift in Sources */,
 				27209B0128292E48005A8C2A /* PartOfDay.swift in Sources */,
 				27917125282BCCF5007F4CA5 /* SleepingButton.swift in Sources */,
-				27473074265D53DE00C8EFDE /* SettingsProviding.swift in Sources */,
+				27473074265D53DE00C8EFDE /* Settings.swift in Sources */,
 				27473020265D182E00C8EFDE /* PatriotApp.swift in Sources */,
 				274D66CC269E512800303F1E /* StatefulPreviewWrapper.swift in Sources */,
 				27473072265D53DE00C8EFDE /* PatriotModel.swift in Sources */,

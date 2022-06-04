@@ -32,12 +32,12 @@ class MQTTManager {
     let mqtt: CocoaMQTT!
     
     var isConnected: Bool = false
-    var isTesting: Bool = false
+    var testMode: TestMode = .off
     
     var mqttDelegate: MQTTReceiving?
     
-    init(forTest: Bool = false) {
-        isTesting = forTest
+    init(testMode: TestMode = .off) {
+        self.testMode = testMode
         let clientID = "Patriot" + String(ProcessInfo().processIdentifier)
         mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort) // TODO: mqtt5?
         mqtt.delegate = self
@@ -45,7 +45,7 @@ class MQTTManager {
     }
     
     func reconnect() {
-        guard isTesting == false else {
+        guard testMode == .off else {
             print("MQTT testing so not connecting")
             return
         }
@@ -57,7 +57,7 @@ class MQTTManager {
 extension MQTTManager: MQTTSending
 {
     func sendMessage(topic: String, message: String) {
-        guard isTesting == false else {
+        guard testMode == .off else {
             return
         }
         guard isConnected == true else {
@@ -69,7 +69,7 @@ extension MQTTManager: MQTTSending
     
     func sendPatriotMessage(device: String, percent: Int)
     {
-        guard isTesting == false else {
+        guard testMode == .off else {
             return
         }
         guard isConnected == true else {

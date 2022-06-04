@@ -13,12 +13,18 @@
 
 import SwiftUI
 
+enum TestMode {
+    case off
+    case on
+    case noDevices
+}
+
 enum LoadingState {
     case unloaded
     case restored
     case loading
     case loaded
-    case timedout
+    case timedOut
 }
 
 class PatriotModel: ObservableObject
@@ -36,7 +42,10 @@ class PatriotModel: ObservableObject
     @Published var sleeping: Sleeping = .Awake
     @Published var partOfDay: PartOfDay = .Afternoon
     @Published var isConnected: Bool = false
-    @Published var state: LoadingState = .unloaded
+    @Published var state: LoadingState = .unloaded  //TODO: calculated value?
+        // devices = [] == .unloaded until query issued then .restored or .loading
+        // after any 'state' received, set .loaded
+        // If timedout, set timedOut
     
     let mqtt:           MQTTManager
     let settings:       Settings
@@ -56,7 +65,7 @@ class PatriotModel: ObservableObject
         return Array(uniqueRooms).sorted()
     }
     
-    init(forTest: Bool = false,
+    init(testMode: TestMode = .off,
          sleeping: Sleeping = .Awake,
          partOfDay: PartOfDay = .Afternoon
         )
@@ -65,20 +74,27 @@ class PatriotModel: ObservableObject
         settings = Settings(store: UserDefaultsSettingsStore())
         favoritesList = settings.favorites ?? []
 
-        mqtt = MQTTManager(forTest: forTest)
+        mqtt = MQTTManager(testMode: testMode)
         mqtt.mqttDelegate = self
 
-        if forTest {
+        switch testMode {
+        case .off:
+            devices = settings.devices
+            state = .restored
+        case .on:
             print("*** Testing Mode ***")
             devices = getTestDevices()
             self.sleeping = sleeping
             self.partOfDay = partOfDay
             self.selectedDevice = devices[0]
             state = .loaded
-        } else {
-            devices = settings.devices
-            state = .restored
+        case .noDevices:
+            print("*** Testing Mode No Devices ***")
+            self.sleeping = sleeping
+            self.partOfDay = partOfDay
+            state = .loading
         }
+        
         for device in devices {
             device.publisher = self
         }
@@ -86,7 +102,7 @@ class PatriotModel: ObservableObject
 
     // For Test/Preview
     convenience init(devices: [Device]) {
-        self.init(forTest: true)
+        self.init(testMode: .on)
         state = .unloaded
         self.devices = Array(Set(devices))
         state = .loaded

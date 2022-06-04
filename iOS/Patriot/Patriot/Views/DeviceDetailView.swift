@@ -29,6 +29,6 @@ struct DeviceDetailView: View {
 struct DeviceDetailView_Previews: PreviewProvider {
     static var previews: some View {
         DeviceDetailView()
-            .environmentObject(PatriotModel(forTest: true))
+            .environmentObject(PatriotModel(testMode: .on))
     }
 }

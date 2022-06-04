@@ -28,7 +28,7 @@ struct SideMenuButton: View {
 struct SideMenuButton_Previews: PreviewProvider {
     static var previews: some View {
         StatefulPreviewWrapper(false) { SideMenuButton(showMenu: $0) }
-            .environmentObject(PatriotModel(forTest: true))
+            .environmentObject(PatriotModel(testMode: .on))
             .previewLayout(.sizeThatFits)
             .padding()
             .previewDisplayName("SideMenu Button")

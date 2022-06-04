@@ -31,11 +31,15 @@ struct HomeView: View {
                 NavigationLink("", isActive: $model.showingDetails, destination: {
                     DeviceDetailView()
                 })
-                MainView()
-
-                .offset(x: model.showingMenu ? sideMenuWidth : 0)
-                .disabled(model.showingMenu ? true : false)
-
+                
+                if model.devices == [] {
+                    Text("Searching for devices")
+                } else {
+                    MainView()
+                        .offset(x: model.showingMenu ? sideMenuWidth : 0)
+                        .disabled(model.showingMenu ? true : false)
+                }
+                
                 if model.showingMenu {
                     MenuView()
                         .transition(.move(edge: .leading))
@@ -81,7 +85,18 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
-            .environmentObject(PatriotModel(forTest: true))
+        Group {
+
+            // List available sims: xcrun simctl list devicetypes
+            HomeView()
+                .environmentObject(PatriotModel(testMode: .on))
+                .previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))                .previewDisplayName("With Devices")
+
+            HomeView()
+                .environmentObject(PatriotModel(testMode: .on))
+                .previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))
+                .previewDisplayName("No Devices")
+
+        }
     }
 }
