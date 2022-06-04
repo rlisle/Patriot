@@ -33,7 +33,18 @@ struct HomeView: View {
                 })
                 
                 if model.devices == [] {
-                    Text("Searching for devices")
+                    ZStack {
+                        VStack {
+                            Spacer()
+                            HStack {
+                                Spacer()
+                                ProgressView("Searching for devices...")
+                                Spacer()
+                            }
+                            Spacer()
+                        }
+                    }
+                    .background(Color("BackgroundColor"))
                 } else {
                     MainView()
                         .offset(x: model.showingMenu ? sideMenuWidth : 0)
@@ -66,7 +77,8 @@ struct HomeView: View {
                 }
             }
             
-        }.accentColor(.black)
+        }
+        .accentColor(.black)
         
         
         // This fixes the layout constraint warnings
@@ -93,7 +105,7 @@ struct HomeView_Previews: PreviewProvider {
                 .previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))                .previewDisplayName("With Devices")
 
             HomeView()
-                .environmentObject(PatriotModel(testMode: .on))
+                .environmentObject(PatriotModel(testMode: .noDevices))
                 .previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))
                 .previewDisplayName("No Devices")
 

@@ -50,7 +50,6 @@ class MQTTManager {
             return
         }
         isConnected = mqtt.connect()
-        print("MQTT connected: \(isConnected)")
     }
 }
 
