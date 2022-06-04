@@ -41,11 +41,9 @@ class PatriotModel: ObservableObject
     @Published var favoritesList:  [String] = []    // List of favorite device names
     @Published var sleeping: Sleeping = .Awake
     @Published var partOfDay: PartOfDay = .Afternoon
+    
     @Published var isConnected: Bool = false
     @Published var state: LoadingState = .unloaded  //TODO: calculated value?
-        // devices = [] == .unloaded until query issued then .restored or .loading
-        // after any 'state' received, set .loaded
-        // If timedout, set timedOut
     
     let mqtt:           MQTTManager
     let settings:       Settings
@@ -119,26 +117,27 @@ class PatriotModel: ObservableObject
 extension PatriotModel: MQTTReceiving {
     
     func connectionDidChange(isConnected: Bool) {
-        if isConnected == false {
-            print("MQTT disconnected, reconnecting")
-            mqtt.reconnect()
+        print("connectionDidChange(isConnected: \(isConnected)")
+        self.isConnected = isConnected
+        guard isConnected == true else {
+//            print("MQTT disconnected, reconnecting")
+//            mqtt.reconnect()
             return
         }
-        self.isConnected = isConnected
         print("MQTT connected, querying devices")
         queryDevices()
     }
 
     func sendMessage(device: Device)
     {
-        if mqtt.isConnected {
+        if isConnected {
             mqtt.sendPatriotMessage(device: device.name, percent: device.percent)
         }
     }
     
     func sendMessage(topic: String, message: String)
     {
-        if mqtt.isConnected {
+        if isConnected {
             mqtt.sendMessage(topic: topic, message: message)
         } else {
             print("sendMessage \(topic), \(message) not sent. No connection.")

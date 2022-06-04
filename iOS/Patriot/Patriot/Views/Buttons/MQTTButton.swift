@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MQTTButton: View {
     
-    @State var isConnected: Bool
+    var isConnected: Bool
     
     var body: some View {
         Button(action: {
@@ -18,7 +18,6 @@ struct MQTTButton: View {
                 //TODO: Cycle through states
             }
         }) {
-            //TODO: Display current MQTT state
             MQTTView(isConnected: isConnected)
         }.foregroundColor(Color("TextColor"))
 
@@ -27,7 +26,7 @@ struct MQTTButton: View {
 
 struct MQTTView: View {
 
-    @State var isConnected: Bool
+    var isConnected: Bool
     
     var body: some View {
         Image(systemName: mqttIcon(isConnected))
