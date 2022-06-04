@@ -2,8 +2,16 @@
 <svg width="513px" height="386px" viewBox="0 0 513 386" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>CurtainClosed</title>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="CurtainOpen" transform="translate(0.000000, 0.007000)" fill="#000000" fill-rule="nonzero">
-            <path d="M503.361,0 L431.797,0 C427.096,0 423.282,3.755 423.169,8.427 L88.831,8.427 C88.717,3.754 84.902,0 80.203,0 L8.639,0 C3.868,0 0,3.868 0,8.639 L0,377.347 C0,382.118 3.868,385.986 8.639,385.986 L67.78,385.986 C72.551,385.986 76.419,382.118 76.419,377.347 C76.419,377.132 76.411,376.92 76.396,376.709 C76.393,369.872 76.322,363.19 76.2,356.642 L435.802,356.642 C435.676,363.393 435.606,370.289 435.606,377.347 C435.606,382.118 439.473,385.986 444.245,385.986 L503.362,385.986 C508.134,385.986 512.001,382.118 512.001,377.347 L512.001,8.639 C512.001,3.868 508.133,0 503.361,0 Z M258,6 L259,6 L259,356 L258,356 L258,6 Z" id="Shape"></path>
+        <path d="M17,0.007 L503,0.007 C507.418278,0.007 511,3.588722 511,8.007 L511,377.007 C511,381.425278 507.418278,385.007 503,385.007 L17,385.007 C12.581722,385.007 9,381.425278 9,377.007 L9,8.007 C9,3.588722 12.581722,0.007 17,0.007 Z" id="Shape" stroke="#070000" stroke-width="16" fill-rule="nonzero"></path>
+        <g id="CurtainClosed" transform="translate(22.000000, -12.000000)" stroke="#090000" stroke-width="16">
+            <g id="Pleats">
+                <rect id="Pleat-1" x="24" y="10" width="24" height="390" rx="8"></rect>
+                <rect id="Pleat-2" x="90" y="10" width="24" height="390" rx="8"></rect>
+                <rect id="Pleat-5" x="156" y="10" width="26" height="390" rx="8"></rect>
+                <rect id="Pleat-1-Copy" x="246" y="8" width="30" height="392" rx="8"></rect>
+                <rect id="Pleat-5-Copy" x="340" y="10" width="40" height="390" rx="8"></rect>
+                <rect id="Pleat-8-Copy" x="431" y="8" width="19" height="392" rx="8"></rect>
+            </g>
         </g>
     </g>
 </svg>
