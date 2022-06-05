@@ -17,79 +17,9 @@ struct MenuView: View {
 
         VStack(alignment: .leading, spacing: 0){
             
-            MenuHeader(title: "Sleep State")
-                .padding(.top, 100)
-            
-            Group {
-                Button(action: {
-                    print("Invoking Wakeup")
-                    if let device = model.devices.first(where: {$0.name == "sleeping"}) {
-                        device.manualSet(percent: Sleeping.Awake.rawValue)
-                    }
-
-                }) {
-                    MenuText(icon: "sunrise", title: "Awake", isSelected: model.sleeping == .Awake)
-                    .padding(.top, 30)
-                }
-                
-                Button(action: {
-                    print("Invoking Bedtime")
-                    if let device = model.devices.first(where: {$0.name == "sleeping"}) {
-                        device.manualSet(percent: Sleeping.Retiring.rawValue)
-                    }
-
-                }) {
-                    MenuText(icon: "bed.double", title: "Bedtime", isSelected: model.sleeping == .Retiring)
-                    .padding(.top, 30)
-                }
-                
-                Button(action: {
-                    print("Invoking Asleep")
-                    if let device = model.devices.first(where: {$0.name == "sleeping"}) {
-                        device.manualSet(percent: Sleeping.Asleep.rawValue)
-                    }
-
-                }) {
-                    MenuText(icon: "zzz", title: "Sleeping", isSelected: model.sleeping == .Asleep)
-                    .padding(.top, 30)
-                }
-            }
-            .padding(.leading)
-
-            MenuHeader(title: "Scenes")
-                .padding(.top, 48)
-
-            Group {
-                
-                Button(action: {
-                    print("Invoking Watch TV")
-                    if let device = model.devices.first(where: {$0.name == "watching"}) {
-                        device.manualSet(percent: 100)
-                    }
-                }) {
-                    MenuText(icon: "tv", title: "Watch TV", isSelected: false)
-                    .padding(.top, 30)
-                }
-            
-            }
-            .padding(.leading)
-
-            MenuHeader(title: "Device Control")
-                .padding(.top, 48)
-            
-
-            Group {
-                
-                Button(action: {
-                    print("Reset Devices")
-                    model.resetDevices()
-                }) {
-                    MenuText(icon: "repeat", title: "Reset Devices", isSelected: false)
-                    .padding(.top, 30)
-                }
-            }
-            .padding(.leading)
-            
+            MenuSleepGroup()
+            MenuScenesGroup()
+            MenuDevicesGroup()
             Spacer()
         }
         .padding()
@@ -99,6 +29,66 @@ struct MenuView: View {
     }
 }
 
+
+struct MenuSleepGroup: View {
+
+    var body: some View {
+        MenuHeader(title: "Sleep State")
+            .padding(.top, 100)
+        
+        Group {
+            SleepButton(sleepState: Sleeping.Awake, icon: "sunrise", title: "Awake")
+            SleepButton(sleepState: Sleeping.Retiring, icon: "bed.double", title: "Bedtime")
+            SleepButton(sleepState: Sleeping.Asleep, icon: "zzz", title: "Sleeping")
+        }
+            .padding(.leading)
+    }
+}
+
+struct MenuScenesGroup: View {
+  
+    @EnvironmentObject var model: PatriotModel
+
+    var body: some View {
+        MenuHeader(title: "Scenes")
+            .padding(.top, 48)
+
+        Group {
+            
+            Button(action: {
+                print("Invoking Watch TV")
+                if let device = model.devices.first(where: {$0.name == "watching"}) {
+                    device.manualSet(percent: 100)
+                }
+            }) {
+                MenuText(icon: "tv", title: "Watch TV", isSelected: false)
+                .padding(.top, 30)
+            }
+        }
+        .padding(.leading)
+    }
+}
+
+struct MenuDevicesGroup: View {
+
+    @EnvironmentObject var model: PatriotModel
+
+    var body: some View {
+        MenuHeader(title: "Device Control")
+            .padding(.top, 48)
+        
+        Group {
+            Button(action: {
+                print("Reset Devices")
+                model.resetDevices()
+            }) {
+                MenuText(icon: "repeat", title: "Reset Devices", isSelected: false)
+                .padding(.top, 30)
+            }
+        }
+        .padding(.leading)
+    }
+}
 
 struct MenuHeader: View {
     
@@ -132,6 +122,28 @@ struct MenuText: View {
     }
 }
 
+struct SleepButton: View {
+
+    @EnvironmentObject var model: PatriotModel
+
+    var sleepState: Sleeping
+    var icon: String
+    var title: String
+    
+    var body: some View {
+        
+        Button(action: {
+            print("Invoking sleep state \(sleepState.rawValue)")
+            if let device = model.devices.first(where: {$0.name == "sleeping"}) {
+                device.manualSet(percent: sleepState.rawValue)
+            }
+
+        }) {
+            MenuText(icon: icon, title: title, isSelected: model.sleeping == sleepState)
+            .padding(.top, 30)
+        }
+    }
+}
 
 struct MenuView_Previews: PreviewProvider {
     static var previews: some View {
