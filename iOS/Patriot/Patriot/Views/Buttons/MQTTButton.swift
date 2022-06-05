@@ -35,7 +35,7 @@ struct MQTTView: View {
     
     func mqttIcon(_ isConnected: Bool) -> String {
         print("mqttIcon \(isConnected)")
-        return isConnected ? "link.icloud" : "link.icloud.fill"
+        return isConnected ? "icloud" : "icloud.slash"
     }
 }
 
