@@ -17,9 +17,7 @@ struct MenuView: View {
 
         VStack(alignment: .leading, spacing: 0){
             
-            Text("Sleep State")
-                .foregroundColor(Color("HeadingTextColor"))
-                .font(.headline)
+            MenuHeader(title: "Sleep State")
                 .padding(.top, 100)
             
             Group {
@@ -30,17 +28,7 @@ struct MenuView: View {
                     }
 
                 }) {
-                    HStack {
-                        Image(systemName: "sunrise")
-                            .imageScale(.large)
-                        Text("Awake")
-                        .font(.headline)
-                        if model.sleeping == .Awake {
-                            Image(systemName: "checkmark")
-                            .imageScale(.large)
-                        }
-                    }
-                    .foregroundColor(Color(model.sleeping == .Awake ? "AccentColor" : "HeadingTextColor"))
+                    MenuText(icon: "sunrise", title: "Awake", isSelected: model.sleeping == .Awake)
                     .padding(.top, 30)
                 }
                 
@@ -51,17 +39,7 @@ struct MenuView: View {
                     }
 
                 }) {
-                    HStack {
-                        Image(systemName: "bed.double")
-                            .imageScale(.large)
-                        Text("Bedtime")
-                            .font(.headline)
-                        if model.sleeping == .Retiring {
-                            Image(systemName: "checkmark")
-                                .imageScale(.large)
-                        }
-                    }
-                    .foregroundColor(Color(model.sleeping == .Retiring ? "AccentColor" : "HeadingTextColor"))
+                    MenuText(icon: "bed.double", title: "Bedtime", isSelected: model.sleeping == .Retiring)
                     .padding(.top, 30)
                 }
                 
@@ -72,25 +50,13 @@ struct MenuView: View {
                     }
 
                 }) {
-                    HStack {
-                        Image(systemName: "zzz")
-                            .imageScale(.large)
-                        Text("Sleeping")
-                            .font(.headline)
-                        if model.sleeping == .Retiring {
-                            Image(systemName: "checkmark")
-                                .imageScale(.large)
-                        }
-                    }
-                    .foregroundColor(Color(model.sleeping == .Asleep ? "AccentColor" : "HeadingTextColor"))
+                    MenuText(icon: "zzz", title: "Sleeping", isSelected: model.sleeping == .Asleep)
                     .padding(.top, 30)
                 }
             }
             .padding(.leading)
 
-            Text("Scenes")
-                .foregroundColor(Color("HeadingTextColor"))
-                .font(.headline)
+            MenuHeader(title: "Scenes")
                 .padding(.top, 48)
 
             Group {
@@ -101,23 +67,14 @@ struct MenuView: View {
                         device.manualSet(percent: 100)
                     }
                 }) {
-                    HStack {
-                        Image(systemName: "tv")
-                            .foregroundColor(Color("HeadingTextColor"))
-                            .imageScale(.large)
-                        Text("Watch TV")
-                            .foregroundColor(Color("HeadingTextColor"))
-                            .font(.headline)
-                    }
+                    MenuText(icon: "tv", title: "Watch TV", isSelected: false)
                     .padding(.top, 30)
                 }
             
             }
             .padding(.leading)
 
-            Text("Device Control")
-                .foregroundColor(Color("HeadingTextColor"))
-                .font(.headline)
+            MenuHeader(title: "Device Control")
                 .padding(.top, 48)
             
 
@@ -127,14 +84,7 @@ struct MenuView: View {
                     print("Reset Devices")
                     model.resetDevices()
                 }) {
-                    HStack {
-                        Image(systemName: "tv")
-                            .foregroundColor(Color("HeadingTextColor"))
-                            .imageScale(.large)
-                        Text("Reset Devices")
-                            .foregroundColor(Color("HeadingTextColor"))
-                            .font(.headline)
-                    }
+                    MenuText(icon: "repeat", title: "Reset Devices", isSelected: false)
                     .padding(.top, 30)
                 }
             }
@@ -148,6 +98,40 @@ struct MenuView: View {
         .edgesIgnoringSafeArea(.all)
     }
 }
+
+
+struct MenuHeader: View {
+    
+    var title: String
+    
+    var body: some View {
+        Text(title)
+            .foregroundColor(Color("HeadingTextColor"))
+            .font(.headline)
+    }
+}
+
+struct MenuText: View {
+    
+    var icon: String
+    var title: String
+    var isSelected: Bool
+    
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .imageScale(.large)
+            Text(title)
+                .font(.headline)
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .imageScale(.large)
+            }
+        }
+        .foregroundColor(Color(isSelected ? "AccentColor" : "HeadingTextColor"))
+    }
+}
+
 
 struct MenuView_Previews: PreviewProvider {
     static var previews: some View {
