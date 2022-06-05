@@ -37,6 +37,11 @@ struct MenuView: View {
                         Text("Awake")
                             .foregroundColor(Color("HeadingTextColor"))
                             .font(.headline)
+                        if model.sleeping == .Awake {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(Color("HeadingTextColor"))
+                                .imageScale(.large)
+                        }
                     }
                     .padding(.top, 30)
                 }
@@ -55,9 +60,47 @@ struct MenuView: View {
                         Text("Bedtime")
                             .foregroundColor(Color("HeadingTextColor"))
                             .font(.headline)
+                        if model.sleeping == .Retiring {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(Color("HeadingTextColor"))
+                                .imageScale(.large)
+                        }
                     }
                     .padding(.top, 30)
                 }
+                
+                Button(action: {
+                    print("Invoking Asleep")
+                    if let device = model.devices.first(where: {$0.name == "sleeping"}) {
+                        device.manualSet(percent: Sleeping.Asleep.rawValue)
+                    }
+
+                }) {
+                    HStack {
+                        Image(systemName: "zzz")
+                            .foregroundColor(Color("HeadingTextColor"))
+                            .imageScale(.large)
+                        Text("Sleeping")
+                            .foregroundColor(Color("HeadingTextColor"))
+                            .font(.headline)
+                        if model.sleeping == .Retiring {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(Color("HeadingTextColor"))
+                                .imageScale(.large)
+                        }
+                    }
+                    .padding(.top, 30)
+                }
+
+            }
+            .padding(.leading)
+
+            Text("Scenes")
+                .foregroundColor(Color("HeadingTextColor"))
+                .font(.headline)
+                .padding(.top, 48)
+
+            Group {
                 
                 Button(action: {
                     print("Invoking Watch TV")
@@ -75,6 +118,7 @@ struct MenuView: View {
                     }
                     .padding(.top, 30)
                 }
+            
             }
             .padding(.leading)
 
@@ -102,6 +146,7 @@ struct MenuView: View {
                 }
             }
             .padding(.leading)
+            
             Spacer()
         }
         .padding()
