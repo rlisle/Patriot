@@ -13,13 +13,13 @@
 
 import SwiftUI
 
-enum TestMode {
+enum TestMode: Int {
     case off
     case on
     case noDevices
 }
 
-enum LoadingState {
+enum LoadingState: Int {
     case unloaded
     case restored
     case loading
@@ -95,6 +95,11 @@ class PatriotModel: ObservableObject
         
         for device in devices {
             device.publisher = self
+        }
+        
+        $sleeping.sink { value in
+            print("sink sleeping = \(value)")
+            //TODO: send mqtt
         }
     }
 
