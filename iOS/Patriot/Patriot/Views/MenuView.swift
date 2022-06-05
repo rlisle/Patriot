@@ -32,17 +32,15 @@ struct MenuView: View {
                 }) {
                     HStack {
                         Image(systemName: "sunrise")
-                            .foregroundColor(Color("HeadingTextColor"))
                             .imageScale(.large)
                         Text("Awake")
-                            .foregroundColor(Color("HeadingTextColor"))
-                            .font(.headline)
+                        .font(.headline)
                         if model.sleeping == .Awake {
                             Image(systemName: "checkmark")
-                                .foregroundColor(Color("HeadingTextColor"))
-                                .imageScale(.large)
+                            .imageScale(.large)
                         }
                     }
+                    .foregroundColor(Color(model.sleeping == .Awake ? "AccentColor" : "HeadingTextColor"))
                     .padding(.top, 30)
                 }
                 
@@ -55,17 +53,15 @@ struct MenuView: View {
                 }) {
                     HStack {
                         Image(systemName: "bed.double")
-                            .foregroundColor(Color("HeadingTextColor"))
                             .imageScale(.large)
                         Text("Bedtime")
-                            .foregroundColor(Color("HeadingTextColor"))
                             .font(.headline)
                         if model.sleeping == .Retiring {
                             Image(systemName: "checkmark")
-                                .foregroundColor(Color("HeadingTextColor"))
                                 .imageScale(.large)
                         }
                     }
+                    .foregroundColor(Color(model.sleeping == .Retiring ? "AccentColor" : "HeadingTextColor"))
                     .padding(.top, 30)
                 }
                 
@@ -78,20 +74,17 @@ struct MenuView: View {
                 }) {
                     HStack {
                         Image(systemName: "zzz")
-                            .foregroundColor(Color("HeadingTextColor"))
                             .imageScale(.large)
                         Text("Sleeping")
-                            .foregroundColor(Color("HeadingTextColor"))
                             .font(.headline)
                         if model.sleeping == .Retiring {
                             Image(systemName: "checkmark")
-                                .foregroundColor(Color("HeadingTextColor"))
                                 .imageScale(.large)
                         }
                     }
+                    .foregroundColor(Color(model.sleeping == .Asleep ? "AccentColor" : "HeadingTextColor"))
                     .padding(.top, 30)
                 }
-
             }
             .padding(.leading)
 
