@@ -15,7 +15,7 @@ class MQTTTests: XCTestCase {
     
     override func setUpWithError() throws {
         mqttHandler = MQTTHandler()
-        mqtt = MQTTManager(forTest: true)
+        mqtt = MQTTManager(testMode: .on)
         mqtt.mqttDelegate = mqttHandler
     }
 

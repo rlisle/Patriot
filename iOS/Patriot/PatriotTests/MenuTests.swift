@@ -17,7 +17,7 @@ class MenuViewTests: XCTestCase {
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let modelView = PatriotModel(forTest: true)
+        let modelView = PatriotModel(testMode: .on)
         let menuView = MenuView().environmentObject(modelView)
         viewController = UIHostingController(rootView: menuView)
     }
