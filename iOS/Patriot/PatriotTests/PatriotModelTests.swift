@@ -65,7 +65,7 @@ class PatriotModelTests: XCTestCase {
     var settings: Settings!
     
     override func setUpWithError() throws {
-        model = PatriotModel(forTest: true)
+        model = PatriotModel(testMode: .on)
         store = MockSettingsStore()
         settings = Settings(store: store)
     }

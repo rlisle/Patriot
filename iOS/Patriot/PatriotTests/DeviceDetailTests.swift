@@ -17,7 +17,7 @@ class DeviceDetailTests: XCTestCase {
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let modelView = PatriotModel(forTest: true)
+        let modelView = PatriotModel(testMode: .on)
         let deviceDetailView = DeviceDetailView().environmentObject(modelView)
         viewController = UIHostingController(rootView: deviceDetailView)
     }
