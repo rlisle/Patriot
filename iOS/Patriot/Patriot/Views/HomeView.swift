@@ -51,18 +51,18 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .foregroundColor(Color("TextColor"))
             .toolbar {
-                ToolBarItems()
-//                ToolbarItemGroup(placement: .navigationBarLeading) {
-//                    SideMenuButton(showMenu: $model.showingMenu)
-//                }
-//                ToolbarItemGroup(placement: .navigationBarTrailing) {
-//                    MQTTButton(isConnected: model.isConnected)
-//                        .padding(.horizontal, -8)
-//                    SleepingButton(sleeping: model.sleeping)
-//                        .padding(.horizontal, -8)
-//                    PartOfDayButton()
-//                        .padding(.horizontal, -8)
-//                }
+//                ToolBarItems(model: PatriotModel)
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+                    SideMenuButton(showMenu: $model.showingMenu)
+                }
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    MQTTButton(isConnected: model.isConnected)
+                        .padding(.horizontal, -8)
+                    SleepingButton(sleeping: model.sleeping)
+                        .padding(.horizontal, -8)
+                    PartOfDayButton()
+                        .padding(.horizontal, -8)
+                }
             }
             .gesture(DragGesture()
                 .onEnded {
@@ -93,15 +93,12 @@ struct HomeView: View {
 
 //struct ToolBarItems: ToolbarContent {
 //
-//    var menuAction: () -> Void
-//    var mqttAction: () -> Void
-//    var sleepAction: () -> Void
-//    var partOfDayAction: () -> Void
+//    var model: PatriotModel
 //
 //    var body: some ToolbarContent {
-//        
+//
 //        ToolbarItemGroup(placement: .navigationBarLeading) {
-//            SideMenuButton(showMenu: menuAction)
+//            SideMenuButton(showMenu: model.showingMenu)
 //        }
 //        ToolbarItemGroup(placement: .navigationBarTrailing) {
 //            MQTTButton(isConnected: model.isConnected)
