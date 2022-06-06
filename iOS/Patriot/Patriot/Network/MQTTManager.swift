@@ -32,12 +32,12 @@ class MQTTManager {
     let mqtt: CocoaMQTT!
     
     var isConnected: Bool = false
-    var isTesting: Bool = false
+    var testMode: TestMode = .off
     
     var mqttDelegate: MQTTReceiving?
     
-    init(forTest: Bool = false) {
-        isTesting = forTest
+    init(testMode: TestMode = .off) {
+        self.testMode = testMode
         let clientID = "Patriot" + String(ProcessInfo().processIdentifier)
         mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort) // TODO: mqtt5?
         mqtt.delegate = self
@@ -45,19 +45,18 @@ class MQTTManager {
     }
     
     func reconnect() {
-        guard isTesting == false else {
-            print("MQTT init testing so not connecting")
+        guard testMode == .off else {
+            print("MQTT testing so not connecting")
             return
         }
         isConnected = mqtt.connect()
-        print("MQTT init connected: \(isConnected)")
     }
 }
 
 extension MQTTManager: MQTTSending
 {
     func sendMessage(topic: String, message: String) {
-        guard isTesting == false else {
+        guard testMode == .off else {
             return
         }
         guard isConnected == true else {
@@ -69,7 +68,7 @@ extension MQTTManager: MQTTSending
     
     func sendPatriotMessage(device: String, percent: Int)
     {
-        guard isTesting == false else {
+        guard testMode == .off else {
             return
         }
         guard isConnected == true else {
@@ -99,10 +98,11 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
-        if let payload: String = message.string {
+        if let payload: String = message.string
+        {
             let topic = message.topic
             //print("MQTT didReceiveMessage: \(topic), \(payload)")
-            self.mqttDelegate?.didReceiveMessage(topic: message.topic, message: payload)
+            self.mqttDelegate?.didReceiveMessage(topic: topic, message: payload)
         }
     }
 
@@ -131,7 +131,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
 
     func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
-        //print("MQTT didReceive trust: \(trust)")
+        print("MQTT didReceive trust: \(trust)")
         completionHandler(true)
     }
     
@@ -140,7 +140,7 @@ extension MQTTManager: CocoaMQTTDelegate {
     }
     
     func mqtt(_ mqtt: CocoaMQTT, didStateChangeTo state: CocoaMQTTConnState) {
-        print("MQTT didStateChange")
+        print("MQTT didStateChange \(state), doing nothing.")
     }
 
     func _console(_ info: String) {

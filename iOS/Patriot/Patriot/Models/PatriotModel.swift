@@ -12,7 +12,20 @@
 //
 
 import SwiftUI
-import Combine
+
+enum TestMode: Int {
+    case off
+    case on
+    case noDevices
+}
+
+enum LoadingState: Int {
+    case unloaded
+    case restored
+    case loading
+    case loaded
+    case timedOut
+}
 
 class PatriotModel: ObservableObject
 {
@@ -25,9 +38,12 @@ class PatriotModel: ObservableObject
     var selectedDevice = Device(name: "none", type: .Light)
     
     @Published var devices: [Device] = []
-    @Published var favoritesList:  [String]   //TODO: delete & refactor using devices only             // List of favorite device names
+    @Published var favoritesList:  [String] = []    // List of favorite device names
     @Published var sleeping: Sleeping = .Awake
     @Published var partOfDay: PartOfDay = .Afternoon
+    
+    @Published var isConnected: Bool = false
+    @Published var state: LoadingState = .unloaded  //TODO: calculated value?
     
     let mqtt:           MQTTManager
     let settings:       Settings
@@ -47,35 +63,56 @@ class PatriotModel: ObservableObject
         return Array(uniqueRooms).sorted()
     }
     
-    init(forTest: Bool = false,
+    init(testMode: TestMode = .off,
          sleeping: Sleeping = .Awake,
          partOfDay: PartOfDay = .Afternoon
         )
     {
+        state = .unloaded
         settings = Settings(store: UserDefaultsSettingsStore())
         favoritesList = settings.favorites ?? []
-        mqtt = MQTTManager(forTest: forTest)
+
+        mqtt = MQTTManager(testMode: testMode)
         mqtt.mqttDelegate = self
-        if forTest {
+
+        switch testMode {
+        case .off:
+            devices = settings.devices
+            state = .restored
+        case .on:
+            print("*** Testing Mode ***")
             devices = getTestDevices()
             self.sleeping = sleeping
             self.partOfDay = partOfDay
             self.selectedDevice = devices[0]
-        } else {
-            devices = settings.devices
+            state = .loaded
+        case .noDevices:
+            print("*** Testing Mode No Devices ***")
+            self.sleeping = sleeping
+            self.partOfDay = partOfDay
+            state = .loading
         }
+        
         for device in devices {
             device.publisher = self
+        }
+        
+        $sleeping.sink { value in
+            print("sink sleeping = \(value)")
+            //TODO: send mqtt
         }
     }
 
     // For Test/Preview
     convenience init(devices: [Device]) {
-        self.init(forTest: true)
+        self.init(testMode: .on)
+        state = .unloaded
         self.devices = Array(Set(devices))
+        state = .loaded
     }
     
     func queryDevices() {
+        state = .loading
         mqtt.sendMessage(topic: "patriot/query", message: "all")
     }
 }
@@ -85,27 +122,27 @@ class PatriotModel: ObservableObject
 extension PatriotModel: MQTTReceiving {
     
     func connectionDidChange(isConnected: Bool) {
-        if isConnected == false {
-            print("MQTT disconnected, reconnecting")
-            mqtt.reconnect()
-            
-            if isConnected == false {
-                return
-            }
+        print("connectionDidChange(isConnected: \(isConnected)")
+        self.isConnected = isConnected
+        guard isConnected == true else {
+//            print("MQTT disconnected, reconnecting")
+//            mqtt.reconnect()
+            return
         }
+        print("MQTT connected, querying devices")
         queryDevices()
     }
 
     func sendMessage(device: Device)
     {
-        if mqtt.isConnected {
+        if isConnected {
             mqtt.sendPatriotMessage(device: device.name, percent: device.percent)
         }
     }
     
     func sendMessage(topic: String, message: String)
     {
-        if mqtt.isConnected {
+        if isConnected {
             mqtt.sendMessage(topic: topic, message: message)
         } else {
             print("sendMessage \(topic), \(message) not sent. No connection.")
@@ -184,6 +221,8 @@ extension PatriotModel {
         } else if isDisplayableDevice(type: type) {
             addDevice(Device(name: name, type: DeviceType(rawValue: type) ?? .Light, percent: percent, room: room, isFavorite: false))
         }
+        //TODO: reset timeout timer
+        state = .loaded
     }
     
     func handleLegacyCommand(message: String) {
@@ -233,7 +272,17 @@ extension PatriotModel {
 // Favorites
 extension PatriotModel {
 
-    func updateFavoritesList() {
+    // Pass in settings to all methods to allow testing
+    
+    func loadFavorites(settings: Settings) {
+        favoritesList = settings.favorites ?? []
+    }
+
+    func saveFavorites(settings: Settings) {
+        settings.favorites = favoritesList
+    }
+    
+    func updateFavoritesList(settings: Settings) {
         favoritesList = []
         for device in devices
         {
@@ -290,7 +339,7 @@ extension PatriotModel: DevicePublishing {
     }
 
     func isFavoriteChanged(device: Device) {
-        updateFavoritesList()
+        updateFavoritesList(settings: settings)
     }
 }
 

@@ -12,30 +12,34 @@ struct HomeView: View {
     let sideMenuWidth: CGFloat = 200
         
     @EnvironmentObject var model: PatriotModel
-    @EnvironmentObject var appDelegate: AppDelegate
-    @EnvironmentObject var sceneDelegate: SceneDelegate
     
     var body: some View {
-        
-        let dragToClose = DragGesture()
-            .onEnded {
-                if $0.translation.width < -100 {
-                    withAnimation {
-                        model.showingMenu = false
-                    }
-                }
-            }
         
         NavigationView {
             ZStack(alignment: .leading) {
                 NavigationLink("", isActive: $model.showingDetails, destination: {
                     DeviceDetailView()
                 })
-                MainView()
-
-                .offset(x: model.showingMenu ? sideMenuWidth : 0)
-                .disabled(model.showingMenu ? true : false)
-
+                
+                if model.devices == [] {
+                    ZStack {
+                        VStack {
+                            Spacer()
+                            HStack {
+                                Spacer()
+                                ProgressView("Searching for devices...")
+                                Spacer()
+                            }
+                            Spacer()
+                        }
+                    }
+                    .background(Color("BackgroundColor"))
+                } else {
+                    MainView()
+                        .offset(x: model.showingMenu ? sideMenuWidth : 0)
+                        .disabled(model.showingMenu ? true : false)
+                }
+                
                 if model.showingMenu {
                     MenuView()
                         .transition(.move(edge: .leading))
@@ -43,41 +47,85 @@ struct HomeView: View {
                 }
             }
             .background(Color("BackgroundColor"))
-            .gesture(dragToClose)
-
             .navigationBarTitle("Patriot")
             .navigationBarTitleDisplayMode(.inline)
             .foregroundColor(Color("TextColor"))
             .toolbar {
+//                ToolBarItems(model: PatriotModel)
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     SideMenuButton(showMenu: $model.showingMenu)
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    MQTTButton(isConnected: model.isConnected)
+                        .padding(.horizontal, -8)
                     SleepingButton(sleeping: model.sleeping)
+                        .padding(.horizontal, -8)
                     PartOfDayButton()
+                        .padding(.horizontal, -8)
                 }
             }
-            
-        }.accentColor(.black)
-        
-        
-        // This fixes the layout constraint warnings
-        .navigationViewStyle(StackNavigationViewStyle())
-        
+            .gesture(DragGesture()
+                .onEnded {
+                    if $0.translation.width < -100 {
+                        withAnimation {
+                            model.showingMenu = false
+                        }
+                    }
+                }
+            )
+        }
+        .accentColor(.black)
+        .navigationViewStyle(StackNavigationViewStyle()) // This fixes the layout constraint warnings
         .onAppear {
-             let appearance = UINavigationBarAppearance()
-             appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
-             appearance.backgroundColor = UIColor(Color("BackgroundColor"))
-            appearance.titleTextAttributes = [.foregroundColor: UIColor(Color("HeadingBackground"))]
-             UINavigationBar.appearance().standardAppearance = appearance
-             UINavigationBar.appearance().scrollEdgeAppearance = appearance
+            setAppearance()
          }
+    }
+    
+    func setAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+        appearance.backgroundColor = UIColor(Color("BackgroundColor"))
+        appearance.titleTextAttributes = [.foregroundColor: UIColor(Color("HeadingBackground"))]
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 }
 
+//struct ToolBarItems: ToolbarContent {
+//
+//    var model: PatriotModel
+//
+//    var body: some ToolbarContent {
+//
+//        ToolbarItemGroup(placement: .navigationBarLeading) {
+//            SideMenuButton(showMenu: model.showingMenu)
+//        }
+//        ToolbarItemGroup(placement: .navigationBarTrailing) {
+//            MQTTButton(isConnected: model.isConnected)
+//                .padding(.horizontal, -8)
+//            SleepingButton(sleeping: model.sleeping)
+//                .padding(.horizontal, -8)
+//            PartOfDayButton()
+//                .padding(.horizontal, -8)
+//        }
+//    }
+//}
+
+
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
-            .environmentObject(PatriotModel(forTest: true))
+        Group {
+
+            // List available sims: xcrun simctl list devicetypes
+            HomeView()
+                .environmentObject(PatriotModel(testMode: .on))
+                .previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))                .previewDisplayName("With Devices")
+
+            HomeView()
+                .environmentObject(PatriotModel(testMode: .noDevices))
+                .previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))
+                .previewDisplayName("No Devices")
+
+        }
     }
 }

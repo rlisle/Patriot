@@ -36,9 +36,11 @@ struct DeviceView: View {
                     .padding(.top, 8)
                     .opacity(brighten ? 1.0 : 0.8)
                     .onTapGesture {
+                        print("Device \(device.name) tapped")
                         device.manualToggle()
                     }
                     .onLongPressGesture(minimumDuration: 1.0, perform: {
+                        print("Device \(device.name) long press")
                         model.selectedDevice = self.device
                         model.showingDetails = true
                     }, onPressingChanged: { pressed in

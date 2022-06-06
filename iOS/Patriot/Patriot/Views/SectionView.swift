@@ -55,6 +55,6 @@ struct SectionView: View {
 struct SectionView_Previews: PreviewProvider {
     static var previews: some View {
         SectionView(section: "Favorites")
-            .environmentObject(PatriotModel(forTest: true))
+            .environmentObject(PatriotModel(testMode: .on))
     }
 }

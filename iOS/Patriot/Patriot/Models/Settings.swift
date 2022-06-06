@@ -19,7 +19,7 @@ enum SettingsKey: String
     case devices
 }
 
-protocol SettingsStore
+protocol SettingsProviding
 {
     func getBool(forKey: SettingsKey) -> Bool?
     func set(_ bool: Bool?, forKey: SettingsKey)
@@ -27,13 +27,13 @@ protocol SettingsStore
     func set(_ int: Int?, forKey: SettingsKey)
     func getString(forKey: SettingsKey) -> String?
     func set(_ string: String?, forKey: SettingsKey)
-    func getStringArray(forKey: SettingsKey) -> [String]?
-    func set(_ array: [String]?, forKey: SettingsKey)
+    func getStringArray(forKey: SettingsKey) -> [String]
+    func set(_ array: [String], forKey: SettingsKey)
     func getDeviceArray(forKey: SettingsKey) -> [Device]
     func set(_ array: [Device], forKey: SettingsKey)
 }
 
-class UserDefaultsSettingsStore: SettingsStore
+class UserDefaultsSettingsStore: SettingsProviding
 {
     let userDefaults = UserDefaults.standard
     
@@ -72,13 +72,13 @@ class UserDefaultsSettingsStore: SettingsStore
         userDefaults.set(string, forKey: key.rawValue)
     }
     
-    func getStringArray(forKey key: SettingsKey) -> [String]?
+    func getStringArray(forKey key: SettingsKey) -> [String]
     {
-        return userDefaults.array(forKey: key.rawValue) as? [String]
+        return userDefaults.array(forKey: key.rawValue) as? [String] ?? []
     }
     
     
-    func set(_ stringArray: [String]?, forKey key: SettingsKey)
+    func set(_ stringArray: [String], forKey key: SettingsKey)
     {
         userDefaults.set(stringArray, forKey: key.rawValue)
     }
@@ -104,9 +104,9 @@ class UserDefaultsSettingsStore: SettingsStore
 
 class Settings
 {
-    let store: SettingsStore
+    let store: SettingsProviding
     
-    init(store: SettingsStore)
+    init(store: SettingsProviding)
     {
         self.store = store
     }
@@ -140,7 +140,7 @@ extension Settings
             return store.getStringArray(forKey: .favorites)
         }
         set {
-            store.set(newValue, forKey: .favorites)
+            store.set(newValue ?? [], forKey: .favorites)
         }
     }
     
@@ -152,5 +152,4 @@ extension Settings
             store.set(newValue, forKey: .devices)
         }
     }
-
 }
