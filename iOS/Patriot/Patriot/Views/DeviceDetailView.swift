@@ -22,6 +22,10 @@ struct DeviceDetailView: View {
             }
             .frame(maxWidth: .infinity)
             .background(Color("BackgroundColor"))
+            .navigationBarTitle(model.selectedDevice.name.camelCaseToWords())
+            .navigationBarTitleDisplayMode(.inline)
+            .foregroundColor(Color("TextColor"))
+
         }
     }
 }
