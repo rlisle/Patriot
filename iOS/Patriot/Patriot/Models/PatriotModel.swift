@@ -335,6 +335,7 @@ extension PatriotModel: DeviceNotifying
 // Called by a device when manually changed
 extension PatriotModel: DevicePublishing {
     func devicePercentChanged(device: Device) {
+        print("PatriotModel devicePercentChanged \(device.name): \(device.percent)")
         sendMessage(device: device)
     }
 

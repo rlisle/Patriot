@@ -23,32 +23,34 @@ import SwiftUI
 //    }
 //}
 
-struct VerticalPercentSlider: View {
-    @State var percent: Int = 0
-    var intProxy: Binding<Double>{
-        Binding<Double>(get: {
-            return Double(percent)
-        }, set: {
-            //rounds the double to an Int
-            print($0.description)
-            percent = Int($0)
-        })
-    }
-    var body: some View {
-        VStack{
-            Text(percent.description)
-            Slider(value: intProxy , in: 0.0...100.0, step: 5.0, onEditingChanged: {_ in
-                print(percent.description)
-            })
-            .rotationEffect(.degrees(-90.0), anchor: .topLeading)
-            .frame(width: 40, height: 200)
-            .offset(y: 200)
-        }
-    }
-}
+//struct VerticalPercentSlider: View {
+//    @State var percent: Int = 0
+//    var intProxy: Binding<Double>{
+//        Binding<Double>(get: {
+//            return Double(percent)
+//        }, set: {
+//            //rounds the double to an Int
+//            print($0.description)
+//            percent = Int($0)
+//        })
+//    }
+//    var body: some View {
+//        VStack{
+//            Slider(value: intProxy , in: 0.0...100.0, step: 5.0, onEditingChanged: {_ in
+//                print(percent.description)
+//            })
+//            .rotationEffect(.degrees(-90.0), anchor: .topLeading)
+//            .frame(width: 40, height: 200)
+//            .offset(y: 200)
+//            Text(percent.description)
+//        }
+//    }
+//}
 
 struct PercentSlider: View {
-    @State var percent: Int = 0
+
+    @Binding var percent: Int
+
     var intProxy: Binding<Double>{
         Binding<Double>(get: {
             return Double(percent)
@@ -59,12 +61,12 @@ struct PercentSlider: View {
         })
     }
     var body: some View {
-        VStack{
+        VStack {
             Text(percent.description)
-            Slider(value: intProxy , in: 0.0...100.0, step: 5.0, onEditingChanged: {_ in
+            Slider(value: intProxy , in: 0.0...100.0, step: 5.0, onEditingChanged: { value in
                 print(percent.description)
             })
-            .frame(width: 40, height: 200)
+            .frame(width: 200, height: 40)
         }
     }
 }
@@ -73,15 +75,17 @@ struct DeviceDetailView: View {
 
     @EnvironmentObject var model: PatriotModel
     
-    @State var isEditing: Bool = false
-    
     var body: some View {
         NavigationView {
             ScrollView {
                 //TODO: add more stuff'
-                VStack {
-                    VerticalPercentSlider(percent: model.selectedDevice.percent)
+                VStack(alignment: .leading) {
+                    Text("Brightness")
+                        .font(.title2)
+                        .padding(.top, 40)
+                    PercentSlider(percent: $model.selectedDevice.percent)
                 }
+                .padding(.horizontal, 16)
             }
             .frame(maxWidth: .infinity)
             .background(Color("BackgroundColor"))
