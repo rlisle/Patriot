@@ -114,6 +114,7 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
+    // Use relay instead due to back door switch cross-over
 //    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
 
     // Activities/States - define for every other state.
@@ -167,81 +168,7 @@ void createDevices() {
     Device::add(new Device("sewerHose", "All", 'X'));
 }
 
-// TODO: refactor to IoT
-// from 2nd Sunday of March through 1st Sunday of November
-// 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
-void handleDaylightSavings() {
-    int month = Time.month();
-    if(month > 3 && month < 11) {
-        Time.beginDST();
-    } else if(month == 3) {
-        handleDSTMarch();
-    } else if(month == 11) {
-        handleDSTNovember();
-    }
-}
-
-void handleDSTMarch() {
-    int weekday = Time.weekday();
-    int day = Time.day();
-    int hour = Time.hour();
-    
-    if(day <= 7) return;
-    
-    switch(weekday) {
-        case 1:     // Sunday
-            if(day == 8 && hour < 2) return;
-            break;
-        case 2:
-            if(day < 9) return;
-        case 3:
-            if(day < 10) return;
-        case 4:
-            if(day < 11) return;
-        case 5:
-            if(day < 12) return;
-        case 6:
-            if(day < 13) return;
-        case 7:     // Saturday
-        default:
-            if(day < 14) return;
-    }
-    Time.beginDST();
-}
-
-void handleDSTNovember() {
-    int weekday = Time.weekday();
-    int day = Time.day();
-    int hour = Time.hour();
-    
-    if(day > 7) return;
-    
-    switch(weekday) {
-        case 1:     // Sunday
-            if(day == 1 && hour >= 2) return;
-            break;
-        case 2:
-            if(day > 2) return;
-            break;
-        case 3:
-            if(day > 3) return;
-            break;
-        case 4:
-            if(day > 4) return;
-            break;
-        case 5:
-            if(day > 5) return;
-            break;
-        case 6:
-            if(day > 6) return;
-            break;
-        case 7:     // Saturday
-        default:
-            if(day > 7) return;
-    }
-    Time.beginDST();
-}
-
+// LOOP
 void loop() {
 
     IoT::loop();
@@ -513,3 +440,80 @@ void setAllOutsideLights(int value) {
     Device::setValue("RearPorch", value);
     Device::setValue("RearAwning", value);
 }
+
+// DAYLIGHT SAVINGS
+// TODO: refactor to IoT
+// from 2nd Sunday of March through 1st Sunday of November
+// 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
+void handleDaylightSavings() {
+    int month = Time.month();
+    if(month > 3 && month < 11) {
+        Time.beginDST();
+    } else if(month == 3) {
+        handleDSTMarch();
+    } else if(month == 11) {
+        handleDSTNovember();
+    }
+}
+
+void handleDSTMarch() {
+    int weekday = Time.weekday();
+    int day = Time.day();
+    int hour = Time.hour();
+    
+    if(day <= 7) return;
+    
+    switch(weekday) {
+        case 1:     // Sunday
+            if(day == 8 && hour < 2) return;
+            break;
+        case 2:
+            if(day < 9) return;
+        case 3:
+            if(day < 10) return;
+        case 4:
+            if(day < 11) return;
+        case 5:
+            if(day < 12) return;
+        case 6:
+            if(day < 13) return;
+        case 7:     // Saturday
+        default:
+            if(day < 14) return;
+    }
+    Time.beginDST();
+}
+
+void handleDSTNovember() {
+    int weekday = Time.weekday();
+    int day = Time.day();
+    int hour = Time.hour();
+    
+    if(day > 7) return;
+    
+    switch(weekday) {
+        case 1:     // Sunday
+            if(day == 1 && hour >= 2) return;
+            break;
+        case 2:
+            if(day > 2) return;
+            break;
+        case 3:
+            if(day > 3) return;
+            break;
+        case 4:
+            if(day > 4) return;
+            break;
+        case 5:
+            if(day > 5) return;
+            break;
+        case 6:
+            if(day > 6) return;
+            break;
+        case 7:     // Saturday
+        default:
+            if(day > 7) return;
+    }
+    Time.beginDST();
+}
+
