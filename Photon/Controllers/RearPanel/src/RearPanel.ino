@@ -278,12 +278,13 @@ void handleOfficeMotion() {
         Device::setValue("Piano", 50);
         officeMotion = true;
 
-        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
-            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
-                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
-                Device::setValue("sleeping", AWAKE);
-            }
-        }
+//        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
+            // 6/12/22 Disable until motion sensor reliability fixed
+//            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+//                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
+//                Device::setValue("sleeping", AWAKE);
+//            }
+//        }
 
     } else if(officeMotionChanged == 0) {
         Device::setValue("Piano", 0);
@@ -357,7 +358,7 @@ void handleWatching() {
 }
 
 /**
- * handleSleeping
+ * handleCleaning
  */
 void handleCleaning() {
     int cleaningChanged = Device::getChangedValue("cleaning");
