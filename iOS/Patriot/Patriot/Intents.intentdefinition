@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>u8BbCo</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>21E258</string>
+	<string>22A5266r</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>13F17a</string>
+	<string>14A5228q</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>13.4</string>
+	<string>14.0</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -194,10 +194,6 @@
 						<string>Ok, ${device} = ${percent} %</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>tBTkkv</string>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Ok, ${device} set to ${percent} percent</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>OuzWyI</string>
 						<key>INIntentResponseCodeName</key>
 						<string>success</string>
 						<key>INIntentResponseCodeSuccess</key>
