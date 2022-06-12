@@ -42,7 +42,12 @@ class RVHandler: NSObject, RVIntentHandling {
             print("RVHandler in foreground")
             
             // Update UI
-            
+            guard let deviceObj = PatriotModel.shared.getDevice(name: device) else {
+                print("handle(intent) device not found")
+                completion(RVIntentResponse(code: .failure, userActivity: nil))
+                return
+            }
+            deviceObj.manualSet(percent: percent)
             completion(RVIntentResponse(code: .success, userActivity: nil))
         }
     }
