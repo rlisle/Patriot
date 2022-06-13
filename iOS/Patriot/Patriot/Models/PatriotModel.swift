@@ -325,6 +325,7 @@ extension PatriotModel: DeviceNotifying
 {
     func deviceChanged(name: String, percent: Int)
     {
+        print("deviceChanged \(name), \(percent)")
         if let index = devices.firstIndex(where: {$0.name == name})
         {
             let device = devices[index]
