@@ -275,7 +275,7 @@ void handleOfficeMotion() {
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
 
     if(officeMotionChanged == 100) {
-        Device::setValue("Piano", 50);
+        Device::setValue("OfficeCeiling", 33);
         officeMotion = true;
 
 //        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
@@ -287,7 +287,7 @@ void handleOfficeMotion() {
 //        }
 
     } else if(officeMotionChanged == 0) {
-        Device::setValue("Piano", 0);
+        Device::setValue("OfficeCeiling", 0);
         officeMotion = false;
 
     } // Ignore -1
@@ -309,9 +309,9 @@ void handleOfficeDoor() {
             Log.info("Office door timeout");
             officeDoorCountdown = false;
             //Turn off light if night and after sleeping
-            if(partOfDay > SUNSET && sleeping == ASLEEP ) {
+//            if(partOfDay > SUNSET && sleeping == ASLEEP ) {
                 Device::setValue("RearPorch", 0);
-            }
+//            }
         }
     }
 
