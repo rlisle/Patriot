@@ -308,10 +308,7 @@ void handleOfficeDoor() {
         if(loopTime >= lastOfficeDoor+OFFICE_DOOR_TIMEOUT) {
             Log.info("Office door timeout");
             officeDoorCountdown = false;
-            //Turn off light if night and after sleeping
-//            if(partOfDay > SUNSET && sleeping == ASLEEP ) {
-                Device::setValue("RearPorch", 0);
-//            }
+            Device::setValue("RearPorch", 0);
         }
     }
 
@@ -381,6 +378,7 @@ void handleCleaning() {
 void setAllActivities(int value) {
     Device::setValue("cooking", value);
     Device::setValue("cleaning", value);
+    // Watching?
 }
 
 void setMorningLights() {
@@ -407,7 +405,6 @@ void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
     setAllInsideLights(0);
-    Device::setValue("piano",70);
     setAllOutsideLights(0);
     Device::setValue("Curtain",0);
 }
@@ -422,7 +419,7 @@ void setSleepingLights() {
 
 void setWatchingLights(int level) {
     Log.info("setWatchingLights %d", level);
-    // Nothing to do
+    // Nothing to do in the office
 }
 
 void setAllInsideLights(int value) {
