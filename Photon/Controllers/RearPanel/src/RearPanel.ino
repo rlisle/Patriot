@@ -183,11 +183,11 @@ void loop() {
 }
 
 /**
- * If 2:00 am and goodnight hasn't been issued
+ * If 3:00 am and goodnight hasn't been issued
  * then set sleep = 1 anyways.
  */
 void handleAutoGoodnight() {
-    if(sleeping < ASLEEP && Time.hour() == 2) {
+    if(sleeping < ASLEEP && Time.hour() == 3) {
         IoT::mqttPublish("patriot/sleeping", "3");   // 3 = ASLEEP
         Device::setValue("sleeping", ASLEEP);
     }
@@ -242,10 +242,10 @@ void handleSleeping() {
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("It is AWAKE");
-            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-                Log.info("It is morning");
+//            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+//                Log.info("It is morning");
                 setMorningLights();
-            }
+//            }
         }
 
         // Alexa, Bedtime

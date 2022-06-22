@@ -166,10 +166,10 @@ void handleSleeping() {
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("It is AWAKE");
-            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-                Log.info("It is morning");
+//            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+//                Log.info("It is morning");
                 setMorningLights();
-            }
+//            }
         }
 
         // Alexa, Bedtime
