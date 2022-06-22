@@ -259,8 +259,8 @@ void handleSleepingChange(int sleeping) {
     int partOfDay = Device::value("PartOfDay");
     
     // Alexa, Good morning
-    Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
-    if( sleeping == AWAKE && partOfDay > SUNSET ) {
+//    Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
+    if( sleeping == AWAKE) { //} && partOfDay > SUNSET ) {
         Log.info("It is good morning");
         setMorningLights();
     }

@@ -183,11 +183,11 @@ void loop() {
 }
 
 /**
- * If 2:00 am and goodnight hasn't been issued
+ * If 3:00 am and goodnight hasn't been issued
  * then set sleep = 1 anyways.
  */
 void handleAutoGoodnight() {
-    if(sleeping < ASLEEP && Time.hour() == 2) {
+    if(sleeping < ASLEEP && Time.hour() == 3) {
         IoT::mqttPublish("patriot/sleeping", "3");   // 3 = ASLEEP
         Device::setValue("sleeping", ASLEEP);
     }
@@ -242,10 +242,10 @@ void handleSleeping() {
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("It is AWAKE");
-            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-                Log.info("It is morning");
+//            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+//                Log.info("It is morning");
                 setMorningLights();
-            }
+//            }
         }
 
         // Alexa, Bedtime
@@ -275,7 +275,7 @@ void handleOfficeMotion() {
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
 
     if(officeMotionChanged == 100) {
-        Device::setValue("Piano", 50);
+        Device::setValue("OfficeCeiling", 33);
         officeMotion = true;
 
 //        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
@@ -287,7 +287,7 @@ void handleOfficeMotion() {
 //        }
 
     } else if(officeMotionChanged == 0) {
-        Device::setValue("Piano", 0);
+        Device::setValue("OfficeCeiling", 0);
         officeMotion = false;
 
     } // Ignore -1
@@ -308,10 +308,7 @@ void handleOfficeDoor() {
         if(loopTime >= lastOfficeDoor+OFFICE_DOOR_TIMEOUT) {
             Log.info("Office door timeout");
             officeDoorCountdown = false;
-            //Turn off light if night and after sleeping
-            if(partOfDay > SUNSET && sleeping == ASLEEP ) {
-                Device::setValue("RearPorch", 0);
-            }
+            Device::setValue("RearPorch", 0);
         }
     }
 
@@ -381,6 +378,7 @@ void handleCleaning() {
 void setAllActivities(int value) {
     Device::setValue("cooking", value);
     Device::setValue("cleaning", value);
+    // Watching?
 }
 
 void setMorningLights() {
@@ -407,7 +405,6 @@ void setBedtimeLights() {
     Log.info("setBedtimeLights");
     setAllActivities(0);
     setAllInsideLights(0);
-    Device::setValue("piano",70);
     setAllOutsideLights(0);
     Device::setValue("Curtain",0);
 }
@@ -422,7 +419,7 @@ void setSleepingLights() {
 
 void setWatchingLights(int level) {
     Log.info("setWatchingLights %d", level);
-    // Nothing to do
+    // Nothing to do in the office
 }
 
 void setAllInsideLights(int value) {
