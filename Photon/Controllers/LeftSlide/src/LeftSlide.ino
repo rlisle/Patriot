@@ -166,10 +166,10 @@ void handleSleeping() {
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("It is AWAKE");
-            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-                Log.info("It is morning");
+//            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+//                Log.info("It is morning");
                 setMorningLights();
-            }
+//            }
         }
 
         // Alexa, Bedtime
@@ -200,12 +200,12 @@ void handleLivingRoomMotion() {
         Device::setValue("LeftVertical", 50);
 
         // Determine if this is Ron getting up
-        if( partOfDay > SUNSET && sleeping == ASLEEP) {
-            if(Time.hour() > 4 && Time.hour() < 10) {   // Motion after 5:00 is wakeup
-                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
-                Device::setValue("sleeping", AWAKE);
-            }
-        }
+//        if( partOfDay > SUNSET && sleeping == ASLEEP) {
+//            if(Time.hour() > 4 && Time.hour() < 10) {   // Motion after 5:00 is wakeup
+//                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
+//                Device::setValue("sleeping", AWAKE);
+//            }
+//        }
         livingRoomMotion = true;
 
     } else if(livingRoomMotionChanged == 0) {
