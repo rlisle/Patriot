@@ -13,8 +13,30 @@ struct HomeView: View {
         
     @EnvironmentObject var model: PatriotModel
     
+//    #if os(iOS)
+//    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+//    #endif
+//
+//    var horizontallyConstrained: Bool {
+//        #if os(iOS)
+//        return horizontalSizeClass == .compact
+//        #else
+//        return false
+//        #endif
+//    }
+
     var body: some View {
-        
+
+//        #if os(iOS)
+//        if horizontalSizeClass == .compact {
+//            AppTabNavigation()
+//        } else {
+//            AppSidebarNavigation()
+//        }
+//        #else
+//        AppSidebarNavigation()
+//        #endif
+
         NavigationView {
             ZStack(alignment: .leading) {
                 NavigationLink("", isActive: $model.showingDetails, destination: {
@@ -119,11 +141,11 @@ struct HomeView_Previews: PreviewProvider {
             // List available sims: xcrun simctl list devicetypes
             HomeView()
                 .environmentObject(PatriotModel(testMode: .on))
-                .previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))                .previewDisplayName("With Devices")
+                //.previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))                .previewDisplayName("With Devices")
 
             HomeView()
                 .environmentObject(PatriotModel(testMode: .noDevices))
-                .previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))
+                //.previewDevice(PreviewDevice(rawValue: "iPhone 11 Pro"))
                 .previewDisplayName("No Devices")
 
         }
