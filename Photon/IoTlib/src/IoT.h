@@ -70,6 +70,7 @@ private:
     static String _controllerName;
     static MQTTManager* _mqttManager;
     
+    static void dailyReset();
     static void subscribeHandler(const char *eventName, const char *rawData);
     static void mqttHandler(char* topic, byte* payload, unsigned int length);
     static void handleDaylightSavings();

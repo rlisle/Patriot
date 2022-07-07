@@ -69,7 +69,7 @@ void IoT::loop()
  * and it has been running at least 6 hours
  */
 void IoT::dailyReset() {
-    if(hour() == 2 && System.update() > 60*60*6 ) {
+    if(Time.hour() == 2 && System.uptime() > 60*60*6 ) {
         System.reset(RESET_NO_WAIT);
     }
 }
