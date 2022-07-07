@@ -30,7 +30,7 @@ All text above must be included in any redistribution.
 */
 
 // Uses TimeLord github.com/probonopd/TimeLord.git
-#include <TimeLord.h>
+//#include <TimeLord.h>     // Copied code into PartOfDay
 #include "PatriotPartOfDay.h"
 #include "IoT.h"
 
@@ -125,17 +125,17 @@ void PartOfDay::calcSunriseSunset()
     byte bSunset[] = { 0, 0, 12, 27, 12, 20 };
 
     TimeLord timeLord;
-    timeLord.TimeZone(-6 * 60);
-    timeLord.Position(LATITUDE, LONGITUDE);
+    timeLord.TimeZone(-6 * 60);                 //TODO: calculate using GPS
+    timeLord.Position(LATITUDE, LONGITUDE);     //TODO: "
 
     bSunrise[3] = Time.day();
     bSunrise[4] = Time.month();
     bSunrise[5] = Time.year();
     timeLord.SunRise(bSunrise);
     
-    bSunset[3] = Time.day();
-    bSunset[4] = Time.month();
-    bSunset[5] = Time.year();
+    bSunset[3] = Time.day();                    //TODO: modify TimeLord to do this directly
+    bSunset[4] = Time.month();                  //TODO: "
+    bSunset[5] = Time.year();                   //TODO:
     timeLord.SunSet(bSunset);
     
     int sunriseHour = bSunrise[tl_hour];
@@ -144,7 +144,6 @@ void PartOfDay::calcSunriseSunset()
     int sunsetMinute = bSunset[tl_minute];
     
     Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), sunriseHour, sunriseMinute);
-
     Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), sunsetHour, sunsetMinute);
 
     _periods[SUNRISE-1].set(sunriseHour, sunriseMinute);
@@ -175,3 +174,7 @@ int PartOfDay::calcPartOfDay()
 void PartOfDay::publishPOD(int partOfDay) {
     IoT::publishValue("partofday",partOfDay);
 }
+
+// Code From TimeLord
+
+
