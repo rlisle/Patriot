@@ -16,8 +16,8 @@ All text above must be included in any redistribution.
 #include "device.h"
 #include "IoT.h"
 
-#define MQTT_TIMEOUT_SECONDS 60*31
-#define MQTT_ALIVE_SECONDS 60*15
+#define MQTT_TIMEOUT_SECONDS 60*16
+#define MQTT_ALIVE_SECONDS 60*5
 
 MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
 {

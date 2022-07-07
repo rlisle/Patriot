@@ -29,6 +29,7 @@ All text above must be included in any redistribution.
 
 */
 
+// Uses TimeLord github.com/probonopd/TimeLord.git
 #include <TimeLord.h>
 #include "PatriotPartOfDay.h"
 #include "IoT.h"
