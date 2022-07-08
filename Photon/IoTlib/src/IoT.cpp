@@ -60,6 +60,18 @@ void IoT::loop()
     Device::loopAll();
     
     _mqttManager->loop();
+    
+    dailyReset();
+}
+
+/**
+ * Perform a reboot daily at 2:00 am
+ * and it has been running at least 6 hours
+ */
+void IoT::dailyReset() {
+    if(Time.hour() == 2 && System.uptime() > 60*60*6 ) {
+        System.reset(RESET_NO_WAIT);
+    }
 }
 
 /**
