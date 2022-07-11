@@ -23,14 +23,14 @@ PatriotPartOfDay plugin
 http://www.github.com/rlisle/Patriot
 
 Written by Ron Lisle
+ 
+Uses code from TimeLord github.com/probonopd/TimeLord.git
 
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
 
 */
 
-// Uses TimeLord github.com/probonopd/TimeLord.git
-//#include <TimeLord.h>     // Copied code into PartOfDay
 #include "PatriotPartOfDay.h"
 #include "IoT.h"
 
@@ -43,8 +43,10 @@ All text above must be included in any redistribution.
 // Tampa, FL: 27.9506° N, 82.4572° W
 // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
 //                  30.28267 N, 97.63624 W via iPhone maps in office.
-float const LATITUDE =  30.28267;
+//TODO: calculate this from GPS or app or API or ?
+float const LATITUDE  =  30.28267;
 float const LONGITUDE = -97.63624;
+int   const TIMEZONE  = -6 * 60;
 
 /**
  * Constructor
@@ -57,13 +59,12 @@ PartOfDay::PartOfDay()
 }
 
 /**
- begin is called after publishPtr is set, so we can publish her but not in constructor
+ begin is called after publishPtr is set, so we can publish here but not in constructor
  */
 void PartOfDay::begin() {
     // Force next loop to perform both
-    _lastPollTime = 0;
-    _month = 0;
-    _day = 0;
+    _lastPollDay = 0;
+    _lastPollMinute = 0;
 }
 
 /**
@@ -72,102 +73,58 @@ void PartOfDay::begin() {
  */
 void PartOfDay::loop()
 {
-    if(isNextMinute())
+    unsigned long currentTimeUTC = now();  // seconds since 1/1/1970 UTC
+    if(currentTimeUTC >= _lastPollMinute + 60) // Next minute?
     {
-        if(isNextDay()) {
-            calcSunriseSunset();
-        }
-        
+        _lastPollMinuteUTC = currentTimeUTC;
         if( Time.minute() % 15 == 0 ) {
             Log("The time now is %d:%d",Time.hour(),Time.minute());
         }
 
-        int now = calcPartOfDay();
-        if (now != _value) {
-            Log.info("PartOfDay changed to %d", now);
-            _value = now;
+        if(currentTimeUTC >= _lastPollDayUTC + 24*60*60) {    // Next day?
+            _lastPollDayUTC = currentTimeUTC;
+            calcSunriseSunset(currentTimeUTC);
+        }
+
+        int minutesSinceMidnight = (Time.hour() * 60) + Time.minute();
+        int currentPeriod = calcPartOfDay(minutesSinceMidnight);
+        if (currentPeriod != _value) {
+            _value = currentPeriod;
+            Log.info("PartOfDay changed to %d", _value);
             publishPOD(_value);
         }
     }
 }
 
-
-// Private Helper Methods
-bool PartOfDay::isNextMinute()
+void PartOfDay::calcSunriseSunset(unsigned long currentTimeUTC)
 {
-    unsigned long currentTime = millis();
-    if (currentTime < _lastPollTime + MILLIS_PER_MINUTE)
-    {
-        return false;
-    }
-    _lastPollTime = currentTime;
-    return true;
+    ComputeSun(currentTimeUTC, true);   // Sunrise
+    ComputeSun(currentTimeUTC, false);  // Sunset
+//    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), _periods[0].hour, _periods[0].minute);
+//    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), _periods[4].hour, _periods[4].minute);
+
+//    _periods[SUNRISE-1].set(sunriseHour, sunriseMinute);
+//    _periods[MORNING-1].set(sunriseHour, sunriseMinute+1);
+//    _periods[NOON-1].set(12,0);
+//    _periods[AFTERNOON-1].set(12,1);
+//    _periods[SUNSET-1].set(sunsetHour, sunsetMinute);
+//    _periods[DUSK-1].set(sunsetHour, sunsetMinute+1);
+//    _periods[NIGHT-1].set(sunsetHour, sunsetMinute+30);
+//    _periods[DAWN-1].set(sunriseHour, sunriseMinute - 30);
 }
 
-bool PartOfDay::isNextDay()
+int PartOfDay::calcPartOfDay(int minutesSinceMidnight)
 {
-    if( Time.day() == _day && Time.month() == _month ) return false;
+//    Period current(Time.hour(),Time.minute());
     
-    Log.info("DEBUG: month/day = %d/%d, Time says %d/%d",_month,_day,Time.month(),Time.day());
-    
-    _month = Time.month();
-    _day = Time.day();
-
-    Log.info("PartOfDay is next day %d/%d",_month,_day);
-    
-    return true;
-}
-
-void PartOfDay::calcSunriseSunset()
-{
-    // store today's date (at noon) in an array for TimeLord to use
-    byte bSunrise[] = {  0, 0, 12, 27, 12, 20 };
-    byte bSunset[] = { 0, 0, 12, 27, 12, 20 };
-
-    TimeLord timeLord;
-    timeLord.TimeZone(-6 * 60);                 //TODO: calculate using GPS
-    timeLord.Position(LATITUDE, LONGITUDE);     //TODO: "
-
-    bSunrise[3] = Time.day();
-    bSunrise[4] = Time.month();
-    bSunrise[5] = Time.year();
-    timeLord.SunRise(bSunrise);
-    
-    bSunset[3] = Time.day();                    //TODO: modify TimeLord to do this directly
-    bSunset[4] = Time.month();                  //TODO: "
-    bSunset[5] = Time.year();                   //TODO:
-    timeLord.SunSet(bSunset);
-    
-    int sunriseHour = bSunrise[tl_hour];
-    int sunriseMinute = bSunrise[tl_minute];
-    int sunsetHour = bSunset[tl_hour];
-    int sunsetMinute = bSunset[tl_minute];
-    
-    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), sunriseHour, sunriseMinute);
-    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), sunsetHour, sunsetMinute);
-
-    _periods[SUNRISE-1].set(sunriseHour, sunriseMinute);
-    _periods[MORNING-1].set(sunriseHour, sunriseMinute+1);
-    _periods[NOON-1].set(12,0);
-    _periods[AFTERNOON-1].set(12,1);
-    _periods[SUNSET-1].set(sunsetHour, sunsetMinute);
-    _periods[DUSK-1].set(sunsetHour, sunsetMinute+1);
-    _periods[NIGHT-1].set(sunsetHour, sunsetMinute+30);
-    _periods[DAWN-1].set(sunriseHour, sunriseMinute - 30);
-}
-
-int PartOfDay::calcPartOfDay()
-{
-    Period current(Time.hour(),Time.minute());
-    
-    if (current > _periods[NIGHT-1]) return NIGHT;
-    if (current > _periods[DUSK-1]) return DUSK;
-    if (current > _periods[SUNSET-1]) return SUNSET;
-    if (current > _periods[AFTERNOON-1]) return AFTERNOON;
-    if (current > _periods[NOON-1]) return NOON;
-    if (current > _periods[MORNING-1]) return MORNING;
-    if (current > _periods[SUNRISE-1]) return SUNRISE;
-    if (current > _periods[DAWN-1]) return DAWN;
+    if (minutesSinceMidnight > sunsetMinutesAfterMidnight+30) return NIGHT;
+    if (minutesSinceMidnight > sunsetMinutesAfterMidnight) return DUSK;
+    if (minutesSinceMidnight == sunsetMinutesAfterMidnight) return SUNSET;
+    if (minutesSinceMidnight > 12*60) return AFTERNOON;
+    if (minutesSinceMidnight == 12*60) return NOON;
+    if (minutesSinceMidnight > sunriseMinutesAfterMidnight) return MORNING;
+    if (minutesSinceMidnight == sunriseMinutesAfterMidnight) return SUNRISE;
+    if (minutesSinceMidnight > sunriseMinutesAfterMidnight-30) return DAWN;
     return NIGHT;
 }
 
@@ -176,5 +133,117 @@ void PartOfDay::publishPOD(int partOfDay) {
 }
 
 // Code From TimeLord
+// Replacing 'when' with 0, 0, 12, Time.day(), Time.month(), Time.year()
+bool PartOfDay::ComputeSun(int currentTimeUTC, bool forSunrise) {
+  float y, decl, eqt, ha, lon, lat, z;
+    uint8_t a;
+  int doy, minutes;
+  
+  lon = -LONGITUDE / 57.295779513082322;    // Convert to radians
+  lat = LATITUDE / 57.295779513082322;      // "
+  
+  
+  //approximate hour;
+  a = forSunrise ? 18 : 6;  // Seems backwards
+  
+  // approximate day of year
+  y= (Time.month()-1) * 30.4375 + (Time.day()-1)  + a/24.0; // 0... 365
 
+  // compute fractional year
+  y *= 1.718771839885e-02; // 0... 1
+
+  // compute equation of time... .43068174
+  eqt = 229.18 * (0.000075+0.001868*cos(y)  -0.032077*sin(y) -0.014615*cos(y*2) -0.040849*sin(y* 2) );
+
+  // compute solar declination... -0.398272
+  decl = 0.006918-0.399912*cos(y)+0.070257*sin(y)-0.006758*cos(y*2)+0.000907*sin(y*2)-0.002697*cos(y*3)+0.00148*sin(y*3);
+  
+  //compute hour angle
+  ha = (cos(1.585340737228125) / (cos(lat)*cos(decl)) -tan(lat) * tan(decl));
+  
+  if(fabs(ha)>1.0){// we're in the (ant)arctic and there is no rise(or set) today!
+      return false;
+  }
+  
+  ha = acos(ha);
+  if(forSunrise==false) ha = -ha;
+  
+  // compute minutes from midnight
+  minutes = 720 + 4*(lon-ha)*57.295779513082322-eqt;
+  
+  // convert from UTC back to our timezone
+  minutes += TIMEZONE;
+  
+  // adjust the time array by minutes
+    
+//  when[tl_hour]=0;
+//  when[tl_minute]=0;
+//  when[tl_second]=0;
+  Adjust(minutes, forSunrise);
+    return true;
+}
+
+// This will adjust the day of sunrise/sunset if it crosses over midnight, etc.
+void PartOfDay::Adjust(long offset, bool forSunrise){
+    long tmp, mod, nxt;
+    
+    tmp=offset;
+    nxt=tmp/60;                // hours
+    mod=Absolute(tmp) % 60;
+    mod=mod*Signum(tmp)+60;
+    mod %= 60;
+    if(forSunrise) {
+        sunrise.minute = mod;
+    } else {
+        sunset.minute = mod;
+    }
+    
+    tmp=nxt;
+    nxt=tmp/24;                    // days
+    mod=Absolute(tmp) % 24;
+    mod=mod*Signum(tmp)+24;
+    mod %= 24;
+    if(forSunrise) {
+        sunrise.hour = mod;
+    } else {
+        sunset.hour = mod;
+    }
+
+//    tmp=nxt+_day;
+//    mod=LengthOfMonth(_month);
+//
+//    _day = tmp;
+//    if(tmp>mod){
+//            while (tmp>mod) {
+//        tmp -= mod;
+//        when[tl_month]++;
+//                if (when[tl_month] > 12) {
+//                    when[tl_month] = 1;
+//                    when[tl_year]++;
+//                    when[tl_year] += 100;
+//                    when[tl_year] %= 100;
+//                }
+//                mod = LengthOfMonth(when);
+//            }
+//            when[tl_day]=tmp;
+//    } else if (tmp<1) {
+//            while (tmp<1) {
+//        when[tl_month]--;
+//                if (when[tl_month] < 1) {
+//                    when[tl_month] = 12;
+//                    when[tl_year] --;
+//                    when[tl_year] += 100;
+//                    when[tl_year] %= 100;
+//                }
+//        mod=LengthOfMonth(when);
+//        when[tl_day]=tmp+mod;
+//                tmp += mod;
+//            }
+//    }
+}
+
+int PartOfDay::Absolute(int n){
+    if(n<0) return 0-n;
+    return n;
+}
 
