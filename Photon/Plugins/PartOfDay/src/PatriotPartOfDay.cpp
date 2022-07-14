@@ -33,6 +33,7 @@ All text above must be included in any redistribution.
 
 #include "PatriotPartOfDay.h"
 #include "IoT.h"
+#include "math.h"
 
 #define MILLIS_PER_MINUTE 60000
 #define MILLIS_PER_DAY 86400000
@@ -63,8 +64,8 @@ PartOfDay::PartOfDay()
  */
 void PartOfDay::begin() {
     // Force next loop to perform both
-    _lastPollDay = 0;
-    _lastPollMinute = 0;
+    _lastPollDayUTC = 0;
+    _lastPollMinuteUTC = 0;
 }
 
 /**
@@ -73,8 +74,8 @@ void PartOfDay::begin() {
  */
 void PartOfDay::loop()
 {
-    unsigned long currentTimeUTC = now();  // seconds since 1/1/1970 UTC
-    if(currentTimeUTC >= _lastPollMinute + 60) // Next minute?
+    unsigned long currentTimeUTC = Time.now();  // seconds since 1/1/1970 UTC
+    if(currentTimeUTC >= _lastPollMinuteUTC + 60) // Next minute?
     {
         _lastPollMinuteUTC = currentTimeUTC;
         if( Time.minute() % 15 == 0 ) {
@@ -98,8 +99,8 @@ void PartOfDay::loop()
 
 void PartOfDay::calcSunriseSunset(unsigned long currentTimeUTC)
 {
-    ComputeSun(currentTimeUTC, true);   // Sunrise
-    ComputeSun(currentTimeUTC, false);  // Sunset
+    computeSun(currentTimeUTC, true);   // Sunrise
+    computeSun(currentTimeUTC, false);  // Sunset
 //    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), _periods[0].hour, _periods[0].minute);
 //    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), _periods[4].hour, _periods[4].minute);
 
@@ -117,14 +118,14 @@ int PartOfDay::calcPartOfDay(int minutesSinceMidnight)
 {
 //    Period current(Time.hour(),Time.minute());
     
-    if (minutesSinceMidnight > sunsetMinutesAfterMidnight+30) return NIGHT;
-    if (minutesSinceMidnight > sunsetMinutesAfterMidnight) return DUSK;
-    if (minutesSinceMidnight == sunsetMinutesAfterMidnight) return SUNSET;
+    if (minutesSinceMidnight > _sunsetMinutesAfterMidnight+30) return NIGHT;
+    if (minutesSinceMidnight > _sunsetMinutesAfterMidnight) return DUSK;
+    if (minutesSinceMidnight == _sunsetMinutesAfterMidnight) return SUNSET;
     if (minutesSinceMidnight > 12*60) return AFTERNOON;
     if (minutesSinceMidnight == 12*60) return NOON;
-    if (minutesSinceMidnight > sunriseMinutesAfterMidnight) return MORNING;
-    if (minutesSinceMidnight == sunriseMinutesAfterMidnight) return SUNRISE;
-    if (minutesSinceMidnight > sunriseMinutesAfterMidnight-30) return DAWN;
+    if (minutesSinceMidnight > _sunriseMinutesAfterMidnight) return MORNING;
+    if (minutesSinceMidnight == _sunriseMinutesAfterMidnight) return SUNRISE;
+    if (minutesSinceMidnight > _sunriseMinutesAfterMidnight-30) return DAWN;
     return NIGHT;
 }
 
@@ -134,10 +135,10 @@ void PartOfDay::publishPOD(int partOfDay) {
 
 // Code From TimeLord
 // Replacing 'when' with 0, 0, 12, Time.day(), Time.month(), Time.year()
-bool PartOfDay::ComputeSun(int currentTimeUTC, bool forSunrise) {
-  float y, decl, eqt, ha, lon, lat, z;
+bool PartOfDay::computeSun(int currentTimeUTC, bool forSunrise) {
+    float y, decl, eqt, ha, lon, lat;
     uint8_t a;
-  int doy, minutes;
+  int minutes;
   
   lon = -LONGITUDE / 57.295779513082322;    // Convert to radians
   lat = LATITUDE / 57.295779513082322;      // "
@@ -179,71 +180,88 @@ bool PartOfDay::ComputeSun(int currentTimeUTC, bool forSunrise) {
 //  when[tl_hour]=0;
 //  when[tl_minute]=0;
 //  when[tl_second]=0;
-  Adjust(minutes, forSunrise);
+  //adjust(minutes, forSunrise);
+    if(minutes > 1440) {
+        Log("Error: minutes too big: %d", minutes);
+    }
+    if(forSunrise) {
+        _sunriseMinutesAfterMidnight = minutes;
+        Log("sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
+    } else {
+        _sunsetMinutesAfterMidnight = minutes;
+        Log("sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
+    }
     return true;
 }
 
 // This will adjust the day of sunrise/sunset if it crosses over midnight, etc.
-void PartOfDay::Adjust(long offset, bool forSunrise){
-    long tmp, mod, nxt;
-    
-    tmp=offset;
-    nxt=tmp/60;                // hours
-    mod=Absolute(tmp) % 60;
-    mod=mod*Signum(tmp)+60;
-    mod %= 60;
-    if(forSunrise) {
-        sunrise.minute = mod;
-    } else {
-        sunset.minute = mod;
-    }
-    
-    tmp=nxt;
-    nxt=tmp/24;                    // days
-    mod=Absolute(tmp) % 24;
-    mod=mod*Signum(tmp)+24;
-    mod %= 24;
-    if(forSunrise) {
-        sunrise.hour = mod;
-    } else {
-        sunset.hour = mod;
-    }
-
-//    tmp=nxt+_day;
-//    mod=LengthOfMonth(_month);
+//void PartOfDay::adjust(long offset, bool forSunrise){
+//    long tmp, mod, nxt;
 //
-//    _day = tmp;
-//    if(tmp>mod){
-//            while (tmp>mod) {
-//        tmp -= mod;
-//        when[tl_month]++;
-//                if (when[tl_month] > 12) {
-//                    when[tl_month] = 1;
-//                    when[tl_year]++;
-//                    when[tl_year] += 100;
-//                    when[tl_year] %= 100;
-//                }
-//                mod = LengthOfMonth(when);
-//            }
-//            when[tl_day]=tmp;
-//    } else if (tmp<1) {
-//            while (tmp<1) {
-//        when[tl_month]--;
-//                if (when[tl_month] < 1) {
-//                    when[tl_month] = 12;
-//                    when[tl_year] --;
-//                    when[tl_year] += 100;
-//                    when[tl_year] %= 100;
-//                }
-//        mod=LengthOfMonth(when);
-//        when[tl_day]=tmp+mod;
-//                tmp += mod;
-//            }
+//    tmp=offset;
+//    nxt=tmp/60;                // hours
+//    mod=absolute(tmp) % 60;     // minutes
+//    mod=mod*signum(tmp)+60;
+//    mod %= 60;
+//    if(forSunrise) {
+//        sunrise.minute = mod;
+//    } else {
+//        sunset.minute = mod;
 //    }
-}
+//
+//    tmp=nxt;
+//    nxt=tmp/24;                    // days
+//    mod=Absolute(tmp) % 24;
+//    mod=mod*Signum(tmp)+24;
+//    mod %= 24;
+//    if(forSunrise) {
+//        sunrise.hour = mod;
+//    } else {
+//        sunset.hour = mod;
+//    }
+//
+////    tmp=nxt+_day;
+////    mod=LengthOfMonth(_month);
+////
+////    _day = tmp;
+////    if(tmp>mod){
+////            while (tmp>mod) {
+////        tmp -= mod;
+////        when[tl_month]++;
+////                if (when[tl_month] > 12) {
+////                    when[tl_month] = 1;
+////                    when[tl_year]++;
+////                    when[tl_year] += 100;
+////                    when[tl_year] %= 100;
+////                }
+////                mod = LengthOfMonth(when);
+////            }
+////            when[tl_day]=tmp;
+////    } else if (tmp<1) {
+////            while (tmp<1) {
+////        when[tl_month]--;
+////                if (when[tl_month] < 1) {
+////                    when[tl_month] = 12;
+////                    when[tl_year] --;
+////                    when[tl_year] += 100;
+////                    when[tl_year] %= 100;
+////                }
+////        mod=LengthOfMonth(when);
+////        when[tl_day]=tmp+mod;
+////                tmp += mod;
+////            }
+////    }
+//}
 
-int PartOfDay::Absolute(int n){
+int PartOfDay::absolute(int n){
     if(n<0) return 0-n;
     return n;
 }
+
+// rather than import yet another library, we define sgn and abs ourselves
+char PartOfDay::signum(int n){
+    if(n<0) return -1;
+    return 1;
+}
+
 

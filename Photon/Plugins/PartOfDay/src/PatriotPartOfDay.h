@@ -44,10 +44,13 @@ private:
     int        _sunriseMinutesAfterMidnight;
     int        _sunsetMinutesAfterMidnight;
 
-    void       calcSunriseSunset();
-    int        calcPartOfDay();
+    void       calcSunriseSunset(unsigned long currentTimeUTC);
+    int        calcPartOfDay(int minutesSinceMidnight);
     void       publishPOD(int partOfDay);
-    int        Absolute(int n);
+    int        absolute(int n);
+    bool       computeSun(int currentTimeUTC, bool forSunrise);
+    void       adjust(long offset, bool forSunrise);
+    char       signum(int n);
 
 public:
 

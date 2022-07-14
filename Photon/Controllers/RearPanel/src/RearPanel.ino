@@ -275,7 +275,7 @@ void handleOfficeMotion() {
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
 
     if(officeMotionChanged == 100) {
-        Device::setValue("OfficeCeiling", 33);
+        Device::setValue("Piano", 100);
         officeMotion = true;
 
 //        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
@@ -287,7 +287,7 @@ void handleOfficeMotion() {
 //        }
 
     } else if(officeMotionChanged == 0) {
-        Device::setValue("OfficeCeiling", 0);
+        Device::setValue("Piano", 0);
         officeMotion = false;
 
     } // Ignore -1
