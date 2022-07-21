@@ -79,22 +79,22 @@ void PartOfDay::loop()
     if(currentTimeUTC >= _lastPollMinuteUTC + 60) // Next minute?
     {
         _lastPollMinuteUTC = currentTimeUTC;
-//        if( Time.minute() % 15 == 0 ) {
+        if( Time.minute() % 15 == 0 ) {
             Log("The time now is %d:%d",Time.hour(),Time.minute());
-//        }
+        }
 
-//        if(currentTimeUTC >= _lastPollDayUTC + 24*60*60) {    // Next day?
+        if(currentTimeUTC >= _lastPollDayUTC + 24*60*60) {    // Next day?
             _lastPollDayUTC = currentTimeUTC;
             calcSunriseSunset(currentTimeUTC);
-//        }
+        }
 
         int minutesSinceMidnight = (Time.hour() * 60) + Time.minute();
         int currentPeriod = calcPartOfDay(minutesSinceMidnight);
-//        if (currentPeriod != _value) {
+        if (currentPeriod != _value) {
             _value = currentPeriod;
             Log.info("PartOfDay changed to %d", _value);
             publishPOD(_value);
-//        }
+        }
     }
 }
 
