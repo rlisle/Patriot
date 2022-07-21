@@ -66,7 +66,6 @@ void PartOfDay::begin() {
     // Force next loop to perform both
     _lastPollDayUTC = 0;
     _lastPollMinuteUTC = 0;
-    handleDaylightSavings(Time.now());
 }
 
 /**
