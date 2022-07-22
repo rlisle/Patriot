@@ -78,20 +78,20 @@ void PartOfDay::loop()
     if(currentTimeUTC >= _lastPollMinuteUTC + 60) // Next minute?
     {
         _lastPollMinuteUTC = currentTimeUTC;
-        if( Time.minute() % 15 == 0 ) {
-            Log("The time now is %d:%d",Time.hour(),Time.minute());
-        }
+//        if( Time.minute() % 15 == 0 ) {
+            Log("POD: The time now is %d:%d",Time.hour(),Time.minute());
+//        }
 
-        if(currentTimeUTC >= _lastPollDayUTC + 24*60*60) {    // Next day?
+//        if(currentTimeUTC >= _lastPollDayUTC + 24*60*60) {    // Next day?
             _lastPollDayUTC = currentTimeUTC;
             calcSunriseSunset(currentTimeUTC);
-        }
+//        }
 
         int minutesSinceMidnight = (Time.hour() * 60) + Time.minute();
         int currentPeriod = calcPartOfDay(minutesSinceMidnight);
         if (currentPeriod != _value) {
             _value = currentPeriod;
-            Log.info("PartOfDay changed to %d", _value);
+            Log.info("POD: PartOfDay changed to %d", _value);
             publishPOD(_value);
         }
     }
@@ -101,8 +101,8 @@ void PartOfDay::calcSunriseSunset(unsigned long currentTimeUTC)
 {
     computeSun(currentTimeUTC, true);   // Sunrise
     computeSun(currentTimeUTC, false);  // Sunset
-//    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), _periods[0].hour, _periods[0].minute);
-//    Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), _periods[4].hour, _periods[4].minute);
+    Log.info("Sunrise today %d/%d is %d:%d",Time.month(), Time.day(), _sunriseMinutesAfterMidnight/60, _sunriseMinutesAfterMidnight%60);
+     Log.info("Sunset today %d/%d is %d:%d",Time.month(), Time.day(), _sunsetMinutesAfterMidnight/60, _sunsetMinutesAfterMidnight%60);
 
 //    _periods[SUNRISE-1].set(sunriseHour, sunriseMinute);
 //    _periods[MORNING-1].set(sunriseHour, sunriseMinute+1);
@@ -116,8 +116,7 @@ void PartOfDay::calcSunriseSunset(unsigned long currentTimeUTC)
 
 int PartOfDay::calcPartOfDay(int minutesSinceMidnight)
 {
-//    Period current(Time.hour(),Time.minute());
-    
+    Log("calcPartOfDay for %d",minutesSinceMidnight);
     if (minutesSinceMidnight > _sunsetMinutesAfterMidnight+30) return NIGHT;
     if (minutesSinceMidnight > _sunsetMinutesAfterMidnight) return DUSK;
     if (minutesSinceMidnight == _sunsetMinutesAfterMidnight) return SUNSET;
@@ -174,6 +173,10 @@ bool PartOfDay::computeSun(int currentTimeUTC, bool forSunrise) {
   
   // convert from UTC back to our timezone
   minutes += TIMEZONE;
+    if(Time.isDST()) {
+        Log("POD: Adjusting for DST");
+        minutes += 60;
+    }
   
   // adjust the time array by minutes
     
@@ -182,14 +185,14 @@ bool PartOfDay::computeSun(int currentTimeUTC, bool forSunrise) {
 //  when[tl_second]=0;
   //adjust(minutes, forSunrise);
     if(minutes > 1440) {
-        Log("Error: minutes too big: %d", minutes);
+        Log("POD Error: minutes too big: %d", minutes);
     }
     if(forSunrise) {
         _sunriseMinutesAfterMidnight = minutes;
-        Log("sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
+        Log("POD: sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
     } else {
         _sunsetMinutesAfterMidnight = minutes;
-        Log("sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
+        Log("POD: sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
     }
     return true;
 }
