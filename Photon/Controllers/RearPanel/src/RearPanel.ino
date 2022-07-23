@@ -65,8 +65,8 @@ IPAddress dns(192,168,50,1);
 
 IPAddress mqttAddress(192, 168, 50, 33);
 
-//bool officeMotion = false;
-//long lastOfficeMotion = 0;
+bool officeMotion = false;
+long lastOfficeMotion = 0;
 
 bool officeDoor = false;
 bool officeDoorCountdown = false;
@@ -102,7 +102,7 @@ void createDevices() {
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
     
     // Photon I/O
-//    Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+    Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // I2CPWM8W80C board
     // 8 Dimmers
@@ -175,7 +175,7 @@ void loop() {
     handleAutoGoodnight();
     handlePartOfDay();
     handleSleeping();
-//    handleOfficeMotion();
+    handleOfficeMotion();
     handleOfficeDoor();
     handleWatching();
     handleCleaning();
@@ -241,10 +241,10 @@ void handleSleeping() {
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("It is AWAKE");
-//            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-//                Log.info("It is morning");
+            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+                Log.info("It is morning");
                 setMorningLights();
-//            }
+            }
         }
 
         // Alexa, Bedtime
@@ -268,29 +268,29 @@ void handleSleeping() {
  *   int sleeping
  *   int partOfDay
  */
-//void handleOfficeMotion() {
-//
-//    long loopTime = millis();
-//    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
-//
-//    if(officeMotionChanged == 100) {
-//        Device::setValue("OfficeCeiling", 60);
-//        officeMotion = true;
-//
-//        if( partOfDay > SUNSET && sleeping == ASLEEP) {
-//            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
-//                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
-//                Device::setValue("sleeping", AWAKE);
-//            }
-//        }
-//
-//    // Use a timer to turn off motion activated lights (like office door)
-//    } else if(officeMotionChanged == 0) {
-//        Device::setValue("OfficeCeiling", 0);
-//        officeMotion = false;
-//
-//    } // Ignore -1
-//}
+void handleOfficeMotion() {
+
+    long loopTime = millis();
+    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
+
+    if(officeMotionChanged == 100) {
+        Device::setValue("OfficeCeiling", 60);
+        officeMotion = true;
+
+        if( partOfDay > SUNSET && sleeping == ASLEEP) {
+            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
+                Device::setValue("sleeping", AWAKE);
+            }
+        }
+
+    //TODO: Use a timer to turn off motion activated lights (like office door)
+    } else if(officeMotionChanged == 0) {
+        Device::setValue("OfficeCeiling", 0);
+        officeMotion = false;
+
+    } // Ignore -1
+}
 
 /**
  * handleOfficeDoor
