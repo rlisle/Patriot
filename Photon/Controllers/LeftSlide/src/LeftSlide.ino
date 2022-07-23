@@ -201,8 +201,8 @@ void handleLivingRoomMotion() {
         Device::setValue("LeftVertical", 50);
 
         // Determine if this is Ron getting up
-        if( partOfDay > SUNSET && sleeping == ASLEEP) {
-            if(Time.hour() > 4 && Time.hour() < 10) {   // Motion after 5:00 is wakeup
+        if( partOfDay > SUNSET && sleeping != AWAKE) {
+            if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
             }

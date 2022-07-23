@@ -280,7 +280,6 @@ void setSleepingLights() {
     setAllOutsideLights(0);
 }
 
-// This is currently the livingroom "Turn on lights" Huh???
 //void setBlueledLights(int value) {  // 0 = Off, else On
 //    Log.info("setBlueledLights %d", value);
 //
