@@ -33,7 +33,6 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 #include <device.h>
-#include "Period.h"
 
 class PartOfDay : public Device
 {
