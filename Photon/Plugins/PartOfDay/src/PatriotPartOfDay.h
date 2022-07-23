@@ -22,6 +22,8 @@ Features:
 http://www.github.com/rlisle/Patriot
 
 Written by Ron Lisle
+ 
+Sunrise/Sunset calculation copied from TimeLord
 
 BSD license, check license.txt for more information.
 All text above must be included in any redistribution.
@@ -31,22 +33,24 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 #include <device.h>
-#include "Period.h"
 
 class PartOfDay : public Device
 {
 private:
-    unsigned long  _lastPollTime;
-    Period     _periods[8];
-    int        _month;
-    int        _day;
-
-    bool       isNextMinute();
-    bool       isNextDay();
-    void       calcSunriseSunset();
-    int        calcPartOfDay();
-    void       publishPOD(int partOfDay);
+    unsigned long  _lastPollDayUTC;    // seconds since 1/1/1970 UTC
+    unsigned long  _lastPollMinuteUTC; // seconds since 1/1/1970 UTC
     
+    int        _sunriseMinutesAfterMidnight;
+    int        _sunsetMinutesAfterMidnight;
+
+    void       calcSunriseSunset(unsigned long currentTimeUTC);
+    int        calcPartOfDay(int minutesSinceMidnight);
+    void       publishPOD(int partOfDay);
+    int        absolute(int n);
+    bool       computeSun(int currentTimeUTC, bool forSunrise);
+    void       adjust(long offset, bool forSunrise);
+    char       signum(int n);
+
 public:
 
     PartOfDay();

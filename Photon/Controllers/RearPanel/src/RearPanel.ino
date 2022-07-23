@@ -27,11 +27,11 @@ Author: Ron Lisle
  */
 #include <IoT.h>
 #include <PatriotNCD8Light.h>
-#include <PatriotPartOfDay.h>
 #include <PatriotCurtain.h>
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
+#include <PatriotPartOfDay.h>
 //#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define OFFICE_MOTION_TIMEOUT 2*60*1000
@@ -56,7 +56,7 @@ SYSTEM_THREAD(ENABLED);  // Allow running without internet
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
 //TODO: convert to IPAddress
-byte hueServer[4] = { 192, 168, 50, 21 };
+//byte hueServer[4] = { 192, 168, 50, 21 };
 
 IPAddress myAddress(192,168,50,15);
 IPAddress netmask(255,255,255,0);
@@ -82,7 +82,6 @@ void setup() {
     setWifiStaticIP();
     IoT::begin("192.168.50.33", "RearPanel");
     createDevices();
-    handleDaylightSavings();
 }
 
 void setWifiStaticIP() {
@@ -203,7 +202,7 @@ void handleAutoGoodnight() {
  */
 void handlePartOfDay() {
     
-    int partOfDayChanged = Device::getChangedValue("partofday");
+    int partOfDayChanged = Device::getChangedValue("partofday");    //TODO:
     if( partOfDayChanged != -1 ) {
 
         Log.info("partOfDay has changed: %d", partOfDayChanged);
@@ -242,10 +241,10 @@ void handleSleeping() {
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("It is AWAKE");
-//            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-//                Log.info("It is morning");
+            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+                Log.info("It is morning");
                 setMorningLights();
-//            }
+            }
         }
 
         // Alexa, Bedtime
@@ -275,17 +274,17 @@ void handleOfficeMotion() {
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
 
     if(officeMotionChanged == 100) {
-        Device::setValue("OfficeCeiling", 33);
+        Device::setValue("OfficeCeiling", 60);
         officeMotion = true;
 
-//        if( partOfDay > SUNSET && sleeping > 0 && sleeping != ASLEEP) {
-            // 6/12/22 Disable until motion sensor reliability fixed
-//            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
-//                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
-//                Device::setValue("sleeping", AWAKE);
-//            }
-//        }
+        if( partOfDay > SUNSET && sleeping == ASLEEP) {
+            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
+                Device::setValue("sleeping", AWAKE);
+            }
+        }
 
+    //TODO: Use a timer to turn off motion activated lights (like office door)
     } else if(officeMotionChanged == 0) {
         Device::setValue("OfficeCeiling", 0);
         officeMotion = false;
@@ -438,80 +437,3 @@ void setAllOutsideLights(int value) {
     Device::setValue("RearPorch", value);
     Device::setValue("RearAwning", value);
 }
-
-// DAYLIGHT SAVINGS
-// TODO: refactor to IoT
-// from 2nd Sunday of March through 1st Sunday of November
-// 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
-void handleDaylightSavings() {
-    int month = Time.month();
-    if(month > 3 && month < 11) {
-        Time.beginDST();
-    } else if(month == 3) {
-        handleDSTMarch();
-    } else if(month == 11) {
-        handleDSTNovember();
-    }
-}
-
-void handleDSTMarch() {
-    int weekday = Time.weekday();
-    int day = Time.day();
-    int hour = Time.hour();
-    
-    if(day <= 7) return;
-    
-    switch(weekday) {
-        case 1:     // Sunday
-            if(day == 8 && hour < 2) return;
-            break;
-        case 2:
-            if(day < 9) return;
-        case 3:
-            if(day < 10) return;
-        case 4:
-            if(day < 11) return;
-        case 5:
-            if(day < 12) return;
-        case 6:
-            if(day < 13) return;
-        case 7:     // Saturday
-        default:
-            if(day < 14) return;
-    }
-    Time.beginDST();
-}
-
-void handleDSTNovember() {
-    int weekday = Time.weekday();
-    int day = Time.day();
-    int hour = Time.hour();
-    
-    if(day > 7) return;
-    
-    switch(weekday) {
-        case 1:     // Sunday
-            if(day == 1 && hour >= 2) return;
-            break;
-        case 2:
-            if(day > 2) return;
-            break;
-        case 3:
-            if(day > 3) return;
-            break;
-        case 4:
-            if(day > 4) return;
-            break;
-        case 5:
-            if(day > 5) return;
-            break;
-        case 6:
-            if(day > 6) return;
-            break;
-        case 7:     // Saturday
-        default:
-            if(day > 7) return;
-    }
-    Time.beginDST();
-}
-
