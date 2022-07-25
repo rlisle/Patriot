@@ -352,6 +352,8 @@ extension PatriotModel {
             longitude = Float(currentLocation.coordinate.longitude)
             print("Setting location lat: \(latitude), long: \(longitude)")
         }
+        mqtt.sendMessage(topic: "patriot/latitude", message: "\(latitude)")
+        mqtt.sendMessage(topic: "patriot/longitude", message: "\(longitude)")
     }
 }
 

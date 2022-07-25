@@ -90,12 +90,12 @@ struct MenuLocationGroup: View {
                 HStack {
                     Text("Lat:")
                     Spacer()
-                    Text("\(model.latitude)")
+                    Text("\(String(format: "%.4f",model.latitude))")
                 }
                 HStack {
                     Text("Long:")
                     Spacer()
-                    Text("\(model.longitude)")
+                    Text("\(String(format: "%.4f",model.longitude))")
                 }
             }
             .padding(.top, 16)
