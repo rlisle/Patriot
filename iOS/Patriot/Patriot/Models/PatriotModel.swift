@@ -12,6 +12,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 enum TestMode: Int {
     case off
@@ -45,9 +46,14 @@ class PatriotModel: ObservableObject
     @Published var isConnected: Bool = false
     @Published var state: LoadingState = .unloaded  //TODO: calculated value?
     
+    @Published var latitude: Float =  30.28267
+    @Published var longitude: Float = -97.63624
+
     let mqtt:           MQTTManager
     let settings:       Settings
-    
+
+    var locManager = CLLocationManager()
+
     var alive: [ String : String ] = [:]      // eg. rearpanel : Sun 04:52
     var logs: [ String ] = []
     var loglevels: [ String : String ] = [:]  // eg. rearpanel : warn
@@ -101,6 +107,9 @@ class PatriotModel: ObservableObject
             print("sink sleeping = \(value)")
             //TODO: send mqtt
         }
+        
+        locManager.desiredAccuracy = kCLLocationAccuracyKilometer   // Only need to know State/timezone
+        locManager.requestWhenInUseAuthorization()
     }
 
     // For Test/Preview
@@ -317,6 +326,32 @@ extension PatriotModel {
     func resetDevices() {
         devices = []
         
+    }
+}
+
+// Location
+extension PatriotModel {
+    
+    func updateLocation() {
+        
+        var currentLocation: CLLocation!
+        let defaultLatitude: Float =  30.28267
+        let defaultLongitude: Float = -97.63624
+        
+        // Redundant? Also called in init
+        locManager.requestWhenInUseAuthorization()  //TODO: move this somewhere else?
+        
+        switch locManager.authorizationStatus {
+        case .restricted, .denied:
+            print("Location not authorized. Setting default Austin location")
+            latitude = defaultLatitude
+            longitude = defaultLongitude
+        default:
+            currentLocation = locManager.location
+            latitude = Float(currentLocation.coordinate.latitude)
+            longitude = Float(currentLocation.coordinate.longitude)
+            print("Setting location lat: \(latitude), long: \(longitude)")
+        }
     }
 }
 

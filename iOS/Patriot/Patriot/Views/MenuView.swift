@@ -19,6 +19,7 @@ struct MenuView: View {
             
             MenuSleepGroup()
             MenuScenesGroup()
+            MenuLocationGroup()
             MenuDevicesGroup()
             Spacer()
         }
@@ -64,6 +65,42 @@ struct MenuScenesGroup: View {
                 MenuText(icon: "tv", title: "Watch TV", isSelected: false)
                 .padding(.top, 30)
             }
+        }
+        .padding(.leading)
+    }
+}
+
+struct MenuLocationGroup: View {
+
+    @EnvironmentObject var model: PatriotModel
+
+    var body: some View {
+        MenuHeader(title: "Location")
+            .padding(.top, 48)
+        
+        Group {
+            Button(action: {
+                print("Get Location")
+                model.updateLocation()
+            }) {
+                MenuText(icon: "location", title: "Update Location", isSelected: false)
+                .padding(.top, 30)
+            }
+            VStack {
+                HStack {
+                    Text("Lat:")
+                    Spacer()
+                    Text("\(model.latitude)")
+                }
+                HStack {
+                    Text("Long:")
+                    Spacer()
+                    Text("\(model.longitude)")
+                }
+            }
+            .padding(.top, 16)
+            .foregroundColor(Color("AccentColor"))
+            .font(.body)
         }
         .padding(.leading)
     }
