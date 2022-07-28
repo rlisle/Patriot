@@ -334,7 +334,7 @@ extension PatriotModel {
     
     func updateLocation() {
         
-        var currentLocation: CLLocation!
+        var currentLocation: CLLocation?
         let defaultLatitude: Float =  30.28267
         let defaultLongitude: Float = -97.63624
         
@@ -347,13 +347,15 @@ extension PatriotModel {
             latitude = defaultLatitude
             longitude = defaultLongitude
         default:
-            currentLocation = locManager.location
-            latitude = Float(currentLocation.coordinate.latitude)
-            longitude = Float(currentLocation.coordinate.longitude)
-            print("Setting location lat: \(latitude), long: \(longitude)")
+            if let currentLocation = locManager.location {
+                latitude = Float(currentLocation.coordinate.latitude)
+                longitude = Float(currentLocation.coordinate.longitude)
+                print("Setting location lat: \(latitude), long: \(longitude)")
+            } else {
+                print("Location not available (nil). Setting default Austin location")
+            }
         }
-        mqtt.sendMessage(topic: "patriot/latitude", message: "\(latitude)")
-        mqtt.sendMessage(topic: "patriot/longitude", message: "\(longitude)")
+        mqtt.sendMessage(topic: "patriot/latlong", message: "\(latitude),\(longitude)")
     }
 }
 

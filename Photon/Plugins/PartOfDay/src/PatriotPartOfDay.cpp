@@ -59,6 +59,8 @@ PartOfDay::PartOfDay()
     _type  = 'P';
     _sunriseMinutesAfterMidnight = 400; // 6:40 am Placeholder
     _sunsetMinutesAfterMidnight = 1230; // 8:30 pm placeholder
+    _latitude = LATITUDE;               // Default (Austin)
+    _longitude = LONGITUDE;             // "
 }
 
 /**
@@ -68,6 +70,13 @@ void PartOfDay::begin() {
     // Force next loop to perform both
     _lastPollDayUTC = 0;
     _lastPollMinuteUTC = 0;
+}
+
+void PartOfDay::setLatLong(float latitude, float longitude) {
+    _latitude = latitude;
+    _longitude = longitude;
+    _lastPollMinuteUTC = 0;     // Force recalculation
+    _lastPollDayUTC = 0;
 }
 
 /**

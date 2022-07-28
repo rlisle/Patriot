@@ -57,12 +57,14 @@ extension MQTTManager: MQTTSending
 {
     func sendMessage(topic: String, message: String) {
         guard testMode == .off else {
+            print("sendMessage - testMode set so not sending \(topic), \(message)")
             return
         }
         guard isConnected == true else {
             print("No MQTT: Cannot send \(topic), \(message)")
             return
         }
+        print("sendMessage - sending \(topic), \(message)")
         mqtt.publish(topic, withString: message)
     }
     

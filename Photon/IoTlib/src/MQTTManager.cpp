@@ -157,7 +157,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // message is timestamp
             // Ignore it.
             
-        } else if(subtopic == "latitude") {             // LATITUDE
+        } else if(subtopic == "latlong") {             // LATLONG
             // Spanish Fort, AL: 30.6685° N, 87.9109° W
             // Bonifay, FL: 30.7919° N, 85.6797° W
             // White Springs, FL: 30.3297° N, 82.7590° W
@@ -166,8 +166,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             //                  30.28267 N, 97.63624 W via iPhone maps in office.
             // eg. float longitude = -97.63624;
             float latitude = lcMessage.toFloat();
-            if(latitude != 0) {
-                IoT::setLatitude(latitude);
+            float longitude = lcMessage.toFloat();
+            if(latitude != 0 && longitude != 0) {
+                IoT::setLatLong(latitude,longitude);
             }
             
         } else if(subtopic == "log" || subtopic.startsWith("log/")) {   // LOG
@@ -179,19 +180,6 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 parseLogLevel(lcMessage);
             }
             
-        } else if(subtopic == "longitude") {            // LONGITUDE
-            // Spanish Fort, AL: 30.6685° N, 87.9109° W
-            // Bonifay, FL: 30.7919° N, 85.6797° W
-            // White Springs, FL: 30.3297° N, 82.7590° W
-            // Tampa, FL: 27.9506° N, 82.4572° W
-            // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
-            //                  30.28267 N, 97.63624 W via iPhone maps in office.
-            // eg. float longitude = -97.63624;
-            float longitude = lcMessage.toFloat();
-            if(longitude != 0) {
-                IoT::setLongitude(longitude);
-            }
-
         } else if(subtopic == "memory") {           // MEMORY
             if(lcMessage == _controllerName) {
                 publish( "debug/"+_controllerName, String::format("Free memory = %d", System.freeMemory()));

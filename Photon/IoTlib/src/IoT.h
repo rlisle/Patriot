@@ -66,8 +66,7 @@ public:
     
     static void publishValue(String name, int value);  // Sends MQTT message
     
-    static void setLatitude(float latitude);
-    static void setLongitude(float longitude);
+    static void setLatLong(float latitude, float longitude);
     
 private:
     static String _controllerName;

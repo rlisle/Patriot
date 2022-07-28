@@ -57,8 +57,7 @@ public:
     
     virtual int  getChangedValue();
     
-    virtual void setLatitude(float latitude);
-    virtual void setLongitude(float longitude);
+    virtual void setLatLong(float latitude, float longitude);
     
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
