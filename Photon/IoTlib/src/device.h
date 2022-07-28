@@ -58,7 +58,7 @@ public:
     virtual int  getChangedValue();
     
     virtual void setLatLong(float latitude, float longitude);
-    
+
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
     
@@ -76,7 +76,8 @@ public:
     static int     setValue(String name, int value);
     static int     getChangedValue(String name);
     static int     count();
-    
+    static void    setAllLatLong(float latitude, float longitude);
+
     /**
      Particle.io variable "States"
      */

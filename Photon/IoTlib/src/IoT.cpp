@@ -111,7 +111,7 @@ void IoT::publishValue(String name, int value) {
 // LATITUDE/LONGITUDE
 //
 void IoT::setLatLong(float latitude, float longitude) {
-    Device::setLatLong(latitude, longitude);
+    Device::setAllLatLong(latitude, longitude);
 }
 
 
