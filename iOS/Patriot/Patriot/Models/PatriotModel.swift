@@ -108,7 +108,7 @@ class PatriotModel: ObservableObject
             //TODO: send mqtt
         }
         
-        locManager.desiredAccuracy = kCLLocationAccuracyKilometer   // Only need to know State/timezone
+        locManager.desiredAccuracy = kCLLocationAccuracyHundredMeters   // Only need to know State/timezone
         locManager.requestWhenInUseAuthorization()
     }
 
@@ -334,7 +334,6 @@ extension PatriotModel {
     
     func updateLocation() {
         
-        var currentLocation: CLLocation?
         let defaultLatitude: Float =  30.28267
         let defaultLongitude: Float = -97.63624
         

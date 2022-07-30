@@ -41,6 +41,7 @@ class MQTTManager {
         let clientID = "Patriot" + String(ProcessInfo().processIdentifier)
         mqtt = CocoaMQTT(clientID: clientID, host: mqttURL, port: mqttPort) // TODO: mqtt5?
         mqtt.delegate = self
+        //mqtt.logLevel = .debug
         reconnect()
     }
     
