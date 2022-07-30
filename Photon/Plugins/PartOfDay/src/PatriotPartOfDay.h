@@ -43,6 +43,9 @@ private:
     int        _sunriseMinutesAfterMidnight;
     int        _sunsetMinutesAfterMidnight;
 
+    float      _latitude;
+    float      _longitude;
+    
     void       calcSunriseSunset(unsigned long currentTimeUTC);
     int        calcPartOfDay(int minutesSinceMidnight);
     void       publishPOD(int partOfDay);
@@ -57,5 +60,6 @@ public:
     
     void begin();
     void loop();
-    
+
+    void setLatLong(float latitude, float longitude);
 };

@@ -126,6 +126,19 @@ int  Device::getChangedValue(String name) {
     return device->getChangedValue();
 }
 
+void Device::setLatLong(float latitude, float longitude) {
+    // Nothing to do. Device will override if needed.
+}
+
+void Device::setAllLatLong(float latitude, float longitude) {
+    Device *ptr = _devices;
+    for (int i = 0; i < count() && ptr != NULL; i++)
+    {
+        ptr->setLatLong(latitude,longitude);
+        ptr = ptr->_next;
+    }
+}
+
 int Device::count()
 {
     int i = 0;

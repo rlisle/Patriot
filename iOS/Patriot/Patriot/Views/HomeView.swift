@@ -100,6 +100,7 @@ struct HomeView: View {
         .navigationViewStyle(StackNavigationViewStyle()) // This fixes the layout constraint warnings
         .onAppear {
             setAppearance()
+            model.updateLocation()
          }
     }
     

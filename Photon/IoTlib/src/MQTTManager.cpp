@@ -152,50 +152,56 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         String subtopic = lcTopic.substring(kPublishName.length()+1);
         
         // Look for reserved names
-        // ALIVE
-        if(subtopic.startsWith("alive")) {
+        if(subtopic.startsWith("alive")) {              // ALIVE
             // Remainder of topic is controller name
             // message is timestamp
             // Ignore it.
-
-        // LOG
-        } else if(subtopic == "log" || subtopic.startsWith("log/")) {
+            
+        } else if(subtopic == "latlong") {             // LATLONG
+            // Spanish Fort, AL: 30.6685° N, 87.9109° W
+            // Bonifay, FL: 30.7919° N, 85.6797° W
+            // White Springs, FL: 30.3297° N, 82.7590° W
+            // Tampa, FL: 27.9506° N, 82.4572° W
+            // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
+            //                  30.28267 N, 97.63624 W via iPhone maps in office.
+            // eg. float longitude = -97.63624;
+            float latitude = lcMessage.toFloat();
+            float longitude = lcMessage.toFloat();
+            if(latitude != 0 && longitude != 0) {
+                IoT::setLatLong(latitude,longitude);
+            }
+            
+        } else if(subtopic == "log" || subtopic.startsWith("log/")) {   // LOG
             // Ignore it.
 
-        // LOGLEVEL
-        } else if(subtopic.startsWith("loglevel")) {
+        } else if(subtopic.startsWith("loglevel")) {    // LOGLEVEL
             if(subtopic == "loglevel/"+_controllerName) {
                 Log.info(_controllerName + " setting logLevel = " + lcMessage);
                 parseLogLevel(lcMessage);
             }
             
-        // MEMORY
-        } else if(subtopic == "memory") {
+        } else if(subtopic == "memory") {           // MEMORY
             if(lcMessage == _controllerName) {
                 publish( "debug/"+_controllerName, String::format("Free memory = %d", System.freeMemory()));
             }
             
-        // PING
-        } else if(subtopic == "ping") {
+        } else if(subtopic == "ping") {             // PING
             // Respond if ping is addressed to us
             if(lcMessage == _controllerName) {
                 Log.trace("Ping addressed to us");
                 publish(kPublishName + "/pong", _controllerName);
             }
             
-        // PONG
-        } else if(subtopic == "pong") {
+        } else if(subtopic == "pong") {             // PONG
             // Ignore it.
             
-        // QUERY
-        } else if(subtopic == "query") {   // was "states"
+        } else if(subtopic == "query") {            // QUERY
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info("Received query addressed to us");
                 Device::publishStates();
             }
                 
-        // RESET
-        } else if(subtopic == "reset") {
+        } else if(subtopic == "reset") {            // RESET
             // Respond if reset is addressed to us
             if(lcMessage == _controllerName) {
                 Log.info("Reset addressed to us");
@@ -203,9 +209,8 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 System.reset(RESET_NO_WAIT);
             }
                 
-        // STATE
         } else if(subtopic == "state") {
-            // Ignore it (for now).
+            // Ignore - deprecated
                 
         // DEVICE
         } else {

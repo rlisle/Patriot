@@ -107,6 +107,14 @@ void IoT::publishValue(String name, int value) {
     _mqttManager->publish("patriot/" + name, String(value));
 }
 
+
+// LATITUDE/LONGITUDE
+//
+void IoT::setLatLong(float latitude, float longitude) {
+    Device::setAllLatLong(latitude, longitude);
+}
+
+
 //
 // DST
 //

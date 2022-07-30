@@ -14,7 +14,7 @@ struct MQTTButton: View {
     var body: some View {
         Button(action: {
             withAnimation {
-                print("MQTT")
+                print("MQTT \(isConnected ? "is " : "is not ") connected")
                 if isConnected == false {
                     print("Reconnecting MQTT")
                     PatriotModel.shared.mqtt.reconnect()
