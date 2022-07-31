@@ -38,6 +38,10 @@ All text above must be included in any redistribution.
 #define MILLIS_PER_MINUTE 60000
 #define MILLIS_PER_DAY 86400000
 
+#define VERSION_ADDR 0
+#define LATITUDE_ADDR 4
+#define LONGITUDE_ADDR 8
+
 // Spanish Fort, AL: 30.6685° N, 87.9109° W
 // Bonifay, FL: 30.7919° N, 85.6797° W
 // White Springs, FL: 30.3297° N, 82.7590° W
@@ -59,8 +63,25 @@ PartOfDay::PartOfDay()
     _type  = 'P';
     _sunriseMinutesAfterMidnight = 400; // 6:40 am Placeholder
     _sunsetMinutesAfterMidnight = 1230; // 8:30 pm placeholder
-    _latitude = LATITUDE;               // Default (Austin)
-    _longitude = LONGITUDE;             // "
+    loadValuesFromEEPROM();
+}
+
+/**
+ Set latitude/longitude from EEPROM
+ return false if EEPROM not set (so defaults returned instead)
+ */
+bool PartOfDay::loadValuesFromEEPROM() {
+    uint8_t version;
+    EEPROM.get(VERSION_ADDR, version);
+    if(version == 0xff) {
+        _latitude = LATITUDE;   // Default (Austin)
+        _longitude = LONGITUDE; // "
+        return false;
+    } else {
+        _latitude = EEPROM.get(LATITUDE_ADDR,_latitude);
+        _longitude = EEPROM.get(LONGITUDE_ADDR,_longitude);
+    }
+    return true;
 }
 
 /**
@@ -73,10 +94,15 @@ void PartOfDay::begin() {
 }
 
 void PartOfDay::setLatLong(float latitude, float longitude) {
+    uint8_t version = 1;    // Anything other than 0xff
+    
     _latitude = latitude;
     _longitude = longitude;
     _lastPollMinuteUTC = 0;     // Force recalculation
     _lastPollDayUTC = 0;
+    EEPROM.put(VERSION_ADDR, version);
+    EEPROM.put(LATITUDE_ADDR, _latitude);
+    EEPROM.put(LONGITUDE_ADDR, _longitude);
 }
 
 /**
