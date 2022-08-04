@@ -158,6 +158,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Ignore it.
             
         } else if(subtopic == "latlong") {             // LATLONG
+            // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
             // Spanish Fort, AL: 30.6685° N, 87.9109° W
             // Bonifay, FL: 30.7919° N, 85.6797° W
             // White Springs, FL: 30.3297° N, 82.7590° W
