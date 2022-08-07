@@ -67,7 +67,8 @@ public:
     static void publishValue(String name, int value);  // Sends MQTT message
     
     static void setLatLong(float latitude, float longitude);
-    
+    static void setTimezone(int timezone);
+
 private:
     static String _controllerName;
     static MQTTManager* _mqttManager;

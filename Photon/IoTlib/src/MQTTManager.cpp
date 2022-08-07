@@ -166,6 +166,13 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
             //                  30.28267 N, 97.63624 W via iPhone maps in office.
             // eg. float longitude = -97.63624;
+            // Split out latitude & longitude
+            int commaIndex = lcMessage.indexOf(',');
+            if(commaIndex < 0) return;
+            
+            String latString = lcMessage.substring(0, commaIndex-1);
+            String longString = lcMessage.substring(commaIndex+1);
+
             //TODO: handle '-' because toFloat doc says it doesn't
             float latitude = lcMessage.toFloat();
             float longitude = lcMessage.toFloat();
@@ -221,8 +228,13 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Austin/CST -6
             // Windsor/EST -5
             Log.info("Received timezone: " + lcMessage);
+            int timezone = -6;          // Default to Austin CST
             //TODO: handle '-' because toInt doc says it doesn't
-            int timezone = lcMessage.toInt();
+            if(lcMessage.charAt(0) == '-') {
+                timezone = 0 - lcMessage.substring(1).toInt();
+            } else {
+                timezone = lcMessage.toInt();
+            }
             if(timezone != 0) {
                 Log.info("Setting timezone to: " + String(timezone));
                 IoT::setTimezone(timezone);

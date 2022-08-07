@@ -114,6 +114,15 @@ void IoT::setLatLong(float latitude, float longitude) {
     Device::setAllLatLong(latitude, longitude);
 }
 
+// TIMEZONE
+//
+void IoT::setTimezone(int timezone) {
+    Log.info("setTimezone: "+String(timezone));
+    int8_t tz = timezone;
+    Time.zone(float(timezone));
+    EEPROM.put(TIMEZONE_ADDR, tz);
+}
+
 
 //
 // DST
@@ -124,8 +133,18 @@ void IoT::setLatLong(float latitude, float longitude) {
 // 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
 void IoT::handleDaylightSavings() {
     
+    // Read & set persisted value from EEPROM (if present)
+    int8_t timezone;
+    EEPROM.get(TIMEZONE_ADDR, timezone);
+    if(timezone != 0xff) {      // 0xff means not ever written
+        timezone = -6;          // Default to CST
+    }
+    Log.info("Setting timezone to "+String(timezone));
+    Time.zone(float(timezone));
+
+    
     //TODO: Use GPS to determine actual timezone
-    Time.zone(-6.0);    // Set timezone to Central
+//    Time.zone(-6.0);    // Set timezone to Central
 
     int month = Time.month();
     if(month > 3 && month < 11) {
