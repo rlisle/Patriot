@@ -171,11 +171,11 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             if(commaIndex < 0) return;
             
             String latString = lcMessage.substring(0, commaIndex-1);
-            String longString = lcMessage.substring(commaIndex+1);
+            String lonString = lcMessage.substring(commaIndex+1);
 
             //TODO: handle '-' because toFloat doc says it doesn't
-            float latitude = lcMessage.toFloat();
-            float longitude = lcMessage.toFloat();
+            float latitude = latString.toFloat();
+            float longitude = lonString.toFloat();
             Log.info("DEBUG: lat/long = " + String(latitude) + "," + String(longitude));
             if(latitude != 0 && longitude != 0) {
                 Log.info("Setting lat/long: " + String(latitude) + "," + String(longitude));
@@ -229,7 +229,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Windsor/EST -5
             Log.info("Received timezone: " + lcMessage);
             int timezone = -6;          // Default to Austin CST
-            //TODO: handle '-' because toInt doc says it doesn't
+            //handle '-' because toInt doc says it doesn't
             if(lcMessage.charAt(0) == '-') {
                 timezone = 0 - lcMessage.substring(1).toInt();
             } else {
@@ -238,6 +238,8 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             if(timezone != 0) {
                 Log.info("Setting timezone to: " + String(timezone));
                 IoT::setTimezone(timezone);
+            } else {
+                Log.info("Invalid timezone");
             }
             
         // DEVICE

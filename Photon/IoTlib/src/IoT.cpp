@@ -136,7 +136,7 @@ void IoT::handleDaylightSavings() {
     // Read & set persisted value from EEPROM (if present)
     int8_t timezone;
     EEPROM.get(TIMEZONE_ADDR, timezone);
-    if(timezone != 0xff) {      // 0xff means not ever written
+    if(timezone == 0xff) {      // 0xff means never written
         timezone = -6;          // Default to CST
     }
     Log.info("Setting timezone to "+String(timezone));
