@@ -111,6 +111,7 @@ void IoT::publishValue(String name, int value) {
 // LATITUDE/LONGITUDE
 //
 void IoT::setLatLong(float latitude, float longitude) {
+    // Currently only PartOfDay cares about (and persists) this.
     Device::setAllLatLong(latitude, longitude);
 }
 
@@ -120,6 +121,7 @@ void IoT::setTimezone(int timezone) {
     Log.info("setTimezone: "+String(timezone));
     int8_t tz = timezone;
     Time.zone(float(timezone));
+    // Persist this value across reboots
     EEPROM.put(TIMEZONE_ADDR, tz);
 }
 
@@ -141,10 +143,6 @@ void IoT::handleDaylightSavings() {
     }
     Log.info("Setting timezone to "+String(timezone));
     Time.zone(float(timezone));
-
-    
-    //TODO: Use GPS to determine actual timezone
-//    Time.zone(-6.0);    // Set timezone to Central
 
     int month = Time.month();
     if(month > 3 && month < 11) {
