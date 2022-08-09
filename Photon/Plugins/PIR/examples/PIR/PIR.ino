@@ -46,10 +46,10 @@ void loop() {
 
     // Motion?
     if(livingRoomMotionChanged > 0 ) {
-        Log.info("LivingRoom motion detected");
+        Log.trace("PIR motion detected");
         Device::setValue("BlueLED", 100);
     } else if(livingRoomMotionChanged == 0){
-        Log.info("LivingRoom motion stopped");
+        Log.trace("PIR motion stopped");
         Device::setValue("BlueLED", 0);
     }
 }

@@ -47,12 +47,12 @@ void loop() {
 
     if( sleepingChanged != -1 ) {
 
-        Log.info("sleeping has changed %d",sleepingChanged);
+        Log.trace("sleeping has changed %d",sleepingChanged);
 
         int partOfDay = Device::value("PartOfDay");
 
         // Alexa, Good morning
-        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
+        Log.trace("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE && partOfDay > SUNSET ) {
             Log.info("It is good morning");
             setMorningLights();
@@ -71,7 +71,7 @@ void loop() {
 
     if( partOfDayChanged != -1 ) {
 
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
+        Log.trace("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
             // Turn off lights at sunrise
@@ -107,34 +107,34 @@ void setAllActivities(int value) {
 }
 
 void setAllLights(int value) {
-    Log.info("setAllLights %d",value);
+    Log.trace("setAllLights %d",value);
     Device::setValue("Loveseat", value);
     Device::setValue("RightVertical", value);
 }
 
 void setMorningLights() {
-    Log.info("setMorningLights");
+    Log.trace("setMorningLights");
     setAllLights(30);
 }
 
 void setSunriseLights() {
-    Log.info("setSunriseLights");
+    Log.trace("setSunriseLights");
     setAllLights(0);
 }
 
 void setEveningLights() {
-    Log.info("setEveningLights");
+    Log.trace("setEveningLights");
     setAllLights(50);
 }
 
 void setBedtimeLights() {
-    Log.info("setBedtimeLights");
+    Log.trace("setBedtimeLights");
     setAllActivities(0);
     setAllLights(0);
 }
 
 void setSleepingLights() {
-    Log.info("setSleepingLights");
+    Log.trace("setSleepingLights");
     setAllActivities(0);
     setAllLights(0);
 }

@@ -130,7 +130,7 @@ void handlePartOfDay() {
     int partOfDayChanged = Device::getChangedValue("partofday");
     if( partOfDayChanged != -1 ) {
 
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
+        Log.trace("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
             Log.info("It is sunrise");
@@ -160,12 +160,12 @@ void handleSleeping() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     if( sleepingChanged != -1 ) {
         
-        Log.info("sleeping has changed %d",sleepingChanged);
+        Log.trace("sleeping has changed %d",sleepingChanged);
 
         // Alexa, Good morning
-        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
+        Log.trace("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
-            Log.info("It is AWAKE");
+            Log.info("Setting AWAKE");
 //            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
 //                Log.info("It is morning");
                 setMorningLights();
@@ -197,7 +197,7 @@ void handleLivingRoomMotion() {
 
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     if(livingRoomMotionChanged == 100) {
-        Log.info("LivingRoom Motion detected");
+        Log.trace("LivingRoom Motion detected");
         Device::setValue("LeftVertical", 50);
 
         // Determine if this is Ron getting up
@@ -210,7 +210,7 @@ void handleLivingRoomMotion() {
         livingRoomMotion = true;
 
     } else if(livingRoomMotionChanged == 0) {
-        Log.info("LivingRoom Motion stopped");
+        Log.trace("LivingRoom Motion stopped");
         Device::setValue("LeftVertical", 0);
         livingRoomMotion = false;
 
@@ -232,14 +232,14 @@ void handleWatching() {
     if( watchingChanged != -1 ) {
         if( watchingChanged > 0 ) {
             watching = 100;
-            Log.info("watching did turn on");
+            Log.trace("Watching did turn on");
             Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
             Device::setValue("Nook", 100);
 
         } else {
             watching = 0;
             //TODO: check if evening lights s/b on, etc.
-            Log.info("watching did turn off");
+            Log.trace("Watching did turn off");
             Device::setValue("Couch", 0);
             Device::setValue("Nook", 0);
         }
@@ -251,13 +251,13 @@ void handleCleaning() {
     if( cleaningChanged != -1 ) {
         if( cleaningChanged > 0 ) {
             cleaning = 100;
-            Log.info("cleaning did turn on");
+            Log.trace("cleaning did turn on");
             //TODO: save current light state to restore when cleaning turned off
             setAllLights( 100 );
         } else {
             cleaning = 0;
             //TODO: check if evening lights s/b on, etc.
-            Log.info("cleaning did turn off");
+            Log.trace("cleaning did turn off");
             setAllLights( 0 );
         }
     }
@@ -266,7 +266,7 @@ void handleCleaning() {
 void handleDesk() {
     int deskChanged = Device::getChangedValue("desk");
     if( deskChanged != -1 ) {
-        Log.info("desk changed");
+        Log.trace("desk changed");
         setDeskLamps( deskChanged );
     }
 }
@@ -292,7 +292,7 @@ void handleCouchPresence() {
                 Device::setValue("Couch", 0);
             }
         }
-        Log.info("Couch presence = %d",couchPresence);
+        Log.trace("Couch presence = %d",couchPresence);
     }
 }
 
@@ -318,7 +318,7 @@ void setAllActivities(int value) {
 }
 
 void setAllLights(int value) {
-    Log.info("setAllLights %d",value);
+    Log.trace("setAllLights %d",value);
     Device::setValue("Couch", value);
     Device::setValue("LeftVertical", value);
     Device::setValue("DeskLeft",value);
@@ -327,37 +327,37 @@ void setAllLights(int value) {
 }
 
 void setDeskLamps(int value) {
-    Log.info("setDeskLamps");
+    Log.trace("setDeskLamps");
     Device::setValue("DeskLeft",value);
     Device::setValue("DeskRight",value);
 }
 
 void setMorningLights() {
-    Log.info("setMorningLights");
+    Log.trace("setMorningLights");
     Device::setValue("LeftVertical", 30);
     Device::setValue("DeskLeft",100);
     Device::setValue("DeskRight",100);
 }
 
 void setSunriseLights() {
-    Log.info("setSunriseLights");
+    Log.trace("setSunriseLights");
     setAllLights(0);
 }
 
 void setEveningLights() {
-    Log.info("setEveningLights");
+    Log.trace("setEveningLights");
     setAllLights(60);
 }
 
 void setBedtimeLights() {
-    Log.info("setBedtimeLights");
+    Log.trace("setBedtimeLights");
     setAllActivities(0);
     setAllLights(0);
     Device::setValue("Bedroom", 100);   // Turn on bedroom lamp
 }
 
 void setSleepingLights() {
-    Log.info("setSleepingLights");
+    Log.trace("setSleepingLights");
     setAllActivities(0);
     setAllLights(0);
     Device::setValue("Bedroom",0);

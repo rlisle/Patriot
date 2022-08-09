@@ -205,7 +205,7 @@ void handlePartOfDay() {
     int partOfDayChanged = Device::getChangedValue("partofday");    //TODO:
     if( partOfDayChanged != -1 ) {
 
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
+        Log.trace("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
             Log.info("It is sunrise");
@@ -235,10 +235,10 @@ void handleSleeping() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     if( sleepingChanged != -1 ) {
         
-        Log.info("sleeping has changed %d",sleepingChanged);
+        Log.trace("sleeping has changed %d",sleepingChanged);
 
         // Alexa, Good morning
-        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
+        Log.trace("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("It is AWAKE");
             if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
@@ -343,12 +343,12 @@ void handleWatching() {
     if( watchingChanged != -1 ) {
         if( watchingChanged > 0 ) {
             watching = 100;
-            Log.info("watching did turn on");
+            Log.trace("Watching did turn on");
 
         } else {
             watching = 0;
             //TODO: check if evening lights s/b on, etc.
-            Log.info("watching did turn off");
+            Log.trace("Watching did turn off");
         }
     }
 }
@@ -361,13 +361,13 @@ void handleCleaning() {
     if( cleaningChanged != -1 ) {
         if( cleaningChanged > 0 ) {
             cleaning = 100;
-            Log.info("cleaning did turn on");
+            Log.trace("Cleaning did turn on");
             //TODO: save current light state to restore when cleaning turned off
             setAllInsideLights( 100 );
         } else {
             cleaning = 0;
             //TODO: check if evening lights s/b on, etc.
-            Log.info("cleaning did turn off");
+            Log.trace("Cleaning did turn off");
             setAllInsideLights( 0 );
         }
     }
@@ -381,19 +381,19 @@ void setAllActivities(int value) {
 }
 
 void setMorningLights() {
-    Log.info("setMorningLights");
+    Log.trace("setMorningLights");
     Device::setValue("officeceiling",70);
     Device::setValue("OfficeTrim", 100);
 }
 
 void setSunriseLights() {
-    Log.info("setSunriseLights");
+    Log.trace("setSunriseLights");
     setAllOutsideLights(0);
     //setAllInsideLights(0);
 }
 
 void setEveningLights() {
-    Log.info("setEveningLights");
+    Log.trace("setEveningLights");
     Device::setValue("officeceiling",70);
     Device::setValue("piano", 100);
     Device::setValue("OfficeTrim", 100);
@@ -401,7 +401,7 @@ void setEveningLights() {
 }
 
 void setBedtimeLights() {
-    Log.info("setBedtimeLights");
+    Log.trace("setBedtimeLights");
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
@@ -409,7 +409,7 @@ void setBedtimeLights() {
 }
 
 void setSleepingLights() {
-    Log.info("setSleepingLights");
+    Log.trace("setSleepingLights");
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
@@ -417,12 +417,12 @@ void setSleepingLights() {
 }
 
 void setWatchingLights(int level) {
-    Log.info("setWatchingLights %d", level);
+    Log.trace("setWatchingLights %d", level);
     // Nothing to do in the office
 }
 
 void setAllInsideLights(int value) {
-    Log.info("setAllInsideLights %d",value);
+    Log.trace("setAllInsideLights %d",value);
     Device::setValue("OfficeCeiling", value);
     Device::setValue("Loft", value);
     Device::setValue("Piano", value);
@@ -431,7 +431,7 @@ void setAllInsideLights(int value) {
 }
 
 void setAllOutsideLights(int value) {
-    Log.info("setAllOutsideLights %d",value);
+    Log.trace("setAllOutsideLights %d",value);
     Device::setValue("RampPorch", value);
     Device::setValue("RampAwning", value);
     Device::setValue("RearPorch", value);
