@@ -167,7 +167,7 @@ void handleLightSwitches() {
 void handleLightSwitch(String name) {
     int lightSwitch = Device::getChangedValue(name+"Switch");
     if( lightSwitch == -1) return;
-    Log.info("handleLightSwitch hasChanged: %d",lightSwitch);
+    Log.trace("handleLightSwitch hasChanged: %d",lightSwitch);
     Device *device = Device::get(name);
     if( lightSwitch > 0 ) {
         device->setValue(100);
@@ -177,12 +177,12 @@ void handleLightSwitch(String name) {
 }
 
 void handleSleepingChange(int sleeping) {
-    Log.info("sleeping has changed: %d",sleeping);
+    Log.trace("sleeping has changed: %d",sleeping);
 
     int partOfDay = Device::value("PartOfDay");
     
     // Alexa, Good morning
-//    Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
+    Log.trace("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleeping,partOfDay);
     if( sleeping == AWAKE) { //} && partOfDay > SUNSET ) {
         Log.info("It is good morning");
         setMorningLights();
@@ -201,7 +201,7 @@ void handleSleepingChange(int sleeping) {
 
 void handlePartOfDayChange(int partOfDay) {
 
-    Log.info("PartOfDay has changed: %d", partOfDay);
+    Log.trace("PartOfDay has changed: %d", partOfDay);
 
     if( partOfDay == SUNRISE ) {
         setSunriseLights();
@@ -214,30 +214,30 @@ void handlePartOfDayChange(int partOfDay) {
 
 //void handleBlueledChange(int blueled) {
 //    if( blueled > 0 ) {
-//        Log.info("blueled did turn on");
+//        Log.trace("blueled did turn on");
 //        setBlueledLights(100);
 //    } else {
-//        Log.info("blueled did turn off");
+//        Log.trace("blueled did turn off");
 //        setBlueledLights(0);
 //    }
 //}
 
 void handleCleaningChange(int cleaning) {
     if( cleaning > 0 ) {
-        Log.info("cleaning did turn on");
+        Log.trace("cleaning did turn on");
         setAllInsideLights( 100 );
     } else {
-        Log.info("cleaning did turn off");
+        Log.trace("cleaning did turn off");
         setAllInsideLights( 0 );
     }
 }
 
 void handleWatchingChange(int watching) {
     if( watching > 0 ) {
-        Log.info("watching did turn on");
+        Log.trace("watching did turn on");
         setWatchingLights( 100 );
     } else {
-        Log.info("watching did turn off");
+        Log.trace("watching did turn off");
         setWatchingLights( 0 );
     }
 }
@@ -250,38 +250,38 @@ void setAllActivities(int value) {
 
 
 void setMorningLights() {
-    Log.info("setMorningLights");
+    Log.trace("setMorningLights");
     Device::setValue("Sink", 40);
 }
 
 void setSunriseLights() {
-    Log.info("setSunriseLights");
+    Log.trace("setSunriseLights");
     setAllOutsideLights(0);
     setAllInsideLights(0);
 }
 
 void setEveningLights() {
-    Log.info("setEveningLights");
+    Log.trace("setEveningLights");
     Device::setValue("Sink", 60);
     setAllOutsideLights(100);
 }
 
 void setBedtimeLights() {
-    Log.info("setBedtimeLights");
+    Log.trace("setBedtimeLights");
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
 }
 
 void setSleepingLights() {
-    Log.info("setSleepingLights");
+    Log.trace("setSleepingLights");
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
 }
 
 //void setBlueledLights(int value) {  // 0 = Off, else On
-//    Log.info("setBlueledLights %d", value);
+//    Log.trace("setBlueledLights %d", value);
 //
 //    if( value > 0 ) {   // Turn on TV lights
 //        Device::setValue("Sink", 50);
@@ -293,7 +293,7 @@ void setSleepingLights() {
 
 // "Alexa, watch tv"
 void setWatchingLights(int value) {
-    Log.info("setWatchingLights %d", value);
+    Log.trace("setWatchingLights %d", value);
 
     // TODO: What if watching TV while also washing dishes, etc?
     if( value > 0 ) {   // Turn on "watching TV" lights
@@ -304,7 +304,7 @@ void setWatchingLights(int value) {
 }
 
 void setAllInsideLights(int level) {
-    Log.info("setAllInsideLights level %d", level);
+    Log.trace("setAllInsideLights level %d", level);
     Device::setValue("KitchenCeiling", level);
     Device::setValue("Sink", level);
     Device::setValue("RightTrim", level);
@@ -314,7 +314,7 @@ void setAllInsideLights(int level) {
 }
 
 void setAllOutsideLights(int level) {
-    Log.info("setAllOutsideLights");
+    Log.trace("setAllOutsideLights");
     Device::setValue("DoorSide", level);
     Device::setValue("OtherSide", level);
     Device::setValue("FrontAwning", level);
