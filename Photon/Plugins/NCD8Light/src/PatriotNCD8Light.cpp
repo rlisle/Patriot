@@ -160,7 +160,7 @@ void NCD8Light::loop()
         return;
     }
     
-    Log.trace("light loop value: "+String(_value)+", target: "+String(_targetValue));
+    Log.trace("light loop value: "+String(_value)+", target: "+String(_targetLevel));
 
     // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
     
