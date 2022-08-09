@@ -50,9 +50,9 @@ void Light::begin() {
  * @param value Int 0 to 100
  */
 void Light::setValue(int value) {
-    Log.info("Light " + _name + " setValue: " + String(value));
+    //Log.info("Light " + _name + " setValue: " + String(value));
     if(_targetValue == value) {
-        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
+        //Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
         outputPWM();
         return;
     }
@@ -74,7 +74,7 @@ void Light::setValue(int value) {
  */
 void Light::startSmoothDimming() {
     if((int)_value == _targetValue){
-        Log.error("Light " + _name + " startSmoothDimming equal");
+        //Log.error("Light " + _name + " startSmoothDimming equal");
         return;
     }
     //TODO: something wrong here. _value wasn't set in setValue
@@ -82,7 +82,7 @@ void Light::startSmoothDimming() {
     _lastUpdateTime = millis();
     float delta = _targetValue - _value;
     _incrementPerMillisecond = delta / (_dimmingDuration * 1000);
-    Log.info("Light " + _name + " startSmoothDimming target: " + String(_value) + ", increment: " + String(_incrementPerMillisecond));
+    //Log.info("Light " + _name + " startSmoothDimming target: " + String(_value) + ", increment: " + String(_incrementPerMillisecond));
 }
 
 /**
@@ -124,12 +124,12 @@ void Light::loop()
     if(_incrementPerMillisecond > 0) {
         if(_currentValue > _targetValue) {
             _value = _targetValue;
-            Log.info("Light "+_name+" loop: up done");
+            //Log.info("Light "+_name+" loop: up done");
         }
     } else {
         if(_currentValue < _targetValue) {
             _value = _targetValue;
-            Log.info("Light "+_name+" loop: down done");
+            //Log.info("Light "+_name+" loop: down done");
         }
     }
     _lastUpdateTime = loopTime;
