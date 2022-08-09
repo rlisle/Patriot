@@ -81,7 +81,7 @@ int NCD8Switch::initializeBoard() {
     } while( status != 0 && retries++ < 3);
     
     if(status != 0) {
-        log("Initialize board failed");
+        Log.error("Initialize board failed");
     }
     
     return status;
