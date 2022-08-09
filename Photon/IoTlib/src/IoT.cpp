@@ -84,7 +84,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String data = String(rawData).trim();
     String event(eventName);
     
-    Log.info("Particle.io subscribe received data: '"+event+"', '"+data+"'");
+    Log.trace("Particle.io subscribe received data: '"+event+"', '"+data+"'");
     
     _mqttManager->parseMessage(event.toLowerCase(), data.toLowerCase());
 }
@@ -118,7 +118,7 @@ void IoT::setLatLong(float latitude, float longitude) {
 // TIMEZONE
 //
 void IoT::setTimezone(int timezone) {
-    Log.info("setTimezone: "+String(timezone));
+    Log.trace("setTimezone: "+String(timezone));
     int8_t tz = timezone;
     Time.zone(float(timezone));
     // Persist this value across reboots
@@ -141,7 +141,7 @@ void IoT::handleDaylightSavings() {
     if(timezone == 0xff) {      // 0xff means never written
         timezone = -6;          // Default to CST
     }
-    Log.info("Setting timezone to "+String(timezone));
+    Log.trace("Setting timezone to "+String(timezone));
     Time.zone(float(timezone));
 
     int month = Time.month();

@@ -57,7 +57,7 @@ bool MQTTManager::connect() {
 
 
     if(_mqtt->isConnected()) {
-        Log.info("MQTT is connected, so reconnecting...");
+        Log.trace("MQTT is connected, so reconnecting...");
         LogManager::instance()->removeHandler(this);
         _mqtt->disconnect();
     }
@@ -74,7 +74,7 @@ bool MQTTManager::connect() {
     // Looks good, now register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    Log.info("MQTT Connected");
+    Log.trace("MQTT Connected");
     return true;
 }
 
@@ -175,9 +175,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             //TODO: handle '-' because toFloat doc says it doesn't
             float latitude = latString.toFloat();
             float longitude = lonString.toFloat();
-            Log.info("DEBUG: lat/long = " + String(latitude) + "," + String(longitude));
+            Log.trace("lat/long = " + String(latitude) + "," + String(longitude));
             if(latitude != 0 && longitude != 0) {
-                Log.info("Setting lat/long: " + String(latitude) + "," + String(longitude));
+                Log.trace("Setting lat/long: " + String(latitude) + "," + String(longitude));
                 IoT::setLatLong(latitude,longitude);
             }
             
@@ -186,7 +186,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 
         } else if(subtopic.startsWith("loglevel")) {    // LOGLEVEL
             if(subtopic == "loglevel/"+_controllerName) {
-                Log.info(_controllerName + " setting logLevel = " + lcMessage);
+                Log.trace(_controllerName + " setting logLevel = " + lcMessage);
                 parseLogLevel(lcMessage);
             }
             
@@ -207,14 +207,14 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             
         } else if(subtopic == "query") {            // QUERY
             if(lcMessage == _controllerName || lcMessage == "all") {
-                Log.info("Received query addressed to us");
+                Log.trace("Received query addressed to us");
                 Device::publishStates();
             }
                 
         } else if(subtopic == "reset") {            // RESET
             // Respond if reset is addressed to us
             if(lcMessage == _controllerName) {
-                Log.info("Reset addressed to us");
+                Log.trace("Reset addressed to us");
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
@@ -226,7 +226,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // San Francisco/PST -8
             // Austin/CST -6
             // Windsor/EST -5
-            Log.info("Received timezone: " + lcMessage);
+            Log.trace("Received timezone: " + lcMessage);
             int timezone = -6;          // Default to Austin CST
             //handle '-' because toInt doc says it doesn't
             if(lcMessage.charAt(0) == '-') {
@@ -235,10 +235,10 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 timezone = lcMessage.toInt();
             }
             if(timezone != 0) {
-                Log.info("Setting timezone to: " + String(timezone));
+                Log.trace("Setting timezone to: " + String(timezone));
                 IoT::setTimezone(timezone);
             } else {
-                Log.info("Invalid timezone");
+                Log.error("Invalid timezone");
             }
             
         // DEVICE
@@ -249,12 +249,12 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             if( device != NULL ) {
                 
                 // Handle save/restore value
-                Log.info("Parser setting device " + subtopic + " to " + value);
+                Log.trace("Parser setting device " + subtopic + " to " + value);
                 device->setValue(value);
                 Device::buildDevicesVariable();
                 
 //            } else {
-//                Log.info("Parsed unknown subtopic "+subtopic);
+//                Log.trace("Parsed unknown subtopic "+subtopic);
             }
         }
     } else {
