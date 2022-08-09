@@ -201,14 +201,14 @@ bool PartOfDay::computeSun(int currentTimeUTC, bool forSunrise) {
   // adjust the time array by minutes
     
     if(minutes > 1440) {
-        Log("POD Error: minutes too big: %d", minutes);
+        Log.error("POD Error: minutes too big: %d", minutes);
     }
     if(forSunrise) {
         _sunriseMinutesAfterMidnight = minutes;
-        Log("POD: sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
+        Log.trace("POD: sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
     } else {
         _sunsetMinutesAfterMidnight = minutes;
-        Log("POD: sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
+        Log.trace("POD: sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
     }
     return true;
 }
