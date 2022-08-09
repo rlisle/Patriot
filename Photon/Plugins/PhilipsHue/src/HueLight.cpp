@@ -34,10 +34,10 @@ HueLight::HueLight(String name, String room, String hueId, byte *server, String 
 
 void HueLight::begin() {
     if(_tcpClient.connect(_server,80)) {
-        Log("HueLight "+_name+" connected");
+        Log.trace("HueLight "+_name+" connected");
         _tcpClient.stop();
     } else {
-        Log("HueLight "+_name+" failed to connect!");
+        Log.warn("HueLight "+_name+" failed to connect!");
     }
     
 }
@@ -56,9 +56,9 @@ void HueLight::loop()
  * @param value Int 0 to 100
  */
 void HueLight::setValue(int value) {
-    Log.info("HueLight " + _name + " setValue: " + String(value));
+    Log.trace("HueLight " + _name + " setValue: " + String(value));
     if(_value == value) {
-        Log.info("HueLight value already set, but writing again!");
+        Log.trace("HueLight value already set, but writing again!");
     }
     _value = value;
     writeToHue();
@@ -83,7 +83,7 @@ void HueLight::writeToHue() {
             if(newValue > 254) newValue = 254;
             json = "{\"on\":true, \"bri\": " + String(newValue) + "}";
         }
-        Log.info("Hue json = " + json);
+        //Log.info("Hue json = " + json);
 
         _tcpClient.print("PUT /api/");
         _tcpClient.print(_userID);
@@ -96,7 +96,7 @@ void HueLight::writeToHue() {
         _tcpClient.println();
         _tcpClient.println(json);
     } else {
-        Log("HueLight "+_name+" not connected");
+        Log.warn("HueLight "+_name+" not connected");
     }
 }
 /**
