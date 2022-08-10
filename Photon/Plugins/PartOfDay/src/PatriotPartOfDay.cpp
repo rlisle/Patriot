@@ -38,6 +38,11 @@ All text above must be included in any redistribution.
 #define MILLIS_PER_MINUTE 60000
 #define MILLIS_PER_DAY 86400000
 
+#define VERSION_ADDR 0
+#define LATITUDE_ADDR 4
+#define LONGITUDE_ADDR 8
+
+// Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
 // Spanish Fort, AL: 30.6685° N, 87.9109° W
 // Bonifay, FL: 30.7919° N, 85.6797° W
 // White Springs, FL: 30.3297° N, 82.7590° W
@@ -45,9 +50,9 @@ All text above must be included in any redistribution.
 // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
 //                  30.28267 N, 97.63624 W via iPhone maps in office.
 //TODO: calculate this from GPS or app or API or ?
-float const LATITUDE  =  30.28267;
-float const LONGITUDE = -97.63624;
-int   const TIMEZONE  = -6 * 60;
+float const LATITUDE  =  42.14413; //Windsor, Austin is 30.28267;
+float const LONGITUDE = -82.94876; // "         " -97.63624;
+int   const TIMEZONE  = -5 * 60;   // "         " -6 * 60;
 
 /**
  * Constructor
@@ -59,8 +64,25 @@ PartOfDay::PartOfDay()
     _type  = 'P';
     _sunriseMinutesAfterMidnight = 400; // 6:40 am Placeholder
     _sunsetMinutesAfterMidnight = 1230; // 8:30 pm placeholder
-    _latitude = LATITUDE;               // Default (Austin)
-    _longitude = LONGITUDE;             // "
+    loadValuesFromEEPROM();
+}
+
+/**
+ Set latitude/longitude from EEPROM
+ return false if EEPROM not set (so defaults returned instead)
+ */
+bool PartOfDay::loadValuesFromEEPROM() {
+    uint8_t version;
+    EEPROM.get(VERSION_ADDR, version);
+    if(version == 0xff) {
+        _latitude = LATITUDE;   // Default (Austin)
+        _longitude = LONGITUDE; // "
+        return false;
+    } else {
+        _latitude = EEPROM.get(LATITUDE_ADDR,_latitude);
+        _longitude = EEPROM.get(LONGITUDE_ADDR,_longitude);
+    }
+    return true;
 }
 
 /**
@@ -73,10 +95,15 @@ void PartOfDay::begin() {
 }
 
 void PartOfDay::setLatLong(float latitude, float longitude) {
+    uint8_t version = 1;    // Anything other than 0xff
+    
     _latitude = latitude;
     _longitude = longitude;
     _lastPollMinuteUTC = 0;     // Force recalculation
     _lastPollDayUTC = 0;
+    EEPROM.put(VERSION_ADDR, version);
+    EEPROM.put(LATITUDE_ADDR, _latitude);
+    EEPROM.put(LONGITUDE_ADDR, _longitude);
 }
 
 /**
@@ -174,14 +201,14 @@ bool PartOfDay::computeSun(int currentTimeUTC, bool forSunrise) {
   // adjust the time array by minutes
     
     if(minutes > 1440) {
-        Log("POD Error: minutes too big: %d", minutes);
+        Log.error("POD Error: minutes too big: %d", minutes);
     }
     if(forSunrise) {
         _sunriseMinutesAfterMidnight = minutes;
-        Log("POD: sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
+        Log.trace("POD: sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
     } else {
         _sunsetMinutesAfterMidnight = minutes;
-        Log("POD: sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
+        Log.trace("POD: sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
     }
     return true;
 }

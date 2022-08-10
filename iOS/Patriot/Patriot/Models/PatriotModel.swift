@@ -355,6 +355,17 @@ extension PatriotModel {
             }
         }
         mqtt.sendMessage(topic: "patriot/latlong", message: "\(latitude),\(longitude)")
+        
+        // Now set Time Zone
+        let secondsFromGMT: Int = TimeZone.current.secondsFromGMT()
+        var timezone = secondsFromGMT / 3600
+        //TODO: it appears to take DST into consideration because EST is returning -4
+        if TimeZone.current.isDaylightSavingTime() {
+            print("Removing DST adjustment")
+            timezone -= 1
+        }
+        print("Sending timezone \(timezone)")
+        mqtt.sendMessage(topic: "patriot/timezone", message: "\(timezone)")
     }
 }
 

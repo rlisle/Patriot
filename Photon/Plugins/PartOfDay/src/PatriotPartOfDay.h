@@ -53,6 +53,7 @@ private:
     bool       computeSun(int currentTimeUTC, bool forSunrise);
     void       adjust(long offset, bool forSunrise);
     char       signum(int n);
+    bool       loadValuesFromEEPROM();
 
 public:
 

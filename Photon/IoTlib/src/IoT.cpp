@@ -84,7 +84,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     String data = String(rawData).trim();
     String event(eventName);
     
-    Log.info("Particle.io subscribe received data: '"+event+"', '"+data+"'");
+    Log.trace("Particle.io subscribe received data: '"+event+"', '"+data+"'");
     
     _mqttManager->parseMessage(event.toLowerCase(), data.toLowerCase());
 }
@@ -111,7 +111,18 @@ void IoT::publishValue(String name, int value) {
 // LATITUDE/LONGITUDE
 //
 void IoT::setLatLong(float latitude, float longitude) {
+    // Currently only PartOfDay cares about (and persists) this.
     Device::setAllLatLong(latitude, longitude);
+}
+
+// TIMEZONE
+//
+void IoT::setTimezone(int timezone) {
+    Log.trace("setTimezone: "+String(timezone));
+    int8_t tz = timezone;
+    Time.zone(float(timezone));
+    // Persist this value across reboots
+    EEPROM.put(TIMEZONE_ADDR, tz);
 }
 
 
@@ -124,8 +135,14 @@ void IoT::setLatLong(float latitude, float longitude) {
 // 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
 void IoT::handleDaylightSavings() {
     
-    //TODO: Use GPS to determine actual timezone
-    Time.zone(-6.0);    // Set timezone to Central
+    // Read & set persisted value from EEPROM (if present)
+    int8_t timezone;
+    EEPROM.get(TIMEZONE_ADDR, timezone);
+    if(timezone == 0xff) {      // 0xff means never written
+        timezone = -6;          // Default to CST
+    }
+    Log.trace("Setting timezone to "+String(timezone));
+    Time.zone(float(timezone));
 
     int month = Time.month();
     if(month > 3 && month < 11) {

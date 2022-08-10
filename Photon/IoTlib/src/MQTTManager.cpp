@@ -26,8 +26,7 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
-//    _logLevel = LOG_LEVEL_WARN;     // See particle doc for options
-    _logLevel = LOG_LEVEL_ALL;
+    _logLevel = LOG_LEVEL_INFO;     // See particle doc for options
         
     //TODO: do we need this, and what should we pass?
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
@@ -58,7 +57,7 @@ bool MQTTManager::connect() {
 
 
     if(_mqtt->isConnected()) {
-        Log.info("MQTT is connected, so reconnecting...");
+        Log.trace("MQTT is connected, so reconnecting...");
         LogManager::instance()->removeHandler(this);
         _mqtt->disconnect();
     }
@@ -75,7 +74,7 @@ bool MQTTManager::connect() {
     // Looks good, now register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    Log.info("MQTT Connected");
+    Log.trace("MQTT Connected");
     return true;
 }
 
@@ -158,6 +157,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Ignore it.
             
         } else if(subtopic == "latlong") {             // LATLONG
+            // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
             // Spanish Fort, AL: 30.6685° N, 87.9109° W
             // Bonifay, FL: 30.7919° N, 85.6797° W
             // White Springs, FL: 30.3297° N, 82.7590° W
@@ -165,9 +165,19 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
             //                  30.28267 N, 97.63624 W via iPhone maps in office.
             // eg. float longitude = -97.63624;
-            float latitude = lcMessage.toFloat();
-            float longitude = lcMessage.toFloat();
+            // Split out latitude & longitude
+            int commaIndex = lcMessage.indexOf(',');
+            if(commaIndex < 0) return;
+            
+            String latString = lcMessage.substring(0, commaIndex-1);
+            String lonString = lcMessage.substring(commaIndex+1);
+
+            //TODO: handle '-' because toFloat doc says it doesn't
+            float latitude = latString.toFloat();
+            float longitude = lonString.toFloat();
+            Log.trace("lat/long = " + String(latitude) + "," + String(longitude));
             if(latitude != 0 && longitude != 0) {
+                Log.trace("Setting lat/long: " + String(latitude) + "," + String(longitude));
                 IoT::setLatLong(latitude,longitude);
             }
             
@@ -176,7 +186,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 
         } else if(subtopic.startsWith("loglevel")) {    // LOGLEVEL
             if(subtopic == "loglevel/"+_controllerName) {
-                Log.info(_controllerName + " setting logLevel = " + lcMessage);
+                Log.trace(_controllerName + " setting logLevel = " + lcMessage);
                 parseLogLevel(lcMessage);
             }
             
@@ -197,14 +207,14 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             
         } else if(subtopic == "query") {            // QUERY
             if(lcMessage == _controllerName || lcMessage == "all") {
-                Log.info("Received query addressed to us");
+                Log.trace("Received query addressed to us");
                 Device::publishStates();
             }
                 
         } else if(subtopic == "reset") {            // RESET
             // Respond if reset is addressed to us
             if(lcMessage == _controllerName) {
-                Log.info("Reset addressed to us");
+                Log.trace("Reset addressed to us");
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
@@ -212,6 +222,25 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         } else if(subtopic == "state") {
             // Ignore - deprecated
                 
+        } else if(subtopic == "timezone") {            // TIMEZONE
+            // San Francisco/PST -8
+            // Austin/CST -6
+            // Windsor/EST -5
+            Log.trace("Received timezone: " + lcMessage);
+            int timezone = -6;          // Default to Austin CST
+            //handle '-' because toInt doc says it doesn't
+            if(lcMessage.charAt(0) == '-') {
+                timezone = 0 - lcMessage.substring(1).toInt();
+            } else {
+                timezone = lcMessage.toInt();
+            }
+            if(timezone != 0) {
+                Log.trace("Setting timezone to: " + String(timezone));
+                IoT::setTimezone(timezone);
+            } else {
+                Log.error("Invalid timezone");
+            }
+            
         // DEVICE
         } else {
             
@@ -220,12 +249,12 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             if( device != NULL ) {
                 
                 // Handle save/restore value
-                Log.info("Parser setting device " + subtopic + " to " + value);
+                Log.trace("Parser setting device " + subtopic + " to " + value);
                 device->setValue(value);
                 Device::buildDevicesVariable();
                 
 //            } else {
-//                Log.info("Parsed unknown subtopic "+subtopic);
+//                Log.trace("Parsed unknown subtopic "+subtopic);
             }
         }
     } else {

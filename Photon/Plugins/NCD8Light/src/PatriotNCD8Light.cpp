@@ -80,7 +80,7 @@ int8_t NCD8Light::initializeBoard() {
 
         outputPWM();            // Force light off
         
-        Log.info("InitializeBoard " + _name + " sucess");
+        Log.trace("InitializeBoard " + _name + " sucess");
         
     } else {
         Log.error("InitializeBoard " + _name + " FAILED!");
@@ -113,7 +113,7 @@ void NCD8Light::reset() {
  */
 void NCD8Light::setValue(int value) {
     if( value == _value ) {
-        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
+        Log.trace("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
         _currentLevel = scalePWM(_value);
         outputPWM();
         return;
@@ -122,7 +122,7 @@ void NCD8Light::setValue(int value) {
     _currentLevel = scalePWM(_value);   // previous value
     _value = value;
     _targetLevel = scalePWM(value);     // new value
-    Log.info("Dimmer " + _name + " setValue " + String(value) + " scaled to " + String(_targetLevel));
+    Log.trace("Dimmer " + _name + " setValue " + String(value) + " scaled to " + String(_targetLevel));
     if(_dimmingDuration == 0) {
         _currentLevel = _targetLevel;
         outputPWM();
@@ -142,7 +142,7 @@ void NCD8Light::startSmoothDimming() {
         _lastUpdateTime = millis();
         float delta = _targetLevel - _currentLevel;
         _incrementPerMillisecond = delta / (float(_dimmingDuration) * 1000);
-        Log.info("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
+        Log.trace("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
     }
 }
 
@@ -160,7 +160,7 @@ void NCD8Light::loop()
         return;
     }
     
-    //Log.trace("light loop value: "+String(_value)+", target: "+String(_targetValue));
+    Log.trace("light loop value: "+String(_value)+", target: "+String(_targetLevel));
 
     // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
     
