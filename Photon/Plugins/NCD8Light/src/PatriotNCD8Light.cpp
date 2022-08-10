@@ -142,7 +142,7 @@ void NCD8Light::startSmoothDimming() {
         _lastUpdateTime = millis();
         float delta = _targetLevel - _currentLevel;
         _incrementPerMillisecond = delta / (float(_dimmingDuration) * 1000);
-        Log.info("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
+        Log.trace("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
     }
 }
 
