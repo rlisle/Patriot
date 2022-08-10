@@ -119,6 +119,9 @@ void MQTTManager::sendAlivePeriodically() {
 }
 
 void MQTTManager::reconnectCheck() {
+    // Still starting up? (eg. connection not done yet)
+    if(_lastMQTTtime == 0) return;
+    
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > MQTT_TIMEOUT_SECONDS) {
         Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
