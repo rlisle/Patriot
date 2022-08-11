@@ -57,7 +57,7 @@ bool MQTTManager::connect() {
 
 
     if(_mqtt->isConnected()) {
-        Log.trace("MQTT is connected, so reconnecting...");
+        Log.trace("MQTT is connected, so disconnecting first");
         LogManager::instance()->removeHandler(this);
         _mqtt->disconnect();
     }
@@ -69,7 +69,7 @@ bool MQTTManager::connect() {
         }
     } else {
         // This won't do anything because our handler isn't connected yet.
-        Log.error("MQTT is NOT connected! Check MQTT IP address");
+        Serial.println("MQTT is NOT connected! Check MQTT IP address");
     }
     // Looks good, now register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
