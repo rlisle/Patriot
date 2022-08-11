@@ -198,11 +198,14 @@ void handleLivingRoomMotion() {
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     if(livingRoomMotionChanged == 100) {
         Log.trace("LivingRoom Motion detected");
-        Device::setValue("LeftVertical", 50);
+        Device::setValue("LeftVertical", 12);
 
         // Determine if this is Ron getting up
         if( partOfDay > SUNSET && sleeping != AWAKE) {
+            //TODO: maybe blink instead?
+            Device::setValue("LeftVertical", 24);
             if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
+                Device::setValue("LeftVertical", 50);
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
             }
