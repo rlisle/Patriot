@@ -26,6 +26,8 @@ public func assertSnapshot<Value, Format>(
     let isCI = ProcessInfo.processInfo.environment["CI"] == "TRUE"
     let sourceRoot = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SOURCE_ROOT"]!,
                          isDirectory: true)
+    print("isCI = \(isCI)")
+    print("sourceRoot = \(sourceRoot)")
 
     let fileUrl = URL(fileURLWithPath: "\(file)", isDirectory: false)
     let fileName = fileUrl.deletingPathExtension().lastPathComponent
@@ -66,3 +68,5 @@ public func assertSnapshot<Value, Format>(
     guard let message = failure else { return }
     XCTFail("\(message) snap: \(snapshotDirectoryUrl)", file: file, line: line)
 }
+
+

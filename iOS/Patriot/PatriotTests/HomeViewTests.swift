@@ -8,7 +8,7 @@
 
 import XCTest
 import SwiftUI
-import SnapshotTesting
+//import SnapshotTesting
 @testable import Patriot
 
 class HomeViewTests: XCTestCase {
