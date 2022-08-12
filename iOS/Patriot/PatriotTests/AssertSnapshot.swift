@@ -6,6 +6,8 @@
 //  Copied from Morten Bek Ditlevsen per https://github.com/pointfreeco/swift-snapshot-testing/discussions/553
 //
 //  Currently need to add CI $(CI) and SOURCE_ROOT $(SOURCE_ROOT) to scheme run environment settings
+//
+// 8/12/22 Investigating running on Xcode Cloud
 
 import Foundation
 import SnapshotTesting
