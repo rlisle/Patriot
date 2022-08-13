@@ -106,6 +106,7 @@ void MQTTManager::loop()
         connect();
     }
 
+    //TODO: only poll this periodically
     reconnectCheck();
 }
 
@@ -125,7 +126,11 @@ void MQTTManager::reconnectCheck() {
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > MQTT_TIMEOUT_SECONDS) {
         Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-        connect();    // This will perform a reconnect
+        //TODO: Fix connect(). Until then, just reset the Photon
+        //connect();    // This will perform a reconnect
+        Log.warn("MQTT lost. Resetting");
+        Device::resetAll();
+        System.reset(RESET_NO_WAIT);
     }
 }
 
