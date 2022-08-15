@@ -25,13 +25,15 @@ public func assertSnapshot<Value, Format>(
     testName: String = #function,
     line: UInt = #line
 ) {
+    var sourceRoot = URL(fileURLWithPath: "/Volumes/workspace/repository/")
     let isCI = ProcessInfo.processInfo.environment["CI"] == "TRUE"
-    let sourceRoot = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SOURCE_ROOT"]!,
-                         isDirectory: true)
-    
-    print("DEBUG: isCI = \(isCI)")
-    print("DEBUG: sourceRoot = \(sourceRoot)")
 
+    //sourceRoot is only valid when running locally, .../iOS/Patriot
+    if isCI == false {
+        sourceRoot = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SOURCE_ROOT"]!,
+                         isDirectory: true)
+    }
+    
     let fileUrl = URL(fileURLWithPath: "\(file)", isDirectory: false)
     let fileName = fileUrl.deletingPathExtension().lastPathComponent
 
@@ -49,6 +51,7 @@ public func assertSnapshot<Value, Format>(
             return
         }
     }
+    
     var snapshotDirectoryUrl = sourceRoot
     if isCI {
         snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("ci_scripts")
