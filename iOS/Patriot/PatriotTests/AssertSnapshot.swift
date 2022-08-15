@@ -65,7 +65,8 @@ public func assertSnapshot<Value, Format>(
 
     var snapshotDirectory = "/Users/ronlisle/GitRepos/Patriot/iOS/Patriot/Snapshots/PatriotTests/__Snapshots__/MenuTests"
     if isCI {
-        snapshotDirectory = "/Volumes/workspace/repository/Snapshots/PatriotTests/__Snapshots__/MenuTests"
+//        snapshotDirectory = "/Volumes/workspace/repository/Snapshots/PatriotTests/__Snapshots__/MenuTests"
+        snapshotDirectory = "Snapshots/PatriotTests/__Snapshots__/MenuTests"
     }
     print("DEBUG: verifySnapshot directory: \(snapshotDirectory), file: \(file)")
     
