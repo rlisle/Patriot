@@ -29,6 +29,9 @@ public func assertSnapshot<Value, Format>(
     print("isCI = \(isCI)")
     print("sourceRoot = \(sourceRoot)")
 
+    print("DEBUG: isCI = \(isCI)")
+    print("DEBUG: sourceRoot = \(sourceRoot)")
+
     let fileUrl = URL(fileURLWithPath: "\(file)", isDirectory: false)
     let fileName = fileUrl.deletingPathExtension().lastPathComponent
 
