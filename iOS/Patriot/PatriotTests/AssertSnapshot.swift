@@ -13,6 +13,8 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
+// Only files in ci_scripts are available to Xcode Cloud tests
+
 public func assertSnapshot<Value, Format>(
     matching value: @autoclosure () throws -> Value,
     as snapshotting: Snapshotting<Value, Format>,
@@ -26,9 +28,7 @@ public func assertSnapshot<Value, Format>(
     let isCI = ProcessInfo.processInfo.environment["CI"] == "TRUE"
     let sourceRoot = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SOURCE_ROOT"]!,
                          isDirectory: true)
-    print("isCI = \(isCI)")
-    print("sourceRoot = \(sourceRoot)")
-
+    
     print("DEBUG: isCI = \(isCI)")
     print("DEBUG: sourceRoot = \(sourceRoot)")
 
