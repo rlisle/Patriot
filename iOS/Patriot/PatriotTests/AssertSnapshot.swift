@@ -58,6 +58,8 @@ public func assertSnapshot<Value, Format>(
         snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent(component)
     }
 
+    print("DEBUG: verifySnapshot directory: \(snapshotDirectoryUrl.path), file: \(file)")
+    
     let failure = verifySnapshot(
         matching: try value(),
         as: snapshotting,
