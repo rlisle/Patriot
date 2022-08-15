@@ -27,7 +27,7 @@ public func assertSnapshot<Value, Format>(
     var sourceRoot = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SOURCE_ROOT"]!,
                          isDirectory: true)
     if isCI {
-        sourceRoot = URL(fileURLWithPath: "/Volumes/workspace/repository/ci_scripts")
+        sourceRoot = URL(fileURLWithPath: "/Volumes/workspace/repository")
     }
 
     let fileUrl = URL(fileURLWithPath: "\(file)", isDirectory: false)
@@ -48,9 +48,9 @@ public func assertSnapshot<Value, Format>(
         }
     }
     var snapshotDirectoryUrl = sourceRoot
-//    if isCI {
-//        snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("ci_scripts")
-//    }
+    if isCI {
+        snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("ci_scripts")
+    }
     snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("Artifacts")
     for component in components {
         snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent(component)
