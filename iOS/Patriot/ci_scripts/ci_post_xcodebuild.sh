@@ -4,4 +4,4 @@ echo $SOURCE_ROOT
 echo $CI
 ls -al
 env
-echo
+echo "Done"
