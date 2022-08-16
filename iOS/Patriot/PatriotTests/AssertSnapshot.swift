@@ -39,14 +39,16 @@ public func assertSnapshot<Value, Format>(
         .appendingPathComponent(fileName)
     var components = absoluteSourceTestPath.pathComponents
     let sourceRootComponents = sourceRoot.pathComponents
+    // Remove sourceRoot from the filePath
     for component in sourceRootComponents {
         if components.first == component {
             components = Array(components.dropFirst())
         } else {
-            XCTFail("Test file does not share a prefix path with SOURCE_ROOT")
+            XCTFail("Test file '\(file)' does not share a prefix path with sourceRoot '\(sourceRoot)'")
             return
         }
     }
+    // At this point components should have sourceRootComponents removed
     var snapshotDirectoryUrl = sourceRoot
     if isCI {
         snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("ci_scripts")
