@@ -8,7 +8,6 @@
 
 import XCTest
 import SwiftUI
-//import SnapshotTesting
 @testable import Patriot
 
 class DeviceDetailTests: XCTestCase {

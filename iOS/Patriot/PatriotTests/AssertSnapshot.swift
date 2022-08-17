@@ -21,6 +21,10 @@ public func assertSnapshot<Value, Format>(
     testName: String = #function,
     line: UInt = #line
 ) {
+    // Set overrideRecording to true to re-record all snapshot test images
+    // This is easier than editing every snapshot test file
+    let overrideRecording = false
+    
     let isCI = ProcessInfo.processInfo.environment["CI"] == "TRUE"
     var sourceRoot = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SOURCE_ROOT"]!,
                          isDirectory: true)
@@ -68,7 +72,7 @@ public func assertSnapshot<Value, Format>(
         matching: try value(),
         as: snapshotting,
         named: name,
-        record: recording,
+        record: recording || overrideRecording,
         snapshotDirectory: snapshotDirectoryUrl.path,
         timeout: timeout,
         file: file,
