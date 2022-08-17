@@ -17,7 +17,7 @@ class HomeViewTests: XCTestCase {
         let modelView = PatriotModel(testMode: .on)
         let homeView = HomeView().environmentObject(modelView)
         let viewController = UIHostingController(rootView: homeView)
-        assertSnapshot(matching: viewController, as: .image(on: .iPhoneX), record: false)
+        assertSnapshot(matching: viewController, as: .image(on: .iPhone8), record: false)
     }
     
     func testHomeViewWithChangedLights() throws {
@@ -25,6 +25,6 @@ class HomeViewTests: XCTestCase {
         modelView.devices[0].percent = 100
         let homeView = HomeView().environmentObject(modelView)
         let viewController = UIHostingController(rootView: homeView)
-        assertSnapshot(matching: viewController, as: .image(on: .iPhoneX), record: false)
+        assertSnapshot(matching: viewController, as: .image(on: .iPhone8), record: false)
     }
 }

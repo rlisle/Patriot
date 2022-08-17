@@ -23,6 +23,6 @@ class MenuViewTests: XCTestCase {
     }
     
     func testMenuView() throws {
-        assertSnapshot(matching: viewController, as: .image(on: .iPhoneX), record: false)
+        assertSnapshot(matching: viewController, as: .image(on: .iPhone8), record: false)
     }
 }

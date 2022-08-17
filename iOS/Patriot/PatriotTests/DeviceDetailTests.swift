@@ -24,6 +24,6 @@ class DeviceDetailTests: XCTestCase {
     
     func testDeviceDetailView() throws {
         //isRecording = true
-        assertSnapshot(matching: viewController, as: .image(on: .iPhoneX), record: false)
+        assertSnapshot(matching: viewController, as: .image(on: .iPhone8), record: false)
     }
 }
