@@ -5,8 +5,6 @@
 //  Created by Ron Lisle on 6/22/22.
 //  Copied from Morten Bek Ditlevsen per https://github.com/pointfreeco/swift-snapshot-testing/discussions/553
 //
-//  Currently need to add CI $(CI) and SOURCE_ROOT $(SOURCE_ROOT) to scheme run environment settings
-//
 // 8/12/22 Investigating running on Xcode Cloud
 
 import Foundation
@@ -49,6 +47,14 @@ public func assertSnapshot<Value, Format>(
         }
     }
     // At this point components should have sourceRootComponents removed
+    // But in the case of Patriot, there are still '/iOS/Patriot/'
+    // Our repo starts 2 dirs above the project source_root, so remove those also
+    // There's probably a better, more generic way to do this.
+    if isCI {
+        components = Array(components.dropFirst())
+        components = Array(components.dropFirst())
+    }
+    
     var snapshotDirectoryUrl = sourceRoot
     if isCI {
         snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("ci_scripts")

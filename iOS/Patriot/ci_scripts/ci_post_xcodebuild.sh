@@ -9,7 +9,7 @@ ls -al
 #ls -al Snapshots
 #echo "ls -al Snapshots/PatriotTests"
 #ls -al Snapshots/PatriotTests
-echo "ls -al Snapshots/PatriotTests/__Snapshots__/MenuTests"
+echo "ls -al Artifacts/PatriotTests/__Snapshots__/MenuTests"
 ls -al Snapshots/PatriotTests/__Snapshots__/MenuTests
 echo "ls -al /Volumes/workspace/repository"
 ls -al /Volumes/workspace/repository
@@ -17,6 +17,8 @@ ls -al /Volumes/workspace/repository
 #ls -al /Volumes/workspace/repository/iOS
 echo "ls -al /Volumes/workspace/repository/ci_scripts"
 ls -al /Volumes/workspace/repository/ci_scripts
+echo "ls -al Artifacts/PatriotTests/__Snapshots__/MenuTests"
+ls -al Artifacts/PatriotTests/__Snapshots__/MenuTests
 echo "env"
 env
 echo "Done"
