@@ -62,6 +62,7 @@ class PatriotUITests: XCTestCase {
     }
     
     func openKitchenDetails() {
+        // Open one of the Kitchen lights that are currently off (test will fail if all are on)
         let scrollViewsQuery = app.scrollViews
         let kitchenElementsQuery = scrollViewsQuery.otherElements.containing(.staticText, identifier:"Kitchen")
         let lightoffImage = kitchenElementsQuery.children(matching: .other).element(boundBy: 1).children(matching: .image).matching(identifier: "LightOff").element(boundBy: 1)
@@ -69,7 +70,6 @@ class PatriotUITests: XCTestCase {
     }
     
     func verifyKitchenDetails() {
-        XCTAssert(app.staticTexts["Kitchen:Right Trim"].exists)
         XCTAssert(app.staticTexts["Brightness"].exists)
     }
     
