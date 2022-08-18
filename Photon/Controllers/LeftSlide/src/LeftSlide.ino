@@ -45,13 +45,14 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 //TODO: convert to IPAddress
 byte hueServer[4] = { 192, 168, 50, 21 };
 
+// WiFi IP Addresses
 IPAddress myAddress(192,168,50,30);
 IPAddress netmask(255,255,255,0);
 IPAddress gateway(192,168,50,1);
 IPAddress dns(192,168,50,1);
+int antenna = ANT_EXTERNAL;
 
 IPAddress mqttAddress(192, 168, 50, 33);
-
 
 bool couchPresenceFiltered = 0;
 long lastCouchPresence = 0;
@@ -66,13 +67,13 @@ int partOfDay = 0;
 int sleeping = 0;
 
 void setup() {
-    WiFi.selectAntenna(ANT_EXTERNAL);
-    setWifiStaticIP();
+    setupWifi();
     IoT::begin("192.168.50.33","LeftSlide");
     createDevices();
 }
 
-void setWifiStaticIP() {
+void setupWifi() {
+    WiFi.selectAntenna(antenna);
     WiFi.setStaticIP(myAddress, netmask, gateway, dns);
     WiFi.useStaticIP();
 }
@@ -123,6 +124,7 @@ void loop() {
  * If 3:00 am and goodnight hasn't been issued
  * then set sleep = 1 anyways.
  */
+//TODO: Move to IoT::loop
 void handleAutoGoodnight() {
     if(sleeping < ASLEEP && Time.hour() == 3) {
         IoT::mqttPublish("patriot/sleeping", "3");   // 3 = ASLEEP

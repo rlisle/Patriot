@@ -5,7 +5,7 @@
 //  Created by Ron Lisle on 6/22/22.
 //  Copied from Morten Bek Ditlevsen per https://github.com/pointfreeco/swift-snapshot-testing/discussions/553
 //
-//  Currently need to add CI $(CI) and SOURCE_ROOT $(SOURCE_ROOT) to scheme run environment settings
+// 8/12/22 Investigating running on Xcode Cloud
 
 import Foundation
 import SnapshotTesting
@@ -21,9 +21,16 @@ public func assertSnapshot<Value, Format>(
     testName: String = #function,
     line: UInt = #line
 ) {
+    // Set overrideRecording to true to re-record all snapshot test images
+    // This is easier than editing every snapshot test file
+    let overrideRecording = false
+    
     let isCI = ProcessInfo.processInfo.environment["CI"] == "TRUE"
-    let sourceRoot = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SOURCE_ROOT"]!,
+    var sourceRoot = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SOURCE_ROOT"]!,
                          isDirectory: true)
+    if isCI {
+        sourceRoot = URL(fileURLWithPath: "/Volumes/workspace/repository")
+    }
 
     let fileUrl = URL(fileURLWithPath: "\(file)", isDirectory: false)
     let fileName = fileUrl.deletingPathExtension().lastPathComponent
@@ -34,19 +41,29 @@ public func assertSnapshot<Value, Format>(
         .appendingPathComponent(fileName)
     var components = absoluteSourceTestPath.pathComponents
     let sourceRootComponents = sourceRoot.pathComponents
+    // Remove sourceRoot from the filePath
     for component in sourceRootComponents {
         if components.first == component {
             components = Array(components.dropFirst())
         } else {
-            XCTFail("Test file does not share a prefix path with SOURCE_ROOT")
+            XCTFail("Test file '\(file)' does not share a prefix path with sourceRoot '\(sourceRoot)'")
             return
         }
     }
+    // At this point components should have sourceRootComponents removed
+    // But in the case of Patriot, there are still '/iOS/Patriot/'
+    // Our repo starts 2 dirs above the project source_root, so remove those also
+    // There's probably a better, more generic way to do this.
+    if isCI {
+        components = Array(components.dropFirst())
+        components = Array(components.dropFirst())
+    }
+    
     var snapshotDirectoryUrl = sourceRoot
     if isCI {
         snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("ci_scripts")
     }
-    snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("Snapshots")
+    snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent("Artifacts")
     for component in components {
         snapshotDirectoryUrl = snapshotDirectoryUrl.appendingPathComponent(component)
     }
@@ -55,7 +72,7 @@ public func assertSnapshot<Value, Format>(
         matching: try value(),
         as: snapshotting,
         named: name,
-        record: recording,
+        record: recording || overrideRecording,
         snapshotDirectory: snapshotDirectoryUrl.path,
         timeout: timeout,
         file: file,

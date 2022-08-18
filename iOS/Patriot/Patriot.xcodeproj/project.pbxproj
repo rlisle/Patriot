@@ -105,6 +105,8 @@
 		274D66C9269DC06700303F1E /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		274D66CB269E512800303F1E /* StatefulPreviewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatefulPreviewWrapper.swift; sourceTree = "<group>"; };
 		2756ECCA286343D100345AB5 /* AssertSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertSnapshot.swift; sourceTree = "<group>"; };
+		2757A78928AA6C5500895DB5 /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
+		2757A78A28AA6C5500895DB5 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		2762F1892846C6FF00C30529 /* HomeViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewTests.swift; sourceTree = "<group>"; };
 		2762F18F28477C7000C30529 /* DeviceDetailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailTests.swift; sourceTree = "<group>"; };
 		2762F19128477DC700C30529 /* MenuTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTests.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 		27473013265D182E00C8EFDE = {
 			isa = PBXGroup;
 			children = (
+				2757A78828AA6BDB00895DB5 /* ci_scripts */,
 				2747301E265D182E00C8EFDE /* Patriot */,
 				27473030265D182F00C8EFDE /* PatriotTests */,
 				2747303B265D182F00C8EFDE /* PatriotUITests */,
@@ -290,6 +293,15 @@
 				274D66BE2699F51D00303F1E /* MQTTManager.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		2757A78828AA6BDB00895DB5 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				2757A78A28AA6C5500895DB5 /* ci_post_clone.sh */,
+				2757A78928AA6C5500895DB5 /* ci_post_xcodebuild.sh */,
+			);
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 		27917121282BCBAD007F4CA5 /* Buttons */ = {
