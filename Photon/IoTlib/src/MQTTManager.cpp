@@ -57,7 +57,7 @@ bool MQTTManager::connect() {
 
 
     if(_mqtt->isConnected()) {
-        Log.trace("MQTT is connected, so reconnecting...");
+        Log.trace("MQTT is connected, so disconnecting first");
         LogManager::instance()->removeHandler(this);
         _mqtt->disconnect();
     }
@@ -69,7 +69,7 @@ bool MQTTManager::connect() {
         }
     } else {
         // This won't do anything because our handler isn't connected yet.
-        Log.error("MQTT is NOT connected! Check MQTT IP address");
+        Serial.println("MQTT is NOT connected! Check MQTT IP address");
     }
     // Looks good, now register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
@@ -106,6 +106,7 @@ void MQTTManager::loop()
         connect();
     }
 
+    //TODO: only poll this periodically
     reconnectCheck();
 }
 
@@ -119,10 +120,17 @@ void MQTTManager::sendAlivePeriodically() {
 }
 
 void MQTTManager::reconnectCheck() {
+    // Still starting up? (eg. connection not done yet)
+    if(_lastMQTTtime == 0) return;
+    
     system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
     if(secondsSinceLastMessage > MQTT_TIMEOUT_SECONDS) {
         Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-        connect();    // This will perform a reconnect
+        //TODO: Fix connect(). Until then, just reset the Photon
+        //connect();    // This will perform a reconnect
+        Log.warn("MQTT lost. Resetting");
+        Device::resetAll();
+        System.reset(RESET_NO_WAIT);
     }
 }
 

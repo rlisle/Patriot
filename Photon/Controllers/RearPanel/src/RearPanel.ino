@@ -167,9 +167,10 @@ void createDevices() {
     Device::add(new Device("sewerHose", "All", 'X'));
 }
 
-// LOOP
+/**
+ * LOOP
+ */
 void loop() {
-
     IoT::loop();
     
     handleAutoGoodnight();
@@ -274,11 +275,16 @@ void handleOfficeMotion() {
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
 
     if(officeMotionChanged == 100) {
-        Device::setValue("OfficeCeiling", 60);
+        Log.trace("Office Motion detected");
+        Device::setValue("OfficeCeiling", 20);
         officeMotion = true;
 
-        if( partOfDay > SUNSET && sleeping == ASLEEP) {
-            if(Time.hour() > 4) {   // Motion after 5:00 is wakeup
+        // Determine if this is Ron getting up
+        if( partOfDay > SUNSET && sleeping != AWAKE) {
+            //TODO: maybe blink instead?
+            Device::setValue("OfficeCeiling", 40);
+            if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
+                Device::setValue("OfficeCeiling", 60);
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
             }
@@ -344,11 +350,13 @@ void handleWatching() {
         if( watchingChanged > 0 ) {
             watching = 100;
             Log.trace("Watching did turn on");
+            // Currently no lights to turn on
 
         } else {
             watching = 0;
             //TODO: check if evening lights s/b on, etc.
             Log.trace("Watching did turn off");
+            // Current no lights to turn off
         }
     }
 }

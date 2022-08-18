@@ -58,15 +58,13 @@ bool couchPresenceFiltered = 0;
 long lastCouchPresence = 0;
 
 bool livingRoomMotion = false;
+long lastLivingRoomMotion = 0;
 
 int watching = 0;
 int cleaning = 0;
 int couchPresence = 0;
-
-// Move to IoT eventually
 int partOfDay = 0;
 int sleeping = 0;
-
 
 void setup() {
     setupWifi();
@@ -106,9 +104,13 @@ void createDevices() {
     Device::add(new Device("sleeping", "All"));
 }
 
+/**
+ * LOOP
+ */
 void loop() {
     IoT::loop();
 
+    handleAutoGoodnight();
     handlePartOfDay();
     handleSleeping();
     handleLivingRoomMotion();
@@ -180,10 +182,10 @@ void handleSleeping() {
         Log.trace("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("Setting AWAKE");
-//            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-//                Log.info("It is morning");
+            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
+                Log.info("It is morning");
                 setMorningLights();
-//            }
+            }
         }
 
         // Alexa, Bedtime
@@ -209,20 +211,27 @@ void handleSleeping() {
  */
 void handleLivingRoomMotion() {
 
+    long loopTime = millis();
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
+    
     if(livingRoomMotionChanged == 100) {
         Log.trace("LivingRoom Motion detected");
-        Device::setValue("LeftVertical", 50);
+        Device::setValue("LeftVertical", 12);
+        livingRoomMotion = true;
 
         // Determine if this is Ron getting up
         if( partOfDay > SUNSET && sleeping != AWAKE) {
+            //TODO: maybe blink instead?
+            Device::setValue("LeftVertical", 24);
             if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
+                Device::setValue("LeftVertical", 50);
                 IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
                 Device::setValue("sleeping", AWAKE);
             }
         }
         livingRoomMotion = true;
 
+    //TODO: Use a timer to turn off motion activated lights (like office door)
     } else if(livingRoomMotionChanged == 0) {
         Log.trace("LivingRoom Motion stopped");
         Device::setValue("LeftVertical", 0);
