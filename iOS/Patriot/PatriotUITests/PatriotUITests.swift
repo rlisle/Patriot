@@ -13,36 +13,68 @@ import XCTest
 class PatriotUITests: XCTestCase {
 
     var app: XCUIApplication!
-    
+    var patriotNavigationBar: XCUIElement!
+    var menuButton: XCUIElement!
+
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launch()
+        patriotNavigationBar = app.navigationBars["Patriot"]
+        menuButton = patriotNavigationBar.buttons["Drag"]
     }
 
     func testAppNavigation() {
+        
         // Launch app
-        let homeTitle = app.navigationBars["Patriot"].staticTexts["Patriot"]
-        XCTAssert(homeTitle.waitForExistence(timeout: 3))
+        verifyHomeScreen()
                 
         // Side Menu
-        let patriotNavigationBar = app.navigationBars["Patriot"]
-        let menuButton = patriotNavigationBar.buttons["Drag"]   // Is this the menu button? We should rename it
-        menuButton.tap()    // Open side menu
-        XCTAssert(app.buttons["Awake"].waitForExistence(timeout: 3))    // Note: this may pass even with menu closed ???
-        menuButton.tap()    // Close side menu
+        openSideMenu()
+        verifySideMenuOpen()
+        closeSideMenu()
 
         // Device Details
+        openKitchenDetails()
+        verifyKitchenDetails()
+        closeKitchenDetails()
+
+        verifyHomeScreen()
+
+        //TODO: how to test that tapping on a device turns it on/off?
+    }
+    
+    func verifyHomeScreen() {
+        let homeTitle = app.navigationBars["Patriot"].staticTexts["Patriot"]
+        XCTAssert(homeTitle.waitForExistence(timeout: 3))
+    }
+    
+    func openSideMenu() {
+        menuButton.tap()    // Open side menu
+    }
+    
+    func closeSideMenu() {
+        menuButton.tap()    // Close side menu
+    }
+    
+    func verifySideMenuOpen() {
+        XCTAssert(app.buttons["Awake"].waitForExistence(timeout: 3))
+    }
+    
+    func openKitchenDetails() {
         let scrollViewsQuery = app.scrollViews
         let kitchenElementsQuery = scrollViewsQuery.otherElements.containing(.staticText, identifier:"Kitchen")
         let lightoffImage = kitchenElementsQuery.children(matching: .other).element(boundBy: 1).children(matching: .image).matching(identifier: "LightOff").element(boundBy: 1)
         lightoffImage/*@START_MENU_TOKEN@*/.press(forDuration: 1.4);/*[[".tap()",".press(forDuration: 1.4);"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-        
-        XCTAssert(app.staticTexts["Room: Kitchen"].exists)
-        
-        app.navigationBars["_TtGC7SwiftUI19UIHosting"].buttons["Patriot"].tap()
-
-        //TODO: how to test that tapping on a device turns it on/off?
-        
     }
+    
+    func verifyKitchenDetails() {
+        XCTAssert(app.staticTexts["Kitchen:Right Trim"].exists)
+        XCTAssert(app.staticTexts["Brightness"].exists)
+    }
+    
+    func closeKitchenDetails() {
+        app.navigationBars["_TtGC7SwiftUI19UIHosting"].buttons["Patriot"].tap()
+    }
+    
 }

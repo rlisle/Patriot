@@ -68,17 +68,9 @@
                BlueprintName = "PatriotTests"
                ReferencedContainer = "container:Patriot.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "MQTTTests">
-               </Test>
-               <Test
-                  Identifier = "PatriotModelTests">
-               </Test>
-            </SkippedTests>
          </TestableReference>
          <TestableReference
-            skipped = "YES">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2762F19628478A2200C30529"
