@@ -119,8 +119,6 @@ void loop() {
 }
 
 /**
-<<<<<<< Updated upstream
-=======
  * If 3:00 am and goodnight hasn't been issued
  * then set sleep = 1 anyways.
  */
@@ -134,7 +132,6 @@ void handleAutoGoodnight() {
 
 
 /**
->>>>>>> Stashed changes
  * handlePartOfDay
  *
  * Dependencies:
