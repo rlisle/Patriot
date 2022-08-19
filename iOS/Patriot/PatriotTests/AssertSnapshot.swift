@@ -9,6 +9,7 @@
 
 import Foundation
 import SnapshotTesting
+import SwiftUI
 import XCTest
 
 public func assertSnapshot<Value, Format>(
@@ -80,4 +81,12 @@ public func assertSnapshot<Value, Format>(
     )
     guard let message = failure else { return }
     XCTFail("\(message) snap: \(snapshotDirectoryUrl)", file: file, line: line)
+}
+
+extension SwiftUI.View {
+    func toVC() -> UIViewController {
+        let vc = UIHostingController(rootView: self)
+        vc.view.frame = UIScreen.main.bounds
+        return vc
+    }
 }

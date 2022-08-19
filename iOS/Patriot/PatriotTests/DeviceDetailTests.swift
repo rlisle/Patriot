@@ -12,17 +12,15 @@ import SwiftUI
 
 class DeviceDetailTests: XCTestCase {
     
-    var viewController: UIViewController!
+    var vc: UIViewController!
     
     override func setUpWithError() throws {
         try super.setUpWithError()
         let modelView = PatriotModel(testMode: .on)
-        let deviceDetailView = DeviceDetailView().environmentObject(modelView)
-        viewController = UIHostingController(rootView: deviceDetailView)
+        vc = DeviceDetailView().environmentObject(modelView).toVC()
     }
     
     func testDeviceDetailView() throws {
-        //isRecording = true
-        assertSnapshot(matching: viewController, as: .image(on: .iPhone8), record: false)
+        assertSnapshot(matching: vc, as: .image(on: .iPhone8), record: false)
     }
 }
