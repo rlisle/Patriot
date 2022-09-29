@@ -34,6 +34,8 @@ Author: Ron Lisle
 #include <PatriotPartOfDay.h>
 //#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
+#define CONTROLLER_NAME "RearPanel"
+#define MQTT_BROKER "192.168.50.33"
 #define OFFICE_MOTION_TIMEOUT 2*60*1000
 #define OFFICE_DOOR_TIMEOUT 5*60*1000
 
@@ -55,16 +57,6 @@ Author: Ron Lisle
 SYSTEM_THREAD(ENABLED);  // Allow running without internet
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-//TODO: convert to IPAddress
-//byte hueServer[4] = { 192, 168, 50, 21 };
-
-IPAddress myAddress(192,168,50,15);
-IPAddress netmask(255,255,255,0);
-IPAddress gateway(192,168,50,1);
-IPAddress dns(192,168,50,1);
-
-IPAddress mqttAddress(192, 168, 50, 33);
-
 bool officeMotion = false;
 long lastOfficeMotion = 0;
 
@@ -79,14 +71,9 @@ int sleeping = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
-    setWifiStaticIP();
-    IoT::begin("192.168.50.33", "RearPanel");
+    WiFi.useDynamicIP();
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
     createDevices();
-}
-
-void setWifiStaticIP() {
-    WiFi.setStaticIP(myAddress, netmask, gateway, dns);
-    WiFi.useStaticIP();
 }
 
 void createDevices() {

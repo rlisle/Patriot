@@ -37,22 +37,14 @@ Author: Ron Lisle
 #include <HueLight.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
+#define CONTROLLER_NAME "LeftSlide"
+#define MQTT_BROKER "192.168.50.33"
 #define LIVINGROOM_MOTION_TIMEOUT 15*1000
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-//TODO: convert to IPAddress
 byte hueServer[4] = { 192, 168, 50, 21 };
-
-// WiFi IP Addresses
-IPAddress myAddress(192,168,50,30);
-IPAddress netmask(255,255,255,0);
-IPAddress gateway(192,168,50,1);
-IPAddress dns(192,168,50,1);
-int antenna = ANT_EXTERNAL;
-
-IPAddress mqttAddress(192, 168, 50, 33);
 
 bool couchPresenceFiltered = 0;
 long lastCouchPresence = 0;
@@ -67,17 +59,11 @@ int partOfDay = 0;
 int sleeping = 0;
 
 void setup() {
-    setupWifi();
-    IoT::begin("192.168.50.33","LeftSlide");
+    WiFi.selectAntenna(ANT_EXTERNAL);
+    WiFi.useDynamicIP();
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
     createDevices();
 }
-
-void setupWifi() {
-    WiFi.selectAntenna(antenna);
-    WiFi.setStaticIP(myAddress, netmask, gateway, dns);
-    WiFi.useStaticIP();
-}
-
 void createDevices() {
     // Sensors
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
