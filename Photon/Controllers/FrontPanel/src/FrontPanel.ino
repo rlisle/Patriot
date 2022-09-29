@@ -36,21 +36,13 @@
 #include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 
+#define CONTROLLER_NAME "FrontPanel2"
+#define MQTT_BROKER "192.168.50.33"
 #define FRONT_DOOR_TIMEOUT 5*60*1000
-
 #define ADDRESS 1      // PWM board switches low switch on
-
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
-
-//TODO: convert to IPAddress
-byte hueServer[4] = { 192, 168, 50, 21 };
-
-IPAddress myAddress(192,168,50,17);
-IPAddress netmask(255,255,255,0);
-IPAddress gateway(192,168,50,1);
-IPAddress dns(192,168,50,1);
 
 IPAddress mqttAddress(192, 168, 50, 33);
 
@@ -65,14 +57,9 @@ int sleeping = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
-    setWifiStaticIP();
-    IoT::begin("192.168.50.33", "FrontPanel");
+    WiFi.useDynamicIP();
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
     createDevices();
-}
-
-void setWifiStaticIP() {
-    WiFi.setStaticIP(myAddress, netmask, gateway, dns);
-    WiFi.useStaticIP();
 }
 
 void createDevices() {
@@ -92,16 +79,16 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
 
     // Switches
-    Device::add(new Switch(A5, "CabinetsSwitch", "Kitchen"));
-    Device::add(new Switch(A6, "RightTrimSwitch", "Kitchen"));
-    Device::add(new Switch(A7, "SinkSwitch", "Kitchen"));
-    Device::add(new Switch(RX, "KitchenCeilingSwitch", "Kitchen"));
-    Device::add(new Switch(TX, "LeftTrimSwitch", "Living Room"));
-    Device::add(new Switch(A1, "CeilingSwitch", "Living Room"));
-    Device::add(new Switch(A2, "DoorSideSwitch", "Outside"));
-    Device::add(new Switch(A3, "OtherSideSwitch", "Outside"));
-    Device::add(new Switch(A4, "FrontPorchSwitch", "Outside"));
-    Device::add(new Switch(A0, "FrontAwningSwitch", "Outside"));
+//    Device::add(new Switch(A5, "CabinetsSwitch", "Kitchen"));
+//    Device::add(new Switch(A6, "RightTrimSwitch", "Kitchen"));
+//    Device::add(new Switch(A7, "SinkSwitch", "Kitchen"));
+//    Device::add(new Switch(RX, "KitchenCeilingSwitch", "Kitchen"));
+//    Device::add(new Switch(TX, "LeftTrimSwitch", "Living Room"));
+//    Device::add(new Switch(A1, "CeilingSwitch", "Living Room"));
+//    Device::add(new Switch(A2, "DoorSideSwitch", "Outside"));
+//    Device::add(new Switch(A3, "OtherSideSwitch", "Outside"));
+//    Device::add(new Switch(A4, "FrontPorchSwitch", "Outside"));
+//    Device::add(new Switch(A0, "FrontAwningSwitch", "Outside"));
 
     // Other devices we monitor
     // TODO: could we define these automatically when getChangedValue is called?
@@ -113,13 +100,13 @@ void createDevices() {
 }
 
 void loop() {
-    
+
     // When IoT loop() is called, it will
     // - set all previous levels
     // - read switches and update levels
     // - update light dimming
     IoT::loop();
-    
+
 //    int blueledChanged   = Device::getChangedValue("blueled");
     int cleaningChanged  = Device::getChangedValue("cleaning");
     int partOfDayChanged = Device::getChangedValue("partofday");
@@ -133,7 +120,7 @@ void loop() {
     if( partOfDayChanged != -1 ) {
         handlePartOfDayChange(partOfDayChanged);
     }
-    
+
     if( cleaningChanged != -1 ) {
         handleCleaningChange(cleaningChanged);
     }
@@ -145,36 +132,36 @@ void loop() {
     if( watchingChanged != -1 ) {
         handleWatchingChange(watchingChanged);
     }
-    
+
     //TODO: Convert to resallable light switches
-    handleLightSwitches();
+//    handleLightSwitches();
 }
 
 //TODO: Remove after converting to resellable switches
-void handleLightSwitches() {
-    handleLightSwitch("Ceiling");
-    handleLightSwitch("KitchenCeiling");
-    handleLightSwitch("Sink");
-    handleLightSwitch("Cabinets");
-    handleLightSwitch("RightTrim");
-    handleLightSwitch("LeftTrim");
-    handleLightSwitch("DoorSide");
-    handleLightSwitch("OtherSide");
-    handleLightSwitch("FrontPorch");
-    handleLightSwitch("FrontAwning");
-}
+//void handleLightSwitches() {
+//    handleLightSwitch("Ceiling");
+//    handleLightSwitch("KitchenCeiling");
+//    handleLightSwitch("Sink");
+//    handleLightSwitch("Cabinets");
+//    handleLightSwitch("RightTrim");
+//    handleLightSwitch("LeftTrim");
+//    handleLightSwitch("DoorSide");
+//    handleLightSwitch("OtherSide");
+//    handleLightSwitch("FrontPorch");
+//    handleLightSwitch("FrontAwning");
+//}
 
-void handleLightSwitch(String name) {
-    int lightSwitch = Device::getChangedValue(name+"Switch");
-    if( lightSwitch == -1) return;
-    Log.trace("handleLightSwitch hasChanged: %d",lightSwitch);
-    Device *device = Device::get(name);
-    if( lightSwitch > 0 ) {
-        device->setValue(100);
-    } else {
-        device->setValue(0);
-    }
-}
+//void handleLightSwitch(String name) {
+//    int lightSwitch = Device::getChangedValue(name+"Switch");
+//    if( lightSwitch == -1) return;
+//    Log.trace("handleLightSwitch hasChanged: %d",lightSwitch);
+//    Device *device = Device::get(name);
+//    if( lightSwitch > 0 ) {
+//        device->setValue(100);
+//    } else {
+//        device->setValue(0);
+//    }
+//}
 
 void handleSleepingChange(int sleeping) {
     Log.trace("sleeping has changed: %d",sleeping);

@@ -32,7 +32,7 @@ void IoT::begin(String brokerIP, String controllerName)
     WiFi.on();
     WiFi.connect();
     
-    Particle.connect();
+    Particle.connect(); // Only if designated particle.io bridge?
 
     handleDaylightSavings();
 
