@@ -44,8 +44,6 @@
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-IPAddress mqttAddress(192, 168, 50, 33);
-
 bool frontDoor = false;
 bool frontDoorCountdown = false;
 long lastFrontDoor = 0;
