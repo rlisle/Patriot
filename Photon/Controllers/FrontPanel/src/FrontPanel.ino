@@ -23,6 +23,9 @@
     2. Update IoT and plugins if needed
     2. "particle flash FrontPanel"
  
+  Photon is 430033000f47343339383037 FrontPanel
+  RSSI = -66dBm  on 10/1/22
+ 
  Using SYSTEM_THREAD(ENABLED) is recommended,
  and runs network on separate theread.
  Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
