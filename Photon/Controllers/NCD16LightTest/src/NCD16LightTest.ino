@@ -23,11 +23,11 @@
  */
 
 #include <IoT.h>
-#include <PatriotNCD16Light.h>
+#include <PatriotNCD16Dimmer.h>
 
 #define CONTROLLER_NAME "OfficeTest"
 #define MQTT_BROKER "192.168.50.33"
-#define ADDRESS 1      // PWM board switches low switch on
+#define ADDRESS 0x41      // PWM board switches low switch on
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
@@ -39,10 +39,10 @@ void setup() {
     createDevices();
 }
 
-void CreateDevices() {
-    Device::add(new NCD16Light(ADDRESS, 0, "SpotLight", "Office", 2))
+void createDevices() {
+    Device::add(new NCD16Dimmer(ADDRESS, 0, "SpotLight", "Office", 2));
 }
 
 void loop() {
-    IoT::Loop();
+    IoT::loop();
 }
