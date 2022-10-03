@@ -32,21 +32,56 @@
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
+int  address = 0x41;
 system_tick_t lastAliveTime = 0;
+bool lightState = false;
 
 void setup() {
+    int retrys = 0;
+    
     Serial.begin();
     Serial.println("NCD16LightTest setup");
     
     WiFi.selectAntenna(ANT_INTERNAL);
     WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
-    createDevices();
+//    createDevices();
+    
+    //Start I2C port
+     Wire.begin();
+     //Open connection to specified address
+     retryAddress:
+     Wire.beginTransmission(address);
+     byte status = Wire.endTransmission();
+     if(status != 0){
+         if(retrys < 3){
+             retrys++;
+             Serial.println("Set Address Command failed, retrying");
+             goto retryAddress;
+         }else{
+             Serial.println("Set Address Command failed");
+             initialized = false;
+             retrys = 0;
+         }
+
+     }else{
+         Serial.println("Set Address Command Successful");
+         Wire.beginTransmission(address);
+         Wire.write(254);
+         Wire.write(5);
+         Wire.endTransmission();
+         Wire.beginTransmission(address);
+         Wire.write(0);
+         Wire.write(161);
+         Wire.endTransmission();
+         initialized = true;
+     }
+ }
 }
 
-void createDevices() {
+//void createDevices() {
 //    Device::add(new NCD16Dimmer(ADDRESS, 0, "SpotLight", "Office", 2));
-}
+//}
 
 void loop() {
     IoT::loop();
@@ -63,5 +98,17 @@ void sendAlivePeriodically() {
         lastAliveTime = Time.now();
         String time = Time.format(Time.now(), "%a %H:%M");
         Serial.println("Alive "+ time);
+        // Toggle light on/off
+        toggleLight0();
+    }
+}
+
+void toggleLight0() {
+    if(lightState == false) {
+        lightState = true;
+        
+    } else {
+        lightState = false;
+        Wire.
     }
 }
