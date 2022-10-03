@@ -35,6 +35,8 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 int  address = 0x41;
 system_tick_t lastAliveTime = 0;
 bool lightState = false;
+bool initialized = false;
+int  lightNum = 0;
 
 void setup() {
     int retrys = 0;
@@ -46,38 +48,10 @@ void setup() {
     WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
 //    createDevices();
-    
-    //Start I2C port
-     Wire.begin();
-     //Open connection to specified address
-     retryAddress:
-     Wire.beginTransmission(address);
-     byte status = Wire.endTransmission();
-     if(status != 0){
-         if(retrys < 3){
-             retrys++;
-             Serial.println("Set Address Command failed, retrying");
-             goto retryAddress;
-         }else{
-             Serial.println("Set Address Command failed");
-             initialized = false;
-             retrys = 0;
-         }
 
-     }else{
-         Serial.println("Set Address Command Successful");
-         Wire.beginTransmission(address);
-         Wire.write(254);
-         Wire.write(5);
-         Wire.endTransmission();
-         Wire.beginTransmission(address);
-         Wire.write(0);
-         Wire.write(161);
-         Wire.endTransmission();
-         initialized = true;
-     }
+    lastAliveTime = Time.now(); // Wait 15 seconds
+
  }
-}
 
 //void createDevices() {
 //    Device::add(new NCD16Dimmer(ADDRESS, 0, "SpotLight", "Office", 2));
@@ -98,17 +72,95 @@ void sendAlivePeriodically() {
         lastAliveTime = Time.now();
         String time = Time.format(Time.now(), "%a %H:%M");
         Serial.println("Alive "+ time);
-        // Toggle light on/off
-        toggleLight0();
+        if(initialized) {
+            Serial.println("Is initialized so toggling");
+            toggleLight0();
+        } else {
+            Serial.println("Initializing...");
+            initialize();
+        }
     }
 }
 
-void toggleLight0() {
+void toggleLight() {
+    
+    int current4k = 0;
+    int retryCount = 3;
+    byte status;
+    int lsb;
+    int msb;
+    int reg = 6 + (lightNum * 4);
+
     if(lightState == false) {
         lightState = true;
         
+        current4k = 0x0fff; // 12 bits all on
+        lsb = current4k & 0xff;
+        msb = current4k >> 8;
+        do {
+            Serial.println("Writing led toggle ON value")
+            Wire.beginTransmission(_address);
+            Wire.write(reg);
+            Wire.write(0);      // Delay lsb
+            Wire.write(0);      // Delay msb
+            Wire.write(lsb);    // Off lsb
+            Wire.write(msb);    // Off msb
+            status = Wire.endTransmission();
+            retryCount--;
+        } while(status != 0 && retryCount > 0);
+
     } else {
         lightState = false;
-        Wire.
+
+        current4k = 0;
+        lsb = 0;
+        msb = 0;
+        do {
+            Serial.println("Writing led toggle ON value")
+            Wire.beginTransmission(_address);
+            Wire.write(reg);
+            Wire.write(0);      // Delay lsb
+            Wire.write(0);      // Delay msb
+            Wire.write(lsb);    // Off lsb
+            Wire.write(msb);    // Off msb
+            status = Wire.endTransmission();
+            retryCount--;
+        } while(status != 0 && retryCount > 0);
     }
+    if(status != 0) {
+        Log.error("toggleLight write failed for light "+String(lightNum)+", level = "+String(current4k));
+        reset();
+    }
+}
+
+void initialize() {
+    
+     Wire.begin();
+     
+     //Open connection to specified address
+retryAddress:
+     Wire.beginTransmission(address);
+     byte status = Wire.endTransmission();
+     if(status != 0){
+         if(retrys < 3){
+             retrys++;
+             Serial.println("Set Address Command failed, retrying");
+             goto retryAddress;
+         }else{
+             Serial.println("Set Address Command failed");
+             retrys = 0;
+         }
+
+     }else{
+         Serial.println("Set Address Command Successful");
+         Wire.beginTransmission(address);
+         Wire.write(254);
+         Wire.write(5);
+         Wire.endTransmission();
+         Wire.beginTransmission(address);
+         Wire.write(0);
+         Wire.write(161);
+         Wire.endTransmission();
+         initialized = true;
+     }
 }
