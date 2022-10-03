@@ -44,7 +44,7 @@ Author: Ron Lisle
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-byte hueServer[4] = { 192, 168, 50, 21 };
+byte hueServer[4] = { 192, 168, 50, 39 };   // Changed 10/1/22
 
 bool couchPresenceFiltered = 0;
 long lastCouchPresence = 0;
