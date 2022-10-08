@@ -38,7 +38,7 @@ Author: Ron Lisle
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define CONTROLLER_NAME "LeftSlide"
-#define MQTT_BROKER "192.168.50.33"
+#define MQTT_BROKER "192.168.50.13"
 #define LIVINGROOM_MOTION_TIMEOUT 15*1000
 
 SYSTEM_THREAD(ENABLED);
