@@ -5,8 +5,14 @@
  a common API for adding and configuring devices.
  
  This class coordinates realtime events.
- It subscribes to Particle.io notifications, and
+ If cloud enabled, it subscribes to Particle.io notifications, and
  distributes them to devices.
+ 
+ To build this code:
+ 1. Update version number in library.properties
+ 2. "particle library upload"
+ 3. Add library to controller (if needed) or update version
+ 4. "particle library add iot"
  
  http://www.github.com/rlisle/Patriot
  
@@ -27,23 +33,28 @@ MQTTManager* IoT::_mqttManager = NULL;
  * It must be called exactly once by the sketch
  *  Network may not be connected yet.
  */
-void IoT::begin(String brokerIP, String controllerName)
+void IoT::begin(String brokerIP, String controllerName, bool cloud)
 {
+    _cloudEnabled = cloud;
+    
     WiFi.on();
     WiFi.connect();
-    
-    Particle.connect(); // Only if designated particle.io bridge?
+
+    if(_cloudEnabled == true) {
+        Particle.connect();
+        
+        // Expose particle.io variables
+        Device::expose();
+        
+        // Subscribe doesn't require a connection before calling.
+        Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
+    }
 
     handleDaylightSavings();
 
     String connectID = controllerName + "Id";
     _mqttManager = new MQTTManager(brokerIP, connectID, controllerName);
-    
-    // Expose particle.io variables
-    Device::expose();
-    
-    // Subscribe doesn't require a connection before calling.
-    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
+
 }
 
 void IoT::mqttPublish(String topic, String message)

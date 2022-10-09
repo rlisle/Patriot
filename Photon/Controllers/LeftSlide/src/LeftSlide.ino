@@ -39,6 +39,7 @@ Author: Ron Lisle
 
 #define CONTROLLER_NAME "LeftSlide"
 #define MQTT_BROKER "192.168.50.13"
+#define CONNECT_TO_CLOUD true
 #define LIVINGROOM_MOTION_TIMEOUT 15*1000
 
 SYSTEM_THREAD(ENABLED);
@@ -61,7 +62,7 @@ int sleeping = 0;
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
     createDevices();
 }
 void createDevices() {
@@ -197,7 +198,7 @@ void handleSleeping() {
  */
 void handleLivingRoomMotion() {
 
-    long loopTime = millis();
+//    long loopTime = millis();
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     
     if(livingRoomMotionChanged == 100) {

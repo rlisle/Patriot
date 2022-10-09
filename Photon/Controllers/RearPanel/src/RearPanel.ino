@@ -10,12 +10,15 @@ Author: Ron Lisle
  - A2-A4 future 12v monitor ?
  - A5 PIR
  
-  To update Photon:
-    1. Edit this code
-    2. Update IoT and plugins if needed
-    3. "particle flash RearPanel"
- 
+ To update Photon:
+   1. Edit this code
+   2. Update IoT and plugins if needed
+   3. Put Photon into listen mode using buttons
+   4. "particle flash RearPanel" or "frp"
+
  TODO: Add GPS board (Rx, Vin, Gnd)
+ 
+ This isn't the Cloud bridge, so cloud isn't enabled.
  
  Using SYSTEM_THREAD(ENABLED) is recommended,
  and runs network on separate theread.
