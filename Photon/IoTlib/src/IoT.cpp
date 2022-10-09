@@ -42,7 +42,7 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
     WiFi.connect();
 
     if(_cloudEnabled == true) {
-        Particle.connect();
+//        Particle.connect();   // Not needed if SYSTEM_MODE(AUTOMATIC) (default)
         
         // Expose particle.io variables
         Device::expose();

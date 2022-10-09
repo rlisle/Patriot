@@ -42,8 +42,10 @@ Author: Ron Lisle
 #define CONNECT_TO_CLOUD true
 #define LIVINGROOM_MOTION_TIMEOUT 15*1000
 
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// Because this controller needs to be connect to the intern
+// it will not use SEMI_AUTOMATIC or threads
+//SYSTEM_THREAD(ENABLED);
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
 byte hueServer[4] = { 192, 168, 50, 39 };   // Changed 10/1/22
 
