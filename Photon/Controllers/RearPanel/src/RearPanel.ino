@@ -42,7 +42,6 @@ Author: Ron Lisle
 
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.13"
-#define DONT_CONNECT_TO_CLOUD false
 #define OFFICE_MOTION_TIMEOUT 2*60*1000
 #define OFFICE_DOOR_TIMEOUT 5*60*1000
 
@@ -60,9 +59,10 @@ Author: Ron Lisle
 //   Rear Porch Switch     was A4 Blue " "
 //   Rear Awning Switch    was A5 White " "
 
-// This must be run before either setup() or loop()
-SYSTEM_THREAD(ENABLED);  // Allow running without internet
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// Until bridge devices are defined, need to be in AUTOMATIC
+#define CONNECT_TO_CLOUD true
+//SYSTEM_THREAD(ENABLED);
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
@@ -79,7 +79,7 @@ int sleeping = 0;
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, DONT_CONNECT_TO_CLOUD);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
     createDevices();
 }
 

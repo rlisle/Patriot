@@ -45,8 +45,10 @@
 #define FRONT_DOOR_TIMEOUT 5*60*1000
 #define ADDRESS 1      // PWM board switches low switch on
 
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// Until bridge devices are defined, need to be in AUTOMATIC
+#define CONNECT_TO_CLOUD true
+//SYSTEM_THREAD(ENABLED);
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
 bool frontDoor = false;
 bool frontDoorCountdown = false;
@@ -60,7 +62,7 @@ int sleeping = 0;
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, false);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
     createDevices();
 }
 
