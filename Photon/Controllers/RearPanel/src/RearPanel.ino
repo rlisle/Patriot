@@ -36,6 +36,7 @@ Author: Ron Lisle
 
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.13"
+#define DONT_CONNECT_TO_CLOUD false
 #define OFFICE_MOTION_TIMEOUT 2*60*1000
 #define OFFICE_DOOR_TIMEOUT 5*60*1000
 
@@ -72,7 +73,7 @@ int sleeping = 0;
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, DONT_CONNECT_TO_CLOUD);
     createDevices();
 }
 
@@ -83,7 +84,7 @@ void createDevices() {
     // 4 Relays
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
     // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
-    Device::add(new NCD4Relay(I2CR4IO4, 2, "OfficeTrim", "Office"));
+    Device::add(new NCD4Relay(I2CR4IO4, 2, "OfficeRightTrim", "Office"));
     
     // 4 GPIO
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
@@ -100,8 +101,7 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    // Use relay instead due to back door switch cross-over
-//    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
+    Device::add(new NCD8Light(ADDRESS, 7, "OfficeLeftTrim", "Office", 2));
 
     // Activities/States - define for every other state.
     // Be careful to only define in 1 (this) controller.
