@@ -55,7 +55,7 @@ public:
      * Call begin to initialize the object.
      * This is done here instead of the constructor to improve debugging.
      **/
-    static void begin(String brokerIP, String controllerName, bool cloud);
+    static void begin(String brokerIP, String controllerName, bool enableCloud);
 
     static void mqttPublish(String topic, String message);
 

@@ -13,8 +13,11 @@ Author: Ron Lisle
  To update Photon:
    1. Edit this code
    2. Update IoT and plugins if needed
-   3. Put Photon into listen mode using buttons
+   3. Put Photon into safe mode using buttons (breathing magenta)
+        Press both buttons, release reset, release setup when blinking magenta
    4. "particle flash RearPanel" or "frp"
+ 
+ Since Cloud is not connected, photon should normally be breathing green
 
  TODO: Add GPS board (Rx, Vin, Gnd)
  

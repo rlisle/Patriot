@@ -27,15 +27,16 @@
 // Static Variables
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
+bool IoT::_cloudEnabled = false;
 
 /**
  * Begin gets everything going.
  * It must be called exactly once by the sketch
  *  Network may not be connected yet.
  */
-void IoT::begin(String brokerIP, String controllerName, bool cloud)
+void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
 {
-    _cloudEnabled = cloud;
+    _cloudEnabled = enableCloud;
     
     WiFi.on();
     WiFi.connect();
