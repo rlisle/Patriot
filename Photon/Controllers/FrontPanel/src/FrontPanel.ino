@@ -41,7 +41,7 @@
 #include <PatriotNCD8Light.h>
 
 #define CONTROLLER_NAME "FrontPanel2"
-#define MQTT_BROKER "192.168.50.13"
+#define MQTT_BROKER "192.168.50.33"
 #define FRONT_DOOR_TIMEOUT 5*60*1000
 #define ADDRESS 1      // PWM board switches low switch on
 

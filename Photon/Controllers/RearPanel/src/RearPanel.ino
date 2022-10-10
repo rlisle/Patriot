@@ -41,7 +41,7 @@ Author: Ron Lisle
 //#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define CONTROLLER_NAME "RearPanel"
-#define MQTT_BROKER "192.168.50.13"
+#define MQTT_BROKER "192.168.50.33"
 #define OFFICE_MOTION_TIMEOUT 2*60*1000
 #define OFFICE_DOOR_TIMEOUT 5*60*1000
 
