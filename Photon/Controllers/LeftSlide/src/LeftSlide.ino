@@ -39,12 +39,15 @@ Author: Ron Lisle
 
 #define CONTROLLER_NAME "LeftSlide"
 #define MQTT_BROKER "192.168.50.33"
+#define CONNECT_TO_CLOUD true
 #define LIVINGROOM_MOTION_TIMEOUT 15*1000
 
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// Because this controller needs to be connect to the intern
+// it will not use SEMI_AUTOMATIC or threads
+//SYSTEM_THREAD(ENABLED);
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
-byte hueServer[4] = { 192, 168, 50, 21 };
+byte hueServer[4] = { 192, 168, 50, 39 };   // Changed 10/1/22
 
 bool couchPresenceFiltered = 0;
 long lastCouchPresence = 0;
@@ -61,7 +64,7 @@ int sleeping = 0;
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
     createDevices();
 }
 void createDevices() {
@@ -197,7 +200,7 @@ void handleSleeping() {
  */
 void handleLivingRoomMotion() {
 
-    long loopTime = millis();
+//    long loopTime = millis();
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     
     if(livingRoomMotionChanged == 100) {

@@ -36,6 +36,9 @@
 		273696F126EB7CA200CA5791 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
 		273696F226EB7CA200CA5791 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; path = library.properties; sourceTree = "<group>"; };
 		273696F326EB7CA200CA5791 /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = examples; sourceTree = "<group>"; };
+		2737F7EC28E8984100408830 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/NCD16LightTest/src; sourceTree = "<group>"; };
+		2737F7ED28E8984100408830 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/NCD16LightTest/project.properties; sourceTree = "<group>"; };
+		2737F7EE28E8984100408830 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/NCD16LightTest/README.md; sourceTree = "<group>"; };
 		2755615325CC1FAA00FEE0FF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		2755615425CC1FAA00FEE0FF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		2755DBE4259DFA3900971ABA /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = device.cpp; path = ../Photon/IoTlib/src/device.cpp; sourceTree = "<group>"; };
@@ -179,6 +182,16 @@
 			path = ../Photon/Plugins/NCD16Dimmer;
 			sourceTree = "<group>";
 		};
+		2737F7EB28E8981300408830 /* NCD16LightTest */ = {
+			isa = PBXGroup;
+			children = (
+				2737F7ED28E8984100408830 /* project.properties */,
+				2737F7EE28E8984100408830 /* README.md */,
+				2737F7EC28E8984100408830 /* src */,
+			);
+			name = NCD16LightTest;
+			sourceTree = "<group>";
+		};
 		2769F3C82729635500E8FE57 /* Checklist */ = {
 			isa = PBXGroup;
 			children = (
@@ -320,6 +333,7 @@
 		E4849C6E2566AC0F00A39734 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				2737F7EB28E8981300408830 /* NCD16LightTest */,
 				27D74326276E1B0500280B2C /* RonPIRTest */,
 				27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */,
 				2733855D25AF256F0032BB1F /* RightSlide */,

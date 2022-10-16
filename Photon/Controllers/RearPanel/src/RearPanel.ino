@@ -10,12 +10,18 @@ Author: Ron Lisle
  - A2-A4 future 12v monitor ?
  - A5 PIR
  
-  To update Photon:
-    1. Edit this code
-    2. Update IoT and plugins if needed
-    3. "particle flash RearPanel"
+ To update Photon:
+   1. Edit this code
+   2. Update IoT and plugins if needed
+   3. Put Photon into safe mode using buttons (breathing magenta)
+        Press both buttons, release reset, release setup when blinking magenta
+   4. "particle flash RearPanel" or "frp"
  
+ Since Cloud is not connected, photon should normally be breathing green
+
  TODO: Add GPS board (Rx, Vin, Gnd)
+ 
+ This isn't the Cloud bridge, so cloud isn't enabled.
  
  Using SYSTEM_THREAD(ENABLED) is recommended,
  and runs network on separate theread.
@@ -53,9 +59,10 @@ Author: Ron Lisle
 //   Rear Porch Switch     was A4 Blue " "
 //   Rear Awning Switch    was A5 White " "
 
-// This must be run before either setup() or loop()
-SYSTEM_THREAD(ENABLED);  // Allow running without internet
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// Until bridge devices are defined, need to be in AUTOMATIC
+#define CONNECT_TO_CLOUD true
+//SYSTEM_THREAD(ENABLED);
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
@@ -72,7 +79,7 @@ int sleeping = 0;
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
     createDevices();
 }
 
@@ -83,7 +90,7 @@ void createDevices() {
     // 4 Relays
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
     // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
-    Device::add(new NCD4Relay(I2CR4IO4, 2, "OfficeTrim", "Office"));
+    Device::add(new NCD4Relay(I2CR4IO4, 2, "OfficeRightTrim", "Office"));
     
     // 4 GPIO
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
@@ -100,8 +107,7 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    // Use relay instead due to back door switch cross-over
-//    Device::add(new NCD8Light(ADDRESS, 7, "OfficeTrim", "Office", 0));
+    Device::add(new NCD8Light(ADDRESS, 7, "OfficeLeftTrim", "Office", 2));
 
     // Activities/States - define for every other state.
     // Be careful to only define in 1 (this) controller.

@@ -3,9 +3,7 @@
   Description: This sketch controls all the switches in the Cyclone 4005 front control panel.
   Author: Ron Lisle
   Date: 9/16/17
- 
- This isn't the bridge controller, so we shouldn't receive any activities from particle.io
- 
+  
   Switch wiring
   Top left:       RX  tape "Cabinet"
   Top right:     TX
@@ -21,7 +19,13 @@
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
-    2. "particle flash FrontPanel"
+    3. Put Photon into listen mode using buttons
+    4. "particle flash FrontPanel" or "ffp"
+ 
+  Photon is 430033000f47343339383037 FrontPanel
+  RSSI = -66dBm  on 10/1/22
+ 
+ This isn't the bridge controller, so we don't enable cloud.
  
  Using SYSTEM_THREAD(ENABLED) is recommended,
  and runs network on separate theread.
@@ -41,8 +45,10 @@
 #define FRONT_DOOR_TIMEOUT 5*60*1000
 #define ADDRESS 1      // PWM board switches low switch on
 
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// Until bridge devices are defined, need to be in AUTOMATIC
+#define CONNECT_TO_CLOUD true
+//SYSTEM_THREAD(ENABLED);
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
 bool frontDoor = false;
 bool frontDoorCountdown = false;
@@ -56,7 +62,7 @@ int sleeping = 0;
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
     createDevices();
 }
 
