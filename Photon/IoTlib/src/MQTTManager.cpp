@@ -164,15 +164,17 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // message is timestamp
             // Ignore it.
 
-        } else if(subtopic == "brightness") {           // BRIGHTNESS
-            if(subtopic == "brightness/"+_controllerName) {
-                Log.trace(_controllerName + " setting brightness = " + lcMessage);
-                int value = lcMessage.toInt();
-                Device *device = Device::get(subtopic);
-                if( device != NULL && value > 0) {
-                    device->setBrightness(value);
-                    //TODO: publish acknowledgement
-                }
+        } else if(subtopic.startsWith("brightness")) {           // BRIGHTNESS patriot/brightness/<device> value
+            Log.info("brightness received: "+subtopic+", msg: "+lcMessage);
+            int value = lcMessage.toInt();
+            String deviceName = parseDeviceName(subtopic);
+            Log.info("deviceName: "+deviceName);
+            Device *device = Device::get(deviceName);
+            if( device != NULL && value > 0) {
+                Log.info(_controllerName + " setting brightness = " + lcMessage);
+                device->setBrightness(value);
+                //TODO: publish acknowledgement
+                
             }
 
         } else if(subtopic == "latlong") {             // LATLONG
@@ -263,7 +265,6 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         // DEVICE
         } else {
             
-            //int value = parseValue(lcMessage);
             Device *device = Device::get(subtopic);
             if( device != NULL ) {
                 int value = 100;
@@ -276,13 +277,15 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 }
                 
                 // Handle save/restore value
-                Log.info("Parser setting device " + subtopic + " to " + value);
+                Log.info("Parser setting device " + subtopic + " to " + String(value));
                 device->setValue(value);
                 
                 Device::buildDevicesVariable();
                 
 //            } else {
 //                Log.info("Parsed unknown subtopic "+subtopic);
+            } else {
+                Log.info("Not our device");
             }
         }
     } else {
@@ -291,15 +294,15 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
     }
 }
 
-//int MQTTManager::parseValue(String lcMessage)
-//{
-//    if(lcMessage == "on") {
-//        return 100;
-//    } else if(lcMessage == "off") {
-//        return 0;
-//    }
-//    return lcMessage.toInt();
-//}
+String MQTTManager::parseDeviceName(String subtopic)
+{
+    int slashIndex = subtopic.indexOf('/');
+    if(slashIndex < 0) return "unknown";
+    
+    String deviceName = subtopic.substring(slashIndex+1);
+
+    return deviceName;
+}
 
 void MQTTManager::parseLogLevel(String lcMessage) {
     LogLevel level = LOG_LEVEL_WARN;

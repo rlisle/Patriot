@@ -43,6 +43,7 @@ private:
     bool      connect();
     void      reconnectCheck();
     int       parseValue(String message);
+    String    parseDeviceName(String subtopic);
     void      parseLogLevel(String message);
     void      sendAlivePeriodically();
     
