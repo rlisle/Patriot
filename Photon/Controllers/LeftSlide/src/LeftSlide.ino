@@ -173,7 +173,7 @@ void handleSleeping() {
         Log.error("sleeping has changed %d",sleepingChanged);
 
         // Alexa, Good morning
-        log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
+        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("Setting AWAKE");
             if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
@@ -209,7 +209,7 @@ void handleLivingRoomMotion() {
     int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
     
     if(livingRoomMotionChanged == 100) {
-        log.info("LivingRoom Motion detected");
+        Log.info("LivingRoom Motion detected");
         Device::setValue("LeftVertical", 12);
         livingRoomMotion = true;
 
@@ -227,7 +227,7 @@ void handleLivingRoomMotion() {
 
     //TODO: Use a timer to turn off motion activated lights (like office door)
     } else if(livingRoomMotionChanged == 0) {
-        log.info("LivingRoom Motion stopped");
+        Log.info("LivingRoom Motion stopped");
         Device::setValue("LeftVertical", 0);
         livingRoomMotion = false;
 
@@ -249,14 +249,14 @@ void handleWatching() {
     if( watchingChanged != -1 ) {
         if( watchingChanged > 0 ) {
             watching = 100;
-            log.info("Watching did turn on");
+            Log.info("Watching did turn on");
             Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
             Device::setValue("Nook", 100);
 
         } else {
             watching = 0;
             //TODO: check if evening lights s/b on, etc.
-            log.info("Watching did turn off");
+            Log.info("Watching did turn off");
             Device::setValue("Couch", 0);
             Device::setValue("Nook", 0);
         }
@@ -268,13 +268,13 @@ void handleCleaning() {
     if( cleaningChanged != -1 ) {
         if( cleaningChanged > 0 ) {
             cleaning = 100;
-            log.info("cleaning did turn on");
+            Log.info("cleaning did turn on");
             //TODO: save current light state to restore when cleaning turned off
             setAllLights( 100 );
         } else {
             cleaning = 0;
             //TODO: check if evening lights s/b on, etc.
-            log.info("cleaning did turn off");
+            Log.info("cleaning did turn off");
             setAllLights( 0 );
         }
     }
@@ -283,7 +283,7 @@ void handleCleaning() {
 void handleDesk() {
     int deskChanged = Device::getChangedValue("desk");
     if( deskChanged != -1 ) {
-        log.info("desk changed");
+        Log.info("desk changed");
         setDeskLamps( deskChanged );
     }
 }
@@ -309,7 +309,7 @@ void handleCouchPresence() {
                 Device::setValue("Couch", 0);
             }
         }
-        log.info("Couch presence = %d",couchPresence);
+        Log.info("Couch presence = %d",couchPresence);
     }
 }
 
@@ -335,7 +335,7 @@ void setAllActivities(int value) {
 }
 
 void setAllLights(int value) {
-    log.info("setAllLights %d",value);
+    Log.info("setAllLights %d",value);
     Device::setValue("Couch", value);
     Device::setValue("LeftVertical", value);
     Device::setValue("DeskLeft",value);
@@ -344,37 +344,37 @@ void setAllLights(int value) {
 }
 
 void setDeskLamps(int value) {
-    log.info("setDeskLamps");
+    Log.info("setDeskLamps");
     Device::setValue("DeskLeft",value);
     Device::setValue("DeskRight",value);
 }
 
 void setMorningLights() {
-    log.info("setMorningLights");
+    Log.info("setMorningLights");
     Device::setValue("LeftVertical", 30);
     Device::setValue("DeskLeft",100);
     Device::setValue("DeskRight",100);
 }
 
 void setSunriseLights() {
-    log.info("setSunriseLights");
+    Log.info("setSunriseLights");
     setAllLights(0);
 }
 
 void setEveningLights() {
-    log.info("setEveningLights");
+    Log.info("setEveningLights");
     setAllLights(60);
 }
 
 void setBedtimeLights() {
-    log.info("setBedtimeLights");
+    Log.info("setBedtimeLights");
     setAllActivities(0);
     setAllLights(0);
     Device::setValue("Bedroom", 100);   // Turn on bedroom lamp
 }
 
 void setSleepingLights() {
-    log.info("setSleepingLights");
+    Log.info("setSleepingLights");
     setAllActivities(0);
     setAllLights(0);
     Device::setValue("Bedroom",0);

@@ -199,7 +199,7 @@ void handlePartOfDay() {
     int partOfDayChanged = Device::getChangedValue("partofday");    //TODO:
     if( partOfDayChanged != -1 ) {
 
-        log.info("partOfDay has changed: %d", partOfDayChanged);
+        Log.info("partOfDay has changed: %d", partOfDayChanged);
 
         if( partOfDayChanged == SUNRISE ) {
             Log.info("It is sunrise");
@@ -229,10 +229,10 @@ void handleSleeping() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     if( sleepingChanged != -1 ) {
         
-        log.info("sleeping has changed %d",sleepingChanged);
+        Log.info("sleeping has changed %d",sleepingChanged);
 
         // Alexa, Good morning
-        log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
+        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {
             Log.info("It is AWAKE");
             if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
@@ -268,7 +268,7 @@ void handleOfficeMotion() {
     int officeMotionChanged = Device::getChangedValue("OfficeMotion");
 
     if(officeMotionChanged == 100) {
-        log.info("Office Motion detected");
+        Log.info("Office Motion detected");
         Device::setValue("OfficeCeiling", 20);
         officeMotion = true;
 
@@ -342,13 +342,13 @@ void handleWatching() {
     if( watchingChanged != -1 ) {
         if( watchingChanged > 0 ) {
             watching = 100;
-            log.info("Watching did turn on");
+            Log.info("Watching did turn on");
             // Currently no lights to turn on
 
         } else {
             watching = 0;
             //TODO: check if evening lights s/b on, etc.
-            log.info("Watching did turn off");
+            Log.info("Watching did turn off");
             // Current no lights to turn off
         }
     }
@@ -362,13 +362,13 @@ void handleCleaning() {
     if( cleaningChanged != -1 ) {
         if( cleaningChanged > 0 ) {
             cleaning = 100;
-            log.info("Cleaning did turn on");
+            Log.info("Cleaning did turn on");
             //TODO: save current light state to restore when cleaning turned off
             setAllInsideLights( 100 );
         } else {
             cleaning = 0;
             //TODO: check if evening lights s/b on, etc.
-            log.info("Cleaning did turn off");
+            Log.info("Cleaning did turn off");
             setAllInsideLights( 0 );
         }
     }
@@ -382,19 +382,19 @@ void setAllActivities(int value) {
 }
 
 void setMorningLights() {
-    log.info("setMorningLights");
+    Log.info("setMorningLights");
     Device::setValue("officeceiling",70);
     Device::setValue("OfficeTrim", 100);
 }
 
 void setSunriseLights() {
-    log.info("setSunriseLights");
+    Log.info("setSunriseLights");
     setAllOutsideLights(0);
     //setAllInsideLights(0);
 }
 
 void setEveningLights() {
-    log.info("setEveningLights");
+    Log.info("setEveningLights");
     Device::setValue("officeceiling",70);
     Device::setValue("piano", 100);
     Device::setValue("OfficeTrim", 100);
@@ -402,7 +402,7 @@ void setEveningLights() {
 }
 
 void setBedtimeLights() {
-    log.info("setBedtimeLights");
+    Log.info("setBedtimeLights");
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
@@ -410,7 +410,7 @@ void setBedtimeLights() {
 }
 
 void setSleepingLights() {
-    log.info("setSleepingLights");
+    Log.info("setSleepingLights");
     setAllActivities(0);
     setAllInsideLights(0);
     setAllOutsideLights(0);
@@ -418,12 +418,12 @@ void setSleepingLights() {
 }
 
 void setWatchingLights(int level) {
-    log.info("setWatchingLights %d", level);
+    Log.info("setWatchingLights %d", level);
     // Nothing to do in the office
 }
 
 void setAllInsideLights(int value) {
-    log.info("setAllInsideLights %d",value);
+    Log.info("setAllInsideLights %d",value);
     Device::setValue("OfficeCeiling", value);
     Device::setValue("Loft", value);
     Device::setValue("Piano", value);
@@ -432,7 +432,7 @@ void setAllInsideLights(int value) {
 }
 
 void setAllOutsideLights(int value) {
-    log.info("setAllOutsideLights %d",value);
+    Log.info("setAllOutsideLights %d",value);
     Device::setValue("RampPorch", value);
     Device::setValue("RampAwning", value);
     Device::setValue("RearPorch", value);

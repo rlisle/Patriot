@@ -57,7 +57,7 @@ bool MQTTManager::connect() {
 
 
     if(_mqtt->isConnected()) {
-        log.info("MQTT is connected, so disconnecting first");
+        Log.info("MQTT is connected, so disconnecting first");
         LogManager::instance()->removeHandler(this);
         _mqtt->disconnect();
     }
@@ -74,7 +74,7 @@ bool MQTTManager::connect() {
     // Looks good, now register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    log.info("MQTT Connected");
+    Log.info("MQTT Connected");
     return true;
 }
 
@@ -183,9 +183,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             //TODO: handle '-' because toFloat doc says it doesn't
             float latitude = latString.toFloat();
             float longitude = lonString.toFloat();
-            log.info("lat/long = " + String(latitude) + "," + String(longitude));
+            Log.info("lat/long = " + String(latitude) + "," + String(longitude));
             if(latitude != 0 && longitude != 0) {
-                log.info("Setting lat/long: " + String(latitude) + "," + String(longitude));
+                Log.info("Setting lat/long: " + String(latitude) + "," + String(longitude));
                 IoT::setLatLong(latitude,longitude);
             }
             
@@ -206,7 +206,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         } else if(subtopic == "ping") {             // PING
             // Respond if ping is addressed to us
             if(lcMessage == _controllerName) {
-                log.info("Ping addressed to us");
+                Log.info("Ping addressed to us");
                 publish(kPublishName + "/pong", _controllerName);
             }
             
@@ -215,14 +215,14 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             
         } else if(subtopic == "query") {            // QUERY
             if(lcMessage == _controllerName || lcMessage == "all") {
-                log.info("Received query addressed to us");
+                Log.info("Received query addressed to us");
                 Device::publishStates();
             }
                 
         } else if(subtopic == "reset") {            // RESET
             // Respond if reset is addressed to us
             if(lcMessage == _controllerName) {
-                log.info("Reset addressed to us");
+                Log.info("Reset addressed to us");
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
@@ -234,7 +234,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // San Francisco/PST -8
             // Austin/CST -6
             // Windsor/EST -5
-            log.info("Received timezone: " + lcMessage);
+            Log.info("Received timezone: " + lcMessage);
             int timezone = -6;          // Default to Austin CST
             //handle '-' because toInt doc says it doesn't
             if(lcMessage.charAt(0) == '-') {
@@ -243,7 +243,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 timezone = lcMessage.toInt();
             }
             if(timezone != 0) {
-                log.info("Setting timezone to: " + String(timezone));
+                Log.info("Setting timezone to: " + String(timezone));
                 IoT::setTimezone(timezone);
             } else {
                 Log.error("Invalid timezone");
@@ -257,12 +257,12 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             if( device != NULL ) {
                 
                 // Handle save/restore value
-                log.info("Parser setting device " + subtopic + " to " + value);
+                Log.info("Parser setting device " + subtopic + " to " + value);
                 device->setValue(value);
                 Device::buildDevicesVariable();
                 
 //            } else {
-//                log.info("Parsed unknown subtopic "+subtopic);
+//                Log.info("Parsed unknown subtopic "+subtopic);
             }
         }
     } else {
