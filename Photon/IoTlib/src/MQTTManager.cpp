@@ -26,9 +26,9 @@ MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerNam
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
-    _logLevel = LOG_LEVEL_INFO;     // See particle doc for options
+    _logLevel = LOG_LEVEL_ALL;     // See particle doc for options
         
-    //TODO: do we need this, and what should we pass?
+    //TODO: by default, just the "app" category is used.
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
@@ -57,7 +57,7 @@ bool MQTTManager::connect() {
 
 
     if(_mqtt->isConnected()) {
-        Log.trace("MQTT is connected, so disconnecting first");
+        log.info("MQTT is connected, so disconnecting first");
         LogManager::instance()->removeHandler(this);
         _mqtt->disconnect();
     }
@@ -74,7 +74,7 @@ bool MQTTManager::connect() {
     // Looks good, now register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
 
-    Log.trace("MQTT Connected");
+    log.info("MQTT Connected");
     return true;
 }
 
@@ -183,9 +183,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             //TODO: handle '-' because toFloat doc says it doesn't
             float latitude = latString.toFloat();
             float longitude = lonString.toFloat();
-            Log.trace("lat/long = " + String(latitude) + "," + String(longitude));
+            log.info("lat/long = " + String(latitude) + "," + String(longitude));
             if(latitude != 0 && longitude != 0) {
-                Log.trace("Setting lat/long: " + String(latitude) + "," + String(longitude));
+                log.info("Setting lat/long: " + String(latitude) + "," + String(longitude));
                 IoT::setLatLong(latitude,longitude);
             }
             
@@ -194,7 +194,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 
         } else if(subtopic.startsWith("loglevel")) {    // LOGLEVEL
             if(subtopic == "loglevel/"+_controllerName) {
-                Log.trace(_controllerName + " setting logLevel = " + lcMessage);
+                Log.warn(_controllerName + " setting logLevel = " + lcMessage);
                 parseLogLevel(lcMessage);
             }
             
@@ -206,7 +206,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         } else if(subtopic == "ping") {             // PING
             // Respond if ping is addressed to us
             if(lcMessage == _controllerName) {
-                Log.trace("Ping addressed to us");
+                log.info("Ping addressed to us");
                 publish(kPublishName + "/pong", _controllerName);
             }
             
@@ -215,14 +215,14 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             
         } else if(subtopic == "query") {            // QUERY
             if(lcMessage == _controllerName || lcMessage == "all") {
-                Log.trace("Received query addressed to us");
+                log.info("Received query addressed to us");
                 Device::publishStates();
             }
                 
         } else if(subtopic == "reset") {            // RESET
             // Respond if reset is addressed to us
             if(lcMessage == _controllerName) {
-                Log.trace("Reset addressed to us");
+                log.info("Reset addressed to us");
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
@@ -234,7 +234,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // San Francisco/PST -8
             // Austin/CST -6
             // Windsor/EST -5
-            Log.trace("Received timezone: " + lcMessage);
+            log.info("Received timezone: " + lcMessage);
             int timezone = -6;          // Default to Austin CST
             //handle '-' because toInt doc says it doesn't
             if(lcMessage.charAt(0) == '-') {
@@ -243,7 +243,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 timezone = lcMessage.toInt();
             }
             if(timezone != 0) {
-                Log.trace("Setting timezone to: " + String(timezone));
+                log.info("Setting timezone to: " + String(timezone));
                 IoT::setTimezone(timezone);
             } else {
                 Log.error("Invalid timezone");
@@ -257,12 +257,12 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             if( device != NULL ) {
                 
                 // Handle save/restore value
-                Log.trace("Parser setting device " + subtopic + " to " + value);
+                log.info("Parser setting device " + subtopic + " to " + value);
                 device->setValue(value);
                 Device::buildDevicesVariable();
                 
 //            } else {
-//                Log.trace("Parsed unknown subtopic "+subtopic);
+//                log.info("Parsed unknown subtopic "+subtopic);
             }
         }
     } else {
@@ -282,7 +282,7 @@ int MQTTManager::parseValue(String lcMessage)
 }
 
 void MQTTManager::parseLogLevel(String lcMessage) {
-    LogLevel level = LOG_LEVEL_ERROR;
+    LogLevel level = LOG_LEVEL_WARN;
     if (lcMessage == "none") level = LOG_LEVEL_NONE;         // 70
     else if (lcMessage == "error") level = LOG_LEVEL_ERROR;  // 50
     else if (lcMessage == "warn" || lcMessage == "warning") level = LOG_LEVEL_WARN;    // 40
@@ -327,7 +327,9 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
 //    LOG_LEVEL_WARN= 40
 //    LOG_LEVEL_ERROR = 50
 //    LOG_LEVEL_NONE = 70
-    if (level < _logLevel) return;
+    if (level < _logLevel) {
+        return;
+    }
     
     // Source file
     if (attr.has_file) {

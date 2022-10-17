@@ -85,7 +85,7 @@ int8_t NCD16Dimmer::initializeBoard() {
 
         outputPWM();            // Force light off
         
-        Log.trace("InitializeBoard " + _name + " sucess");
+        Log.info("InitializeBoard " + _name + " sucess");
         
     } else {
         Log.error("InitializeBoard " + _name + " FAILED!");
@@ -118,7 +118,7 @@ void NCD16Dimmer::reset() {
  */
 void NCD16Dimmer::setValue(int value) {
     if( value == _value ) {
-        Log.trace("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
+        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
         _currentLevel = convertPercent(_value);   // Turn 0-100 into 0x0 to 0x7fffffff
         outputPWM();
         return;
@@ -127,7 +127,7 @@ void NCD16Dimmer::setValue(int value) {
     _currentLevel = convertPercent(_value);     // previous value
     _value = value;                             // percent 0-100
     _targetLevel = convertPercent(value);       // new 32 bit value
-    Log.trace("Dimmer " + _name + " setValue " + String(value) + " converted to " + String(_targetLevel));
+    Log.info("Dimmer " + _name + " setValue " + String(value) + " converted to " + String(_targetLevel));
     if(_dimmingDuration == 0) {
         _currentLevel = _targetLevel;
         outputPWM();
@@ -154,7 +154,7 @@ void NCD16Dimmer::startSmoothDimming() {
                 _incrementPerMillisecond = -1;
             }
         }
-        Log.trace("Dimmer "+_name+" setting increment to "+String(_incrementPerMillisecond)+", delta: "+String(delta));
+        Log.info("Dimmer "+_name+" setting increment to "+String(_incrementPerMillisecond)+", delta: "+String(delta));
     }
 }
 

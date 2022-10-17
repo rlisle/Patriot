@@ -100,12 +100,12 @@ void NCD4Relay::setOn() {
     
     _value = 100;
     
-    Log.trace("NCD4Relay current state = " + String::format("%x",_currentState));
+    Log.info("NCD4Relay current state = " + String::format("%x",_currentState));
     
     byte bitmap = 1 << _relayNum;
     NCD4Relay::_currentState |= bitmap;            // Set relay's bit
 
-    Log.trace("NCD4Relay new state = " + String::format("%x",_currentState));
+    Log.info("NCD4Relay new state = " + String::format("%x",_currentState));
 
     byte status;
     int retries = 0;
@@ -129,12 +129,12 @@ void NCD4Relay::setOff() {
     
     _value = 0;
     
-    Log.trace("NCD4Relay current state = " + String::format("%x",_currentState));
+    Log.info("NCD4Relay current state = " + String::format("%x",_currentState));
 
     byte bitmap = 1 << _relayNum;
     bitmap = 0xff ^ bitmap;
     NCD4Relay::_currentState &= bitmap;
-    Log.trace("NCD4Relay new state = " + String::format("%x",_currentState));
+    Log.info("NCD4Relay new state = " + String::format("%x",_currentState));
 
     byte status;
     int retries = 0;

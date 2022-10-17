@@ -179,12 +179,12 @@ void MR24::parseMessage() {
 void MR24::logMessage() {
     if(_length == 10) {
         String status10 = String::format("Radar %d, L:%d, F:%d, A1:%d, A2:%d D: %d, %d, crc: %x", _value,_length,_function,_address1,_address2,_data[6],_data[7],_crc);
-        Log.trace(status10);
+        Log.info(status10);
     } else if(_length == 11) {
         String status11 = String::format("Radar %d, L:%d, F:%d, A1:%d, A2:%d D: %d, %d, %d, crc: %x", _value,_length,_function,_address1,_address2,_data[6],_data[7],_data[8],_crc);
-        Log.trace(status11);
+        Log.info(status11);
     } else {
-        Log.trace("Radar: length != 10 or 11");
+        Log.info("Radar: length != 10 or 11");
     }
 }
 
@@ -253,7 +253,7 @@ void MR24::sendSensitivity(int sensitivity) {
 void MR24::notify()
 {
     logMessage();
-    Log.trace("Radar change from "+_prevStatusMessage+" to "+_statusMessage);
+    Log.info("Radar change from "+_prevStatusMessage+" to "+_statusMessage);
     _prevStatusMessage = _statusMessage;
     
     String topic = "patriot/" + _name;
