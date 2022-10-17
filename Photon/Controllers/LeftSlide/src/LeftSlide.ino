@@ -167,11 +167,6 @@ void handleSleeping() {
     int sleepingChanged = Device::getChangedValue("sleeping");
     if( sleepingChanged != -1 ) {
         
-        Log.info("sleeping has changed %d",sleepingChanged);
-        Log.info("sleeping has changed %d",sleepingChanged);
-        Log.warn("sleeping has changed %d",sleepingChanged);
-        Log.error("sleeping has changed %d",sleepingChanged);
-
         // Alexa, Good morning
         Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
         if( sleepingChanged == AWAKE) {

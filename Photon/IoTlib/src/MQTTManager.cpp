@@ -318,6 +318,8 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
 }
 
 // This method is how we are called by the LogManager
+// Note that this allow us to filter messages passed by the Log class
+//      but the log class filters everything below INFO, so we only see info, warn, and error.
 void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
     String s;
 
