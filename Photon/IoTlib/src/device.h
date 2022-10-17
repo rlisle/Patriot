@@ -32,10 +32,11 @@ class Device {
  protected:
     Device*    _next;       // Linked list
     String     _name;       // Public name (used by Alexa)
-    int        _value;      // Typically percent 0-100
+    int        _value;      // Current value, typically percent 0-100
     String     _room;       // Room where located
     int        _previous;   // Value before getChanged called
     char       _type;       // Character designating device type: L, S, etc.
+    int        _brightness; // Persisted value to use with next setOn (used by IoT, not device itself)
 
 public:
 
@@ -55,6 +56,9 @@ public:
     virtual int value() { return _value; };
     virtual void setValue(int value);
     
+    virtual int brightness() { return _brightness; };
+    virtual void setBrightness(int value) { _brightness = value; };
+
     virtual int  getChangedValue();
     
     virtual void setLatLong(float latitude, float longitude);

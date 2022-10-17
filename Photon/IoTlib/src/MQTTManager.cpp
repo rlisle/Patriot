@@ -163,7 +163,18 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Remainder of topic is controller name
             // message is timestamp
             // Ignore it.
-            
+
+        } else if(subtopic == "brightness") {           // BRIGHTNESS
+            if(subtopic == "brightness/"+_controllerName) {
+                Log.trace(_controllerName + " setting brightness = " + lcMessage);
+                int value = lcMessage.toInt();
+                Device *device = Device::get(subtopic);
+                if( device != NULL && value > 0) {
+                    device->setBrightness(value);
+                    //TODO: publish acknowledgement
+                }
+            }
+
         } else if(subtopic == "latlong") {             // LATLONG
             // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
             // Spanish Fort, AL: 30.6685° N, 87.9109° W
@@ -252,13 +263,22 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         // DEVICE
         } else {
             
-            int value = parseValue(lcMessage);
+            //int value = parseValue(lcMessage);
             Device *device = Device::get(subtopic);
             if( device != NULL ) {
+                int value = 100;
+                if(lcMessage == "on") {
+                    value = device->brightness();
+                } else if(lcMessage == "off") {
+                    value = 0;
+                } else {
+                    value = lcMessage.toInt();
+                }
                 
                 // Handle save/restore value
                 Log.info("Parser setting device " + subtopic + " to " + value);
                 device->setValue(value);
+                
                 Device::buildDevicesVariable();
                 
 //            } else {
@@ -271,15 +291,15 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
     }
 }
 
-int MQTTManager::parseValue(String lcMessage)
-{
-    if(lcMessage == "on") {
-        return 100;
-    } else if(lcMessage == "off") {
-        return 0;
-    }
-    return lcMessage.toInt();
-}
+//int MQTTManager::parseValue(String lcMessage)
+//{
+//    if(lcMessage == "on") {
+//        return 100;
+//    } else if(lcMessage == "off") {
+//        return 0;
+//    }
+//    return lcMessage.toInt();
+//}
 
 void MQTTManager::parseLogLevel(String lcMessage) {
     LogLevel level = LOG_LEVEL_WARN;
