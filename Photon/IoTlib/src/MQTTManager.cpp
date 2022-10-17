@@ -268,9 +268,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             Device *device = Device::get(subtopic);
             if( device != NULL ) {
                 int value = 100;
-                if(lcMessage == "on") {
+                if(lcMessage == "on" || lcMessage == "true") {
                     value = device->brightness();
-                } else if(lcMessage == "off") {
+                } else if(lcMessage == "off" || lcMessage == "false") {
                     value = 0;
                 } else {
                     value = lcMessage.toInt();
