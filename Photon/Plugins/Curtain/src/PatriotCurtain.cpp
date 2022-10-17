@@ -97,7 +97,7 @@ void Curtain::begin() {
  */
 void Curtain::setValue(int percent) {
 
-    Log.trace("Curtain setValue %d",percent);
+    Log.info("Curtain setValue %d",percent);
     
     _previous = _value;
     _value = percent;
@@ -123,7 +123,7 @@ void Curtain::setValue(int percent) {
  */
 void Curtain::pulse(bool start) {
     
-    Log.trace("Curtain pulse %d",start);
+    Log.info("Curtain pulse %d",start);
 
     int currentState = readCurrentState();
     
@@ -157,7 +157,7 @@ void Curtain::loop()
     if(isCurtainRunning() && isTimeToChangePulse()) {
     switch(_stage) {
         case 1:
-            Log.trace("Curtain end-of-start pulse");
+            Log.info("Curtain end-of-start pulse");
             pulse(false);
             
             _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_previous - _value)) / 100) - PULSE_MILLIS;
@@ -165,13 +165,13 @@ void Curtain::loop()
             _stage = 2;
             break;
         case 2:
-            Log.trace("Curtain start-of-end pulse");
+            Log.info("Curtain start-of-end pulse");
             pulse(true);
             _stopMillis = millis() + PULSE_MILLIS;
             _stage = 3;
             break;
         case 3:
-            Log.trace("Curtain end-of-end pulse");
+            Log.info("Curtain end-of-end pulse");
             pulse(false);
             _stage = 0;
             break;

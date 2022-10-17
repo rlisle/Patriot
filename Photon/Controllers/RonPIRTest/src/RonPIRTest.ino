@@ -50,7 +50,7 @@ void loop() {
 
     int motionChanged = Device::getChangedValue("Movement");
     if( motionChanged != -1 ) {
-        Log.trace("Movement changed %d",motionChanged);
+        Log.info("Movement changed %d",motionChanged);
         if( motionChanged == 0 ) {
             RGB.color(0,255,0);
         } else {

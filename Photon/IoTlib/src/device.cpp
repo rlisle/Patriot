@@ -29,7 +29,7 @@ Device::Device(String name, String room, char type)
 }
 
 void Device::setValue(int value) {
-    Log.trace("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
+    Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
     buildStatusVariable();
 }
@@ -41,7 +41,7 @@ int  Device::getChangedValue() {
         return -1;
     }
     // Log here is ok because it only occurs when value changes
-    Log.trace("Device "+_name+" getChangedValue() changed");
+    Log.info("Device "+_name+" getChangedValue() changed");
     _previous = _value;
     return _value;
 }
@@ -50,9 +50,9 @@ int  Device::getChangedValue() {
 
 void Device::add(Device *device)
 {
-    Log.trace("addDevice name: "+String(device->name()));
+    Log.info("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
-        Log.trace("  first device");
+        Log.info("  first device");
         _devices = device;
     } else {
         Device *ptr = _devices;
@@ -61,7 +61,7 @@ void Device::add(Device *device)
             ptr = ptr->_next;
             i++;
         }
-        Log.trace("  adding device "+String(i));
+        Log.info("  adding device "+String(i));
         ptr->_next = device;
     }
     device->begin();
@@ -93,12 +93,12 @@ Device *Device::get(String name)
     for (int i = 0; i < count() && ptr != NULL; i++)
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-            //Log.trace("getDeviceWithName "+name+" found.");
+            //Log.info("getDeviceWithName "+name+" found.");
             return ptr;
         }
         ptr = ptr->_next;
     }
-    //Log.trace("Device "+name+" not found, returning NULL");
+    //Log.info("Device "+name+" not found, returning NULL");
     return NULL;
 }
 
@@ -120,7 +120,7 @@ int Device::setValue(String name, int value) {
 int  Device::getChangedValue(String name) {
     Device *device = get(name);
     if( device == NULL ) {
-        //Log.trace("getChangedValue: " + name + " not found");
+        //Log.info("getChangedValue: " + name + " not found");
         return -1;
     }
     return device->getChangedValue();

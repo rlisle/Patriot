@@ -34,7 +34,7 @@ HueLight::HueLight(String name, String room, String hueId, byte *server, String 
 
 void HueLight::begin() {
     if(_tcpClient.connect(_server,80)) {
-        Log.trace("HueLight "+_name+" connected");
+        Log.info("HueLight "+_name+" connected");
         _tcpClient.stop();
     } else {
         Log.warn("HueLight "+_name+" failed to connect!");
@@ -56,9 +56,9 @@ void HueLight::loop()
  * @param value Int 0 to 100
  */
 void HueLight::setValue(int value) {
-    Log.trace("HueLight " + _name + " setValue: " + String(value));
+    Log.info("HueLight " + _name + " setValue: " + String(value));
     if(_value == value) {
-        Log.trace("HueLight value already set, but writing again!");
+        Log.info("HueLight value already set, but writing again!");
     }
     _value = value;
     writeToHue();

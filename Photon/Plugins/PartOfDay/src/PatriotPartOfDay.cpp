@@ -205,10 +205,10 @@ bool PartOfDay::computeSun(int currentTimeUTC, bool forSunrise) {
     }
     if(forSunrise) {
         _sunriseMinutesAfterMidnight = minutes;
-        Log.trace("POD: sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
+        Log.info("POD: sunriseMinutesAfterMidnight =  %d", _sunriseMinutesAfterMidnight);
     } else {
         _sunsetMinutesAfterMidnight = minutes;
-        Log.trace("POD: sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
+        Log.info("POD: sunsetMinutesAfterMidnight =  %d", _sunsetMinutesAfterMidnight);
     }
     return true;
 }
