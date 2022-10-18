@@ -165,16 +165,13 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Ignore it.
 
         } else if(subtopic.startsWith("brightness")) {           // BRIGHTNESS patriot/brightness/<device> value
-            Log.info("brightness received: "+subtopic+", msg: "+lcMessage);
             int value = lcMessage.toInt();
             String deviceName = parseDeviceName(subtopic);
-            Log.info("deviceName: "+deviceName);
             Device *device = Device::get(deviceName);
             if( device != NULL && value > 0) {
                 Log.info(_controllerName + " setting brightness = " + lcMessage);
                 device->setBrightness(value);
-                //TODO: publish acknowledgement
-                
+                publish(kPublishName + "/ack/brightness/" + deviceName, lcMessage);
             }
 
         } else if(subtopic == "latlong") {             // LATLONG
@@ -239,7 +236,18 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
-                
+            
+        } else if(subtopic.startsWith("set/")) {           // SET patriot/set/<device> on|off
+            String deviceName = parseDeviceName(subtopic);
+            Device *device = Device::get(deviceName);
+            if( device != NULL) {
+                int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
+                Log.info(_controllerName + " set " + deviceName + " = " + String(value));
+                device->setValue(value);
+                publish(kPublishName + "/ack/set/" + deviceName, lcMessage);
+            }
+
+
         } else if(subtopic == "state") {
             // Ignore - deprecated
                 
@@ -264,7 +272,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             
         // DEVICE
         } else {
-            
+            // This is used by Alexa. Siri uses 'set' instead
             Device *device = Device::get(subtopic);
             if( device != NULL ) {
                 int value = 100;
