@@ -1,0 +1,297 @@
+{
+    "bridge": {
+        "name": "Homebridge CC4B",
+        "username": "0E:BC:2C:C8:CC:4B",
+        "port": 51678,
+        "pin": "395-68-010",
+        "advertiser": "avahi"
+    },
+    "accessories": [
+        {
+            "type": "windowCovering",
+            "name": "Curtain",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setTargetPosition": "patriot/curtain"
+            },
+            "onValue": "100",
+            "offValue": "0",
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "door",
+            "name": "OfficeDoor",
+            "url": "http://192.168.50.33:1883",
+            "accessory": "mqttthing",
+            "topics": {
+                "getCurrentPosition": "patriot/OfficeDoor"
+            }
+        },
+        {
+            "type": "motionSensor",
+            "name": "LivingRoomMotion",
+            "url": "http://192.168.50.33:1883",
+            "accessory": "mqttthing",
+            "topics": {
+                "getMotionDetected": "patriot/LivingRoomMotion"
+            },
+            "onValue": "100",
+            "offValue": "0"
+        },
+        {
+            "type": "motionSensor",
+            "name": "CouchPresence",
+            "url": "http://192.168.50.33:1883",
+            "accessory": "mqttthing",
+            "topics": {
+                "getMotionDetected": "patriot/CouchPresence"
+            },
+            "onValue": "100",
+            "offValue": "0"
+        },
+        {
+            "type": "motionSensor",
+            "name": "OfficeMotion",
+            "url": "http://192.168.50.33:1883",
+            "accessory": "mqttthing",
+            "topics": {
+                "getMotionDetected": "patriot/OfficeMotion"
+            },
+            "onValue": "100",
+            "offValue": "0"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "Sink",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/sink",
+                "getOn": "patriot/ack/set/sink",
+                "setBrightness": "patriot/brightness/sink",
+                "getBrightness": "patriot/ack/brightness/sink"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "Kitchen Ceiling",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/kitchenceiling",
+                "getOn": "patriot/ack/set/kitchenceiling",
+                "setBrightness": "patriot/brightness/kitchenceiling",
+                "getBrightness": "patriot/ack/brightness/kitchenceiling"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "Cabinets",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/cabinets",
+                "getOn": "patriot/ack/set/cabinets",
+                "setBrightness": "patriot/brightness/cabinets",
+                "getBrightness": "patriot/ack/brightness/cabinets"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "Ceiling",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/ceiling",
+                "getOn": "patriot/ack/set/ceiling",
+                "setBrightness": "patriot/brightness/ceiling",
+                "getBrightness": "patriot/ack/brightness/ceiling"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "RightTrim",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/righttrim",
+                "getOn": "patriot/ack/set/righttrim",
+                "setBrightness": "patriot/brightness/righttrim",
+                "getBrightness": "patriot/ack/brightness/righttrim"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "LeftTrim",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/lefttrim",
+                "getOn": "patriot/ack/set/lefttrim",
+                "setBrightness": "patriot/brightness/lefttrim",
+                "getBrightness": "patriot/ack/brightness/lefttrim"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "DoorSide",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/doorside",
+                "getOn": "patriot/ack/set/doorside",
+                "setBrightness": "patriot/brightness/doorside",
+                "getBrightness": "patriot/ack/brightness/doorside"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "OtherSide",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/otherside",
+                "getOn": "patriot/ack/set/otherside",
+                "setBrightness": "patriot/brightness/otherside",
+                "getBrightness": "patriot/ack/brightness/otherside"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "FrontAwning",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/frontawning",
+                "getOn": "patriot/ack/set/frontawning",
+                "setBrightness": "patriot/brightness/frontawning",
+                "getBrightness": "patriot/ack/brightness/frontawning"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "FrontPorch",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/frontporch",
+                "getOn": "patriot/ack/set/frontporch",
+                "setBrightness": "patriot/brightness/frontporch",
+                "getBrightness": "patriot/ack/brightness/frontporch"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "OfficeRightTrim",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/officerighttrim",
+                "getOn": "patriot/ack/set/officerighttrim"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "OfficeCeiling",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/officeceiling",
+                "getOn": "patriot/ack/set/officeceiling",
+                "setBrightness": "patriot/brightness/officeceiling",
+                "getBrightness": "patriot/ack/brightness/officeceiling"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "Loft",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/loft",
+                "getOn": "patriot/ack/set/loft",
+                "setBrightness": "patriot/brightness/loft",
+                "getBrightness": "patriot/ack/brightness/loft"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "RampPorch",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/rampporch",
+                "getOn": "patriot/ack/set/rampporch",
+                "setBrightness": "patriot/brightness/rampporch",
+                "getBrightness": "patriot/ack/brightness/rampporch"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "RampAwning",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/rampawning",
+                "getOn": "patriot/ack/set/rampawning",
+                "setBrightness": "patriot/brightness/rampawning",
+                "getBrightness": "patriot/ack/brightness/rampawning"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "Piano",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/piano",
+                "getOn": "patriot/ack/set/piano",
+                "setBrightness": "patriot/brightness/piano",
+                "getBrightness": "patriot/ack/brightness/piano"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "OfficeLeftTrim",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/officelefttrim",
+                "getOn": "patriot/ack/set/officelefttrim",
+                "setBrightness": "patriot/brightness/officelefttrim",
+                "getBrightness": "patriot/ack/brightness/officelefttrim"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "Couch",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/couch",
+                "getOn": "patriot/ack/set/couch",
+                "setBrightness": "patriot/brightness/couch",
+                "getBrightness": "patriot/ack/brightness/couch"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "lightbulb-Dimmable",
+            "name": "LeftVertical",
+            "url": "http://192.168.50.33:1883",
+            "topics": {
+                "setOn": "patriot/set/leftvertical",
+                "getOn": "patriot/ack/set/leftvertical",
+                "setBrightness": "patriot/brightness/leftvertical",
+                "getBrightness": "patriot/ack/brightness/leftvertical"
+            },
+            "accessory": "mqttthing"
+        }
+    ],
+    "platforms": [
+        {
+            "name": "Config",
+            "port": 8581,
+            "platform": "config"
+        }
+    ]
+}
