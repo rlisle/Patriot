@@ -163,7 +163,17 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Remainder of topic is controller name
             // message is timestamp
             // Ignore it.
-            
+
+        } else if(subtopic.startsWith("brightness")) {           // BRIGHTNESS patriot/brightness/<device> value
+            int value = lcMessage.toInt();
+            String deviceName = parseDeviceName(subtopic);
+            Device *device = Device::get(deviceName);
+            if( device != NULL && value > 0) {
+                Log.info(_controllerName + " setting brightness = " + lcMessage);
+                device->setBrightness(value);
+                publish(kPublishName + "/ack/brightness/" + deviceName, lcMessage);
+            }
+
         } else if(subtopic == "latlong") {             // LATLONG
             // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
             // Spanish Fort, AL: 30.6685° N, 87.9109° W
@@ -226,7 +236,18 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
-                
+            
+        } else if(subtopic.startsWith("set/")) {           // SET patriot/set/<device> on|off
+            String deviceName = parseDeviceName(subtopic);
+            Device *device = Device::get(deviceName);
+            if( device != NULL) {
+                int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
+                Log.info(_controllerName + " set " + deviceName + " = " + String(value));
+                device->setValue(value);
+                publish(kPublishName + "/ack/set/" + deviceName, lcMessage);
+            }
+
+
         } else if(subtopic == "state") {
             // Ignore - deprecated
                 
@@ -251,18 +272,23 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             
         // DEVICE
         } else {
-            
-            int value = parseValue(lcMessage);
+            // This is used by Alexa. Siri uses 'set' instead
             Device *device = Device::get(subtopic);
             if( device != NULL ) {
+                int value = 100;
+                if(lcMessage == "on" || lcMessage == "true") {
+                    value = device->brightness();
+                } else if(lcMessage == "off" || lcMessage == "false") {
+                    value = 0;
+                } else {
+                    value = lcMessage.toInt();
+                }
                 
                 // Handle save/restore value
-                Log.info("Parser setting device " + subtopic + " to " + value);
+                Log.info("Parser setting device " + subtopic + " to " + String(value));
                 device->setValue(value);
-                Device::buildDevicesVariable();
                 
-//            } else {
-//                Log.info("Parsed unknown subtopic "+subtopic);
+                Device::buildDevicesVariable();
             }
         }
     } else {
@@ -271,14 +297,14 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
     }
 }
 
-int MQTTManager::parseValue(String lcMessage)
+String MQTTManager::parseDeviceName(String subtopic)
 {
-    if(lcMessage == "on") {
-        return 100;
-    } else if(lcMessage == "off") {
-        return 0;
-    }
-    return lcMessage.toInt();
+    int slashIndex = subtopic.indexOf('/');
+    if(slashIndex < 0) return "unknown";
+    
+    String deviceName = subtopic.substring(slashIndex+1);
+
+    return deviceName;
 }
 
 void MQTTManager::parseLogLevel(String lcMessage) {
@@ -318,6 +344,8 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
 }
 
 // This method is how we are called by the LogManager
+// Note that this allow us to filter messages passed by the Log class
+//      but the log class filters everything below INFO, so we only see info, warn, and error.
 void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
     String s;
 
