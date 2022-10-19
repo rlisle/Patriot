@@ -56,7 +56,7 @@ public:
     virtual int value() { return _value; };
     virtual void setValue(int value);
     
-    virtual void setHold(bool stopped);     // eg. Pause closing curtain
+    virtual void setHold(bool stopped) { return; };     // eg. Pause closing curtain
     
     virtual int brightness() { return _brightness; };
     virtual void setBrightness(int value) { _brightness = value; };

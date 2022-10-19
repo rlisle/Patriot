@@ -36,7 +36,6 @@ class Curtain : public Device
 {
  private:
     unsigned long _stopMillis;    // time to stop
-    unsigned long _doneMillis;    // time to signal done
 
     int8_t  _boardAddress;
     int8_t  _relayIndex;

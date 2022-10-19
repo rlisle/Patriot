@@ -30,6 +30,7 @@
  */
 
 #include "PatriotCurtain.h"
+#include "IoT.h"
 
 #define MILLIS_PER_SECOND 1000
 // Adjust this to match length of time to open/close curtains
@@ -121,9 +122,15 @@ void Curtain::setValue(int percent) {
         _stage = 1;
     }
     _stopMillis = millis() + PULSE_MILLIS;
-    _doneMillis = millis() + FULL_TIME_MILLIS;
     pulse(true);
 }
+
+void Curtain::setHold(bool holding) {
+    _holding = holding;
+    //TODO: stop curtain if moving
+    
+}
+
 
 /**
  * Start 1=close, 2=open
@@ -180,13 +187,13 @@ void Curtain::loop()
             case 3:
                 Log.info("Curtain end-of-end pulse");
                 pulse(false);
+                _stopMillis = millis() + FULL_TIME_MILLIS - PULSE_MILLIS;
                 _stage = 4;
                 break;
             case 4:
-                if(millis() > _doneMillis) {
-                    _stage = 0;
-                    IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "stopped");
-                }
+                _stage = 0;
+                IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "stopped");
+                
             default:
                 Log.error("Invalid _stage %d",_stage);
         }
