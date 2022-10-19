@@ -55,6 +55,7 @@ Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name, String roo
     _mode = 0;
     _stage = 0;
     _type  = 'C';
+    _holding = false;
 }
 
 void Curtain::begin() {
@@ -97,15 +98,20 @@ void Curtain::begin() {
  */
 void Curtain::setValue(int percent) {
 
-    Log.info("Curtain setValue %d",percent);
-    
+    // Send HomeKit acknowledgement
+    IoT::mqttPublish(kPublishName + "/getTargetPosition/" + _name, String(percent));
+
     _previous = _value;
     _value = percent;
+    _holding = false;
     
     if(_value > _previous) {
         _mode = OPEN_CURTAIN;
+        IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "increasing");
+
     } else {
         _mode = CLOSE_CURTAIN;
+        IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "decreasing");
     }
 
     // We only need a single pulse if opening or closing all the way
@@ -115,6 +121,7 @@ void Curtain::setValue(int percent) {
         _stage = 1;
     }
     _stopMillis = millis() + PULSE_MILLIS;
+    _doneMillis = millis() + FULL_TIME_MILLIS;
     pulse(true);
 }
 
@@ -155,28 +162,33 @@ void Curtain::pulse(bool start) {
 void Curtain::loop()
 {
     if(isCurtainRunning() && isTimeToChangePulse()) {
-    switch(_stage) {
-        case 1:
-            Log.info("Curtain end-of-start pulse");
-            pulse(false);
-            
-            _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_previous - _value)) / 100) - PULSE_MILLIS;
-            
-            _stage = 2;
-            break;
-        case 2:
-            Log.info("Curtain start-of-end pulse");
-            pulse(true);
-            _stopMillis = millis() + PULSE_MILLIS;
-            _stage = 3;
-            break;
-        case 3:
-            Log.info("Curtain end-of-end pulse");
-            pulse(false);
-            _stage = 0;
-            break;
-        default:
-            Log.error("Invalid _stage %d",_stage);
+        switch(_stage) {
+            case 1:
+                Log.info("Curtain end-of-start pulse");
+                pulse(false);
+                
+                _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_previous - _value)) / 100) - PULSE_MILLIS;
+                
+                _stage = 2;
+                break;
+            case 2:
+                Log.info("Curtain start-of-end pulse");
+                pulse(true);
+                _stopMillis = millis() + PULSE_MILLIS;
+                _stage = 3;
+                break;
+            case 3:
+                Log.info("Curtain end-of-end pulse");
+                pulse(false);
+                _stage = 4;
+                break;
+            case 4:
+                if(millis() > _doneMillis) {
+                    _stage = 0;
+                    IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "stopped");
+                }
+            default:
+                Log.error("Invalid _stage %d",_stage);
         }
     }
 };
@@ -225,12 +237,13 @@ int Curtain::readCurrentState() {
     
     Wire.requestFrom(_boardAddress, 1);      // Read 1 byte
     
-    if (Wire.available() == 1)
+    if (Wire.available() != 1)
     {
-        int data = Wire.read();
-        return(data);
+        Log.error("Curtain: Error reading current state");
+        return 0;
     }
-    Log.error("Curtain: Error reading current state");
-    return 0;
+    
+    int data = Wire.read();
+    return(data);
 }
 

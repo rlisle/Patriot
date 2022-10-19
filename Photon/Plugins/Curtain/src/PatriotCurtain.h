@@ -36,13 +36,15 @@ class Curtain : public Device
 {
  private:
     unsigned long _stopMillis;    // time to stop
+    unsigned long _doneMillis;    // time to signal done
 
     int8_t  _boardAddress;
     int8_t  _relayIndex;
     
     int8_t  _mode;  // 1 = close, 2 = open, 0 = idle
-    int8_t  _stage; //1 = start pulse, 2=running, 3=stop pulse
-    
+    int8_t  _stage; //1 = start pulse, 2=running, 3=stop pulse, 4=notDone
+    bool    _holding;
+
     void    pulse(bool start);
     bool    isCurtainRunning();
     bool    isTimeToChangePulse();
@@ -53,6 +55,7 @@ class Curtain : public Device
     
     void    begin();
     void    reset();
-    void    setValue(int percent);
+    void    setValue(int percent);  // Target state
+    void    setHold(bool holding);
     void    loop();
 };
