@@ -36,6 +36,7 @@ class Curtain : public Device
 {
  private:
     unsigned long _stopMillis;    // time to stop
+    unsigned long _startMillis;   // time when latest operation started
 
     int8_t  _boardAddress;
     int8_t  _relayIndex;

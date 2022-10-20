@@ -99,12 +99,18 @@ void Curtain::begin() {
  */
 void Curtain::setValue(int percent) {
 
+    if(_value == _previous) {
+        Log.warn("Curtain setValue the same, ignoring");
+        return;
+    }
+    
+    _previous = _value;
+    _value = percent;           // Should this report current instead?
+    _holding = false;
+    _startMillis = millis();
+
     // Send HomeKit acknowledgement
     IoT::mqttPublish(kPublishName + "/getTargetPosition/" + _name, String(percent));
-
-    _previous = _value;
-    _value = percent;
-    _holding = false;
     
     if(_value > _previous) {
         _mode = OPEN_CURTAIN;
@@ -128,7 +134,7 @@ void Curtain::setValue(int percent) {
 void Curtain::setHold(bool holding) {
     _holding = holding;
     //TODO: stop curtain if moving
-    
+    Log.warn("Curtain setHold not implemented");
 }
 
 
@@ -193,7 +199,7 @@ void Curtain::loop()
             case 4:
                 _stage = 0;
                 IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "stopped");
-                
+                break;
             default:
                 Log.error("Invalid _stage %d",_stage);
         }
