@@ -56,6 +56,8 @@ public:
      * This is done here instead of the constructor to improve debugging.
      **/
     static void begin(String brokerIP, String controllerName, bool enableCloud);
+    
+    static String controllerName() { return _mqttManager->controllerName(); };
 
     static void mqttPublish(String topic, String message);
 
