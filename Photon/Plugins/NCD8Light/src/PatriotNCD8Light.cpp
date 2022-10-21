@@ -38,7 +38,6 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, String room, 
     _address = address;
     _lightNum   = lightNum;
     _dimmingDuration = duration;
-    _value = 0;
     _currentLevel = 0.0;
     _targetLevel = 0.0;
     _incrementPerMillisecond = 0.0;
