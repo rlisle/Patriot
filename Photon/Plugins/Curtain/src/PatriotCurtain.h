@@ -47,7 +47,6 @@ class Curtain : public Device
     bool    _holding;
     
     int8_t  _startPosition;
-    int8_t  _targetPosition;
 
     void    pulse(bool start);
     bool    isCurtainRunning();

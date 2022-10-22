@@ -105,14 +105,15 @@ void Curtain::setValue(int percent) {
         return;
     }
 
-    int deltaPercent = percent - _previous;
-    _startPosition = _previous;
-    _targetPosition = percent;
+    Log.info("curtain setValue to %d",percent);
+    _startPosition = _value;
+    _startMillis = millis();
     
     _previous = _value;
     _value = percent;           // Should this report current instead?
     _holding = false;
     _updateMillis = millis() + MILLIS_PER_UPDATE;
+    Log.info("_updateMillis = %ld",_updateMillis);
 
     // Send HomeKit acknowledgement
     IoT::mqttPublish(kPublishName + "/getTargetPosition/" + _name, String(percent));
@@ -153,7 +154,7 @@ void Curtain::pulse(bool high) {
     int currentState = readCurrentState();
     
     byte bitmap = 0x01 << (_relayIndex + _mode - 1);
-    if(start) {
+    if(high) {
         currentState |= bitmap;    // Set relay's bit
     } else {
         bitmap = 0xff ^ bitmap;
@@ -217,7 +218,12 @@ void Curtain::loop()
         if(millis() >= _updateMillis) {
             _updateMillis += MILLIS_PER_UPDATE;
             
-            int percentDelta = (millis() - _startMillis) / MILLIS_PER_PERCENT;
+            int percentDelta = (int)((millis() - _startMillis) / MILLIS_PER_PERCENT);
+            Log.info("DBG: _startPosition = %d",_startPosition);
+            Log.info("DBG: curtain percent delta = %d",percentDelta);
+            Log.info("DBG: _startMillis = %ld",_startMillis);
+            Log.info("DBG: millis = %ld",millis());
+            Log.info("DBG: millis delta = %ld",millis() - _startMillis);
             _value = _startPosition + percentDelta;
             IoT::mqttPublish(kPublishName + "/getCurrentPosition/" + _name, String(_value));
         }
