@@ -5,16 +5,19 @@
   Date: 9/16/17
   
   Switch wiring
-  Top left:       RX  tape "Cabinet"
-  Top right:     TX
-  2nd left:       A7  tape "Sink"
-  2nd middle: A5  tape "Ceiling"
-  2nd right:     A6  tape "Indirect"
-  3rd left:        A1  "Ceiling"
-  3rd l-m:        A2  "DS Flood Lights"
-  3rd r-m:        A3  "ODS Flood Lights"
-  3rd right:      A4  "Porch Lights"
-  bottom:        A0  "Light"
+  Top left:       RX  tape label "Cabinet" -> D3 green -> gold
+  Top right:     TX no label (right trim) #4 yellow
+  2nd left:       A7  tape label "Sink" #2 white
+  2nd middle: A5  tape label "Ceiling" (kitchen) #1 red
+  2nd right:     A6  tape label "Indirect" (left trim) #5 blue
+  gnd                     brown?
+
+  3rd left:        A1  "Ceiling" D2 blue -> silver
+  3rd l-m:        A2  "DS Flood Lights" #0 green
+  3rd r-m:        A3  "ODS Flood Lights" #3 yellow
+  3rd right:      A4  "Porch Lights" #7 red
+  bottom:        A0  "Light" (awning) #6 white
+ 
 
   To update Photon:
     1. Edit this code
@@ -81,18 +84,6 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 3, "OtherSide", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
-
-    // Switches
-//    Device::add(new Switch(A5, "CabinetsSwitch", "Kitchen"));
-//    Device::add(new Switch(A6, "RightTrimSwitch", "Kitchen"));
-//    Device::add(new Switch(A7, "SinkSwitch", "Kitchen"));
-//    Device::add(new Switch(RX, "KitchenCeilingSwitch", "Kitchen"));
-//    Device::add(new Switch(TX, "LeftTrimSwitch", "Living Room"));
-//    Device::add(new Switch(A1, "CeilingSwitch", "Living Room"));
-//    Device::add(new Switch(A2, "DoorSideSwitch", "Outside"));
-//    Device::add(new Switch(A3, "OtherSideSwitch", "Outside"));
-//    Device::add(new Switch(A4, "FrontPorchSwitch", "Outside"));
-//    Device::add(new Switch(A0, "FrontAwningSwitch", "Outside"));
 
     // Other devices we monitor
     // TODO: could we define these automatically when getChangedValue is called?
