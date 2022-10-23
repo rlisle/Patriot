@@ -72,7 +72,6 @@ void MR24::loop()
     }
 }
 
-
 // Private Helper Methods
 bool MR24::usingS1S2() {
     return (_s1pin > 0 && _s2pin > 0);

@@ -100,16 +100,14 @@ void Curtain::begin() {
  */
 void Curtain::setValue(int percent) {
 
-    if(percent == _previous) {
-        Log.warn("Curtain setValue the same, ignoring");
+    if(percent == _value) {
+        Log.warn("Curtain setValue is the same as previous value, ignoring");
         return;
     }
 
-    Log.info("curtain setValue to %d",percent);
     _startPosition = _value;
     _startMillis = millis();
     
-    _previous = _value;
     _value = percent;           // Should this report current instead?
     _holding = false;
     _updateMillis = millis() + MILLIS_PER_UPDATE;
@@ -118,7 +116,7 @@ void Curtain::setValue(int percent) {
     // Send HomeKit acknowledgement
     IoT::mqttPublish(kPublishName + "/getTargetPosition/" + _name, String(percent));
     
-    if(_value > _previous) {
+    if(_value > _startPosition) {
         _mode = OPEN_CURTAIN;
         IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "increasing");
 
@@ -188,7 +186,7 @@ void Curtain::loop()
                     Log.info("Curtain end-of-start pulse");
                     pulse(false);
                     
-                    _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_previous - _value)) / 100) - PULSE_MILLIS;
+                    _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_startPosition - _value)) / 100) - PULSE_MILLIS;
                     
                     _stage = 2;
                     break;
