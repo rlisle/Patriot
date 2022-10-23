@@ -174,31 +174,6 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 publish(kPublishName + "/ack/brightness/" + deviceName, lcMessage);
             }
 
-        } else if(subtopic == "latlong") {             // LATLONG
-            // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
-            // Spanish Fort, AL: 30.6685° N, 87.9109° W
-            // Bonifay, FL: 30.7919° N, 85.6797° W
-            // White Springs, FL: 30.3297° N, 82.7590° W
-            // Tampa, FL: 27.9506° N, 82.4572° W
-            // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
-            //                  30.28267 N, 97.63624 W via iPhone maps in office.
-            // eg. float longitude = -97.63624;
-            // Split out latitude & longitude
-            int commaIndex = lcMessage.indexOf(',');
-            if(commaIndex < 0) return;
-            
-            String latString = lcMessage.substring(0, commaIndex-1);
-            String lonString = lcMessage.substring(commaIndex+1);
-
-            //TODO: handle '-' because toFloat doc says it doesn't
-            float latitude = latString.toFloat();
-            float longitude = lonString.toFloat();
-            Log.info("lat/long = " + String(latitude) + "," + String(longitude));
-            if(latitude != 0 && longitude != 0) {
-                Log.info("Setting lat/long: " + String(latitude) + "," + String(longitude));
-                IoT::setLatLong(latitude,longitude);
-            }
-            
         } else if(subtopic == "log" || subtopic.startsWith("log/")) {   // LOG
             // Ignore it.
 
@@ -251,25 +226,6 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         } else if(subtopic == "state") {
             // Ignore - deprecated
                 
-        } else if(subtopic == "timezone") {            // TIMEZONE
-            // San Francisco/PST -8
-            // Austin/CST -6
-            // Windsor/EST -5
-            Log.info("Received timezone: " + lcMessage);
-            int timezone = -6;          // Default to Austin CST
-            //handle '-' because toInt doc says it doesn't
-            if(lcMessage.charAt(0) == '-') {
-                timezone = 0 - lcMessage.substring(1).toInt();
-            } else {
-                timezone = lcMessage.toInt();
-            }
-            if(timezone != 0) {
-                Log.info("Setting timezone to: " + String(timezone));
-                IoT::setTimezone(timezone);
-            } else {
-                Log.error("Invalid timezone");
-            }
-            
         // DEVICE
         } else {
             // This is used by Alexa. Siri uses 'set' instead
