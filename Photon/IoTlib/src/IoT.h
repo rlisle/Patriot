@@ -24,16 +24,6 @@ All text above must be included in any redistribution.
 // 0 means unitialized, initial state
 // Setting to 0 may restore previous restoration
 
-// PartOfDay
-#define SUNRISE 1
-#define MORNING 2
-#define NOON 3
-#define AFTERNOON 4
-#define SUNSET 5
-#define DUSK 6
-#define NIGHT 7
-#define DAWN 8
-
 // Sleeping
 #define AWAKE 1
 #define RETIRING 2
@@ -68,9 +58,6 @@ public:
     
     static void publishValue(String name, int value);  // Sends MQTT message
     
-    static void setLatLong(float latitude, float longitude);
-    static void setTimezone(int timezone);
-
 private:
     static String _controllerName;
     static MQTTManager* _mqttManager;
@@ -79,7 +66,4 @@ private:
     static void dailyReset();
     static void subscribeHandler(const char *eventName, const char *rawData);
     static void mqttHandler(char* topic, byte* payload, unsigned int length);
-    static void handleDaylightSavings();
-    static void handleDSTMarch();
-    static void handleDSTNovember();
 };
