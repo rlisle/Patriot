@@ -42,6 +42,10 @@ Light::Light(int pinNum, String name, String room, bool isInverted, bool forceDi
 void Light::begin() {
     _dimmingDuration = isPwmSupported() ? 2.0 : 0;
     pinMode(_pin, OUTPUT);
+    int res = analogWriteResolution(_pin,12);
+    Log.info("Resolution = %d",res);
+    int maxFreq = analogWriteMaxFrequency(_pin);
+    Log.info("Pin %d PWM max freq = %d",_pin,maxFreq);
     outputPWM();
 }
 
@@ -151,18 +155,19 @@ void Light::outputPWM() {
 }
 
 /**
- * Convert 0-100 to 0-255 exponential scale
- * 0 = 0, 100 = 255
+ * Convert 0-100 to 0-0x00ffffff (12 bit) exponential scale
+ * 0 = 0, 100 = 0xffffff
  */
 int Light::scalePWM(int value) {
     //TODO: This is too extreme. Adjust algorithm
     if (value == 0) return 0;
-    if (value >= 100) return 255;
+    if (value >= 100) return 0xffffff;
     
-    float base = 1.05697667;
+//    float base = 1.05697667;        // 255
+    float base = 1.08673221;          // 4095
     float pwm = pow(base,value);
-    if (pwm > 255) {
-        return(255);
+    if (pwm > 4095) {
+        return(4095);
     }
     return (int) pwm;
 }
