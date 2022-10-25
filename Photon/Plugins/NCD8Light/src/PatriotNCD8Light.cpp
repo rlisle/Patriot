@@ -113,15 +113,14 @@ void NCD8Light::reset() {
 void NCD8Light::setValue(int value) {
     if( value == _value ) {
         Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
-        _currentLevel = scalePWM(_value);
+        _currentLevel = _value;
         outputPWM();
         return;
     }
     
-    _currentLevel = scalePWM(_value);   // previous value
+    _currentLevel = _value;   // previous value
     _value = value;
-    _targetLevel = scalePWM(value);     // new value
-    Log.info("Dimmer " + _name + " setValue " + String(value) + " scaled to " + String(_targetLevel));
+    _targetLevel = value;
     if(_dimmingDuration == 0) {
         _currentLevel = _targetLevel;
         outputPWM();
@@ -188,7 +187,7 @@ void NCD8Light::outputPWM() {
     do {
         Wire.beginTransmission(_address);
         Wire.write(reg);
-        Wire.write(int(_currentLevel*255/100));
+        Wire.write(scalePWM(_currentLevel));
         status = Wire.endTransmission();
         retryCount--;
     } while(status != 0 && retryCount > 0);
@@ -199,7 +198,7 @@ void NCD8Light::outputPWM() {
         do {
             Wire.beginTransmission(_address);
             Wire.write(reg);
-            Wire.write(int(_currentLevel*255/100));
+            Wire.write(scalePWM(_currentLevel));
             status = Wire.endTransmission();
             retryCount--;
         } while(status != 0 && retryCount > 0);
@@ -215,19 +214,15 @@ void NCD8Light::outputPWM() {
  * Convert 0-100 to 0-255 exponential scale
  * 0 = 0, 100 = 255
  */
-float NCD8Light::scalePWM(int value) {
+int NCD8Light::scalePWM(float value) {
     if (value <= 0) return 0;
-    if (value >= 100) return 100;
-    return value;
+    if (value >= 100) return 255;
 
-// Was scaling 0-100 to 0-255
-//    if (value >= 100) return 255;
-//
-//    //TODO: This is too extreme. Need to refine algorithm
-//    float base = 1.05697667;
-//    float pwm = pow(base,value);
-//    if (pwm > 255) {
-//        return(255);
-//    }
-//    return pwm;
+    //TODO: This is too extreme. Need to refine algorithm
+    float base = 1.05697667;
+    float pwm = pow(base,value);
+    if (pwm > 255) {
+        pwm = 255;
+    }
+    return (int)pwm;
 }
