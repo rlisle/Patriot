@@ -159,7 +159,7 @@ void NCD8Light::loop()
         return;
     }
     
-    Log.info("light loop value: "+String(_value)+", target: "+String(_targetLevel));
+    Log.info("light loop _currentLevel: "+String(_currentLevel)+", target: "+String(_targetLevel));
 
     // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
     
@@ -180,7 +180,7 @@ void NCD8Light::loop()
 };
 
 /**
- * Set the output PWM _currentLevel (0-255)
+ * Set the output PWM _currentLevel (0-100)
  */
 void NCD8Light::outputPWM() {
     int reg = 2 + _lightNum;
@@ -190,7 +190,7 @@ void NCD8Light::outputPWM() {
     do {
         Wire.beginTransmission(_address);
         Wire.write(reg);
-        Wire.write(int(_currentLevel));
+        Wire.write(int(_currentLevel*255/100));
         status = Wire.endTransmission();
         retryCount--;
     } while(status != 0 && retryCount > 0);
@@ -201,7 +201,7 @@ void NCD8Light::outputPWM() {
         do {
             Wire.beginTransmission(_address);
             Wire.write(reg);
-            Wire.write(int(_currentLevel));
+            Wire.write(int(_currentLevel*255/100));
             status = Wire.endTransmission();
             retryCount--;
         } while(status != 0 && retryCount > 0);
@@ -219,13 +219,17 @@ void NCD8Light::outputPWM() {
  */
 float NCD8Light::scalePWM(int value) {
     if (value <= 0) return 0;
-    if (value >= 100) return 255;
-    
-    //TODO: This is too extreme. Need to refine algorithm
-    float base = 1.05697667;
-    float pwm = pow(base,value);
-    if (pwm > 255) {
-        return(255);
-    }
-    return pwm;
+    if (value >= 100) return 100;
+    return value;
+
+// Was scaling 0-100 to 0-255
+//    if (value >= 100) return 255;
+//
+//    //TODO: This is too extreme. Need to refine algorithm
+//    float base = 1.05697667;
+//    float pwm = pow(base,value);
+//    if (pwm > 255) {
+//        return(255);
+//    }
+//    return pwm;
 }

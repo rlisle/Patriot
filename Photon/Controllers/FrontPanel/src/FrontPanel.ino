@@ -38,12 +38,11 @@
  */
 #include <IoT.h>
 #include <PatriotLight.h>
-#include <PatriotSwitch.h>
 #include <PatriotNCD8Light.h>
 
 #define CONTROLLER_NAME "FrontPanel2"
 #define MQTT_BROKER "192.168.50.33"
-#define ADDRESS 1      // PWM board switches low switch on
+#define ADDRESS 1      // PWM board lowest switch on
 
 // Until mystery hangs understood, leave in automatic
 #define CONNECT_TO_CLOUD true
@@ -87,7 +86,7 @@ void loop() {
     // - update light dimming
     IoT::loop();
 
-    //TODO: calculate sleeping state based on motion, doors
+    //TODO: calculate sleeping state based on time, motion, and doors
 //    int sleepingChanged  = Device::getChangedValue("sleeping");
 //
 //    if( sleepingChanged != -1 ) {
