@@ -159,8 +159,6 @@ void NCD8Light::loop()
         return;
     }
     
-    Log.info("light loop _currentLevel: "+String(_currentLevel)+", target: "+String(_targetLevel));
-
     // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
     
     long loopTime = millis();
