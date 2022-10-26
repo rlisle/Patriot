@@ -89,7 +89,7 @@ bool PIR::didSensorChange()
     
     // Turn off only after delay
     } else {
-        if(_lastMotion + _timeoutMSecs < millis()) {
+        if(_lastMotion + _timeoutMSecs > millis()) {
             return false;
         }
     }
