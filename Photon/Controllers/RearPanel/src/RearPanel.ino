@@ -19,10 +19,6 @@ Author: Ron Lisle
  
  Since Cloud is not connected, photon should normally be breathing green
 
- TODO: Add GPS board (Rx, Vin, Gnd)
- 
- This isn't the Cloud bridge, so cloud isn't enabled.
- 
  Using SYSTEM_THREAD(ENABLED) is recommended,
  and runs network on separate theread.
  Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
@@ -37,7 +33,6 @@ Author: Ron Lisle
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
-#include <PatriotPartOfDay.h>
 //#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define CONTROLLER_NAME "RearPanel"
@@ -48,18 +43,6 @@ Author: Ron Lisle
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
-// Resellable Switch Wiring
-// In order to keep the RV resellable, switches need to work without IoT.
-// So changing switches from inputs to directly control LEDs.
-// Moved from A0-A5 on Photon board to 6 terminal strip, same order.
-//   Office Ceiling Switch was A0 Brown thermistat wire
-//   Loft Switch           was A1 Red " "
-//   Ramp Porch Switch     was A2 Yellow " "
-//   Ramp Awning Switch    was A3 Green " "
-//   Rear Porch Switch     was A4 Blue " "
-//   Rear Awning Switch    was A5 White " "
-
-// Until bridge devices are defined, need to be in AUTOMATIC
 #define CONNECT_TO_CLOUD true
 //SYSTEM_THREAD(ENABLED);
 //SYSTEM_MODE(SEMI_AUTOMATIC);
@@ -71,11 +54,6 @@ bool officeDoor = false;
 bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
 
-int watching = 0;
-int cleaning = 0;
-int partOfDay = 0;
-int sleeping = 0;
-
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
     WiFi.useDynamicIP();
@@ -84,8 +62,6 @@ void setup() {
 }
 
 void createDevices() {
-    Device::add(new PartOfDay());
-
     // I2CIO4R4G5LE board
     // 4 Relays
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
@@ -108,14 +84,6 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
     Device::add(new NCD8Light(ADDRESS, 7, "OfficeLeftTrim", "Office", 2));
-
-    // Activities/States - define for every other state.
-    // Be careful to only define in 1 (this) controller.
-    Device::add(new Device("sleeping", "All"));
-    Device::add(new Device("cleaning", "All"));
-    Device::add(new Device("watching", "All"));
-    Device::add(new Device("RonHome", "All"));
-    Device::add(new Device("ShelleyHome", "All"));
     
     // Checklist Items -  - define for every non-automated checklist item
     
@@ -166,93 +134,8 @@ void createDevices() {
 void loop() {
     IoT::loop();
     
-    handleAutoGoodnight();
-    handlePartOfDay();
-    handleSleeping();
-    handleOfficeMotion();
-    handleOfficeDoor();
-    handleWatching();
-    handleCleaning();
-}
-
-/**
- * If 3:00 am and goodnight hasn't been issued
- * then set sleep = 1 anyways.
- */
-void handleAutoGoodnight() {
-    if(sleeping < ASLEEP && Time.hour() == 3) {
-        IoT::mqttPublish("patriot/sleeping", "3");   // 3 = ASLEEP
-        Device::setValue("sleeping", ASLEEP);
-    }
-}
-
-/**
- * handlePartOfDay
- *
- * Dependencies:
- *   int partOfDay
- *   void setSunriseLights()
- *   void setEveningLights()
- */
-void handlePartOfDay() {
-    
-    int partOfDayChanged = Device::getChangedValue("partofday");    //TODO:
-    if( partOfDayChanged != -1 ) {
-
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
-
-        if( partOfDayChanged == SUNRISE ) {
-            Log.info("It is sunrise");
-            setSunriseLights();
-        }
-
-        if( partOfDayChanged == DUSK ) {
-            Log.info("It is dusk");
-            setEveningLights();
-        }
-        partOfDay = partOfDayChanged;
-    }
-}
-
-/**
- * handleSleeping
- *
- * Dependencies:
- *   int sleeping
- *   int partOfDay
- *   void setMorningLights()
- *   void setBedtimeLights()
- *   void setSleepingLights()
- */
-void handleSleeping() {
-
-    int sleepingChanged = Device::getChangedValue("sleeping");
-    if( sleepingChanged != -1 ) {
-        
-        Log.info("sleeping has changed %d",sleepingChanged);
-
-        // Alexa, Good morning
-        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
-        if( sleepingChanged == AWAKE) {
-            Log.info("It is AWAKE");
-            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-                Log.info("It is morning");
-                setMorningLights();
-            }
-        }
-
-        // Alexa, Bedtime
-        if( sleepingChanged == RETIRING ) {
-            setBedtimeLights();
-        }
-
-        // Alexa, Goodnight
-        if( sleepingChanged == ASLEEP ) {
-            setSleepingLights();
-        }
-        
-        sleeping = sleepingChanged;
-    }
+//    handleOfficeMotion();
+//    handleOfficeDoor();
 }
 
 /**
@@ -262,34 +145,34 @@ void handleSleeping() {
  *   int sleeping
  *   int partOfDay
  */
-void handleOfficeMotion() {
-
-    long loopTime = millis();
-    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
-
-    if(officeMotionChanged == 100) {
-        Log.info("Office Motion detected");
-        Device::setValue("OfficeCeiling", 20);
-        officeMotion = true;
-
-        // Determine if this is Ron getting up
-        if( partOfDay > SUNSET && sleeping != AWAKE) {
-            //TODO: maybe blink instead?
-            Device::setValue("OfficeCeiling", 40);
-            if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
-                Device::setValue("OfficeCeiling", 60);
-                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
-                Device::setValue("sleeping", AWAKE);
-            }
-        }
-
-    //TODO: Use a timer to turn off motion activated lights (like office door)
-    } else if(officeMotionChanged == 0) {
-        Device::setValue("OfficeCeiling", 0);
-        officeMotion = false;
-
-    } // Ignore -1
-}
+//void handleOfficeMotion() {
+//
+//    long loopTime = millis();
+//    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
+//
+//    if(officeMotionChanged == 100) {
+//        Log.info("Office Motion detected");
+//        Device::setValue("OfficeCeiling", 20);
+//        officeMotion = true;
+//
+//        // Determine if this is Ron getting up
+//        if( partOfDay > SUNSET && sleeping != AWAKE) {
+//            //TODO: maybe blink instead?
+//            Device::setValue("OfficeCeiling", 40);
+//            if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
+//                Device::setValue("OfficeCeiling", 60);
+//                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
+//                Device::setValue("sleeping", AWAKE);
+//            }
+//        }
+//
+//    //TODO: Use a timer to turn off motion activated lights (like office door)
+//    } else if(officeMotionChanged == 0) {
+//        Device::setValue("OfficeCeiling", 0);
+//        officeMotion = false;
+//
+//    } // Ignore -1
+//}
 
 /**
  * handleOfficeDoor
@@ -298,143 +181,50 @@ void handleOfficeMotion() {
  *   int sleeping
  *   int partOfDay
  */
-void handleOfficeDoor() {
+//void handleOfficeDoor() {
+//
+//    // Timed shut-off after door closes
+//    long loopTime = millis();
+//    if(officeDoorCountdown == true) {
+//        if(loopTime >= lastOfficeDoor+OFFICE_DOOR_TIMEOUT) {
+//            Log.info("Office door timeout");
+//            officeDoorCountdown = false;
+//            Device::setValue("RearPorch", 0);
+//        }
+//    }
+//
+//    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
+//    if( officeDoorChanged != -1) {
+//        if( officeDoorChanged > 0 ) {   // Door opened
+//            officeDoor = true;
+//            officeDoorCountdown = false;    // Reset it if it was in progress
+//            // If after sunset turn on porch light
+//            if( partOfDay > SUNSET ) {
+//                Device::setValue("RearPorch", 100);
+//            }
+//        } else {                        // Door closed
+//            officeDoor = false;
+//            lastOfficeDoor = millis();  // update timeout
+//            officeDoorCountdown = true;
+//            // Nothing else to do when door closes. Timer will shut off if needed.
+//        }
+//    }
+//
+//}
 
-    // Timed shut-off after door closes
-    long loopTime = millis();
-    if(officeDoorCountdown == true) {
-        if(loopTime >= lastOfficeDoor+OFFICE_DOOR_TIMEOUT) {
-            Log.info("Office door timeout");
-            officeDoorCountdown = false;
-            Device::setValue("RearPorch", 0);
-        }
-    }
-
-    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
-    if( officeDoorChanged != -1) {
-        if( officeDoorChanged > 0 ) {   // Door opened
-            officeDoor = true;
-            officeDoorCountdown = false;    // Reset it if it was in progress
-            // If after sunset turn on porch light
-            if( partOfDay > SUNSET ) {
-                Device::setValue("RearPorch", 100);
-            }
-        } else {                        // Door closed
-            officeDoor = false;
-            lastOfficeDoor = millis();  // update timeout
-            officeDoorCountdown = true;
-            // Nothing else to do when door closes. Timer will shut off if needed.
-        }
-    }
-
-}
-
-/**
- * handleWatching
- *
- * Dependencies:
- *   int partOfDay
- *   void setWatchingLights()
- */
-void handleWatching() {
-    
-    int watchingChanged = Device::getChangedValue("watching");
-    if( watchingChanged != -1 ) {
-        if( watchingChanged > 0 ) {
-            watching = 100;
-            Log.info("Watching did turn on");
-            // Currently no lights to turn on
-
-        } else {
-            watching = 0;
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("Watching did turn off");
-            // Current no lights to turn off
-        }
-    }
-}
-
-/**
- * handleCleaning
- */
-void handleCleaning() {
-    int cleaningChanged = Device::getChangedValue("cleaning");
-    if( cleaningChanged != -1 ) {
-        if( cleaningChanged > 0 ) {
-            cleaning = 100;
-            Log.info("Cleaning did turn on");
-            //TODO: save current light state to restore when cleaning turned off
-            setAllInsideLights( 100 );
-        } else {
-            cleaning = 0;
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("Cleaning did turn off");
-            setAllInsideLights( 0 );
-        }
-    }
-}
-
-
-void setAllActivities(int value) {
-    Device::setValue("cooking", value);
-    Device::setValue("cleaning", value);
-    // Watching?
-}
-
-void setMorningLights() {
-    Log.info("setMorningLights");
-    Device::setValue("officeceiling",70);
-    Device::setValue("OfficeTrim", 100);
-}
-
-void setSunriseLights() {
-    Log.info("setSunriseLights");
-    setAllOutsideLights(0);
-    //setAllInsideLights(0);
-}
-
-void setEveningLights() {
-    Log.info("setEveningLights");
-    Device::setValue("officeceiling",70);
-    Device::setValue("piano", 100);
-    Device::setValue("OfficeTrim", 100);
-    setAllOutsideLights(100);
-}
-
-void setBedtimeLights() {
-    Log.info("setBedtimeLights");
-    setAllActivities(0);
-    setAllInsideLights(0);
-    setAllOutsideLights(0);
-    Device::setValue("Curtain",0);
-}
-
-void setSleepingLights() {
-    Log.info("setSleepingLights");
-    setAllActivities(0);
-    setAllInsideLights(0);
-    setAllOutsideLights(0);
-    Device::setValue("Curtain",0);
-}
-
-void setWatchingLights(int level) {
-    Log.info("setWatchingLights %d", level);
-    // Nothing to do in the office
-}
-
-void setAllInsideLights(int value) {
-    Log.info("setAllInsideLights %d",value);
-    Device::setValue("OfficeCeiling", value);
-    Device::setValue("Loft", value);
-    Device::setValue("Piano", value);
-    Device::setValue("OfficeTrim", value);
-
-}
-
-void setAllOutsideLights(int value) {
-    Log.info("setAllOutsideLights %d",value);
-    Device::setValue("RampPorch", value);
-    Device::setValue("RampAwning", value);
-    Device::setValue("RearPorch", value);
-    Device::setValue("RearAwning", value);
-}
+//void setAllInsideLights(int value) {
+//    Log.info("setAllInsideLights %d",value);
+//    Device::setValue("OfficeCeiling", value);
+//    Device::setValue("Loft", value);
+//    Device::setValue("Piano", value);
+//    Device::setValue("OfficeTrim", value);
+//
+//}
+//
+//void setAllOutsideLights(int value) {
+//    Log.info("setAllOutsideLights %d",value);
+//    Device::setValue("RampPorch", value);
+//    Device::setValue("RampAwning", value);
+//    Device::setValue("RearPorch", value);
+//    Device::setValue("RearAwning", value);
+//}

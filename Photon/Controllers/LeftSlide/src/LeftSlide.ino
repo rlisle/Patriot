@@ -57,11 +57,7 @@ long lastCouchPresence = 0;
 bool livingRoomMotion = false;
 long lastLivingRoomMotion = 0;
 
-int watching = 0;
-int cleaning = 0;
 int couchPresence = 0;
-int partOfDay = 0;
-int sleeping = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
@@ -83,16 +79,6 @@ void createDevices() {
     // Lights
     Device::add(new Light(A7, "Couch", "Living Room", 2));
     Device::add(new Light(A5, "LeftVertical", "Living Room", 2));
-        
-    // Activities/States
-    Device::add(new Device("cleaning", "All"));
-    Device::add(new Device("watching", "All"));
-    
-    Device::add(new Device("desk", "Office")); // Groups both desk lamps together
-    
-    //Move to IoT eventually
-    Device::add(new Device("partofday", "All"));
-    Device::add(new Device("sleeping", "All"));
 }
 
 /**
@@ -101,188 +87,11 @@ void createDevices() {
 void loop() {
     IoT::loop();
 
-    handleAutoGoodnight();
-    handlePartOfDay();
-    handleSleeping();
-    handleLivingRoomMotion();
-    handleWatching();
-    handleCleaning();
+    //TODO: move to MR24 plugin
     handleCouchPresence();
-    handleDesk();
 }
 
-/**
- * If 3:00 am and goodnight hasn't been issued
- * then set sleep = 1 anyways.
- */
-//TODO: Move to IoT::loop
-void handleAutoGoodnight() {
-    if(sleeping < ASLEEP && Time.hour() == 3) {
-        IoT::mqttPublish("patriot/sleeping", "3");   // 3 = ASLEEP
-        Device::setValue("sleeping", ASLEEP);
-    }
-}
-
-
-/**
- * handlePartOfDay
- *
- * Dependencies:
- *   int partOfDay
- *   void setSunriseLights()
- *   void setEveningLights()
- */
-void handlePartOfDay() {
-    
-    int partOfDayChanged = Device::getChangedValue("partofday");
-    if( partOfDayChanged != -1 ) {
-
-        Log.info("partOfDay has changed: %d", partOfDayChanged);
-
-        if( partOfDayChanged == SUNRISE ) {
-            Log.info("It is sunrise");
-            setSunriseLights();
-        }
-
-        if( partOfDayChanged == DUSK ) {
-            Log.info("It is dusk");
-            setEveningLights();
-        }
-        partOfDay = partOfDayChanged;
-    }
-}
-
-/**
- * handleSleeping
- *
- * Dependencies:
- *   int sleeping
- *   int partOfDay
- *   void setMorningLights()
- *   void setBedtimeLights()
- *   void setSleepingLights()
- */
-void handleSleeping() {
-
-    int sleepingChanged = Device::getChangedValue("sleeping");
-    if( sleepingChanged != -1 ) {
-        
-        // Alexa, Good morning
-        Log.info("Checking for Good Morning: sleeping: %d, partOfDay: %d",sleepingChanged,partOfDay);
-        if( sleepingChanged == AWAKE) {
-            Log.info("Setting AWAKE");
-            if(partOfDay > SUNSET || (partOfDay==0 && Time.hour() < 8)) {
-                Log.info("It is morning");
-                setMorningLights();
-            }
-        }
-
-        // Alexa, Bedtime
-        if( sleepingChanged == RETIRING ) {
-            setBedtimeLights();
-        }
-
-        // Alexa, Goodnight
-        if( sleepingChanged == ASLEEP ) {
-            setSleepingLights();
-        }
-        
-        sleeping = sleepingChanged;
-    }
-}
-
-/**
- * handleLivingRoomMotion
- *
- * Dependencies
- *   int partOfDay
- *   int sleeping
- */
-void handleLivingRoomMotion() {
-
-//    long loopTime = millis();
-    int livingRoomMotionChanged = Device::getChangedValue("LivingRoomMotion");
-    
-    if(livingRoomMotionChanged == 100) {
-        Log.info("LivingRoom Motion detected");
-        Device::setValue("LeftVertical", 12);
-        livingRoomMotion = true;
-
-        // Determine if this is Ron getting up
-        if( partOfDay > SUNSET && sleeping != AWAKE) {
-            //TODO: maybe blink instead?
-            Device::setValue("LeftVertical", 24);
-            if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
-                Device::setValue("LeftVertical", 50);
-                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
-                Device::setValue("sleeping", AWAKE);
-            }
-        }
-        livingRoomMotion = true;
-
-    //TODO: Use a timer to turn off motion activated lights (like office door)
-    } else if(livingRoomMotionChanged == 0) {
-        Log.info("LivingRoom Motion stopped");
-        Device::setValue("LeftVertical", 0);
-        livingRoomMotion = false;
-
-    } // Ignore -1
-    
-    return;
-}
-
-/**
- * handleWatching
- *
- * Dependencies:
- *   int partOfDay
- *   void setWatchingLights()
- */
-void handleWatching() {
-    
-    int watchingChanged = Device::getChangedValue("watching");
-    if( watchingChanged != -1 ) {
-        if( watchingChanged > 0 ) {
-            watching = 100;
-            Log.info("Watching did turn on");
-            Device::setValue("Couch", 10);      // 10 and 66 don't appear to flicker
-            Device::setValue("Nook", 100);
-
-        } else {
-            watching = 0;
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("Watching did turn off");
-            Device::setValue("Couch", 0);
-            Device::setValue("Nook", 0);
-        }
-    }
-}
-
-void handleCleaning() {
-    int cleaningChanged = Device::getChangedValue("cleaning");
-    if( cleaningChanged != -1 ) {
-        if( cleaningChanged > 0 ) {
-            cleaning = 100;
-            Log.info("cleaning did turn on");
-            //TODO: save current light state to restore when cleaning turned off
-            setAllLights( 100 );
-        } else {
-            cleaning = 0;
-            //TODO: check if evening lights s/b on, etc.
-            Log.info("cleaning did turn off");
-            setAllLights( 0 );
-        }
-    }
-}
-
-void handleDesk() {
-    int deskChanged = Device::getChangedValue("desk");
-    if( deskChanged != -1 ) {
-        Log.info("desk changed");
-        setDeskLamps( deskChanged );
-    }
-}
-
+//TODO: move to MR24 plugin
 void handleCouchPresence() {
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     if( couchPresenceChanged != -1) {
@@ -308,6 +117,7 @@ void handleCouchPresence() {
     }
 }
 
+//TODO: move to MR24 plugin
 int filter(int sum, int value) {
     float flSum = float(sum);
     float flValue = float(value);
@@ -316,61 +126,11 @@ int filter(int sum, int value) {
     return (int)result;
 }
 
+//TODO: move to MR24 plugin
 int quantize(int value) {
     if(value < 13) return 0;
     if(value < 38) return 25;
     if(value < 63) return 50;
     if(value < 88) return 75;
     return 100;
-}
-
-void setAllActivities(int value) {
-    Device::setValue("cleaning", value);
-    Device::setValue("watching", value);
-}
-
-void setAllLights(int value) {
-    Log.info("setAllLights %d",value);
-    Device::setValue("Couch", value);
-    Device::setValue("LeftVertical", value);
-    Device::setValue("DeskLeft",value);
-    Device::setValue("DeskRight",value);
-    Device::setValue("Nook",value);
-}
-
-void setDeskLamps(int value) {
-    Log.info("setDeskLamps");
-    Device::setValue("DeskLeft",value);
-    Device::setValue("DeskRight",value);
-}
-
-void setMorningLights() {
-    Log.info("setMorningLights");
-    Device::setValue("LeftVertical", 30);
-    Device::setValue("DeskLeft",100);
-    Device::setValue("DeskRight",100);
-}
-
-void setSunriseLights() {
-    Log.info("setSunriseLights");
-    setAllLights(0);
-}
-
-void setEveningLights() {
-    Log.info("setEveningLights");
-    setAllLights(60);
-}
-
-void setBedtimeLights() {
-    Log.info("setBedtimeLights");
-    setAllActivities(0);
-    setAllLights(0);
-    Device::setValue("Bedroom", 100);   // Turn on bedroom lamp
-}
-
-void setSleepingLights() {
-    Log.info("setSleepingLights");
-    setAllActivities(0);
-    setAllLights(0);
-    Device::setValue("Bedroom",0);
 }

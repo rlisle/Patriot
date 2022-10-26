@@ -23,7 +23,7 @@ String globalDevicesVariable;
 String globalStatusVariable;
 
 Device::Device(String name, String room, char type)
-: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type)
+: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100)
 {
     // Do any setup work in begin() not here.
 }

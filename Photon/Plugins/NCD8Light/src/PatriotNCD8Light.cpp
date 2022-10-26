@@ -38,7 +38,6 @@ NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, String room, 
     _address = address;
     _lightNum   = lightNum;
     _dimmingDuration = duration;
-    _value = 0;
     _currentLevel = 0.0;
     _targetLevel = 0.0;
     _incrementPerMillisecond = 0.0;
@@ -114,15 +113,14 @@ void NCD8Light::reset() {
 void NCD8Light::setValue(int value) {
     if( value == _value ) {
         Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
-        _currentLevel = scalePWM(_value);
+        _currentLevel = _value;
         outputPWM();
         return;
     }
     
-    _currentLevel = scalePWM(_value);   // previous value
+    _currentLevel = _value;   // previous value
     _value = value;
-    _targetLevel = scalePWM(value);     // new value
-    Log.info("Dimmer " + _name + " setValue " + String(value) + " scaled to " + String(_targetLevel));
+    _targetLevel = value;
     if(_dimmingDuration == 0) {
         _currentLevel = _targetLevel;
         outputPWM();
@@ -160,8 +158,6 @@ void NCD8Light::loop()
         return;
     }
     
-    Log.info("light loop value: "+String(_value)+", target: "+String(_targetLevel));
-
     // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
     
     long loopTime = millis();
@@ -181,7 +177,7 @@ void NCD8Light::loop()
 };
 
 /**
- * Set the output PWM _currentLevel (0-255)
+ * Set the output PWM _currentLevel (0-100)
  */
 void NCD8Light::outputPWM() {
     int reg = 2 + _lightNum;
@@ -191,7 +187,7 @@ void NCD8Light::outputPWM() {
     do {
         Wire.beginTransmission(_address);
         Wire.write(reg);
-        Wire.write(int(_currentLevel));
+        Wire.write(scalePWM(_currentLevel));
         status = Wire.endTransmission();
         retryCount--;
     } while(status != 0 && retryCount > 0);
@@ -202,7 +198,7 @@ void NCD8Light::outputPWM() {
         do {
             Wire.beginTransmission(_address);
             Wire.write(reg);
-            Wire.write(int(_currentLevel));
+            Wire.write(scalePWM(_currentLevel));
             status = Wire.endTransmission();
             retryCount--;
         } while(status != 0 && retryCount > 0);
@@ -218,15 +214,15 @@ void NCD8Light::outputPWM() {
  * Convert 0-100 to 0-255 exponential scale
  * 0 = 0, 100 = 255
  */
-float NCD8Light::scalePWM(int value) {
+int NCD8Light::scalePWM(float value) {
     if (value <= 0) return 0;
     if (value >= 100) return 255;
-    
+
     //TODO: This is too extreme. Need to refine algorithm
     float base = 1.05697667;
     float pwm = pow(base,value);
     if (pwm > 255) {
-        return(255);
+        pwm = 255;
     }
-    return pwm;
+    return (int)pwm;
 }

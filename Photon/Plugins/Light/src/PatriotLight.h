@@ -7,6 +7,8 @@
 
  http://www.github.com/rlisle/Patriot
 
+ 8.1.0 Converted to use 12 bits
+ 
  Written by Ron Lisle
 
  BSD license, check license.txt for more information.
@@ -26,7 +28,7 @@ class Light : public Device
  private:
     int       _pin;
 
-    int       _targetValue;
+    int       _targetValue;             // Same as _value?
     float     _dimmingDuration;
     float     _currentValue;          // Use for smooth dimming transitions
     float     _incrementPerMillisecond;

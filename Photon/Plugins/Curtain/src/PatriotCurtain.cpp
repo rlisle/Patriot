@@ -33,8 +33,9 @@
 #include "IoT.h"
 
 #define MILLIS_PER_SECOND 1000
-// Adjust this to match length of time to open/close curtains
-#define FULL_TIME_MILLIS 6000
+#define FULL_TIME_MILLIS 6000   // Duration of full open to close or vis-vis
+#define MILLIS_PER_PERCENT 60   // FULL_TIME_MILLIS / 100
+#define MILLIS_PER_UPDATE 250   // Send updates every 1/4 second
 #define PULSE_MILLIS 100
 
 // Mode (relay bit)
@@ -99,20 +100,23 @@ void Curtain::begin() {
  */
 void Curtain::setValue(int percent) {
 
-    if(_value == _previous) {
-        Log.warn("Curtain setValue the same, ignoring");
+    if(percent == _value) {
+        Log.warn("Curtain setValue is the same as previous value, ignoring");
         return;
     }
+
+    _startPosition = _value;
+    _startMillis = millis();
     
-    _previous = _value;
     _value = percent;           // Should this report current instead?
     _holding = false;
-    _startMillis = millis();
+    _updateMillis = millis() + MILLIS_PER_UPDATE;
+    Log.info("_updateMillis = %ld",_updateMillis);
 
     // Send HomeKit acknowledgement
     IoT::mqttPublish(kPublishName + "/getTargetPosition/" + _name, String(percent));
     
-    if(_value > _previous) {
+    if(_value > _startPosition) {
         _mode = OPEN_CURTAIN;
         IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "increasing");
 
@@ -141,14 +145,14 @@ void Curtain::setHold(bool holding) {
 /**
  * Start 1=close, 2=open
  */
-void Curtain::pulse(bool start) {
+void Curtain::pulse(bool high) {
     
-    Log.info("Curtain pulse %d",start);
+    Log.info("Curtain pulse %s",high ? "high" : "low");
 
     int currentState = readCurrentState();
     
     byte bitmap = 0x01 << (_relayIndex + _mode - 1);
-    if(start) {
+    if(high) {
         currentState |= bitmap;    // Set relay's bit
     } else {
         bitmap = 0xff ^ bitmap;
@@ -165,7 +169,7 @@ void Curtain::pulse(bool start) {
     } while(status != 0 && retries++ < 3);
 
     if(status != 0) {
-        Log.error("Error pulsing relay %d %d", bitmap, start);
+        Log.error("Error pulsing relay %d %s", bitmap, high ? "high" : "low");
     }
 }
 
@@ -174,34 +178,52 @@ void Curtain::pulse(bool start) {
  */
 void Curtain::loop()
 {
-    if(isCurtainRunning() && isTimeToChangePulse()) {
-        switch(_stage) {
-            case 1:
-                Log.info("Curtain end-of-start pulse");
-                pulse(false);
-                
-                _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_previous - _value)) / 100) - PULSE_MILLIS;
-                
-                _stage = 2;
-                break;
-            case 2:
-                Log.info("Curtain start-of-end pulse");
-                pulse(true);
-                _stopMillis = millis() + PULSE_MILLIS;
-                _stage = 3;
-                break;
-            case 3:
-                Log.info("Curtain end-of-end pulse");
-                pulse(false);
-                _stopMillis = millis() + FULL_TIME_MILLIS - PULSE_MILLIS;
-                _stage = 4;
-                break;
-            case 4:
-                _stage = 0;
-                IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "stopped");
-                break;
-            default:
-                Log.error("Invalid _stage %d",_stage);
+    if(isCurtainRunning()) {
+        
+        if(isTimeToChangePulse()) {
+            switch(_stage) {
+                case 1:
+                    Log.info("Curtain end-of-start pulse");
+                    pulse(false);
+                    
+                    _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_startPosition - _value)) / 100) - PULSE_MILLIS;
+                    
+                    _stage = 2;
+                    break;
+                case 2:
+                    Log.info("Curtain start-of-end pulse");
+                    pulse(true);
+                    _stopMillis = millis() + PULSE_MILLIS;
+                    _stage = 3;
+                    break;
+                case 3:
+                    Log.info("Curtain end-of-end pulse");
+                    pulse(false);
+                    _stopMillis = millis() + FULL_TIME_MILLIS - PULSE_MILLIS;
+                    _stage = 4;
+                    break;
+                case 4:
+                    _stage = 0;
+                    IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "stopped");
+                    break;
+                default:
+                    Log.error("Invalid _stage %d",_stage);
+            }
+            
+        }
+        
+        // Calculate periodic HomeKit updates to getCurrentPosition
+        if(millis() >= _updateMillis) {
+            _updateMillis += MILLIS_PER_UPDATE;
+            
+            int percentDelta = (int)((millis() - _startMillis) / MILLIS_PER_PERCENT);
+            Log.info("DBG: _startPosition = %d",_startPosition);
+            Log.info("DBG: curtain percent delta = %d",percentDelta);
+            Log.info("DBG: _startMillis = %ld",_startMillis);
+            Log.info("DBG: millis = %ld",millis());
+            Log.info("DBG: millis delta = %ld",millis() - _startMillis);
+            _value = _startPosition + percentDelta;
+            IoT::mqttPublish(kPublishName + "/getCurrentPosition/" + _name, String(_value));
         }
     }
 };
