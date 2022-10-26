@@ -61,7 +61,6 @@ void Device::add(Device *device)
             ptr = ptr->_next;
             i++;
         }
-        Log.info("  adding device "+String(i));
         ptr->_next = device;
     }
     device->begin();
