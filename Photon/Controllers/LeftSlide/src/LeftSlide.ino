@@ -40,7 +40,7 @@ Author: Ron Lisle
 #define CONTROLLER_NAME "LeftSlide"
 #define MQTT_BROKER "192.168.50.33"
 #define CONNECT_TO_CLOUD true
-#define LIVINGROOM_MOTION_TIMEOUT 15*1000
+#define LIVINGROOM_MOTION_TIMEOUT 3*60*1000
 
 // Because this controller needs to be connect to the intern
 // it will not use SEMI_AUTOMATIC or threads
