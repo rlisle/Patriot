@@ -372,7 +372,7 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
 
 // This is our formatter. We can format messages however we want.
 void MQTTManager::log(const char *category, String message) {
-    String time = Time.format(Time.now(), "%a %H:%M");
+    String time = Time.format(Time.local(), "%a %H:%M");
 
     if(!_logging) {
         _logging++;
