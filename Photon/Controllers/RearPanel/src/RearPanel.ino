@@ -85,6 +85,11 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
     Device::add(new NCD8Light(ADDRESS, 7, "OfficeLeftTrim", "Office", 2));
     
+    // Pseudo Devices
+    Device::add(new Device("RonHome", "All", 'X'));
+    Device::add(new Device("ShelleyHome", "All", 'X'));
+    Device::add(new Device("Nighttime", "All", 'X'));
+
     // Checklist Items -  - define for every non-automated checklist item
     
     // Pre-Trip checklist items
