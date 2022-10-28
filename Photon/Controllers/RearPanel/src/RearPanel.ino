@@ -37,7 +37,8 @@ Author: Ron Lisle
 
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
-#define OFFICE_MOTION_TIMEOUT 3*60
+#define OFFICE_MOTION_TIMEOUT 15
+//#define OFFICE_MOTION_TIMEOUT 3*60
 #define OFFICE_DOOR_TIMEOUT 5*60*1000
 
 #define ADDRESS 1      // PWM board address A0 jumper set

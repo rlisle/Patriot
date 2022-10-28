@@ -38,7 +38,7 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
 {
     _cloudEnabled = enableCloud;
  
-    Time.zone(-6);
+//    Time.zone(-6);
     
     WiFi.on();
     WiFi.connect();

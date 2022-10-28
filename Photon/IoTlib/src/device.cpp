@@ -28,10 +28,16 @@ Device::Device(String name, String room, char type)
     // Do any setup work in begin() not here.
 }
 
+// Actual device will override this in most cases
 void Device::setValue(int value) {
     Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
     buildStatusVariable();
+}
+
+void Device::setBrightness(int value) {
+    _brightness = value;
+    setValue(value);
 }
 
 // Check if device has changed and return new value or -1

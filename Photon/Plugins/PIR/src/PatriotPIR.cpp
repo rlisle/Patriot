@@ -39,6 +39,7 @@ PIR::PIR(int pinNum, String name, String room, int timeoutSecs)
 void PIR::begin() {
     pinMode(_pin, INPUT);
     _lastPollTime = millis();
+    _lastMotion = 0 - _timeoutMSecs;
 }
 
 /**
