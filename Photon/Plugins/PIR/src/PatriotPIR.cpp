@@ -25,12 +25,12 @@ All text above must be included in any redistribution.
  * @param pinNum int pin number that is connected to the sensor output
  * @param name  String name of the event to send when sensor changes
  * @param room String
- * @parm timeoutMSecs #msecs to keep on after motion stops
+ * @parm timeoutSecs #secs to keep on after motion stops (was msecs)
  */
-PIR::PIR(int pinNum, String name, String room, long timeoutMSecs)
+PIR::PIR(int pinNum, String name, String room, int timeoutSecs)
         : Device(name, room),
         _pin(pinNum),
-        _timeoutMSecs(timeoutMSecs)
+        _timeoutMSecs(timeoutSecs * 1000)
 {
     _type  = 'M';
     _value = 0;
@@ -81,6 +81,18 @@ bool PIR::isTimeToCheckSensor()
  */
 bool PIR::didSensorChange()
 {
+    int prevValue = _value;
+    _value = stateWithDelayedOff();
+    return _value != prevValue;
+}
+
+/**
+ * stateWithDelayedOff()
+ *
+ * @return bool state with delayed turn off
+ */
+int PIR::stateWithDelayedOff()
+{
     int pinState = digitalRead(_pin);
     int newValue = pinState ? 100 : 0;
     
@@ -90,15 +102,10 @@ bool PIR::didSensorChange()
     // Turn off only after delay
     } else {
         if(_lastMotion + _timeoutMSecs > millis()) {
-            return false;
+            newValue = 100;
         }
     }
-    
-    if(newValue != _value) {
-        _value = newValue;
-        return true;
-    }
-    return false;
+    return newValue;
 }
 
 /**
