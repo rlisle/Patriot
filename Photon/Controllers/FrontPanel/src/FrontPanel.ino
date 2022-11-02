@@ -40,7 +40,7 @@
 #include <PatriotLight.h>
 #include <PatriotNCD8Light.h>
 
-#define CONTROLLER_NAME "FrontPanel2"
+#define CONTROLLER_NAME "FrontPanel"
 #define MQTT_BROKER "192.168.50.33"
 #define ADDRESS 1      // PWM board lowest switch on
 
