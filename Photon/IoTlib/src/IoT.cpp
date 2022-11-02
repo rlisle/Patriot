@@ -37,7 +37,8 @@ bool IoT::_cloudEnabled = false;
 void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
 {
     _cloudEnabled = enableCloud;
-    
+
+    Time.zone(-6);              // CST
     handleDaylightSavings();
     
     WiFi.on();
@@ -60,7 +61,7 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
 
 // from 2nd Sunday of March through 1st Sunday of November
 // 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
-void handleDaylightSavings() {
+void IoT::handleDaylightSavings() {
     int month = Time.month();
     if(month > 3 && month < 11) {
         Time.beginDST();
@@ -71,7 +72,7 @@ void handleDaylightSavings() {
     }
 }
 
-void handleDSTMarch() {
+void IoT::handleDSTMarch() {
     int weekday = Time.weekday();
     int day = Time.day();
     int hour = Time.hour();
@@ -99,7 +100,7 @@ void handleDSTMarch() {
     Time.beginDST();
 }
 
-void handleDSTNovember() {
+void IoT::handleDSTNovember() {
     int weekday = Time.weekday();
     int day = Time.day();
     int hour = Time.hour();
