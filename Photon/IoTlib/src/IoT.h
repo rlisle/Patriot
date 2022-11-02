@@ -63,6 +63,9 @@ private:
     static MQTTManager* _mqttManager;
     static bool _cloudEnabled;
     
+    static void handleDaylightSavings();
+    static void handleDSTMarch();
+    static void handleDSTNovember();
     static void dailyReset();
     static void subscribeHandler(const char *eventName, const char *rawData);
     static void mqttHandler(char* topic, byte* payload, unsigned int length);
