@@ -28,10 +28,11 @@ private:
 
     bool      isTimeToCheckSensor();
     bool      didSensorChange();
+    int       stateWithDelayedOff();
     void      notify();
     
 public:
-    PIR(int pinNum, String name, String room, long timeoutMSecs);
+    PIR(int pinNum, String name, String room, int timeoutSecs);
 
     void begin();
     void loop();

@@ -37,7 +37,8 @@ Author: Ron Lisle
 
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
-#define OFFICE_MOTION_TIMEOUT 2*60*1000
+#define OFFICE_MOTION_TIMEOUT 15
+//#define OFFICE_MOTION_TIMEOUT 3*60
 #define OFFICE_DOOR_TIMEOUT 5*60*1000
 
 #define ADDRESS 1      // PWM board address A0 jumper set
@@ -85,6 +86,10 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
     Device::add(new NCD8Light(ADDRESS, 7, "OfficeLeftTrim", "Office", 2));
     
+    // Pseudo Devices
+    Device::add(new Device("AnyoneHome", "All", 'X'));
+    Device::add(new Device("Nighttime", "All", 'X'));
+
     // Checklist Items -  - define for every non-automated checklist item
     
     // Pre-Trip checklist items
