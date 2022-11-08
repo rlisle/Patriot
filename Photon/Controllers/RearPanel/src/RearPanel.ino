@@ -88,6 +88,8 @@ void createDevices() {
     
     // Pseudo Devices
     Device::add(new Device("AnyoneHome", "All", 'X'));
+    Device::add(new Device("RonHome", "All", 'X'));
+    Device::add(new Device("ShelleyHome", "All", 'X'));
     Device::add(new Device("Nighttime", "All", 'X'));
 
     // Checklist Items -  - define for every non-automated checklist item
