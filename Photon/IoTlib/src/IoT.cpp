@@ -59,9 +59,97 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
 
 }
 
+
+void IoT::mqttPublish(String topic, String message)
+{
+    _mqttManager->publish(topic, message);
+}
+
+/**
+ * Loop method must be called periodically,
+ * typically from the sketch loop() method.
+ */
+void IoT::loop()
+{
+    Device::loopAll();
+    
+    _mqttManager->loop();
+    
+    dailyReset();
+}
+
+/**
+ * Perform a reboot daily at 2:00 am
+ * and it has been running at least 6 hours
+ */
+void IoT::dailyReset() {
+    if(Time.hour() == 2 && System.uptime() > 60*60*6 ) {
+        System.reset(RESET_NO_WAIT);
+    }
+}
+
+/**
+ * Particle.io Subscribe Handler
+ * t:patriot m:<device>:<value>
+ * This method handles commands from Alexa
+ */
+void IoT::subscribeHandler(const char *eventName, const char *rawData)
+{
+    String data = String(rawData).trim();
+    String event(eventName);
+    
+    Log.info("Particle.io subscribe received data: '"+event+"', '"+data+"'");
+    
+    _mqttManager->parseMessage(event.toLowerCase(), data.toLowerCase());
+}
+
+/**
+ MQTT Subscribe Handler
+ */
+void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
+    
+    _mqttManager->mqttHandler(rawTopic, payload, length);
+}
+
+/**
+ publishValue()
+ param: name of state
+ param: value to assign state
+ return: 0 success, -1 MQTT error
+ */
+void IoT::publishValue(String name, int value) {
+    _mqttManager->publish("patriot/" + name, String(value));
+}
+
+// LATITUDE/LONGITUDE
+//
+void IoT::setLatLong(float latitude, float longitude) {
+    // Currently only PartOfDay cares about (and persists) this.
+    Device::setAllLatLong(latitude, longitude);
+}
+
+// TIMEZONE
+//
+void IoT::setTimezone(int timezone) {
+    Log.trace("setTimezone: "+String(timezone));
+    int8_t tz = timezone;
+    Time.zone(float(timezone));
+    // Persist this value across reboots
+    EEPROM.put(TIMEZONE_ADDR, tz);
+}
+
 // from 2nd Sunday of March through 1st Sunday of November
 // 2022 3/13 - 11/6, 2023 3/12 - 11/5, 2024 3/10 - 11/3
 void IoT::handleDaylightSavings() {
+    // Read & set persisted value from EEPROM (if present)
+    int8_t timezone;
+    EEPROM.get(TIMEZONE_ADDR, timezone);
+    if(timezone == 0xff) {      // 0xff means never written
+        timezone = -6;          // Default to CST
+    }
+    Log.trace("Setting timezone to "+String(timezone));
+    Time.zone(float(timezone));
+    
     int month = Time.month();
     if(month > 3 && month < 11) {
         Time.beginDST();
@@ -133,63 +221,3 @@ void IoT::handleDSTNovember() {
     Time.beginDST();
 }
 
-void IoT::mqttPublish(String topic, String message)
-{
-    _mqttManager->publish(topic, message);
-}
-
-/**
- * Loop method must be called periodically,
- * typically from the sketch loop() method.
- */
-void IoT::loop()
-{
-    Device::loopAll();
-    
-    _mqttManager->loop();
-    
-    dailyReset();
-}
-
-/**
- * Perform a reboot daily at 2:00 am
- * and it has been running at least 6 hours
- */
-void IoT::dailyReset() {
-    if(Time.hour() == 2 && System.uptime() > 60*60*6 ) {
-        System.reset(RESET_NO_WAIT);
-    }
-}
-
-/**
- * Particle.io Subscribe Handler
- * t:patriot m:<device>:<value>
- * This method handles commands from Alexa
- */
-void IoT::subscribeHandler(const char *eventName, const char *rawData)
-{
-    String data = String(rawData).trim();
-    String event(eventName);
-    
-    Log.info("Particle.io subscribe received data: '"+event+"', '"+data+"'");
-    
-    _mqttManager->parseMessage(event.toLowerCase(), data.toLowerCase());
-}
-
-/**
- MQTT Subscribe Handler
- */
-void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
-    
-    _mqttManager->mqttHandler(rawTopic, payload, length);
-}
-
-/**
- publishValue()
- param: name of state
- param: value to assign state
- return: 0 success, -1 MQTT error
- */
-void IoT::publishValue(String name, int value) {
-    _mqttManager->publish("patriot/" + name, String(value));
-}
