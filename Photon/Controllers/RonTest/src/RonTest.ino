@@ -11,6 +11,8 @@
 
 #include <IoT.h>
 
+#define CLOUD_ENABLED false
+
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
@@ -24,7 +26,7 @@ int sleeping = 0;
 void setup() {
 //    WiFi.selectAntenna(ANT_EXTERNAL); //TODO: connect external antenna
 //    WiFi.useDynamicIP();
-    IoT::begin("192.168.50.33", "RonTest", true);
+    IoT::begin("192.168.50.33", "RonTest", CLOUD_ENABLED);
     Device::add(new Device("sleeping", "All"));
 }
 

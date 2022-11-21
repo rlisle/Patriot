@@ -52,7 +52,10 @@ private:
     String    parseDeviceName(String subtopic);
     void      parseLogLevel(String message);
     void      sendAlivePeriodically();
-    
+    void      updateStatusLed();
+    void      manageNetwork();
+    void      doReboot();
+
     // LogHandler methods
     const char* extractFileName(const char *s);
     const char* extractFuncName(const char *s, size_t *size);

@@ -22,7 +22,6 @@ All text above must be included in any redistribution.
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName)
 {
-    Log.info("DEBUG: MQTTManager");
     _controllerName = controllerName.toLowerCase();
     _logging = 0;
     _status = Unknown;
@@ -41,60 +40,79 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName)
     digitalWrite(D7, LOW);
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
+    delay(500);
+//    connect();
+//}
+//
+//bool MQTTManager::connect()
+//{
+//    if (_mqtt->isConnected()) {
+//        return true;
+//    }
 
-    connect();
-}
-
-bool MQTTManager::connect()
-{
     _lastMQTTtime = Time.now();
     _lastAliveTime = _lastMQTTtime;
     _mqtt->connect(_controllerName + "Id");
+    delay(500);
     if (_mqtt->isConnected()) {
+        publish("patriot/log","Hello, World!");
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
+        // Looks good, now register our MQTT LogHandler
+        LogManager::instance()->addHandler(this);
+        Log.info("MQTT connected and log handler added");
     } else {
         // This won't do anything because our handler isn't connected yet.
         Log.warn("MQTT is NOT connected! Check MQTT IP address");
+//        return false;
     }
-    // Looks good, now register our MQTT LogHandler
-    LogManager::instance()->addHandler(this);
-    Log.info("MQTT log handler added");
-    
-    return true;
+//    return true;
 }
 
 /**
  * Send MQTT data
  */
 bool MQTTManager::publish(String topic, String message) {
-    if(!_mqtt->isConnected() || !WiFi.ready()) {
-        connect();
-    }
+//    if(!_mqtt->isConnected() || !WiFi.ready()) {
+//        connect();
+//    }
     
     if(_mqtt->isConnected() && WiFi.ready()) {
         _mqtt->publish(topic,message);
         return true;
-    } else {
-        Serial.println("MQTT not connected: didn't publish "+topic+", "+message);
+//    } else {
+//        Serial.println("MQTT not connected: didn't publish "+topic+", "+message);
     }
     return false;
 }
 
 void MQTTManager::loop()
 {
-    _mqtt->loop();
-    
     if(_mqtt->isConnected()) {
-        sendAlivePeriodically();
-    } else {
-        Serial.println("MQTT not connected");
-        connect();
+        _mqtt->loop();
+//    } else {
+//        Serial.println("MQTT not connected");
+//        connect();
+    }
+    updateStatusLed();
+    manageNetwork();
+}
+
+void MQTTManager::manageNetwork() {
+    
+    if(WiFi.ready() == false && WiFi.connecting() == false) {
+        Log.warn("DEBUG: manageNetwork not ready, reboot");
+        doReboot();
+    }
+            
+    // If no MQTT received within timeout period then reboot
+    if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
+        Log.warn("MQTT Timeout.");
+        doReboot();
     }
 
-    //TODO: only poll this periodically
-    reconnectCheck();
+    sendAlivePeriodically();
 }
 
 void MQTTManager::sendAlivePeriodically() {
@@ -106,19 +124,10 @@ void MQTTManager::sendAlivePeriodically() {
     }
 }
 
-void MQTTManager::reconnectCheck() {
-    // Still starting up? (eg. connection not done yet)
-    if(_lastMQTTtime == 0) return;
-    
-    system_tick_t secondsSinceLastMessage = Time.now() - _lastMQTTtime;
-    if(secondsSinceLastMessage > MQTT_TIMEOUT_SECONDS) {
-        Log.warn("Connection lost, reconnecting. _lastMQTTtime = " + String(_lastMQTTtime) + ", Time.now() = " + String(Time.now()));
-        //TODO: Fix connect(). Until then, just reset the Photon
-        //connect();    // This will perform a reconnect
-        Log.warn("MQTT lost. Resetting");
-        Device::resetAll();
-        System.reset(RESET_NO_WAIT);
-    }
+void MQTTManager::doReboot() {
+    Log.warn("Resetting");
+    Device::resetAll();
+    System.reset(RESET_NO_WAIT);
 }
 
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
@@ -412,6 +421,56 @@ void MQTTManager::log(const char *category, String message) {
         _logging++;
         publish("patriot/log/"+_controllerName, time + " " + message);
         _logging--;
+    }
+}
+
+//TODO: move to its own class
+void MQTTManager::updateStatusLed() {
+    
+    if(millis() >= _lastBlinkTimeMs + BLINK_INTERVAL) {
+        
+        _lastBlinkTimeMs = millis();
+        _blinkPhase++;
+
+        int currentLed = digitalRead(D7);
+        int nextLed = LOW;
+
+        switch (_status)
+        {
+            case Unknown:   // steady fast blinks
+                nextLed = !currentLed;
+                _blinkPhase = 0;
+                break;
+            case Wifi:  // 4 short blinks
+                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5 || _blinkPhase == 7) {
+                    nextLed = HIGH;
+                } else if(_blinkPhase > 9) {
+                    _blinkPhase = 0;
+                }
+                break;
+            case Mqtt:  // 3 short blinks off, on, off, on, off, off
+                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5) {
+                    nextLed = HIGH;
+                } else if(_blinkPhase > 7) {
+                    _blinkPhase = 0;
+                }
+                break;
+            case Cloud: // 2 short blink off, on, off, off
+                if(_blinkPhase == 1 || _blinkPhase == 3) {
+                    nextLed = HIGH;
+                } else if(_blinkPhase > 5) {
+                    _blinkPhase = 0;
+                }
+                break;
+            case Ok:    // Steady long blinks
+                nextLed = currentLed;
+                if(_blinkPhase > 1) {
+                    nextLed = !currentLed;
+                    _blinkPhase = 0;
+                }
+                break;
+        }
+        digitalWrite(D7, nextLed);
     }
 }
 

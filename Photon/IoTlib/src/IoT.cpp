@@ -70,7 +70,7 @@ void IoT::mqttPublish(String topic, String message)
  */
 void IoT::loop()
 {
-    Device::loopAll();
+//    Device::loopAll();
     
     _mqttManager->loop();
 }
