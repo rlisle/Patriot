@@ -43,9 +43,10 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
     
     WiFi.on();
     WiFi.connect();
+    waitUntil(WiFi.ready);
 
     if(_cloudEnabled == true) {
-//        Particle.connect();   // Not needed if SYSTEM_MODE(AUTOMATIC) (default)
+        Particle.connect();   // Not needed if SYSTEM_MODE(AUTOMATIC) (default)
         
         // Expose particle.io variables
         Device::expose();
@@ -54,9 +55,7 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
         Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
     }
 
-    String connectID = controllerName + "Id";
-    _mqttManager = new MQTTManager(brokerIP, connectID, controllerName);
-
+    _mqttManager = new MQTTManager(brokerIP, controllerName);
 }
 
 
@@ -74,19 +73,6 @@ void IoT::loop()
     Device::loopAll();
     
     _mqttManager->loop();
-    
-    dailyReset();
-}
-
-/**
- * Perform a reboot daily at 2:00 am
- * and it has been running at least 6 hours
- */
-//TODO: Is this necessary if we reset when MQTT is lost?
-void IoT::dailyReset() {
-    if(Time.hour() == 2 && System.uptime() > 60*60*6 ) {
-        System.reset(RESET_NO_WAIT);
-    }
 }
 
 /**
@@ -107,8 +93,8 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 /**
  MQTT Subscribe Handler
  */
-void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
-    
+void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length)
+{
     _mqttManager->mqttHandler(rawTopic, payload, length);
 }
 

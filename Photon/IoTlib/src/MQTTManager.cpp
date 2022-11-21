@@ -18,63 +18,50 @@ All text above must be included in any redistribution.
 
 #define MQTT_TIMEOUT_SECONDS 60*16
 #define MQTT_ALIVE_SECONDS 60*5
+#define BLINK_INTERVAL  250
 
-MQTTManager::MQTTManager(String brokerIP, String connectID, String controllerName)
+MQTTManager::MQTTManager(String brokerIP, String controllerName)
 {
+    Log.info("DEBUG: MQTTManager");
     _controllerName = controllerName.toLowerCase();
     _logging = 0;
+    _status = Unknown;
+    _lastBlinkTimeMs = 0;
+    _blinkPhase = 0;
+    _lastMQTTtime = 0;
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
     _logLevel = LOG_LEVEL_ALL;     // See particle doc for options
-        
     //TODO: by default, just the "app" category is used.
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
 
+    // Setup blue LED for network status
+    pinMode(D7, OUTPUT);    // Blue LED
+    digitalWrite(D7, LOW);
+
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
-    _connectID = connectID;
 
     connect();
 }
 
-bool MQTTManager::connect() {
-
-    //TODO: could this even happen? I don't think so.
-    if(_mqtt == NULL) {
-        Log.error("ERROR! MQTTManager: connect called but object null");
-    }
-    
-    if(!WiFi.ready()) {
-        WiFi.connect();
-        if(!WiFi.ready()) {
-            Serial.println("MQTT connect() WiFi not ready");
-            return false;
-        }
-    }
-    
+bool MQTTManager::connect()
+{
     _lastMQTTtime = Time.now();
     _lastAliveTime = _lastMQTTtime;
-
-
-    if(_mqtt->isConnected()) {
-        Log.info("MQTT is connected, so disconnecting first");
-        LogManager::instance()->removeHandler(this);
-        _mqtt->disconnect();
-    }
-
-    _mqtt->connect(_connectID);
+    _mqtt->connect(_controllerName + "Id");
     if (_mqtt->isConnected()) {
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
     } else {
         // This won't do anything because our handler isn't connected yet.
-        Serial.println("MQTT is NOT connected! Check MQTT IP address");
+        Log.warn("MQTT is NOT connected! Check MQTT IP address");
     }
     // Looks good, now register our MQTT LogHandler
     LogManager::instance()->addHandler(this);
-
-    Log.info("MQTT Connected");
+    Log.info("MQTT log handler added");
+    
     return true;
 }
 
