@@ -27,6 +27,7 @@ All text above must be included in any redistribution.
 // Setting to 0 may restore previous restoration
 
 // PartOfDay
+#define UNINITIALIZED 0
 #define SUNRISE 1
 #define MORNING 2
 #define NOON 3
