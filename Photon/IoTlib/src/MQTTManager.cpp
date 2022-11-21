@@ -27,7 +27,6 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName)
     _status = Unknown;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
-    _lastMQTTtime = 0;
 
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
@@ -40,16 +39,11 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName)
     digitalWrite(D7, LOW);
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
-    delay(500);
-//    connect();
-//}
-//
-//bool MQTTManager::connect()
-//{
-//    if (_mqtt->isConnected()) {
-//        return true;
-//    }
+    connect();
+}
 
+bool MQTTManager::connect()
+{
     _lastMQTTtime = Time.now();
     _lastAliveTime = _lastMQTTtime;
     _mqtt->connect(_controllerName + "Id");
@@ -59,30 +53,23 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName)
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
-        // Looks good, now register our MQTT LogHandler
         LogManager::instance()->addHandler(this);
         Log.info("MQTT connected and log handler added");
     } else {
-        // This won't do anything because our handler isn't connected yet.
+        // In case serialLogHandler is connected
         Log.warn("MQTT is NOT connected! Check MQTT IP address");
-//        return false;
+        return false;
     }
-//    return true;
+    return true;
 }
 
 /**
  * Send MQTT data
  */
 bool MQTTManager::publish(String topic, String message) {
-//    if(!_mqtt->isConnected() || !WiFi.ready()) {
-//        connect();
-//    }
-    
     if(_mqtt->isConnected() && WiFi.ready()) {
         _mqtt->publish(topic,message);
         return true;
-//    } else {
-//        Serial.println("MQTT not connected: didn't publish "+topic+", "+message);
     }
     return false;
 }
@@ -91,16 +78,13 @@ void MQTTManager::loop()
 {
     if(_mqtt->isConnected()) {
         _mqtt->loop();
-//    } else {
-//        Serial.println("MQTT not connected");
-//        connect();
     }
     updateStatusLed();
     manageNetwork();
 }
 
-void MQTTManager::manageNetwork() {
-    
+void MQTTManager::manageNetwork()
+{
     if(WiFi.ready() == false && WiFi.connecting() == false) {
         Log.warn("DEBUG: manageNetwork not ready, reboot");
         doReboot();

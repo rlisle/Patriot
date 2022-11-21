@@ -11,7 +11,7 @@
 
 #include <IoT.h>
 
-#define CLOUD_ENABLED false
+#define CLOUD_ENABLED true
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
