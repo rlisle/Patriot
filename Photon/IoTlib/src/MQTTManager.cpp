@@ -12,9 +12,9 @@ All text above must be included in any redistribution.
 
 */
 #include "MQTTManager.h"
-#include "constants.h"
 #include "device.h"
 #include "IoT.h"
+#include "constants.h"
 
 #define MQTT_TIMEOUT_SECONDS 60*16
 #define MQTT_ALIVE_SECONDS 60*5
