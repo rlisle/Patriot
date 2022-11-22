@@ -21,11 +21,6 @@ All text above must be included in any redistribution.
 #include "device.h"
 #include "MQTTManager.h"
 
-
-
-// 0 means unitialized, initial state
-// Setting to 0 may restore previous restoration
-
 // PartOfDay
 #define UNINITIALIZED 0
 #define SUNRISE 1
@@ -48,8 +43,6 @@ All text above must be included in any redistribution.
  * All methods and properties are static, meaning no initialization
  */
 class IoT {
-
-    friend MQTTManager;
 
 public:
 
@@ -74,6 +67,8 @@ public:
     static void setLatLong(float latitude, float longitude);
     static void setTimezone(int timezone);
     
+    static void mqttHandler(char* topic, byte* payload, unsigned int length);
+    
 private:
     static String _controllerName;
     static MQTTManager* _mqttManager;
@@ -82,7 +77,5 @@ private:
     static void handleDaylightSavings();
     static void handleDSTMarch();
     static void handleDSTNovember();
-    static void dailyReset();
     static void subscribeHandler(const char *eventName, const char *rawData);
-    static void mqttHandler(char* topic, byte* payload, unsigned int length);
 };
