@@ -55,14 +55,19 @@ public:
     
     static String controllerName() { return _mqttManager->controllerName(); };
 
-    static void mqttPublish(String topic, String message);
+    /**
+     * Publish a message to MQTT
+     * param: subtopic - MQTT topic prepended with "patriot/"
+     * param message or value
+     */
+    static void publishMQTT(String subtopic, String message);
+    static void publishValue(String subtopic, int value);
 
     /**
      * Loop needs to be called periodically
      */
     static void loop();
     
-    static void publishValue(String name, int value);  // Sends MQTT message
     
     static void setLatLong(float latitude, float longitude);
     static void setTimezone(int timezone);

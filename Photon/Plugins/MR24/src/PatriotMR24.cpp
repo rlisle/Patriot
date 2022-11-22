@@ -255,9 +255,8 @@ void MR24::notify()
     Log.info("Radar change from "+_prevStatusMessage+" to "+_statusMessage);
     _prevStatusMessage = _statusMessage;
     
-    String topic = "patriot/" + _name;
     String message = String(_value);
-     IoT::mqttPublish(topic,message);
+     IoT::publishMQTT(_name,message);
 }
 
 const unsigned char crcHiTable[256] =

@@ -246,6 +246,6 @@ void Device::buildChecklistVariable()
 // New format: patriot/state/<room>/<T>/<name>
 void Device::publishStates() {
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-        IoT::mqttPublish("patriot/state/"+ptr->room()+"/"+ptr->type()+"/"+ptr->name(), String(ptr->_value));
+        IoT::publishMQTT("state/"+ptr->room()+"/"+ptr->type()+"/"+ptr->name(), String(ptr->_value));
     }
 }

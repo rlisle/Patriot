@@ -24,6 +24,7 @@
  */
 #include "IoT.h"
 
+
 // Static Variables
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
@@ -58,12 +59,6 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
     _mqttManager = new MQTTManager(brokerIP, controllerName);
 }
 
-
-void IoT::mqttPublish(String topic, String message)
-{
-    _mqttManager->publish(topic, message);
-}
-
 /**
  * Loop method must be called periodically,
  * typically from the sketch loop() method.
@@ -77,7 +72,7 @@ void IoT::loop()
 /**
  * Particle.io Subscribe Handler
  * t:patriot m:<device>:<value>
- * This method handles commands from Alexa
+ * This method handles commands from Particle Cloud (was Alexa)
  */
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
@@ -98,13 +93,21 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length)
 }
 
 /**
- publishValue()
- param: name of state
- param: value to assign state
+ * Publish an MQTT message
+ */
+void IoT::publishMQTT(String subtopic, String message)
+{
+    _mqttManager->publish(kPublishName+"/"+subtopic, message);
+}
+
+/**
+ Publish an integer value to MQTT patriot/<subtopic>
+ param: subtopic patriot/<subtopic>
+ param: mqtt message
  return: 0 success, -1 MQTT error
  */
-void IoT::publishValue(String name, int value) {
-    _mqttManager->publish("patriot/" + name, String(value));
+void IoT::publishValue(String subtopic, int value) {
+    _mqttManager->publish(kPublishName+"/"+subtopic, String(value));
 }
 
 // LATITUDE/LONGITUDE

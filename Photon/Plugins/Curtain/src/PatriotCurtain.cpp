@@ -114,15 +114,15 @@ void Curtain::setValue(int percent) {
     Log.info("_updateMillis = %ld",_updateMillis);
 
     // Send HomeKit acknowledgement
-    IoT::mqttPublish(kPublishName + "/getTargetPosition/" + _name, String(percent));
+    IoT::publishMQTT("getTargetPosition/" + _name, String(percent));
     
     if(_value > _startPosition) {
         _mode = OPEN_CURTAIN;
-        IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "increasing");
+        IoT::publishMQTT("getPositionState/" + _name, "increasing");
 
     } else {
         _mode = CLOSE_CURTAIN;
-        IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "decreasing");
+        IoT::publishMQTT("getPositionState/" + _name, "decreasing");
     }
 
     // We only need a single pulse if opening or closing all the way
@@ -204,7 +204,7 @@ void Curtain::loop()
                     break;
                 case 4:
                     _stage = 0;
-                    IoT::mqttPublish(kPublishName + "/getPositionState/" + _name, "stopped");
+                    IoT::publishMQTT("getPositionState/" + _name, "stopped");
                     break;
                 default:
                     Log.error("Invalid _stage %d",_stage);
@@ -223,7 +223,7 @@ void Curtain::loop()
             Log.info("DBG: millis = %ld",millis());
             Log.info("DBG: millis delta = %ld",millis() - _startMillis);
             _value = _startPosition + percentDelta;
-            IoT::mqttPublish(kPublishName + "/getCurrentPosition/" + _name, String(_value));
+            IoT::publishMQTT("getCurrentPosition/" + _name, String(_value));
         }
     }
 };

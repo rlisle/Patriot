@@ -37,6 +37,8 @@ Author: Ron Lisle
 
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
+#define CONNECT_TO_CLOUD true
+
 #define OFFICE_MOTION_TIMEOUT 15
 //#define OFFICE_MOTION_TIMEOUT 3*60
 #define OFFICE_DOOR_TIMEOUT 5*60*1000
@@ -44,9 +46,8 @@ Author: Ron Lisle
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
-#define CONNECT_TO_CLOUD true
-//SYSTEM_THREAD(ENABLED);
-//SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
@@ -56,8 +57,8 @@ bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
 
 void setup() {
-    WiFi.selectAntenna(ANT_EXTERNAL);
-    WiFi.useDynamicIP();
+    //WiFi.selectAntenna(ANT_EXTERNAL);
+    //WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
     createDevices();
 }
@@ -168,7 +169,7 @@ void loop() {
 //            Device::setValue("OfficeCeiling", 40);
 //            if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
 //                Device::setValue("OfficeCeiling", 60);
-//                IoT::mqttPublish("patriot/sleeping", "1");   // AWAKE
+//                IoT::publishMQTT("sleeping", "1");   // AWAKE
 //                Device::setValue("sleeping", AWAKE);
 //            }
 //        }

@@ -16,7 +16,7 @@
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-SerialLogHandler logHandler;
+//SerialLogHandler logHandler;
 
 unsigned long lastScan = 0;
 unsigned long scanInterval = 15000;

@@ -112,7 +112,6 @@ bool Checklist::didSwitchChange()
  */
 void Checklist::notify()
 {
-    String topic = "patriot/" + _name;
     String message = String(_value);
-    IoT::mqttPublish(topic,message);
+    IoT::publishMQTT(_name,message);
 }
