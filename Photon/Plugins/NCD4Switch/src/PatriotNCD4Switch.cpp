@@ -196,8 +196,7 @@ bool NCD4Switch::didSwitchChange()
  */
 void NCD4Switch::notify()
 {
-    String topic = "patriot/" + _name;
     String message = String(_value);
-    IoT::mqttPublish(topic,message);
+    IoT::publishMQTT(_name,message);
 }
 

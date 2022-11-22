@@ -17,16 +17,11 @@ All text above must be included in any redistribution.
 #pragma once
 
 #include "Particle.h"
-#include "constants.h"
 #include "device.h"
 #include "MQTTManager.h"
 
-
-
-// 0 means unitialized, initial state
-// Setting to 0 may restore previous restoration
-
 // PartOfDay
+#define UNINITIALIZED 0
 #define SUNRISE 1
 #define MORNING 2
 #define NOON 3
@@ -48,8 +43,6 @@ All text above must be included in any redistribution.
  */
 class IoT {
 
-    friend MQTTManager;
-
 public:
 
     /**
@@ -61,17 +54,24 @@ public:
     
     static String controllerName() { return _mqttManager->controllerName(); };
 
-    static void mqttPublish(String topic, String message);
+    /**
+     * Publish a message to MQTT
+     * param: subtopic - MQTT topic prepended with "patriot/"
+     * param message or value
+     */
+    static void publishMQTT(String subtopic, String message);
+    static void publishValue(String subtopic, int value);
 
     /**
      * Loop needs to be called periodically
      */
     static void loop();
     
-    static void publishValue(String name, int value);  // Sends MQTT message
     
     static void setLatLong(float latitude, float longitude);
     static void setTimezone(int timezone);
+    
+    static void mqttHandler(char* topic, byte* payload, unsigned int length);
     
 private:
     static String _controllerName;
@@ -81,7 +81,5 @@ private:
     static void handleDaylightSavings();
     static void handleDSTMarch();
     static void handleDSTNovember();
-    static void dailyReset();
     static void subscribeHandler(const char *eventName, const char *rawData);
-    static void mqttHandler(char* topic, byte* payload, unsigned int length);
 };

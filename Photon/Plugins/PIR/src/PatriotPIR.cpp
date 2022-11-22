@@ -115,7 +115,6 @@ int PIR::stateWithDelayedOff()
  */
 void PIR::notify()
 {
-    String topic = "patriot/" + _name;
     String message = String(_value);
-    IoT::mqttPublish(topic,message);
+    IoT::publishMQTT(_name,message);
 }

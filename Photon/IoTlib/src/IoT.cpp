@@ -23,6 +23,7 @@
  
  */
 #include "IoT.h"
+#include "constants.h"
 
 // Static Variables
 Device*      Device::_devices = NULL;
@@ -43,9 +44,10 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
     
     WiFi.on();
     WiFi.connect();
+    waitUntil(WiFi.ready);
 
     if(_cloudEnabled == true) {
-//        Particle.connect();   // Not needed if SYSTEM_MODE(AUTOMATIC) (default)
+        Particle.connect();   // Not needed if SYSTEM_MODE(AUTOMATIC) (default)
         
         // Expose particle.io variables
         Device::expose();
@@ -54,15 +56,7 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
         Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
     }
 
-    String connectID = controllerName + "Id";
-    _mqttManager = new MQTTManager(brokerIP, connectID, controllerName);
-
-}
-
-
-void IoT::mqttPublish(String topic, String message)
-{
-    _mqttManager->publish(topic, message);
+    _mqttManager = new MQTTManager(brokerIP, controllerName);
 }
 
 /**
@@ -72,26 +66,13 @@ void IoT::mqttPublish(String topic, String message)
 void IoT::loop()
 {
     Device::loopAll();
-    
     _mqttManager->loop();
-    
-    dailyReset();
-}
-
-/**
- * Perform a reboot daily at 2:00 am
- * and it has been running at least 6 hours
- */
-void IoT::dailyReset() {
-    if(Time.hour() == 2 && System.uptime() > 60*60*6 ) {
-        System.reset(RESET_NO_WAIT);
-    }
 }
 
 /**
  * Particle.io Subscribe Handler
  * t:patriot m:<device>:<value>
- * This method handles commands from Alexa
+ * This method handles commands from Particle Cloud (was Alexa)
  */
 void IoT::subscribeHandler(const char *eventName, const char *rawData)
 {
@@ -106,19 +87,27 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
 /**
  MQTT Subscribe Handler
  */
-void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
-    
+void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length)
+{
     _mqttManager->mqttHandler(rawTopic, payload, length);
 }
 
 /**
- publishValue()
- param: name of state
- param: value to assign state
+ * Publish an MQTT message
+ */
+void IoT::publishMQTT(String subtopic, String message)
+{
+    _mqttManager->publish(kPublishName+"/"+subtopic, message);
+}
+
+/**
+ Publish an integer value to MQTT patriot/<subtopic>
+ param: subtopic patriot/<subtopic>
+ param: mqtt message
  return: 0 success, -1 MQTT error
  */
-void IoT::publishValue(String name, int value) {
-    _mqttManager->publish("patriot/" + name, String(value));
+void IoT::publishValue(String subtopic, int value) {
+    _mqttManager->publish(kPublishName+"/"+subtopic, String(value));
 }
 
 // LATITUDE/LONGITUDE
