@@ -143,7 +143,7 @@ void loop() {
     IoT::loop();
     
 //    handleOfficeMotion();
-//    handleOfficeDoor();
+    handleOfficeDoor();
 }
 
 /**
@@ -189,36 +189,36 @@ void loop() {
  *   int sleeping
  *   int partOfDay
  */
-//void handleOfficeDoor() {
-//
-//    // Timed shut-off after door closes
-//    long loopTime = millis();
-//    if(officeDoorCountdown == true) {
-//        if(loopTime >= lastOfficeDoor+OFFICE_DOOR_TIMEOUT) {
-//            Log.info("Office door timeout");
-//            officeDoorCountdown = false;
-//            Device::setValue("RearPorch", 0);
-//        }
-//    }
-//
-//    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
-//    if( officeDoorChanged != -1) {
-//        if( officeDoorChanged > 0 ) {   // Door opened
-//            officeDoor = true;
-//            officeDoorCountdown = false;    // Reset it if it was in progress
-//            // If after sunset turn on porch light
-//            if( partOfDay > SUNSET ) {
-//                Device::setValue("RearPorch", 100);
-//            }
-//        } else {                        // Door closed
-//            officeDoor = false;
-//            lastOfficeDoor = millis();  // update timeout
-//            officeDoorCountdown = true;
-//            // Nothing else to do when door closes. Timer will shut off if needed.
-//        }
-//    }
-//
-//}
+void handleOfficeDoor() {
+
+    // Timed shut-off after door closes
+    long loopTime = millis();
+    if(officeDoorCountdown == true) {
+        if(loopTime >= lastOfficeDoor+OFFICE_DOOR_TIMEOUT) {
+            Log.info("Office door timeout");
+            officeDoorCountdown = false;
+            Device::setValue("RearPorch", 0);
+        }
+    }
+
+    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
+    if( officeDoorChanged != -1) {
+        if( officeDoorChanged > 0 ) {   // Door opened
+            officeDoor = true;
+            officeDoorCountdown = false;    // Reset it if it was in progress
+            // If after sunset turn on porch light
+            if( partOfDay > SUNSET ) {
+                Device::setValue("RearPorch", 100);
+            }
+        } else {                        // Door closed
+            officeDoor = false;
+            lastOfficeDoor = millis();  // update timeout
+            officeDoorCountdown = true;
+            // Nothing else to do when door closes. Timer will shut off if needed.
+        }
+    }
+
+}
 
 //void setAllInsideLights(int value) {
 //    Log.info("setAllInsideLights %d",value);
