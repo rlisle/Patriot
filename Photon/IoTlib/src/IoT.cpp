@@ -29,15 +29,17 @@
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
 bool IoT::_cloudEnabled = false;
+bool IoT::_mqttLogging = false;
 
 /**
  * Begin gets everything going.
  * It must be called exactly once by the sketch
  *  Network may not be connected yet.
  */
-void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
+void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool mqttLogging)
 {
     _cloudEnabled = enableCloud;
+    _mqttLogging = mqttLogging;
 
     Time.zone(-6);              // CST
     handleDaylightSavings();
@@ -56,7 +58,7 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
         Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
     }
 
-    _mqttManager = new MQTTManager(brokerIP, controllerName);
+    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
 }
 
 /**

@@ -20,9 +20,10 @@ All text above must be included in any redistribution.
 #define MQTT_ALIVE_SECONDS 60*5
 #define BLINK_INTERVAL  250
 
-MQTTManager::MQTTManager(String brokerIP, String controllerName)
+MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
     _controllerName = controllerName.toLowerCase();
+    _mqttLogging = mqttLogging;
     _logging = 0;
     _status = Unknown;
     _lastBlinkTimeMs = 0;
@@ -49,17 +50,25 @@ bool MQTTManager::connect()
     _mqtt->connect(_controllerName + "Id");
     delay(500);
     if (_mqtt->isConnected()) {
-        publish("patriot/log","Hello, World!");
+        publish(kPublishName+"/log","MQTT connected");
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
-        LogManager::instance()->addHandler(this);
-        Log.info("MQTT connected and log handler added");
+        if(_mqttLogging) {
+            LogManager::instance()->addHandler(this);
+            Log.info("MQTT log handler added");
+        }
     } else {
         // In case serialLogHandler is connected
         Log.warn("MQTT is NOT connected! Check MQTT IP address");
         return false;
     }
+    
+    _lastAliveFrontPanel = Time.now();
+    _lastAliveLeftSlide = Time.now();
+    _lastAliveRearPanel = Time.now();
+    _lastAliveRonTest = Time.now();
+
     return true;
 }
 
@@ -100,11 +109,10 @@ void MQTTManager::manageNetwork()
 }
 
 void MQTTManager::sendAlivePeriodically() {
-    system_tick_t secondsSinceLastAlive = Time.now() - _lastAliveTime;
-    if(secondsSinceLastAlive > MQTT_ALIVE_SECONDS) {
+    if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
         _lastAliveTime = Time.now();
         String time = Time.format(Time.now(), "%a %H:%M");
-        publish("patriot/alive/"+_controllerName, time);
+        publish(kPublishName+"/alive/"+_controllerName, time);
     }
 }
 
@@ -145,6 +153,14 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 
             // message is timestamp - useful when viewing MQTT, but not used here
             // Ignore it.
+            //TODO: This is a hack, refactor later
+            if(controllerName == "frontpanel") {
+                lastAliveFrontPanel = Time.now();
+            } else if(controllerName == "leftslide") {
+                    lastAliveLeftSlide = Time.now();
+            } else if(controllerName == "rearpanel") {
+                    lastAliveRearPanel = Time.now();
+            }
 
         } else if(subtopic.startsWith("brightness")) {           // BRIGHTNESS patriot/brightness/<device> value
             int value = lcMessage.toInt();

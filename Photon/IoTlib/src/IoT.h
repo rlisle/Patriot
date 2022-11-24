@@ -50,7 +50,7 @@ public:
      * Call begin to initialize the object.
      * This is done here instead of the constructor to improve debugging.
      **/
-    static void begin(String brokerIP, String controllerName, bool enableCloud);
+    static void begin(String brokerIP, String controllerName, bool enableCloud, bool mqttLogging);
     
     static String controllerName() { return _mqttManager->controllerName(); };
 
@@ -77,6 +77,7 @@ private:
     static String _controllerName;
     static MQTTManager* _mqttManager;
     static bool _cloudEnabled;
+    static bool _mqttLogging;
     
     static void handleDaylightSavings();
     static void handleDSTMarch();

@@ -11,22 +11,24 @@
 
 #include <IoT.h>
 
-#define CLOUD_ENABLED true
+// Running without cloud means Photon must be put into Listen mode to flash
+#define CLOUD_ENABLED false
+#define MQTT_LOGGING false
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-//SerialLogHandler logHandler;
+SerialLogHandler logHandler;
 
-unsigned long lastScan = 0;
-unsigned long scanInterval = 15000;
+//unsigned long lastScan = 0;
+//unsigned long scanInterval = 15000;
 
-int sleeping = 0;
+//int sleeping = 0;
 
 void setup() {
 //    WiFi.selectAntenna(ANT_EXTERNAL); //TODO: connect external antenna
 //    WiFi.useDynamicIP();
-    IoT::begin("192.168.50.33", "RonTest", CLOUD_ENABLED);
+    IoT::begin("192.168.50.33", "RonTest", CLOUD_ENABLED, MQTT_LOGGING);
     Device::add(new Device("sleeping", "All"));
 }
 
@@ -40,16 +42,16 @@ void loop() {
 
 }
 
-void handleSleeping() {
-
-    int sleepingChanged = Device::getChangedValue("sleeping");
-    if( sleepingChanged != -1 ) {
-        
-        Log.info("sleeping has changed %d",sleepingChanged);
-
-        sleeping = sleepingChanged;
-    }
-}
+//void handleSleeping() {
+//
+//    int sleepingChanged = Device::getChangedValue("sleeping");
+//    if( sleepingChanged != -1 ) {
+//
+//        Log.info("sleeping has changed %d",sleepingChanged);
+//
+//        sleeping = sleepingChanged;
+//    }
+//}
 
 
 // Diagnostic Functions
