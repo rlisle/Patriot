@@ -47,8 +47,7 @@ private:
     int       _logging; // a counting semaphore to prevent recursion
 
     void      (*_callback)(char*,uint8_t*,unsigned int);
-    bool      connect();
-    void      reconnectCheck();
+    void      connect();
     int       parseValue(String message);
     String    parseDeviceName(String subtopic);
     void      parseLogLevel(String message);

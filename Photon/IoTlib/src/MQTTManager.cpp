@@ -44,7 +44,7 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     connect();
 }
 
-bool MQTTManager::connect()
+void MQTTManager::connect()
 {
     if(_mqttLogging == false) {
         Log.info("Connecting to MQTT");
@@ -434,34 +434,23 @@ void MQTTManager::updateStatusLed() {
         int currentLed = digitalRead(D7);
         int nextLed = LOW;
 
-        switch (_status)
+        switch (_networkStatus)
         {
-            case Unknown:   // steady fast blinks
-                nextLed = !currentLed;
-                _blinkPhase = 0;
-                break;
-            case Wifi:  // 4 short blinks
-                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5 || _blinkPhase == 7) {
-                    nextLed = HIGH;
-                } else if(_blinkPhase > 9) {
-                    _blinkPhase = 0;
-                }
-                break;
-            case Mqtt:  // 3 short blinks off, on, off, on, off, off
+            case Starting:  // 3 short blinks off, on, off, on, off, off
                 if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5) {
                     nextLed = HIGH;
                 } else if(_blinkPhase > 7) {
                     _blinkPhase = 0;
                 }
                 break;
-            case Cloud: // 2 short blink off, on, off, off
+            case Wifi: // 2 short blink off, on, off, off
                 if(_blinkPhase == 1 || _blinkPhase == 3) {
                     nextLed = HIGH;
                 } else if(_blinkPhase > 5) {
                     _blinkPhase = 0;
                 }
                 break;
-            case Ok:    // Steady long blinks
+            case Mqtt:    // Steady long blinks
                 nextLed = currentLed;
                 if(_blinkPhase > 1) {
                     nextLed = !currentLed;
