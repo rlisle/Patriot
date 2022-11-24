@@ -24,6 +24,7 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
 {
     _controllerName = controllerName.toLowerCase();
     _mqttLogging = mqttLogging;
+    _lastAliveTime = 0;
     _logging = 0;
     _status = Unknown;
     _lastBlinkTimeMs = 0;
@@ -39,14 +40,16 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     pinMode(D7, OUTPUT);    // Blue LED
     digitalWrite(D7, LOW);
 
-    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
+    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler, true);
     connect();
 }
 
 bool MQTTManager::connect()
 {
+    if(_mqttLogging == false) {
+        Log.info("Connecting to MQTT");
+    }
     _lastMQTTtime = Time.now();
-    _lastAliveTime = _lastMQTTtime;
     _mqtt->connect(_controllerName + "Id");
     delay(500);
     if (_mqtt->isConnected()) {
@@ -155,11 +158,11 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // Ignore it.
             //TODO: This is a hack, refactor later
             if(controllerName == "frontpanel") {
-                lastAliveFrontPanel = Time.now();
+                _lastAliveFrontPanel = Time.now();
             } else if(controllerName == "leftslide") {
-                    lastAliveLeftSlide = Time.now();
+                _lastAliveLeftSlide = Time.now();
             } else if(controllerName == "rearpanel") {
-                    lastAliveRearPanel = Time.now();
+                _lastAliveRearPanel = Time.now();
             }
 
         } else if(subtopic.startsWith("brightness")) {           // BRIGHTNESS patriot/brightness/<device> value
