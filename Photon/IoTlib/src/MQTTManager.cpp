@@ -91,6 +91,11 @@ void MQTTManager::manageNetwork()
             LogManager::instance()->addHandler(this);
             Log.info("MQTT log handler added");
         }
+        //TODO: detect loss of other controllers
+        _lastAliveFrontPanel = Time.now();
+        _lastAliveLeftSlide = Time.now();
+        _lastAliveRearPanel = Time.now();
+        _lastAliveRonTest = Time.now();
     }
     
     // If no MQTT received within timeout period then reboot
@@ -101,32 +106,6 @@ void MQTTManager::manageNetwork()
 
     sendAlivePeriodically();
 }
-
-void connectMQTT() {
-    
-    if (_mqtt->isConnected()) {
-        publish(kPublishName+"/log","MQTT connected");
-        if(_mqtt->subscribe(kPublishName+"/#") == false) {
-            Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
-        }
-        if(_mqttLogging) {
-            LogManager::instance()->addHandler(this);
-            Log.info("MQTT log handler added");
-        }
-    } else {
-        // In case serialLogHandler is connected
-        Log.warn("MQTT is NOT connected! Check MQTT IP address");
-        return false;
-    }
-    
-    _lastAliveFrontPanel = Time.now();
-    _lastAliveLeftSlide = Time.now();
-    _lastAliveRearPanel = Time.now();
-    _lastAliveRonTest = Time.now();
-
-    return true;
-}
-
 
 void MQTTManager::sendAlivePeriodically() {
     if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
