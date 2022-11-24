@@ -46,9 +46,9 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool m
     
     WiFi.on();
     WiFi.connect();
-    waitUntil(WiFi.ready);
 
     if(_cloudEnabled == true) {
+        waitUntil(WiFi.ready);
         Particle.connect();   // Not needed if SYSTEM_MODE(AUTOMATIC) (default)
         
         // Expose particle.io variables

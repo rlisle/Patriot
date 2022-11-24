@@ -66,24 +66,26 @@ bool MQTTManager::publish(String topic, String message) {
 
 void MQTTManager::loop()
 {
+    manageNetwork();
     if(_mqtt->isConnected()) {
         _mqtt->loop();
     }
     updateStatusLed();
-    manageNetwork();
 }
 
 void MQTTManager::manageNetwork()
 {
-    if(WiFi.ready() == false && WiFi.connecting() == false) {
-        Log.warn("DEBUG: manageNetwork not ready, reboot");
-        doReboot();
+    if(_networkStatus == Starting && WiFi.ready()) {
+        _networkStatus = Wifi;
+        Log.info("Connecting to MQTT");     // in case serial logging
+        _lastMQTTtime = Time.now();
+        _mqtt->connect(_controllerName + "Id");
     }
-
+    
     if(_networkStatus != Mqtt && _mqtt->isConnected()) {
         _networkStatus = Mqtt;
         _lastMQTTtime = Time.now();
-        publish(kPublishName+"/log","MQTT connected");
+        Log.info("Connected to MQTT, subscribing to " + kPublishName + "/#");
         if(_mqtt->subscribe(kPublishName+"/#") == false) {
             Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
         }
@@ -98,6 +100,12 @@ void MQTTManager::manageNetwork()
         _lastAliveRonTest = Time.now();
     }
     
+    if(_networkStatus != Starting && WiFi.ready() == false) {
+        Log.warn("WiFi lost, rebooting");
+        doReboot();
+    }
+    
+
     // If no MQTT received within timeout period then reboot
     if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
         Log.warn("MQTT Timeout.");
