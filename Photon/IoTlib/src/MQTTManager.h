@@ -18,7 +18,7 @@
 #include "Particle.h"
 #include "MQTT.h"
 
-enum NetworkStatus { Unknown, Wifi, Mqtt, Cloud, Ok };
+enum NetworkStatus { Starting, Wifi, Mqtt };
 
 class MQTTManager : public LogHandler
 {
@@ -39,7 +39,7 @@ private:
     String    _controllerName;
     long      _lastMQTTtime;
     long      _lastAliveTime;
-    NetworkStatus _status;
+    NetworkStatus _networkStatus;
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
 

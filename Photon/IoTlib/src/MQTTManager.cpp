@@ -26,7 +26,7 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _mqttLogging = mqttLogging;
     _lastAliveTime = 0;
     _logging = 0;
-    _status = Unknown;
+    _networkStatus = Starting;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
 
@@ -51,28 +51,6 @@ bool MQTTManager::connect()
     }
     _lastMQTTtime = Time.now();
     _mqtt->connect(_controllerName + "Id");
-    delay(500);
-    if (_mqtt->isConnected()) {
-        publish(kPublishName+"/log","MQTT connected");
-        if(_mqtt->subscribe(kPublishName+"/#") == false) {
-            Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
-        }
-        if(_mqttLogging) {
-            LogManager::instance()->addHandler(this);
-            Log.info("MQTT log handler added");
-        }
-    } else {
-        // In case serialLogHandler is connected
-        Log.warn("MQTT is NOT connected! Check MQTT IP address");
-        return false;
-    }
-    
-    _lastAliveFrontPanel = Time.now();
-    _lastAliveLeftSlide = Time.now();
-    _lastAliveRearPanel = Time.now();
-    _lastAliveRonTest = Time.now();
-
-    return true;
 }
 
 /**
@@ -101,7 +79,20 @@ void MQTTManager::manageNetwork()
         Log.warn("DEBUG: manageNetwork not ready, reboot");
         doReboot();
     }
-            
+
+    if(_networkStatus != Mqtt && _mqtt->isConnected()) {
+        _networkStatus = Mqtt;
+        _lastMQTTtime = Time.now();
+        publish(kPublishName+"/log","MQTT connected");
+        if(_mqtt->subscribe(kPublishName+"/#") == false) {
+            Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
+        }
+        if(_mqttLogging) {
+            LogManager::instance()->addHandler(this);
+            Log.info("MQTT log handler added");
+        }
+    }
+    
     // If no MQTT received within timeout period then reboot
     if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
         Log.warn("MQTT Timeout.");
@@ -110,6 +101,32 @@ void MQTTManager::manageNetwork()
 
     sendAlivePeriodically();
 }
+
+void connectMQTT() {
+    
+    if (_mqtt->isConnected()) {
+        publish(kPublishName+"/log","MQTT connected");
+        if(_mqtt->subscribe(kPublishName+"/#") == false) {
+            Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
+        }
+        if(_mqttLogging) {
+            LogManager::instance()->addHandler(this);
+            Log.info("MQTT log handler added");
+        }
+    } else {
+        // In case serialLogHandler is connected
+        Log.warn("MQTT is NOT connected! Check MQTT IP address");
+        return false;
+    }
+    
+    _lastAliveFrontPanel = Time.now();
+    _lastAliveLeftSlide = Time.now();
+    _lastAliveRearPanel = Time.now();
+    _lastAliveRonTest = Time.now();
+
+    return true;
+}
+
 
 void MQTTManager::sendAlivePeriodically() {
     if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
