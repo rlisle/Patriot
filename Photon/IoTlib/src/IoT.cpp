@@ -35,28 +35,20 @@ bool IoT::_cloudEnabled = false;
  * It must be called exactly once by the sketch
  *  Network may not be connected yet.
  */
-void IoT::begin(String brokerIP, String controllerName, bool enableCloud)
+void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool mqttLogging)
 {
     _cloudEnabled = enableCloud;
 
     Time.zone(-6);              // CST
     handleDaylightSavings();
     
-    WiFi.on();
-    WiFi.connect();
-    waitUntil(WiFi.ready);
+    // Expose particle.io variables
+    Device::expose();
+    
+    // Subscribe doesn't require a connection before calling.
+    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
 
-    if(_cloudEnabled == true) {
-        Particle.connect();   // Not needed if SYSTEM_MODE(AUTOMATIC) (default)
-        
-        // Expose particle.io variables
-        Device::expose();
-        
-        // Subscribe doesn't require a connection before calling.
-        Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
-    }
-
-    _mqttManager = new MQTTManager(brokerIP, controllerName);
+    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
 }
 
 /**

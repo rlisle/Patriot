@@ -4,7 +4,6 @@ Description: This sketch controls all the switches in the Cyclone 4005 rear cont
 Author: Ron Lisle
 
  The controller is located in the office above the piano.
- It includes the PartOfDay plugin.
  
  Photon pin assignments
  - A2-A4 future 12v monitor ?
@@ -33,21 +32,20 @@ Author: Ron Lisle
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
-//#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
+#include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
 #define CONNECT_TO_CLOUD true
+#define MQTT_LOGGING true
 
 #define OFFICE_MOTION_TIMEOUT 15
-//#define OFFICE_MOTION_TIMEOUT 3*60
-#define OFFICE_DOOR_TIMEOUT 5*60*1000
 
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
+//SYSTEM_THREAD(ENABLED);
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
@@ -59,7 +57,7 @@ long lastOfficeDoor = 0;
 void setup() {
     //WiFi.selectAntenna(ANT_EXTERNAL);
     //WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD, MQTT_LOGGING);
     createDevices();
 }
 
@@ -67,8 +65,6 @@ void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
-    // Fading OfficeTrim results in door toggling, probably due to parallel wiring, so on/off only
-    Device::add(new NCD4Relay(I2CR4IO4, 2, "OfficeRightTrim", "Office"));
     
     // 4 GPIO
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
@@ -85,7 +81,6 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    Device::add(new NCD8Light(ADDRESS, 7, "OfficeLeftTrim", "Office", 2));
     
     // Pseudo Devices
     Device::add(new Device("AnyoneHome", "All", 'X'));
@@ -141,98 +136,5 @@ void createDevices() {
  */
 void loop() {
     IoT::loop();
-    
-//    handleOfficeMotion();
-//    handleOfficeDoor();
 }
 
-/**
- * handleOfficeMotion
- *
- * Dependencies:
- *   int sleeping
- *   int partOfDay
- */
-//void handleOfficeMotion() {
-//
-//    long loopTime = millis();
-//    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
-//
-//    if(officeMotionChanged == 100) {
-//        Log.info("Office Motion detected");
-//        Device::setValue("OfficeCeiling", 20);
-//        officeMotion = true;
-//
-//        // Determine if this is Ron getting up
-//        if( partOfDay > SUNSET && sleeping != AWAKE) {
-//            //TODO: maybe blink instead?
-//            Device::setValue("OfficeCeiling", 40);
-//            if(Time.hour() > 3 && Time.hour() < 9) {   // Motion after 4:00 is wakeup
-//                Device::setValue("OfficeCeiling", 60);
-//                IoT::publishMQTT("sleeping", "1");   // AWAKE
-//                Device::setValue("sleeping", AWAKE);
-//            }
-//        }
-//
-//    //TODO: Use a timer to turn off motion activated lights (like office door)
-//    } else if(officeMotionChanged == 0) {
-//        Device::setValue("OfficeCeiling", 0);
-//        officeMotion = false;
-//
-//    } // Ignore -1
-//}
-
-/**
- * handleOfficeDoor
- *
- * Dependencies:
- *   int sleeping
- *   int partOfDay
- */
-//void handleOfficeDoor() {
-//
-//    // Timed shut-off after door closes
-//    long loopTime = millis();
-//    if(officeDoorCountdown == true) {
-//        if(loopTime >= lastOfficeDoor+OFFICE_DOOR_TIMEOUT) {
-//            Log.info("Office door timeout");
-//            officeDoorCountdown = false;
-//            Device::setValue("RearPorch", 0);
-//        }
-//    }
-//
-//    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
-//    if( officeDoorChanged != -1) {
-//        if( officeDoorChanged > 0 ) {   // Door opened
-//            officeDoor = true;
-//            officeDoorCountdown = false;    // Reset it if it was in progress
-//            // If after sunset turn on porch light
-//            if( partOfDay > SUNSET ) {
-//                Device::setValue("RearPorch", 100);
-//            }
-//        } else {                        // Door closed
-//            officeDoor = false;
-//            lastOfficeDoor = millis();  // update timeout
-//            officeDoorCountdown = true;
-//            // Nothing else to do when door closes. Timer will shut off if needed.
-//        }
-//    }
-//
-//}
-
-//void setAllInsideLights(int value) {
-//    Log.info("setAllInsideLights %d",value);
-//    Device::setValue("OfficeCeiling", value);
-//    Device::setValue("Loft", value);
-//    Device::setValue("Piano", value);
-//    Device::setValue("OfficeTrim", value);
-//
-//}
-//
-//void setAllOutsideLights(int value) {
-//    Log.info("setAllOutsideLights %d",value);
-//    Device::setValue("RampPorch", value);
-//    Device::setValue("RampAwning", value);
-//    Device::setValue("RearPorch", value);
-//    Device::setValue("RearAwning", value);
-//}

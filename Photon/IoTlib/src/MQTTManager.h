@@ -18,14 +18,14 @@
 #include "Particle.h"
 #include "MQTT.h"
 
-enum NetworkStatus { Unknown, Wifi, Mqtt, Cloud, Ok };
+enum NetworkStatus { Starting, Wifi, Mqtt };
 
 class MQTTManager : public LogHandler
 {
 public:
     LogLevel    _logLevel;
 
-    MQTTManager(String brokerIP, String controllerName);
+    MQTTManager(String brokerIP, String controllerName, bool mqttLogging);
     
     bool        publish(String topic, String message);
     void        parseMessage(String topic, String message);
@@ -38,16 +38,15 @@ private:
     MQTT      *_mqtt;
     String    _controllerName;
     long      _lastMQTTtime;
-    long      _lastAliveTime;   // Send out alive messages periodically
-    NetworkStatus _status;
+    long      _lastAliveTime;
+    NetworkStatus _networkStatus;
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
 
+    bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
 
     void      (*_callback)(char*,uint8_t*,unsigned int);
-    bool      connect();
-    void      reconnectCheck();
     int       parseValue(String message);
     String    parseDeviceName(String subtopic);
     void      parseLogLevel(String message);
@@ -56,6 +55,14 @@ private:
     void      manageNetwork();
     void      doReboot();
 
+    
+    //DEBUG
+    long _lastAliveFrontPanel;
+    long _lastAliveLeftSlide;
+    long _lastAliveRearPanel;
+    long _lastAliveRonTest;
+    
+    
     // LogHandler methods
     const char* extractFileName(const char *s);
     const char* extractFuncName(const char *s, size_t *size);

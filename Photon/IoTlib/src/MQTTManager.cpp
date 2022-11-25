@@ -20,11 +20,13 @@ All text above must be included in any redistribution.
 #define MQTT_ALIVE_SECONDS 60*5
 #define BLINK_INTERVAL  250
 
-MQTTManager::MQTTManager(String brokerIP, String controllerName)
+MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
     _controllerName = controllerName.toLowerCase();
+    _mqttLogging = mqttLogging;
+    _lastAliveTime = 0;
     _logging = 0;
-    _status = Unknown;
+    _networkStatus = Starting;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
 
@@ -39,72 +41,58 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName)
     digitalWrite(D7, LOW);
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
-    connect();
-}
-
-bool MQTTManager::connect()
-{
+    
+    if(_mqttLogging == false) {
+        Log.info("Connecting to MQTT");
+    }
     _lastMQTTtime = Time.now();
-    _lastAliveTime = _lastMQTTtime;
     _mqtt->connect(_controllerName + "Id");
-    delay(500);
-    if (_mqtt->isConnected()) {
-        publish("patriot/log","Hello, World!");
-        if(_mqtt->subscribe(kPublishName+"/#") == false) {
-            Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
-        }
+    _mqtt->subscribe("#");
+    
+    if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
-        Log.info("MQTT connected and log handler added");
-    } else {
-        // In case serialLogHandler is connected
-        Log.warn("MQTT is NOT connected! Check MQTT IP address");
-        return false;
+        Log.info("MQTT log handler added");
     }
-    return true;
-}
 
-/**
- * Send MQTT data
- */
-bool MQTTManager::publish(String topic, String message) {
-    if(_mqtt->isConnected() && WiFi.ready()) {
-        _mqtt->publish(topic,message);
-        return true;
-    }
-    return false;
+    //TODO: detect loss of other controllers
+    _lastAliveFrontPanel = Time.now();
+    _lastAliveLeftSlide = Time.now();
+    _lastAliveRearPanel = Time.now();
+    _lastAliveRonTest = Time.now();
+
 }
 
 void MQTTManager::loop()
 {
-    if(_mqtt->isConnected()) {
-        _mqtt->loop();
-    }
+    _mqtt->loop();
     updateStatusLed();
     manageNetwork();
+    sendAlivePeriodically();
 }
 
 void MQTTManager::manageNetwork()
 {
-    if(WiFi.ready() == false && WiFi.connecting() == false) {
-        Log.warn("DEBUG: manageNetwork not ready, reboot");
-        doReboot();
+    // Update network status
+    if(_mqtt->isConnected()) {
+        _networkStatus = Mqtt;
+    } else if(WiFi.ready()) {
+        _networkStatus = Wifi;
+    } else {
+        _networkStatus = Starting;
     }
-            
+    
     // If no MQTT received within timeout period then reboot
     if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
         Log.warn("MQTT Timeout.");
         doReboot();
     }
-
-    sendAlivePeriodically();
 }
 
 void MQTTManager::sendAlivePeriodically() {
-    system_tick_t secondsSinceLastAlive = Time.now() - _lastAliveTime;
-    if(secondsSinceLastAlive > MQTT_ALIVE_SECONDS) {
+    if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
         _lastAliveTime = Time.now();
         String time = Time.format(Time.now(), "%a %H:%M");
-        publish("patriot/alive/"+_controllerName, time);
+        publish(kPublishName+"/alive/"+_controllerName, time);
     }
 }
 
@@ -114,6 +102,22 @@ void MQTTManager::doReboot() {
     System.reset(RESET_NO_WAIT);
 }
 
+/**
+ * Send MQTT data
+ */
+bool MQTTManager::publish(String topic, String message) {
+    if(_mqtt->isConnected() && WiFi.ready()) {
+        _mqtt->publish(topic,message);
+        return true;
+    } else {
+        Log.warn("publish while not connected: " + topic + ", " + message);
+    }
+    return false;
+}
+
+/**
+ * Handle received MQTT messages
+ */
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
     char p[length + 1];
@@ -145,6 +149,14 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 
             // message is timestamp - useful when viewing MQTT, but not used here
             // Ignore it.
+            //TODO: This is a hack, refactor later
+            if(controllerName == "frontpanel") {
+                _lastAliveFrontPanel = Time.now();
+            } else if(controllerName == "leftslide") {
+                _lastAliveLeftSlide = Time.now();
+            } else if(controllerName == "rearpanel") {
+                _lastAliveRearPanel = Time.now();
+            }
 
         } else if(subtopic.startsWith("brightness")) {           // BRIGHTNESS patriot/brightness/<device> value
             int value = lcMessage.toInt();
@@ -273,9 +285,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 Device::buildDevicesVariable();
             }
         }
-    } else {
-        // Not addressed or recognized by us
-        Log.error("Parser: Not our message: "+String(lcTopic)+" "+String(lcMessage));
+//    } else {
+//        // Not addressed or recognized by us
+//        Log.info("Parser: Not our message: "+String(lcTopic)+" "+String(lcMessage));
     }
 }
 
@@ -419,37 +431,26 @@ void MQTTManager::updateStatusLed() {
         int currentLed = digitalRead(D7);
         int nextLed = LOW;
 
-        switch (_status)
+        switch (_networkStatus)
         {
-            case Unknown:   // steady fast blinks
-                nextLed = !currentLed;
-                _blinkPhase = 0;
-                break;
-            case Wifi:  // 4 short blinks
-                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5 || _blinkPhase == 7) {
-                    nextLed = HIGH;
-                } else if(_blinkPhase > 9) {
-                    _blinkPhase = 0;
-                }
-                break;
-            case Mqtt:  // 3 short blinks off, on, off, on, off, off
+            case Starting:  // 3 short blinks off, on, off, on, off, off
                 if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5) {
                     nextLed = HIGH;
-                } else if(_blinkPhase > 7) {
+                } else if(_blinkPhase > 8) {
                     _blinkPhase = 0;
                 }
                 break;
-            case Cloud: // 2 short blink off, on, off, off
+            case Wifi: // 2 short blink off, on, off, off
                 if(_blinkPhase == 1 || _blinkPhase == 3) {
                     nextLed = HIGH;
-                } else if(_blinkPhase > 5) {
+                } else if(_blinkPhase > 8) {
                     _blinkPhase = 0;
                 }
                 break;
-            case Ok:    // Steady long blinks
-                nextLed = currentLed;
-                if(_blinkPhase > 1) {
-                    nextLed = !currentLed;
+            case Mqtt:    // 1 short blink
+                if(_blinkPhase == 1) {
+                    nextLed = HIGH;
+                } else if(_blinkPhase > 8) {
                     _blinkPhase = 0;
                 }
                 break;
