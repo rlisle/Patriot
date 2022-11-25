@@ -436,21 +436,21 @@ void MQTTManager::updateStatusLed() {
             case Starting:  // 3 short blinks off, on, off, on, off, off
                 if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5) {
                     nextLed = HIGH;
-                } else if(_blinkPhase > 7) {
+                } else if(_blinkPhase > 8) {
                     _blinkPhase = 0;
                 }
                 break;
             case Wifi: // 2 short blink off, on, off, off
                 if(_blinkPhase == 1 || _blinkPhase == 3) {
                     nextLed = HIGH;
-                } else if(_blinkPhase > 5) {
+                } else if(_blinkPhase > 8) {
                     _blinkPhase = 0;
                 }
                 break;
-            case Mqtt:    // Steady long blinks
-                nextLed = currentLed;
-                if(_blinkPhase > 1) {
-                    nextLed = !currentLed;
+            case Mqtt:    // 1 short blink
+                if(_blinkPhase == 1) {
+                    nextLed = HIGH;
+                } else if(_blinkPhase > 8) {
                     _blinkPhase = 0;
                 }
                 break;

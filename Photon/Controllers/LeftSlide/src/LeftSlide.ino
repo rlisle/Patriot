@@ -47,6 +47,7 @@ Author: Ron Lisle
 //SYSTEM_THREAD(ENABLED);
 //SYSTEM_MODE(SEMI_AUTOMATIC);
 
+#define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
 byte hueServer[4] = { 192, 168, 50, 39 };   // Changed 10/1/22
@@ -62,7 +63,7 @@ int couchPresence = 0;
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD, MQTT_LOGGING);
     createDevices();
 }
 void createDevices() {

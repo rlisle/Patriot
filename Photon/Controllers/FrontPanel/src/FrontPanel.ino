@@ -49,12 +49,15 @@
 //SYSTEM_THREAD(ENABLED);
 //SYSTEM_MODE(SEMI_AUTOMATIC);
 
+#define MQTT_LOGGING true
+//SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
+
 int sleeping = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD, MQTT_LOGGING);
     createDevices();
 }
 
