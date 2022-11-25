@@ -29,7 +29,6 @@
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
 bool IoT::_cloudEnabled = false;
-bool IoT::_mqttLogging = false;
 
 /**
  * Begin gets everything going.
@@ -39,7 +38,6 @@ bool IoT::_mqttLogging = false;
 void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool mqttLogging)
 {
     _cloudEnabled = enableCloud;
-    _mqttLogging = mqttLogging;
 
     Time.zone(-6);              // CST
     handleDaylightSavings();

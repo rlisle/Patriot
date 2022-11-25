@@ -40,13 +40,14 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     pinMode(D7, OUTPUT);    // Blue LED
     digitalWrite(D7, LOW);
 
-    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler, true);
+    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     
     if(_mqttLogging == false) {
         Log.info("Connecting to MQTT");
     }
     _lastMQTTtime = Time.now();
     _mqtt->connect(_controllerName + "Id");
+    _mqtt->subscribe("#");
     
     if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
@@ -59,19 +60,6 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _lastAliveRearPanel = Time.now();
     _lastAliveRonTest = Time.now();
 
-}
-
-/**
- * Send MQTT data
- */
-bool MQTTManager::publish(String topic, String message) {
-    if(_mqtt->isConnected() && WiFi.ready()) {
-        _mqtt->publish(topic,message);
-        return true;
-    } else {
-        Log.warn("publish while not connected: " + topic + ", " + message);
-    }
-    return false;
 }
 
 void MQTTManager::loop()
@@ -114,6 +102,22 @@ void MQTTManager::doReboot() {
     System.reset(RESET_NO_WAIT);
 }
 
+/**
+ * Send MQTT data
+ */
+bool MQTTManager::publish(String topic, String message) {
+    if(_mqtt->isConnected() && WiFi.ready()) {
+        _mqtt->publish(topic,message);
+        return true;
+    } else {
+        Log.warn("publish while not connected: " + topic + ", " + message);
+    }
+    return false;
+}
+
+/**
+ * Handle received MQTT messages
+ */
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
 
     char p[length + 1];

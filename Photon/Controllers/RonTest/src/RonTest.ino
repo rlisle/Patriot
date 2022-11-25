@@ -15,7 +15,7 @@
 #define MQTT_BROKER "192.168.50.33"
 
 // Running without cloud means Photon must be put into Listen mode to flash
-#define CLOUD_ENABLED false
+#define CLOUD_ENABLED true
 
 //While debugging, use serial and disable MQTT logging if needed
 SerialLogHandler logHandler;
@@ -25,6 +25,7 @@ SerialLogHandler logHandler;
 //So not doing it anymore
 //SYSTEM_THREAD(ENABLED);
 //SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_MODE(AUTOMATIC);
 
 //Used to determine I2C addresses for debugging I2C boards
 //unsigned long lastScan = 0;
@@ -37,6 +38,7 @@ void setup() {
     WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CLOUD_ENABLED, MQTT_LOGGING);
     Device::add(new Device("sleeping", "All"));
+    Log.info("RonTest started");
 }
 
 void loop() {
