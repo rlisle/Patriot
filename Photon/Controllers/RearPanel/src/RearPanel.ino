@@ -37,6 +37,8 @@ Author: Ron Lisle
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
 #define CONNECT_TO_CLOUD true
+#define MQTT_LOGGING true
+
 #define OFFICE_MOTION_TIMEOUT 15
 
 #define ADDRESS 1      // PWM board address A0 jumper set
@@ -55,7 +57,7 @@ long lastOfficeDoor = 0;
 void setup() {
     //WiFi.selectAntenna(ANT_EXTERNAL);
     //WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD, MQTT_LOGGING);
     createDevices();
 }
 
