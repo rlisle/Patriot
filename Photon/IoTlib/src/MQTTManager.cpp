@@ -285,9 +285,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 Device::buildDevicesVariable();
             }
         }
-    } else {
-        // Not addressed or recognized by us
-        Log.error("Parser: Not our message: "+String(lcTopic)+" "+String(lcMessage));
+//    } else {
+//        // Not addressed or recognized by us
+//        Log.info("Parser: Not our message: "+String(lcTopic)+" "+String(lcMessage));
     }
 }
 
