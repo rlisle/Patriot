@@ -21,10 +21,6 @@
 SerialLogHandler logHandler;
 #define MQTT_LOGGING false
 
-#define MQTT_TIMEOUT_SECONDS 60*16
-#define MQTT_ALIVE_SECONDS 60*5
-#define BLINK_INTERVAL  250
-
 //Using Threads may cause problems with other libraries, etc.
 //So not doing it anymore
 //SYSTEM_THREAD(ENABLED);

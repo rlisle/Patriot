@@ -41,16 +41,24 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     digitalWrite(D7, LOW);
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler, true);
-    connect();
-}
-
-void MQTTManager::connect()
-{
+    
     if(_mqttLogging == false) {
         Log.info("Connecting to MQTT");
     }
     _lastMQTTtime = Time.now();
     _mqtt->connect(_controllerName + "Id");
+    
+    if(_mqttLogging) {
+        LogManager::instance()->addHandler(this);
+        Log.info("MQTT log handler added");
+    }
+
+    //TODO: detect loss of other controllers
+    _lastAliveFrontPanel = Time.now();
+    _lastAliveLeftSlide = Time.now();
+    _lastAliveRearPanel = Time.now();
+    _lastAliveRonTest = Time.now();
+
 }
 
 /**
@@ -60,59 +68,36 @@ bool MQTTManager::publish(String topic, String message) {
     if(_mqtt->isConnected() && WiFi.ready()) {
         _mqtt->publish(topic,message);
         return true;
+    } else {
+        Log.warn("publish while not connected: " + topic + ", " + message);
     }
     return false;
 }
 
 void MQTTManager::loop()
 {
-    manageNetwork();
-    if(_mqtt->isConnected()) {
-        _mqtt->loop();
-    }
+    _mqtt->loop();
     updateStatusLed();
+    manageNetwork();
+    sendAlivePeriodically();
 }
 
 void MQTTManager::manageNetwork()
 {
-    if(_networkStatus == Starting && WiFi.ready()) {
-        _networkStatus = Wifi;
-        Log.info("Connecting to MQTT");     // in case serial logging
-        _lastMQTTtime = Time.now();
-        _mqtt->connect(_controllerName + "Id");
-    }
-    
-    if(_networkStatus != Mqtt && _mqtt->isConnected()) {
+    // Update network status
+    if(_mqtt->isConnected()) {
         _networkStatus = Mqtt;
-        _lastMQTTtime = Time.now();
-        Log.info("Connected to MQTT, subscribing to " + kPublishName + "/#");
-        if(_mqtt->subscribe(kPublishName+"/#") == false) {
-            Log.error("Unable to subscribe to MQTT " + kPublishName + "/#");
-        }
-        if(_mqttLogging) {
-            LogManager::instance()->addHandler(this);
-            Log.info("MQTT log handler added");
-        }
-        //TODO: detect loss of other controllers
-        _lastAliveFrontPanel = Time.now();
-        _lastAliveLeftSlide = Time.now();
-        _lastAliveRearPanel = Time.now();
-        _lastAliveRonTest = Time.now();
+    } else if(WiFi.ready()) {
+        _networkStatus = Wifi;
+    } else {
+        _networkStatus = Starting;
     }
     
-    if(_networkStatus != Starting && WiFi.ready() == false) {
-        Log.warn("WiFi lost, rebooting");
-        doReboot();
-    }
-    
-
     // If no MQTT received within timeout period then reboot
     if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
         Log.warn("MQTT Timeout.");
         doReboot();
     }
-
-    sendAlivePeriodically();
 }
 
 void MQTTManager::sendAlivePeriodically() {

@@ -44,19 +44,11 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool m
     Time.zone(-6);              // CST
     handleDaylightSavings();
     
-    WiFi.on();
-    WiFi.connect();
-
-    if(_cloudEnabled == true) {
-        waitUntil(WiFi.ready);
-        Particle.connect();   // Not needed if SYSTEM_MODE(AUTOMATIC) (default)
-        
-        // Expose particle.io variables
-        Device::expose();
-        
-        // Subscribe doesn't require a connection before calling.
-        Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
-    }
+    // Expose particle.io variables
+    Device::expose();
+    
+    // Subscribe doesn't require a connection before calling.
+    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
 
     _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
 }
