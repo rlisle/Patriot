@@ -73,6 +73,7 @@ void Device::add(Device *device)
     
     buildDevicesVariable();
     buildChecklistVariable();
+    buildStatusVariable();
 }
 
 void Device::resetAll()
