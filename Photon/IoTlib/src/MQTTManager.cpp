@@ -74,16 +74,28 @@ void MQTTManager::manageNetwork()
 {
     // Update network status
     if(_mqtt->isConnected()) {
-        _networkStatus = Mqtt;
+        if(_networkStatus != Mqtt) {
+            _networkStatus = Mqtt;
+            Log.info("MQTT connected");
+        }
     } else if(WiFi.ready()) {
-        _networkStatus = Wifi;
+        if(_networkStatus == Mqtt) {
+            _networkStatus = Wifi;
+            _lastMQTTtime = Time.now();
+            _mqtt->connect(_controllerName + "Id");
+            //To we need to subscribe again?
+            Log.warn("MQTT reconnecting...");
+        }
     } else {
-        _networkStatus = Starting;
+        if(_networkStatus != Starting) {
+            Log.error("Network lost: no WiFi");
+            _networkStatus = Starting;
+        }
     }
     
     // If no MQTT received within timeout period then reboot
     if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
-        Log.warn("MQTT Timeout.");
+        Log.error("MQTT Timeout.");
         doReboot();
     }
 }
