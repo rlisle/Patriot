@@ -46,6 +46,7 @@ private:
     bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
 
+    void      doConnect();
     void      (*_callback)(char*,uint8_t*,unsigned int);
     int       parseValue(String message);
     String    parseDeviceName(String subtopic);
