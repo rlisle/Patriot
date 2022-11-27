@@ -46,8 +46,8 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
         Log.info("Connecting to MQTT");
     }
     _lastMQTTtime = Time.now();
-    _mqtt->connect(_controllerName + "Id");
-    _mqtt->subscribe("#");
+    doConnect();
+    _mqtt->subscribe(kPublishName + "/#");      // Are subscribes persisted? If not, move to doConnect()
     
     if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
@@ -60,6 +60,18 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _lastAliveRearPanel = Time.now();
     _lastAliveRonTest = Time.now();
 
+}
+
+void MQTTManager::doConnect() {
+//            connect(const char *id, const char *user, const char *pass, const char* willTopic, EMQTT_QOS willQos, uint8_t willRetain, const char* willMessage, bool cleanSession, MQTT_VERSION version)
+    String user = NULL;
+    String pw = NULL;
+    String willTopic = kPublishName + "/" + _controllerName + "/status";
+    EMQTT_QDOS willQoS = QOS0;
+    uint_8 willRetain = 0;
+    String willMessage = "Offline";
+    bool clean = false;
+    _mqtt->connect(_controllerName + "Id", user, pw, willTopic, willQoS, willRetain, willMessage, clean);
 }
 
 void MQTTManager::loop()
@@ -82,8 +94,7 @@ void MQTTManager::manageNetwork()
         if(_networkStatus == Mqtt) {
             _networkStatus = Wifi;
             _lastMQTTtime = Time.now();
-            _mqtt->connect(_controllerName + "Id");
-            //To we need to subscribe again?
+            doConnect();
             Log.warn("MQTT reconnecting...");
         }
     } else {
@@ -117,9 +128,10 @@ void MQTTManager::doReboot() {
 /**
  * Send MQTT data
  */
-bool MQTTManager::publish(String topic, String message) {
+bool MQTTManager::publish(String topic, String message, bool retain) {
     if(_mqtt->isConnected() && WiFi.ready()) {
-        _mqtt->publish(topic,message);
+//        bool publish(const char *topic, const uint8_t *payload, unsigned int plength, bool retain, EMQTT_QOS qos, uint16_t *messageid = NULL);
+        _mqtt->publish(topic, (uint8_t*)message, message.length, retain, retain ? QOS1 : QOS0);
         return true;
     } else {
         Log.warn("publish while not connected: " + topic + ", " + message);

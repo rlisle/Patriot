@@ -87,9 +87,9 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length)
 /**
  * Publish an MQTT message
  */
-void IoT::publishMQTT(String subtopic, String message)
+void IoT::publishMQTT(String subtopic, String message, bool retain)
 {
-    _mqttManager->publish(kPublishName+"/"+subtopic, message);
+    _mqttManager->publish(kPublishName+"/"+subtopic, message, retain);
 }
 
 /**
@@ -98,8 +98,8 @@ void IoT::publishMQTT(String subtopic, String message)
  param: mqtt message
  return: 0 success, -1 MQTT error
  */
-void IoT::publishValue(String subtopic, int value) {
-    _mqttManager->publish(kPublishName+"/"+subtopic, String(value));
+void IoT::publishValue(String subtopic, int value, bool retain) {
+    _mqttManager->publish(kPublishName+"/"+subtopic, String(value), retain);
 }
 
 // LATITUDE/LONGITUDE
