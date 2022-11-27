@@ -63,7 +63,6 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
 }
 
 void MQTTManager::doConnect() {
-//            connect(const char *id, const char *user, const char *pass, const char* willTopic, EMQTT_QOS willQos, uint8_t willRetain, const char* willMessage, bool cleanSession, MQTT_VERSION version)
     const char *user = NULL;
     const char *pw = NULL;
     String willTopic = kPublishName + "/" + _controllerName + "/status";
@@ -115,7 +114,7 @@ void MQTTManager::sendAlivePeriodically() {
     if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
         _lastAliveTime = Time.now();
         String time = Time.format(Time.now(), "%a %H:%M");
-        publish(kPublishName+"/alive/"+_controllerName, time);
+        publish(kPublishName+"/alive/"+_controllerName, time, false);
     }
 }
 
@@ -130,7 +129,6 @@ void MQTTManager::doReboot() {
  */
 bool MQTTManager::publish(String topic, String message, bool retain) {
     if(_mqtt->isConnected() && WiFi.ready()) {
-//        bool publish(const char *topic, const uint8_t *payload, unsigned int plength, bool retain, EMQTT_QOS qos, uint16_t *messageid = NULL);
         _mqtt->publish(topic, (const uint8_t*)message.c_str(), message.length(), retain, retain ? MQTT::QOS1 : MQTT::QOS0);
         return true;
     } else {
@@ -262,7 +260,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
                 Log.info(_controllerName + " set " + deviceName + " = " + String(value));
                 device->setValue(value);
-                publish(kPublishName + "/ack/set/" + deviceName, lcMessage);
+                publish(kPublishName + "/ack/set/" + deviceName, lcMessage, true);
             }
 
 
@@ -439,7 +437,7 @@ void MQTTManager::log(const char *category, String message) {
 
     if(!_logging) {
         _logging++;
-        publish("patriot/log/"+_controllerName, time + " " + message);
+        publish("patriot/log/"+_controllerName, time + " " + message, false);
         _logging--;
     }
 }
