@@ -99,7 +99,7 @@ void IoT::publishMQTT(String subtopic, String message, bool retain)
  return: 0 success, -1 MQTT error
  */
 void IoT::publishValue(String subtopic, int value, bool retain) {
-    _mqttManager->publish(kPublishName+"/"+subtopic, String(value), retain);
+    publishMQTT(subtopic, String(value), retain);
 }
 
 // LATITUDE/LONGITUDE
