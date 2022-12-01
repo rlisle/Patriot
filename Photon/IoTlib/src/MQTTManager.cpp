@@ -23,7 +23,7 @@ All text above must be included in any redistribution.
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
     _controllerName = controllerName.toLowerCase();
-    _mqttLogging = mqttLogging;
+    _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
     _lastAliveTime = 0;
     _logging = 0;
     _networkStatus = Starting;
@@ -42,9 +42,8 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
 
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     
-    if(_mqttLogging == false) {
-        Log.info("Connecting to MQTT");
-    }
+    Log.info("Connecting to MQTT");
+    
     _lastMQTTtime = Time.now();
     doConnect();
     _mqtt->subscribe(kPublishName + "/#");      // Are subscribes persisted? If not, move to doConnect()
@@ -157,8 +156,8 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
 void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 {
-    // This creates an infinite loop. Don't do it.
-    //log("Parser received: " + lcTopic + ", " + lcMessage, LogDebug);
+    // This is ok here because log is on a separate topic now.
+    log("Parser received: " + lcTopic + ", " + lcMessage, LogDebug);
     
     // New Protocol: patriot/<name>  <value>
     if(lcTopic.startsWith(kPublishName+"/")) {
@@ -215,6 +214,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 IoT::setLatLong(latitude,longitude);
             }
             
+        //this no longer happens because logs changed from /patriot/log to /log
         } else if(subtopic == "log" || subtopic.startsWith("log/")) {   // LOG
             // Ignore it.
 
@@ -286,7 +286,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 Log.error("Invalid timezone");
             }
             
-        // DEVICE
+        // DEVICE - deprecated
         } else {
             // This is used by Alexa. Siri uses 'set' instead
             Device *device = Device::get(subtopic);
@@ -437,7 +437,8 @@ void MQTTManager::log(const char *category, String message) {
 
     if(!_logging) {
         _logging++;
-        publish("patriot/log/"+_controllerName, time + " " + message, false);
+        // Separate topic now, allows logging patriot/ messages without causing a loop
+        publish("log/"+_controllerName, time + " " + message, false);
         _logging--;
     }
 }
