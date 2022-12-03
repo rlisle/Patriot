@@ -1,16 +1,16 @@
 /**
-MQTTManager.cpp
-
-This class handles all MQTT interactions.
-
-http://www.github.com/rlisle/Patriot
-
-Written by Ron Lisle
-
-BSD license, check LICENSE for more information.
-All text above must be included in any redistribution.
-
-*/
+ MQTTManager.cpp
+ 
+ This class handles all MQTT interactions.
+ 
+ http://www.github.com/rlisle/Patriot
+ 
+ Written by Ron Lisle
+ 
+ BSD license, check LICENSE for more information.
+ All text above must be included in any redistribution.
+ 
+ */
 #include "MQTTManager.h"
 #include "device.h"
 #include "IoT.h"
@@ -29,17 +29,17 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _networkStatus = Starting;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
-
+    
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
     _logLevel = LOG_LEVEL_ALL;     // See particle doc for options
     //TODO: by default, just the "app" category is used.
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
-
+    
     // Setup blue LED for network status
     pinMode(D7, OUTPUT);    // Blue LED
     digitalWrite(D7, LOW);
-
+    
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     
     Log.info("Connecting to MQTT");
@@ -52,13 +52,13 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
         LogManager::instance()->addHandler(this);
         Log.info("MQTT log handler added");
     }
-
+    
     //TODO: detect loss of other controllers
     _lastAliveFrontPanel = Time.now();
     _lastAliveLeftSlide = Time.now();
     _lastAliveRearPanel = Time.now();
     _lastAliveRonTest = Time.now();
-
+    
 }
 
 void MQTTManager::doConnect() {
@@ -140,15 +140,15 @@ bool MQTTManager::publish(String topic, String message, bool retain) {
  * Handle received MQTT messages
  */
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
-
+    
     char p[length + 1];
     memcpy(p, payload, length);
     p[length] = 0;
     String message(p);
     String topic(rawTopic);
-
+    
     _lastMQTTtime = Time.now();
-
+    
     parseMessage(topic.toLowerCase(), message.toLowerCase());
 }
 
@@ -157,7 +157,7 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 {
     // This is ok here because log is on a separate topic now.
-    log("Parser received: " + lcTopic + ", " + lcMessage);
+    Log.info("Parser received: " + lcTopic + ", " + lcMessage);
     
     //TODO: parse parts of topic separated by "/"
     String subtopics[5];
@@ -169,124 +169,124 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         start = end+1;
         end = lcTopic.indexOf('/', start);
         numTopics++;
-    } while(numTopics < 5 && end > 0) {
+    } while(numTopics < 5 && end > 0);
+    
+    if(subtopics[0] == kPublishName && numTopics > 1) {
         
-        if(subtopics[0] == kPublishName && numTopics > 1)) {
+        // ACK
+        if(subtopics[1] == "ack") {                         // patriot/ack/<device>/<command>
+            // Ignore Acknowledgements
             
-            // ACK
-            if(subtopics[1] == "ack") {                         // patriot/ack/<device>/<command>
-                // Ignore Acknowledgements
-                
-                // ALIVE
-            } else if(subtopics[1] == "alive" && numTopics > 2) {                // patriot/alive/<controller>
-                
-                //TODO: Refactor to allow unknown controller names (array)
-                if(subtopics[2] == "frontpanel") {
-                    _lastAliveFrontPanel = Time.now();
-                } else if(subtopics[2] == "leftslide") {
-                    _lastAliveLeftSlide = Time.now();
-                } else if(subtopics[2] == "rearpanel") {
-                    _lastAliveRearPanel = Time.now();
-                }
-                
-                // BRIGHTNESS
-            } else if(numTopics > 2 && subtopics[2] == "brightness")) {           // patriot/<device>/brightness value
-                int value = lcMessage.toInt();
-                String deviceName = subtopics[1];
-                Device *device = Device::get(deviceName);
-                if( device != NULL && value > 0) {
-                    Log.info(_controllerName + " setting " + deviceName + " brightness = " + lcMessage);
-                    device->setBrightness(value);
-                    sendAck(deviceName, "brightness", lcMessage);
-                }
-                
+            // ALIVE
+        } else if(subtopics[1] == "alive" && numTopics > 2) {                // patriot/alive/<controller>
+            
+            //TODO: Refactor to allow unknown controller names (array)
+            if(subtopics[2] == "frontpanel") {
+                _lastAliveFrontPanel = Time.now();
+            } else if(subtopics[2] == "leftslide") {
+                _lastAliveLeftSlide = Time.now();
+            } else if(subtopics[2] == "rearpanel") {
+                _lastAliveRearPanel = Time.now();
+            }
+            
+            // BRIGHTNESS
+        } else if(numTopics > 2 && subtopics[2] == "brightness")) {           // patriot/<device>/brightness value
+            int value = lcMessage.toInt();
+            String deviceName = subtopics[1];
+            Device *device = Device::get(deviceName);
+            if( device != NULL && value > 0) {
+                Log.info(_controllerName + " setting " + deviceName + " brightness = " + lcMessage);
+                device->setBrightness(value);
+                sendAck(deviceName, "brightness", lcMessage);
+            }
+            
             // LATLONG
-            } else if(subtopics[1] == "latlong") {                                  // patriot/latlong lat,long
-                // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
-                // Spanish Fort, AL: 30.6685° N, 87.9109° W
-                // Bonifay, FL: 30.7919° N, 85.6797° W
-                // White Springs, FL: 30.3297° N, 82.7590° W
-                // Tampa, FL: 27.9506° N, 82.4572° W
-                // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
-                //                  30.28267 N, 97.63624 W via iPhone maps in office.
-                // eg. float longitude = -97.63624;
-                // Split out latitude & longitude
-                int commaIndex = lcMessage.indexOf(',');
-                if(commaIndex < 0) return;
-                
-                String latString = lcMessage.substring(0, commaIndex-1);
-                String lonString = lcMessage.substring(commaIndex+1);
-                
-                //TODO: handle '-' because toFloat doc says it doesn't
-                float latitude = latString.toFloat();
-                float longitude = lonString.toFloat();
-                Log.trace("lat/long = " + String(latitude) + "," + String(longitude));
-                if(latitude != 0 && longitude != 0) {
-                    Log.trace("Setting lat/long: " + String(latitude) + "," + String(longitude));
-                    IoT::setLatLong(latitude,longitude);
-                }
-
+        } else if(subtopics[1] == "latlong") {                                  // patriot/latlong lat,long
+            // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
+            // Spanish Fort, AL: 30.6685° N, 87.9109° W
+            // Bonifay, FL: 30.7919° N, 85.6797° W
+            // White Springs, FL: 30.3297° N, 82.7590° W
+            // Tampa, FL: 27.9506° N, 82.4572° W
+            // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
+            //                  30.28267 N, 97.63624 W via iPhone maps in office.
+            // eg. float longitude = -97.63624;
+            // Split out latitude & longitude
+            int commaIndex = lcMessage.indexOf(',');
+            if(commaIndex < 0) return;
+            
+            String latString = lcMessage.substring(0, commaIndex-1);
+            String lonString = lcMessage.substring(commaIndex+1);
+            
+            //TODO: handle '-' because toFloat doc says it doesn't
+            float latitude = latString.toFloat();
+            float longitude = lonString.toFloat();
+            Log.trace("lat/long = " + String(latitude) + "," + String(longitude));
+            if(latitude != 0 && longitude != 0) {
+                Log.trace("Setting lat/long: " + String(latitude) + "," + String(longitude));
+                IoT::setLatLong(latitude,longitude);
+            }
+            
             // LOGLEVEL
-            } else if(subtopics[1] == "loglevel") {
-                if(numTopics == 2 || subtopics[2] == _controllerName || subtopics[2] == "all" ) {
-                    Log.warn(_controllerName + " setting logLevel = " + lcMessage);
-                    parseLogLevel(lcMessage);
-                }
-                
+        } else if(subtopics[1] == "loglevel") {
+            if(numTopics == 2 || subtopics[2] == _controllerName || subtopics[2] == "all" ) {
+                Log.warn(_controllerName + " setting logLevel = " + lcMessage);
+                parseLogLevel(lcMessage);
+            }
+            
             // MEMORY
-            } else if(subtopics[1] == "memory") {
-                if(lcMessage == _controllerName || lcMessage == "all") {
-                    Log.info(_controllerName + ": free memory = %d", System.freeMemory());
-                }
-
+        } else if(subtopics[1] == "memory") {
+            if(lcMessage == _controllerName || lcMessage == "all") {
+                Log.info(_controllerName + ": free memory = %d", System.freeMemory());
+            }
+            
             // QUERY
-            } else if(subtopics[1] == "query") {
-                if(lcMessage == _controllerName || lcMessage == "all") {
-                    Log.info(_controllerName + ": received query addressed to us");
-                    Device::publishStates();
-                }
-
+        } else if(subtopics[1] == "query") {
+            if(lcMessage == _controllerName || lcMessage == "all") {
+                Log.info(_controllerName + ": received query addressed to us");
+                Device::publishStates();
+            }
+            
             // RESET
-            } else if(subtopics[1] == "reset") {
-                if(lcMessage == _controllerName || lcMessage == "all") {
-                    Log.info(_controllerName + ": reset addressed to us");
-                    Device::resetAll();
-                    System.reset(RESET_NO_WAIT);
-                }
-                
+        } else if(subtopics[1] == "reset") {
+            if(lcMessage == _controllerName || lcMessage == "all") {
+                Log.info(_controllerName + ": reset addressed to us");
+                Device::resetAll();
+                System.reset(RESET_NO_WAIT);
+            }
+            
             // SET
-            } else if(numTopics > 2 && subtopics[2] == "set") {             // patriot/<device>/set value
-                Device *device = Device::get(subtopics[1]);
-                if( device != NULL) {
-                    int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
-                    Log.info(_controllerName + ": set " + subtopics[1] + " = " + String(value));
-                    device->setValue(value);
-                    sendAck(subtopics[2], "set", lcMessage);
-                }
-                
+        } else if(numTopics > 2 && subtopics[2] == "set") {             // patriot/<device>/set value
+            Device *device = Device::get(subtopics[1]);
+            if( device != NULL) {
+                int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
+                Log.info(_controllerName + ": set " + subtopics[1] + " = " + String(value));
+                device->setValue(value);
+                sendAck(subtopics[2], "set", lcMessage);
+            }
+            
             // TIMEZONE
-            } else if(subtopics[1] == "timezone") {
-                // San Francisco/PST -8
-                // Austin/CST -6
-                // Windsor/EST -5
-                Log.trace(_controllerName + ": received timezone = " + lcMessage);
-                int timezone = -6;          // Default to Austin CST
-                //handle '-' because toInt doc says it doesn't
-                if(lcMessage.charAt(0) == '-') {
-                    timezone = 0 - lcMessage.substring(1).toInt();
-                } else {
-                    timezone = lcMessage.toInt();
-                }
-                if(timezone != 0) {
-                    Log.trace(_controllerName + ": setting timezone to: " + String(timezone));
-                    IoT::setTimezone(timezone);
-                } else {
-                    Log.error("Invalid timezone");
-                }
+        } else if(subtopics[1] == "timezone") {
+            // San Francisco/PST -8
+            // Austin/CST -6
+            // Windsor/EST -5
+            Log.trace(_controllerName + ": received timezone = " + lcMessage);
+            int timezone = -6;          // Default to Austin CST
+            //handle '-' because toInt doc says it doesn't
+            if(lcMessage.charAt(0) == '-') {
+                timezone = 0 - lcMessage.substring(1).toInt();
+            } else {
+                timezone = lcMessage.toInt();
+            }
+            if(timezone != 0) {
+                Log.trace(_controllerName + ": setting timezone to: " + String(timezone));
+                IoT::setTimezone(timezone);
+            } else {
+                Log.error("Invalid timezone");
             }
         }
     }
-    
+}
+
 void MQTTManager::sendAck(String deviceName, String command, String message) {
     publish(kPublishName + "/ack/" + deviceName + "/" + command, lcMessage);
 }
@@ -297,7 +297,7 @@ String MQTTManager::parseDeviceName(String subtopic)
     if(slashIndex < 0) return "unknown";
     
     String deviceName = subtopic.substring(slashIndex+1);
-
+    
     return deviceName;
 }
 
@@ -310,7 +310,7 @@ void MQTTManager::parseLogLevel(String lcMessage) {
     else if (lcMessage == "trace") level = LOG_LEVEL_TRACE;  // 1
     else if (lcMessage == "all") level = LOG_LEVEL_ALL;      // 1
     else return;
-
+    
     _logLevel = level;
 }
 
@@ -342,13 +342,13 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
 //      but the log class filters everything below INFO, so we only see info, warn, and error.
 void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
     String s;
-
-//    LOG_LEVEL_ALL = 1
-//    LOG_LEVEL_TRACE = 1
-//    LOG_LEVEL_INFO = 30
-//    LOG_LEVEL_WARN= 40
-//    LOG_LEVEL_ERROR = 50
-//    LOG_LEVEL_NONE = 70
+    
+    //    LOG_LEVEL_ALL = 1
+    //    LOG_LEVEL_TRACE = 1
+    //    LOG_LEVEL_INFO = 30
+    //    LOG_LEVEL_WARN= 40
+    //    LOG_LEVEL_ERROR = 50
+    //    LOG_LEVEL_NONE = 70
     if (level < _logLevel) {
         return;
     }
@@ -367,7 +367,7 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
             s.concat(": ");
         }
     }
-
+    
     // Function name
     if (attr.has_function) {
         size_t n = 0;
@@ -375,16 +375,16 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
         s.concat(s);
         s.concat("(): ");
     }
-
+    
     // Level
     s.concat(levelName(level));
     s.concat(": ");
-
+    
     // Message
     if (msg) {
         s.concat(msg);
     }
-
+    
     // Additional attributes
     if (attr.has_code || attr.has_details) {
         s.concat(" [");
@@ -402,9 +402,9 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
         }
         s.concat(']');
     }
-
+    
     //TODO: If MQTT not connected, write to Serial instead
-//    Serial.println(s);
+    //    Serial.println(s);
     log(category, s);
 }
 
@@ -412,7 +412,7 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
 void MQTTManager::log(const char *category, String message) {
     // As recommended by ScruffR, don't pass time argument
     String time = Time.format("%a %H:%M");
-
+    
     if(!_logging) {
         _logging++;
         // Separate topic now, allows logging patriot/ messages without causing a loop
@@ -428,9 +428,9 @@ void MQTTManager::updateStatusLed() {
         
         _lastBlinkTimeMs = millis();
         _blinkPhase++;
-
+        
         int nextLed = LOW;
-
+        
         switch (_networkStatus)
         {
             case Starting:  // 3 short blinks off, on, off, on, off, off
