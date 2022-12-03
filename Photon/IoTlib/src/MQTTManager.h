@@ -55,6 +55,8 @@ private:
     void      updateStatusLed();
     void      manageNetwork();
     void      doReboot();
+    void      sendAck(String deviceName, String command, String message);
+
 
     
     //DEBUG

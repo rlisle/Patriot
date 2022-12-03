@@ -157,160 +157,138 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 {
     // This is ok here because log is on a separate topic now.
-    log("Parser received: " + lcTopic + ", " + lcMessage, LogDebug);
+    log("Parser received: " + lcTopic + ", " + lcMessage);
     
-    // New Protocol: patriot/<name>  <value>
-    if(lcTopic.startsWith(kPublishName+"/")) {
-        String subtopic = lcTopic.substring(kPublishName.length()+1);
+    //TODO: parse parts of topic separated by "/"
+    String subtopics[5];
+    int start = 0;
+    int end = lcTopic.indexOf('/');
+    int numTopics = 0;
+    do {
+        subtopics[numTopics] = lcTopic.substring(start, end);
+        start = end+1;
+        end = lcTopic.indexOf('/', start);
+        numTopics++;
+    } while(numTopics < 5 && end > 0) {
         
-        // Look for reserved names
-        if(subtopic.startsWith("alive/")) {              // ALIVE
-            // Remainder of topic is controller name
-            String controllerName = subtopic.substring(6);
-
-            // message is timestamp - useful when viewing MQTT, but not used here
-            // Ignore it.
-            //TODO: This is a hack, refactor later
-            if(controllerName == "frontpanel") {
-                _lastAliveFrontPanel = Time.now();
-            } else if(controllerName == "leftslide") {
-                _lastAliveLeftSlide = Time.now();
-            } else if(controllerName == "rearpanel") {
-                _lastAliveRearPanel = Time.now();
-            }
-
-        } else if(subtopic.startsWith("brightness")) {           // BRIGHTNESS patriot/brightness/<device> value
-            int value = lcMessage.toInt();
-            String deviceName = parseDeviceName(subtopic);
-            Device *device = Device::get(deviceName);
-            if( device != NULL && value > 0) {
-                Log.info(_controllerName + " setting brightness = " + lcMessage);
-                device->setBrightness(value);
-                publish(kPublishName + "/ack/brightness/" + deviceName, lcMessage);
-            }
-
-        } else if(subtopic == "latlong") {             // LATLONG
-            // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
-            // Spanish Fort, AL: 30.6685° N, 87.9109° W
-            // Bonifay, FL: 30.7919° N, 85.6797° W
-            // White Springs, FL: 30.3297° N, 82.7590° W
-            // Tampa, FL: 27.9506° N, 82.4572° W
-            // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
-            //                  30.28267 N, 97.63624 W via iPhone maps in office.
-            // eg. float longitude = -97.63624;
-            // Split out latitude & longitude
-            int commaIndex = lcMessage.indexOf(',');
-            if(commaIndex < 0) return;
+        if(subtopics[0] == kPublishName && numTopics > 1)) {
             
-            String latString = lcMessage.substring(0, commaIndex-1);
-            String lonString = lcMessage.substring(commaIndex+1);
-
-            //TODO: handle '-' because toFloat doc says it doesn't
-            float latitude = latString.toFloat();
-            float longitude = lonString.toFloat();
-            Log.trace("lat/long = " + String(latitude) + "," + String(longitude));
-            if(latitude != 0 && longitude != 0) {
-                Log.trace("Setting lat/long: " + String(latitude) + "," + String(longitude));
-                IoT::setLatLong(latitude,longitude);
-            }
-            
-        //this no longer happens because logs changed from /patriot/log to /log
-        } else if(subtopic == "log" || subtopic.startsWith("log/")) {   // LOG
-            // Ignore it.
-
-        } else if(subtopic.startsWith("loglevel")) {    // LOGLEVEL
-            if(subtopic == "loglevel/"+_controllerName) {
-                Log.warn(_controllerName + " setting logLevel = " + lcMessage);
-                parseLogLevel(lcMessage);
-            }
-            
-        } else if(subtopic == "memory") {           // MEMORY
-            if(lcMessage == _controllerName) {
-                publish( "debug/"+_controllerName, String::format("Free memory = %d", System.freeMemory()));
-            }
-            
-        } else if(subtopic == "ping") {             // PING
-            // Respond if ping is addressed to us
-            if(lcMessage == _controllerName) {
-                Log.info("Ping addressed to us");
-                publish(kPublishName + "/pong", _controllerName);
-            }
-            
-        } else if(subtopic == "pong") {             // PONG
-            // Ignore it.
-            
-        } else if(subtopic == "query") {            // QUERY
-            if(lcMessage == _controllerName || lcMessage == "all") {
-                Log.info("Received query addressed to us");
-                Device::publishStates();
-            }
+            // ACK
+            if(subtopics[1] == "ack") {                         // patriot/ack/<device>/<command>
+                // Ignore Acknowledgements
                 
-        } else if(subtopic == "reset") {            // RESET
-            // Respond if reset is addressed to us
-            if(lcMessage == _controllerName) {
-                Log.info("Reset addressed to us");
-                Device::resetAll();
-                System.reset(RESET_NO_WAIT);
-            }
-            
-        } else if(subtopic.startsWith("set/")) {           // SET patriot/set/<device> on|off
-            String deviceName = parseDeviceName(subtopic);
-            Device *device = Device::get(deviceName);
-            if( device != NULL) {
-                int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
-                Log.info(_controllerName + " set " + deviceName + " = " + String(value));
-                device->setValue(value);
-                publish(kPublishName + "/ack/set/" + deviceName, lcMessage, true);
-            }
-
-
-        } else if(subtopic == "state") {
-            // Ignore - deprecated
-
-        } else if(subtopic == "timezone") {            // TIMEZONE
-            // San Francisco/PST -8
-            // Austin/CST -6
-            // Windsor/EST -5
-            Log.trace("Received timezone: " + lcMessage);
-            int timezone = -6;          // Default to Austin CST
-            //handle '-' because toInt doc says it doesn't
-            if(lcMessage.charAt(0) == '-') {
-                timezone = 0 - lcMessage.substring(1).toInt();
-            } else {
-                timezone = lcMessage.toInt();
-            }
-            if(timezone != 0) {
-                Log.trace("Setting timezone to: " + String(timezone));
-                IoT::setTimezone(timezone);
-            } else {
-                Log.error("Invalid timezone");
-            }
-            
-        // DEVICE - deprecated
-        } else {
-            // This is used by Alexa. Siri uses 'set' instead
-            Device *device = Device::get(subtopic);
-            if( device != NULL ) {
-                int value = 100;
-                if(lcMessage == "on" || lcMessage == "true") {
-                    value = device->brightness();
-                } else if(lcMessage == "off" || lcMessage == "false") {
-                    value = 0;
-                } else {
-                    value = lcMessage.toInt();
+                // ALIVE
+            } else if(subtopics[1] == "alive" && numTopics > 2) {                // patriot/alive/<controller>
+                
+                //TODO: Refactor to allow unknown controller names (array)
+                if(subtopics[2] == "frontpanel") {
+                    _lastAliveFrontPanel = Time.now();
+                } else if(subtopics[2] == "leftslide") {
+                    _lastAliveLeftSlide = Time.now();
+                } else if(subtopics[2] == "rearpanel") {
+                    _lastAliveRearPanel = Time.now();
                 }
                 
-                // Handle save/restore value
-                Log.info("Parser setting device " + subtopic + " to " + String(value));
-                device->setValue(value);
+                // BRIGHTNESS
+            } else if(numTopics > 2 && subtopics[2] == "brightness")) {           // patriot/<device>/brightness value
+                int value = lcMessage.toInt();
+                String deviceName = subtopics[1];
+                Device *device = Device::get(deviceName);
+                if( device != NULL && value > 0) {
+                    Log.info(_controllerName + " setting " + deviceName + " brightness = " + lcMessage);
+                    device->setBrightness(value);
+                    sendAck(deviceName, "brightness", lcMessage);
+                }
                 
-                Device::buildDevicesVariable();
+            // LATLONG
+            } else if(subtopics[1] == "latlong") {                                  // patriot/latlong lat,long
+                // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
+                // Spanish Fort, AL: 30.6685° N, 87.9109° W
+                // Bonifay, FL: 30.7919° N, 85.6797° W
+                // White Springs, FL: 30.3297° N, 82.7590° W
+                // Tampa, FL: 27.9506° N, 82.4572° W
+                // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
+                //                  30.28267 N, 97.63624 W via iPhone maps in office.
+                // eg. float longitude = -97.63624;
+                // Split out latitude & longitude
+                int commaIndex = lcMessage.indexOf(',');
+                if(commaIndex < 0) return;
+                
+                String latString = lcMessage.substring(0, commaIndex-1);
+                String lonString = lcMessage.substring(commaIndex+1);
+                
+                //TODO: handle '-' because toFloat doc says it doesn't
+                float latitude = latString.toFloat();
+                float longitude = lonString.toFloat();
+                Log.trace("lat/long = " + String(latitude) + "," + String(longitude));
+                if(latitude != 0 && longitude != 0) {
+                    Log.trace("Setting lat/long: " + String(latitude) + "," + String(longitude));
+                    IoT::setLatLong(latitude,longitude);
+                }
+
+            // LOGLEVEL
+            } else if(subtopics[1] == "loglevel") {
+                if(numTopics == 2 || subtopics[2] == _controllerName || subtopics[2] == "all" ) {
+                    Log.warn(_controllerName + " setting logLevel = " + lcMessage);
+                    parseLogLevel(lcMessage);
+                }
+                
+            // MEMORY
+            } else if(subtopics[1] == "memory") {
+                if(lcMessage == _controllerName || lcMessage == "all") {
+                    Log.info(_controllerName + ": free memory = %d", System.freeMemory());
+                }
+
+            // QUERY
+            } else if(subtopics[1] == "query") {
+                if(lcMessage == _controllerName || lcMessage == "all") {
+                    Log.info(_controllerName + ": received query addressed to us");
+                    Device::publishStates();
+                }
+
+            // RESET
+            } else if(subtopics[1] == "reset") {
+                if(lcMessage == _controllerName || lcMessage == "all") {
+                    Log.info(_controllerName + ": reset addressed to us");
+                    Device::resetAll();
+                    System.reset(RESET_NO_WAIT);
+                }
+                
+            // SET
+            } else if(numTopics > 2 && subtopics[2] == "set") {             // patriot/<device>/set value
+                Device *device = Device::get(subtopics[1]);
+                if( device != NULL) {
+                    int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
+                    Log.info(_controllerName + ": set " + subtopics[1] + " = " + String(value));
+                    device->setValue(value);
+                    sendAck(subtopics[2], "set", lcMessage);
+                }
+                
+            // TIMEZONE
+            } else if(subtopics[1] == "timezone") {
+                // San Francisco/PST -8
+                // Austin/CST -6
+                // Windsor/EST -5
+                Log.trace(_controllerName + ": received timezone = " + lcMessage);
+                int timezone = -6;          // Default to Austin CST
+                //handle '-' because toInt doc says it doesn't
+                if(lcMessage.charAt(0) == '-') {
+                    timezone = 0 - lcMessage.substring(1).toInt();
+                } else {
+                    timezone = lcMessage.toInt();
+                }
+                if(timezone != 0) {
+                    Log.trace(_controllerName + ": setting timezone to: " + String(timezone));
+                    IoT::setTimezone(timezone);
+                } else {
+                    Log.error("Invalid timezone");
+                }
             }
         }
-//    } else {
-//        // Not addressed or recognized by us
-//        Log.info("Parser: Not our message: "+String(lcTopic)+" "+String(lcMessage));
     }
+    
+void MQTTManager::sendAck(String deviceName, String command, String message) {
+    publish(kPublishName + "/ack/" + deviceName + "/" + command, lcMessage);
 }
 
 String MQTTManager::parseDeviceName(String subtopic)
