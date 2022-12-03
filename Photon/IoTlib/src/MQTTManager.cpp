@@ -159,17 +159,18 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
     // This is ok here because log is on a separate topic now.
     Log.info("Parser received: " + lcTopic + ", " + lcMessage);
     
-    //TODO: parse parts of topic separated by "/"
     String subtopics[5];
     int start = 0;
-    int end = lcTopic.indexOf('/');
+    int end = lcTopic.indexOf('/');     // patriot/memory = 7
     int numTopics = 0;
+    if(end <= 0) return;    // guard agains just "patriot"
     do {
-        subtopics[numTopics] = lcTopic.substring(start, end);
+        subtopics[numTopics] = lcTopic.substring(start, end);   // [0] = patriot
         start = end+1;
         end = lcTopic.indexOf('/', start);
         numTopics++;
     } while(numTopics < 5 && end > 0);
+    subtopics[numTopics++] = lcTopic.substring(start);  // Last one
     
     if(subtopics[0] == kPublishName && numTopics > 1) {
         
@@ -269,7 +270,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             // San Francisco/PST -8
             // Austin/CST -6
             // Windsor/EST -5
-            Log.trace(_controllerName + ": received timezone = " + lcMessage);
+            Log.info(_controllerName + ": received timezone = " + lcMessage);
             int timezone = -6;          // Default to Austin CST
             //handle '-' because toInt doc says it doesn't
             if(lcMessage.charAt(0) == '-') {
@@ -278,7 +279,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 timezone = lcMessage.toInt();
             }
             if(timezone != 0) {
-                Log.trace(_controllerName + ": setting timezone to: " + String(timezone));
+                Log.info(_controllerName + ": setting timezone to: " + String(timezone));
                 IoT::setTimezone(timezone);
             } else {
                 Log.error("Invalid timezone");
