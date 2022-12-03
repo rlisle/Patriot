@@ -190,7 +190,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             }
             
             // BRIGHTNESS
-        } else if(numTopics > 2 && subtopics[2] == "brightness")) {           // patriot/<device>/brightness value
+        } else if(numTopics > 2 && subtopics[2] == "brightness") {           // patriot/<device>/brightness value
             int value = lcMessage.toInt();
             String deviceName = subtopics[1];
             Device *device = Device::get(deviceName);
@@ -288,7 +288,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 }
 
 void MQTTManager::sendAck(String deviceName, String command, String message) {
-    publish(kPublishName + "/ack/" + deviceName + "/" + command, lcMessage);
+    publish(kPublishName + "/ack/" + deviceName + "/" + command, message);
 }
 
 String MQTTManager::parseDeviceName(String subtopic)
