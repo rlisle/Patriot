@@ -59,8 +59,8 @@ public:
      * param: subtopic - MQTT topic prepended with "patriot/"
      * param message or value
      */
-    static void publishMQTT(String subtopic, String message);
-    static void publishValue(String subtopic, int value);
+    static void publishMQTT(String subtopic, String message, bool retain = false);
+    static void publishValue(String subtopic, int value, bool retain = false);
 
     /**
      * Loop needs to be called periodically

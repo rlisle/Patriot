@@ -118,7 +118,7 @@ void NCD8Light::setValue(int value) {
         return;
     }
     
-    _currentLevel = _value;   // previous value
+    _currentLevel = _value;   // hold previous value for transitioning
     _value = value;
     _targetLevel = value;
     if(_dimmingDuration == 0) {

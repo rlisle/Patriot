@@ -1,6 +1,6 @@
 # Patriot
 Patriot is an open source, hobby IoT project using 
-Particle.io Photon devices, and optionally Alexa, MQTT, and/or iOS apps.
+Particle.io Photon devices, and optionally Alexa, Siri, MQTT, and/or iOS apps.
 
 <img src="https://www.lucidchart.com/publicSegments/view/e2fb9ca3-c413-498b-b193-ab9dd6626c3a/image.png" alt="Patriot IoT Diagram" style="width: 640px;"/>
 

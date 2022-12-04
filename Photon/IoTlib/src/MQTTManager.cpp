@@ -1,16 +1,16 @@
 /**
-MQTTManager.cpp
-
-This class handles all MQTT interactions.
-
-http://www.github.com/rlisle/Patriot
-
-Written by Ron Lisle
-
-BSD license, check LICENSE for more information.
-All text above must be included in any redistribution.
-
-*/
+ MQTTManager.cpp
+ 
+ This class handles all MQTT interactions.
+ 
+ http://www.github.com/rlisle/Patriot
+ 
+ Written by Ron Lisle
+ 
+ BSD license, check LICENSE for more information.
+ All text above must be included in any redistribution.
+ 
+ */
 #include "MQTTManager.h"
 #include "device.h"
 #include "IoT.h"
@@ -23,43 +23,53 @@ All text above must be included in any redistribution.
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
     _controllerName = controllerName.toLowerCase();
-    _mqttLogging = mqttLogging;
+    _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
     _lastAliveTime = 0;
     _logging = 0;
     _networkStatus = Starting;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
-
+    
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
     _logLevel = LOG_LEVEL_ALL;     // See particle doc for options
     //TODO: by default, just the "app" category is used.
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
-
+    
     // Setup blue LED for network status
     pinMode(D7, OUTPUT);    // Blue LED
     digitalWrite(D7, LOW);
-
+    
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     
-    if(_mqttLogging == false) {
-        Log.info("Connecting to MQTT");
-    }
+    Log.info("Connecting to MQTT");
+    
     _lastMQTTtime = Time.now();
-    _mqtt->connect(_controllerName + "Id");
-    _mqtt->subscribe("#");
+    doConnect();
+    _mqtt->subscribe(kPublishName + "/#");      // Are subscribes persisted? If not, move to doConnect()
     
     if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
         Log.info("MQTT log handler added");
     }
-
+    
     //TODO: detect loss of other controllers
     _lastAliveFrontPanel = Time.now();
     _lastAliveLeftSlide = Time.now();
     _lastAliveRearPanel = Time.now();
     _lastAliveRonTest = Time.now();
+    
+}
 
+void MQTTManager::doConnect() {
+    const char *user = NULL;
+    const char *pw = NULL;
+    String willTopic = kPublishName + "/" + _controllerName + "/status";
+    MQTT::EMQTT_QOS willQoS = MQTT::QOS0;
+    uint8_t willRetain = 0;
+    String willMessage = "Offline";
+    bool clean = false;
+    _mqtt->connect(_controllerName + "Id", user, pw, willTopic, willQoS, willRetain, willMessage, clean);
 }
 
 void MQTTManager::loop()
@@ -82,8 +92,7 @@ void MQTTManager::manageNetwork()
         if(_networkStatus == Mqtt) {
             _networkStatus = Wifi;
             _lastMQTTtime = Time.now();
-            _mqtt->connect(_controllerName + "Id");
-            //To we need to subscribe again?
+            doConnect();
             Log.warn("MQTT reconnecting...");
         }
     } else {
@@ -104,7 +113,7 @@ void MQTTManager::sendAlivePeriodically() {
     if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
         _lastAliveTime = Time.now();
         String time = Time.format(Time.now(), "%a %H:%M");
-        publish(kPublishName+"/alive/"+_controllerName, time);
+        publish(kPublishName+"/alive/"+_controllerName, time, false);
     }
 }
 
@@ -117,9 +126,9 @@ void MQTTManager::doReboot() {
 /**
  * Send MQTT data
  */
-bool MQTTManager::publish(String topic, String message) {
+bool MQTTManager::publish(String topic, String message, bool retain) {
     if(_mqtt->isConnected() && WiFi.ready()) {
-        _mqtt->publish(topic,message);
+        _mqtt->publish(topic, (const uint8_t*)message.c_str(), message.length(), retain, retain ? MQTT::QOS1 : MQTT::QOS0);
         return true;
     } else {
         Log.warn("publish while not connected: " + topic + ", " + message);
@@ -131,15 +140,15 @@ bool MQTTManager::publish(String topic, String message) {
  * Handle received MQTT messages
  */
 void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
-
+    
     char p[length + 1];
     memcpy(p, payload, length);
     p[length] = 0;
     String message(p);
     String topic(rawTopic);
-
+    
     _lastMQTTtime = Time.now();
-
+    
     parseMessage(topic.toLowerCase(), message.toLowerCase());
 }
 
@@ -147,40 +156,63 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
 void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 {
-    // This creates an infinite loop. Don't do it.
-    //log("Parser received: " + lcTopic + ", " + lcMessage, LogDebug);
+    // This is ok here because log is on a separate topic now.
+    Log.info("Parser received: " + lcTopic + ", " + lcMessage);
     
-    // New Protocol: patriot/<name>  <value>
-    if(lcTopic.startsWith(kPublishName+"/")) {
-        String subtopic = lcTopic.substring(kPublishName.length()+1);
+    String subtopics[5];
+    int start = 0;
+    int end = lcTopic.indexOf('/');     // patriot/memory = 7
+    int numTopics = 0;
+    if(end <= 0) return;    // guard agains just "patriot"
+    do {
+        subtopics[numTopics] = lcTopic.substring(start, end);   // [0] = patriot
+        start = end+1;
+        end = lcTopic.indexOf('/', start);
+        numTopics++;
+    } while(numTopics < 5 && end > 0);
+    subtopics[numTopics++] = lcTopic.substring(start);  // Last one
+    
+    if(subtopics[0] == kPublishName && numTopics > 1) {
         
-        // Look for reserved names
-        if(subtopic.startsWith("alive/")) {              // ALIVE
-            // Remainder of topic is controller name
-            String controllerName = subtopic.substring(6);
-
-            // message is timestamp - useful when viewing MQTT, but not used here
-            // Ignore it.
-            //TODO: This is a hack, refactor later
-            if(controllerName == "frontpanel") {
+        // ACK
+        if(subtopics[1] == "ack") {                         // patriot/ack/<device>/<command>
+            // Ignore Acknowledgements
+            
+            // ALIVE
+        } else if(subtopics[1] == "alive" && numTopics > 2) {                // patriot/alive/<controller>
+            
+            //TODO: Refactor to allow unknown controller names (array)
+            if(subtopics[2] == "frontpanel") {
                 _lastAliveFrontPanel = Time.now();
-            } else if(controllerName == "leftslide") {
+            } else if(subtopics[2] == "leftslide") {
                 _lastAliveLeftSlide = Time.now();
-            } else if(controllerName == "rearpanel") {
+            } else if(subtopics[2] == "rearpanel") {
                 _lastAliveRearPanel = Time.now();
             }
-
-        } else if(subtopic.startsWith("brightness")) {           // BRIGHTNESS patriot/brightness/<device> value
+            
+            // BRIGHTNESS
+        } else if(numTopics > 2 && subtopics[2] == "brightness") {           // patriot/<device>/brightness value
             int value = lcMessage.toInt();
-            String deviceName = parseDeviceName(subtopic);
+            String deviceName = subtopics[1];
             Device *device = Device::get(deviceName);
             if( device != NULL && value > 0) {
-                Log.info(_controllerName + " setting brightness = " + lcMessage);
+                Log.info(_controllerName + " setting " + deviceName + " brightness = " + lcMessage);
                 device->setBrightness(value);
-                publish(kPublishName + "/ack/brightness/" + deviceName, lcMessage);
+                sendAck(deviceName, "brightness", lcMessage);
             }
+            
+        // HOLD
+        } else if(numTopics > 2 && subtopics[2] == "hold") {             // patriot/<device>/hold n/a
+            Device *device = Device::get(subtopics[1]);
+            if( device != NULL) {
+                // message is currently ignored and can be anything
+                Log.info(_controllerName + ": hold " + subtopics[1]);
+                device->setHold(lcMessage != "0"); // not sure what message will be
+            }
+            
 
-        } else if(subtopic == "latlong") {             // LATLONG
+            // LATLONG
+        } else if(subtopics[1] == "latlong") {                                  // patriot/latlong lat,long
             // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
             // Spanish Fort, AL: 30.6685° N, 87.9109° W
             // Bonifay, FL: 30.7919° N, 85.6797° W
@@ -195,7 +227,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             
             String latString = lcMessage.substring(0, commaIndex-1);
             String lonString = lcMessage.substring(commaIndex+1);
-
+            
             //TODO: handle '-' because toFloat doc says it doesn't
             float latitude = latString.toFloat();
             float longitude = lonString.toFloat();
@@ -205,63 +237,52 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 IoT::setLatLong(latitude,longitude);
             }
             
-        } else if(subtopic == "log" || subtopic.startsWith("log/")) {   // LOG
-            // Ignore it.
-
-        } else if(subtopic.startsWith("loglevel")) {    // LOGLEVEL
-            if(subtopic == "loglevel/"+_controllerName) {
+            // LOGLEVEL
+        } else if(subtopics[1] == "loglevel") {
+            if(numTopics == 2 || subtopics[2] == _controllerName || subtopics[2] == "all" ) {
                 Log.warn(_controllerName + " setting logLevel = " + lcMessage);
                 parseLogLevel(lcMessage);
             }
             
-        } else if(subtopic == "memory") {           // MEMORY
-            if(lcMessage == _controllerName) {
-                publish( "debug/"+_controllerName, String::format("Free memory = %d", System.freeMemory()));
-            }
-            
-        } else if(subtopic == "ping") {             // PING
-            // Respond if ping is addressed to us
-            if(lcMessage == _controllerName) {
-                Log.info("Ping addressed to us");
-                publish(kPublishName + "/pong", _controllerName);
-            }
-            
-        } else if(subtopic == "pong") {             // PONG
-            // Ignore it.
-            
-        } else if(subtopic == "query") {            // QUERY
+            // MEMORY
+        } else if(subtopics[1] == "memory") {
             if(lcMessage == _controllerName || lcMessage == "all") {
-                Log.info("Received query addressed to us");
+                Log.info(_controllerName + ": free memory = %d", System.freeMemory());
+            }
+            
+            // QUERY
+        } else if(subtopics[1] == "query") {
+            if(lcMessage == _controllerName || lcMessage == "all") {
+                Log.info(_controllerName + ": received query addressed to us");
                 Device::publishStates();
             }
-                
-        } else if(subtopic == "reset") {            // RESET
-            // Respond if reset is addressed to us
-            if(lcMessage == _controllerName) {
-                Log.info("Reset addressed to us");
+            
+            // RESET
+        } else if(subtopics[1] == "reset") {
+            if(lcMessage == _controllerName || lcMessage == "all") {
+                Log.info(_controllerName + ": reset addressed to us");
                 Device::resetAll();
                 System.reset(RESET_NO_WAIT);
             }
             
-        } else if(subtopic.startsWith("set/")) {           // SET patriot/set/<device> on|off
-            String deviceName = parseDeviceName(subtopic);
-            Device *device = Device::get(deviceName);
+            // SET
+        } else if(numTopics > 2 && subtopics[2] == "set") {             // patriot/<device>/set value
+            Device *device = Device::get(subtopics[1]);
             if( device != NULL) {
-                int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
-                Log.info(_controllerName + " set " + deviceName + " = " + String(value));
+                int value = lcMessage.toInt();  // 0 if not numerical
+                if(lcMessage == "on" || lcMessage == "true") value = 100;
+                else if(lcMessage == "off" || lcMessage == "false") value = 0;
+                Log.info(_controllerName + ": set " + subtopics[1] + " = " + String(value));
                 device->setValue(value);
-                publish(kPublishName + "/ack/set/" + deviceName, lcMessage);
+                sendAck(subtopics[1], "set", lcMessage);
             }
-
-
-        } else if(subtopic == "state") {
-            // Ignore - deprecated
-
-        } else if(subtopic == "timezone") {            // TIMEZONE
+            
+            // TIMEZONE
+        } else if(subtopics[1] == "timezone") {
             // San Francisco/PST -8
             // Austin/CST -6
             // Windsor/EST -5
-            Log.trace("Received timezone: " + lcMessage);
+            Log.info(_controllerName + ": received timezone = " + lcMessage);
             int timezone = -6;          // Default to Austin CST
             //handle '-' because toInt doc says it doesn't
             if(lcMessage.charAt(0) == '-') {
@@ -270,37 +291,17 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 timezone = lcMessage.toInt();
             }
             if(timezone != 0) {
-                Log.trace("Setting timezone to: " + String(timezone));
+                Log.info(_controllerName + ": setting timezone to: " + String(timezone));
                 IoT::setTimezone(timezone);
             } else {
                 Log.error("Invalid timezone");
             }
-            
-        // DEVICE
-        } else {
-            // This is used by Alexa. Siri uses 'set' instead
-            Device *device = Device::get(subtopic);
-            if( device != NULL ) {
-                int value = 100;
-                if(lcMessage == "on" || lcMessage == "true") {
-                    value = device->brightness();
-                } else if(lcMessage == "off" || lcMessage == "false") {
-                    value = 0;
-                } else {
-                    value = lcMessage.toInt();
-                }
-                
-                // Handle save/restore value
-                Log.info("Parser setting device " + subtopic + " to " + String(value));
-                device->setValue(value);
-                
-                Device::buildDevicesVariable();
-            }
         }
-//    } else {
-//        // Not addressed or recognized by us
-//        Log.info("Parser: Not our message: "+String(lcTopic)+" "+String(lcMessage));
     }
+}
+
+void MQTTManager::sendAck(String deviceName, String command, String message) {
+    publish(kPublishName + "/ack/" + deviceName + "/" + command, message);
 }
 
 String MQTTManager::parseDeviceName(String subtopic)
@@ -309,7 +310,7 @@ String MQTTManager::parseDeviceName(String subtopic)
     if(slashIndex < 0) return "unknown";
     
     String deviceName = subtopic.substring(slashIndex+1);
-
+    
     return deviceName;
 }
 
@@ -322,7 +323,7 @@ void MQTTManager::parseLogLevel(String lcMessage) {
     else if (lcMessage == "trace") level = LOG_LEVEL_TRACE;  // 1
     else if (lcMessage == "all") level = LOG_LEVEL_ALL;      // 1
     else return;
-
+    
     _logLevel = level;
 }
 
@@ -354,13 +355,13 @@ const char* MQTTManager::extractFuncName(const char *s, size_t *size) {
 //      but the log class filters everything below INFO, so we only see info, warn, and error.
 void MQTTManager::logMessage(const char *msg, LogLevel level, const char *category, const LogAttributes &attr) {
     String s;
-
-//    LOG_LEVEL_ALL = 1
-//    LOG_LEVEL_TRACE = 1
-//    LOG_LEVEL_INFO = 30
-//    LOG_LEVEL_WARN= 40
-//    LOG_LEVEL_ERROR = 50
-//    LOG_LEVEL_NONE = 70
+    
+    //    LOG_LEVEL_ALL = 1
+    //    LOG_LEVEL_TRACE = 1
+    //    LOG_LEVEL_INFO = 30
+    //    LOG_LEVEL_WARN= 40
+    //    LOG_LEVEL_ERROR = 50
+    //    LOG_LEVEL_NONE = 70
     if (level < _logLevel) {
         return;
     }
@@ -379,7 +380,7 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
             s.concat(": ");
         }
     }
-
+    
     // Function name
     if (attr.has_function) {
         size_t n = 0;
@@ -387,16 +388,16 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
         s.concat(s);
         s.concat("(): ");
     }
-
+    
     // Level
     s.concat(levelName(level));
     s.concat(": ");
-
+    
     // Message
     if (msg) {
         s.concat(msg);
     }
-
+    
     // Additional attributes
     if (attr.has_code || attr.has_details) {
         s.concat(" [");
@@ -414,9 +415,9 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
         }
         s.concat(']');
     }
-
+    
     //TODO: If MQTT not connected, write to Serial instead
-//    Serial.println(s);
+    //    Serial.println(s);
     log(category, s);
 }
 
@@ -424,10 +425,11 @@ void MQTTManager::logMessage(const char *msg, LogLevel level, const char *catego
 void MQTTManager::log(const char *category, String message) {
     // As recommended by ScruffR, don't pass time argument
     String time = Time.format("%a %H:%M");
-
+    
     if(!_logging) {
         _logging++;
-        publish("patriot/log/"+_controllerName, time + " " + message);
+        // Separate topic now, allows logging patriot/ messages without causing a loop
+        publish("log/"+_controllerName, time + " " + message, false);
         _logging--;
     }
 }
@@ -439,10 +441,9 @@ void MQTTManager::updateStatusLed() {
         
         _lastBlinkTimeMs = millis();
         _blinkPhase++;
-
-        int currentLed = digitalRead(D7);
+        
         int nextLed = LOW;
-
+        
         switch (_networkStatus)
         {
             case Starting:  // 3 short blinks off, on, off, on, off, off
@@ -470,4 +471,3 @@ void MQTTManager::updateStatusLed() {
         digitalWrite(D7, nextLed);
     }
 }
-

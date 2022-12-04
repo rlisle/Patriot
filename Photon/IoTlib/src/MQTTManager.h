@@ -27,7 +27,7 @@ public:
 
     MQTTManager(String brokerIP, String controllerName, bool mqttLogging);
     
-    bool        publish(String topic, String message);
+    bool        publish(String topic, String message, bool retain = false);
     void        parseMessage(String topic, String message);
     void        loop();
     void        mqttHandler(char* topic, byte* payload, unsigned int length);
@@ -46,6 +46,7 @@ private:
     bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
 
+    void      doConnect();
     void      (*_callback)(char*,uint8_t*,unsigned int);
     int       parseValue(String message);
     String    parseDeviceName(String subtopic);
@@ -54,6 +55,8 @@ private:
     void      updateStatusLed();
     void      manageNetwork();
     void      doReboot();
+    void      sendAck(String deviceName, String command, String message);
+
 
     
     //DEBUG

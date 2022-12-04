@@ -19,7 +19,7 @@
 
 //While debugging, use serial and disable MQTT logging if needed
 SerialLogHandler logHandler;
-#define MQTT_LOGGING false
+#define MQTT_LOGGING true
 
 //Using Threads may cause problems with other libraries, etc.
 //So not doing it anymore

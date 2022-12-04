@@ -37,7 +37,11 @@ void Device::setValue(int value) {
 
 void Device::setBrightness(int value) {
     _brightness = value;
-    setValue(value);
+    // Setting brightness should not turn of a device that is currently off
+    // but it will adjust the level of one that is already on
+    if(_value != 0) {
+        setValue(value);
+    }
 }
 
 // Check if device has changed and return new value or -1

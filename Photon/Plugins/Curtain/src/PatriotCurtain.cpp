@@ -114,15 +114,19 @@ void Curtain::setValue(int percent) {
     Log.info("_updateMillis = %ld",_updateMillis);
 
     // Send HomeKit acknowledgement
-    IoT::publishMQTT("getTargetPosition/" + _name, String(percent));
+    IoT::publishMQTT("/ack/" + _name + "/set",String(percent));
     
+    // Send position updates
+    IoT::publishMQTT("/" + _name + "/get",String(percent));
+    IoT::publishMQTT("/" + _name + "/position",String(_startPosition));
+
     if(_value > _startPosition) {
         _mode = OPEN_CURTAIN;
-        IoT::publishMQTT("getPositionState/" + _name, "increasing");
+        IoT::publishMQTT("/" + _name + "/state", "increasing");
 
     } else {
         _mode = CLOSE_CURTAIN;
-        IoT::publishMQTT("getPositionState/" + _name, "decreasing");
+        IoT::publishMQTT("/" + _name + "/state", "decreasing");
     }
 
     // We only need a single pulse if opening or closing all the way
@@ -136,8 +140,20 @@ void Curtain::setValue(int percent) {
 }
 
 void Curtain::setHold(bool holding) {
+    if(holding == true) {
+        if(_holding == true) {  // Already holding?
+            return;
+        }
+        //TODO: stop movement, but remember target in case hold false
+        
+    } else {        // resume
+        if(_holding == false) { // Not currently holding?
+            return;
+        }
+        //TODO: resume movement - same as setValue using old target
+        
+    }
     _holding = holding;
-    //TODO: stop curtain if moving
     Log.warn("Curtain setHold not implemented");
 }
 
