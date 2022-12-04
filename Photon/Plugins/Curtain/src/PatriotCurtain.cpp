@@ -117,16 +117,16 @@ void Curtain::setValue(int percent) {
     IoT::publishMQTT("/ack/" + _name + "/set",String(percent));
     
     // Send position updates
-    IoT::publishMQTT("/" + _name + "/get",String(percent));
-    IoT::publishMQTT("/" + _name + "/position",String(_startPosition));
+    IoT::publishMQTT(_name + "/get",String(percent));
+    IoT::publishMQTT(_name + "/position",String(_startPosition));
 
     if(_value > _startPosition) {
         _mode = OPEN_CURTAIN;
-        IoT::publishMQTT("/" + _name + "/state", "increasing");
+        IoT::publishMQTT(_name + "/state", "increasing");
 
     } else {
         _mode = CLOSE_CURTAIN;
-        IoT::publishMQTT("/" + _name + "/state", "decreasing");
+        IoT::publishMQTT(_name + "/state", "decreasing");
     }
 
     // We only need a single pulse if opening or closing all the way
