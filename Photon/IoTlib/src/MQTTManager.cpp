@@ -262,7 +262,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
                 Log.info(_controllerName + ": set " + subtopics[1] + " = " + String(value));
                 device->setValue(value);
-                sendAck(subtopics[2], "set", lcMessage);
+                sendAck(subtopics[1], "set", lcMessage);
             }
             
             // TIMEZONE
