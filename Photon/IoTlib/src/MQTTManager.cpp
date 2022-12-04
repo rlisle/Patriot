@@ -207,7 +207,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             if( device != NULL) {
                 // message is currently ignored and can be anything
                 Log.info(_controllerName + ": hold " + subtopics[1]);
-                device->hold(0);
+                device->setHold(lcMessage != "0"); // not sure what message will be
             }
             
 
@@ -269,7 +269,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
         } else if(numTopics > 2 && subtopics[2] == "set") {             // patriot/<device>/set value
             Device *device = Device::get(subtopics[1]);
             if( device != NULL) {
-                int value = (lcMessage == "on" || lcMessage == "true") ? device->brightness() : 0;
+                int value = lcMessage.toInt();  // 0 if not numerical
+                if(lcMessage == "on" || lcMessage == "true") value = 100;
+                else if(lcMessage == "off" || lcMessage == "false") value = 0;
                 Log.info(_controllerName + ": set " + subtopics[1] + " = " + String(value));
                 device->setValue(value);
                 sendAck(subtopics[1], "set", lcMessage);
