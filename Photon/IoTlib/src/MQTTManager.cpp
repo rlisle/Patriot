@@ -201,6 +201,16 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
                 sendAck(deviceName, "brightness", lcMessage);
             }
             
+        // HOLD
+        } else if(numTopics > 2 && subtopics[2] == "hold") {             // patriot/<device>/hold n/a
+            Device *device = Device::get(subtopics[1]);
+            if( device != NULL) {
+                // message is currently ignored and can be anything
+                Log.info(_controllerName + ": hold " + subtopics[1]);
+                device->hold(0);
+            }
+            
+
             // LATLONG
         } else if(subtopics[1] == "latlong") {                                  // patriot/latlong lat,long
             // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
