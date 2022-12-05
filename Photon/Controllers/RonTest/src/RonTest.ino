@@ -10,6 +10,9 @@
  */
 
 #include <IoT.h>
+#include <PatriotCurtain.h>
+#include <PatriotNCD4Switch.h>
+#include <PatriotNCD4Relay.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
@@ -20,6 +23,9 @@
 //While debugging, use serial and disable MQTT logging if needed
 SerialLogHandler logHandler;
 #define MQTT_LOGGING true
+
+#define ADDRESS 1      // PWM board address A0 jumper set
+#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
 //Using Threads may cause problems with other libraries, etc.
 //So not doing it anymore
@@ -37,7 +43,16 @@ void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);   // or ANT_EXTERNAL
     WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CLOUD_ENABLED, MQTT_LOGGING);
+    
     Device::add(new Device("sleeping", "All"));
+
+    // I2CIO4R4G5LE board
+    // 4 Relays
+    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
+    
+    // 4 GPIO
+    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
+
     Log.info("RonTest started");
 }
 
