@@ -34,8 +34,8 @@ SerialLogHandler logHandler;
 SYSTEM_MODE(AUTOMATIC);
 
 //Used to determine I2C addresses for debugging I2C boards
-//unsigned long lastScan = 0;
-//unsigned long scanInterval = 15000;
+unsigned long lastScan = 0;
+unsigned long scanInterval = 15000;
 
 int sleeping = 0;
 
@@ -48,10 +48,10 @@ void setup() {
 
     // I2CIO4R4G5LE board
     // 4 Relays
-    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
+//    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
     
     // 4 GPIO
-    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
+//    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
 
     Log.info("RonTest started");
 }
@@ -77,29 +77,29 @@ void handleSleeping() {
 // Diagnostic Functions
 // Search all I2C addresses every 15 seconds -
 // leave this here for future use (comment out if not used)
-//void scanI2Caddresses() {
-//    if(millis() > lastScan + scanInterval){
-//        lastScan = millis();
-//        
-//        bool devicesFound = false;
-//        String newDevices = "Devices at: ";
-//        //Step through all 127 possible I2C addresses to scan for devices on the I2C bus.
-//        for(int i = 1; i < 128; i++){
-//            //Make a general call to device at the current address to see if anything responds.
-//            Wire.beginTransmission(i);
-//            byte status = Wire.endTransmission();
-//            if(status == 0){
-//                //Device found so append it to our device list event string
-//                newDevices.concat(i);
-//                newDevices.concat(", ");
-//                devicesFound = true;
-//            }
-//            
-//        }
-//        if(devicesFound){
-//            Log.info(newDevices);
-//        }else{
-//            Log.info("No Devices Found");
-//        }
-//    }
-//}
+void scanI2Caddresses() {
+    if(millis() > lastScan + scanInterval){
+        lastScan = millis();
+        
+        bool devicesFound = false;
+        String newDevices = "Devices at: ";
+        //Step through all 127 possible I2C addresses to scan for devices on the I2C bus.
+        for(int i = 1; i < 128; i++){
+            //Make a general call to device at the current address to see if anything responds.
+            Wire.beginTransmission(i);
+            byte status = Wire.endTransmission();
+            if(status == 0){
+                //Device found so append it to our device list event string
+                newDevices.concat(i);
+                newDevices.concat(", ");
+                devicesFound = true;
+            }
+            
+        }
+        if(devicesFound){
+            Log.info(newDevices);
+        }else{
+            Log.info("No Devices Found");
+        }
+    }
+}
