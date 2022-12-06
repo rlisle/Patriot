@@ -35,7 +35,8 @@
 #define MILLIS_PER_SECOND 1000
 #define FULL_TIME_MILLIS 6000   // Duration of full open to close or vis-vis
 #define MILLIS_PER_PERCENT 60   // FULL_TIME_MILLIS / 100
-#define MILLIS_PER_UPDATE 250   // Send updates every 1/4 second
+//#define MILLIS_PER_UPDATE 250   // Send updates every 1/4 second
+#define MILLIS_PER_UPDATE 1000  // Send updates every second
 #define PULSE_MILLIS 100
 
 // Mode (relay bit)
@@ -100,8 +101,11 @@ void Curtain::begin() {
  */
 void Curtain::setValue(int percent) {
 
+    //FOR DEBUGGING, SETTING ONLY OPEN OR CLOSED
+    
     if(percent == _value) {
         Log.warn("Curtain setValue is the same as previous value, ignoring");
+        //TODO: do we want to issue open/close again just in case?
         return;
     }
 
@@ -220,7 +224,7 @@ void Curtain::loop()
                     break;
                 case 4:
                     _stage = 0;
-                    IoT::publishMQTT("getPositionState/" + _name, "stopped");
+                    IoT::publishMQTT(_name + "/state", "stopped");
                     break;
                 default:
                     Log.error("Invalid _stage %d",_stage);
@@ -233,13 +237,15 @@ void Curtain::loop()
             _updateMillis += MILLIS_PER_UPDATE;
             
             int percentDelta = (int)((millis() - _startMillis) / MILLIS_PER_PERCENT);
-            Log.info("DBG: _startPosition = %d",_startPosition);
-            Log.info("DBG: curtain percent delta = %d",percentDelta);
-            Log.info("DBG: _startMillis = %ld",_startMillis);
-            Log.info("DBG: millis = %ld",millis());
-            Log.info("DBG: millis delta = %ld",millis() - _startMillis);
-            _value = _startPosition + percentDelta;
-            IoT::publishMQTT("getCurrentPosition/" + _name, String(_value));
+            if(_mode == CLOSE_CURTAIN) percentDelta = -percentDelta;
+//            Log.info("DBG: _startPosition = %d",_startPosition);
+//            Log.info("DBG: curtain percent delta = %d",percentDelta);
+//            Log.info("DBG: _startMillis = %ld",_startMillis);
+//            Log.info("DBG: millis = %ld",millis());
+//            Log.info("DBG: millis delta = %ld",millis() - _startMillis);
+//            _value = _startPosition + percentDelta;
+//            IoT::publishMQTT(_name + "/position", String(_value));
+            IoT::publishMQTT(_name + "/position", String(_startPosition + percentDelta));
         }
     }
 };
