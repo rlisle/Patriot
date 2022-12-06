@@ -42,8 +42,6 @@ Author: Ron Lisle
 #define OFFICE_MOTION_TIMEOUT 15
 
 #define ADDRESS 1      // PWM board address A0 jumper set
-//#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
-//#define ADDRESS 0      // PWM board address A0 jumper NOT set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
 //SYSTEM_THREAD(ENABLED);
