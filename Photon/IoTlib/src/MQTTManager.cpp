@@ -270,7 +270,7 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
             Device *device = Device::get(subtopics[1]);
             if( device != NULL) {
                 int value = lcMessage.toInt();  // 0 if not numerical
-                if(lcMessage == "on" || lcMessage == "true") value = 100;
+                if(lcMessage == "on" || lcMessage == "true") value = device->brightness;
                 else if(lcMessage == "off" || lcMessage == "false") value = 0;
                 Log.info(_controllerName + ": set " + subtopics[1] + " = " + String(value));
                 device->setValue(value);
