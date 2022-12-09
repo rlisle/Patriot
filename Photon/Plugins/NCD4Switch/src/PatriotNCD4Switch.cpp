@@ -197,6 +197,6 @@ bool NCD4Switch::didSwitchChange()
 void NCD4Switch::notify()
 {
     String message = String(_value);
-    IoT::publishMQTT(_name,message);
+    IoT::publishMQTT(_name + "/get/position",message);
 }
 

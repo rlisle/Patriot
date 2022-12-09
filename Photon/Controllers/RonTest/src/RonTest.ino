@@ -10,9 +10,9 @@
  */
 
 #include <IoT.h>
-#include <PatriotCurtain.h>
-#include <PatriotNCD4Switch.h>
-#include <PatriotNCD4Relay.h>
+//#include <PatriotCurtain.h>
+//#include <PatriotNCD4Switch.h>
+//#include <PatriotNCD4Relay.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
