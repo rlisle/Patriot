@@ -27,7 +27,6 @@
 #include "PatriotNCD8Switch.h"
 #include "IoT.h"                // Is this needed?
 
-//#define MILLIS_PER_SECOND 1000
 #define POLL_INTERVAL_MILLIS 250
 #define FILTER_INCREMENT 25
 

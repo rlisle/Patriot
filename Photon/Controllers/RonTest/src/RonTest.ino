@@ -1,18 +1,20 @@
 /*
  * RonTest Controller
  *
- * Description: This sketch provides the bridge, PartOfDay, and Activities
+ * Description: This sketch is used for experimenting and testing
  *
  * Author: Ron Lisle
  *
  * Hardware
  * - built-in blue LED     D7
+ * - Various based on test/experimentation needs
  */
 
 #include <IoT.h>
 //#include <PatriotCurtain.h>
 //#include <PatriotNCD4Switch.h>
 //#include <PatriotNCD4Relay.h>
+#include <PatriotNCD8Switch.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
