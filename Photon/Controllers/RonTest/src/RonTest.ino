@@ -28,6 +28,7 @@ SerialLogHandler logHandler;
 
 #define ADDRESS 1      // PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
+#define I2CDIO8 0x20   // 8xGPIO address (no jumpers)
 
 //Using Threads may cause problems with other libraries, etc.
 //So not doing it anymore
@@ -40,6 +41,7 @@ unsigned long lastScan = 0;
 unsigned long scanInterval = 15000;
 
 int sleeping = 0;
+int switch1 = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);   // or ANT_EXTERNAL
@@ -47,6 +49,16 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CLOUD_ENABLED, MQTT_LOGGING);
     
     Device::add(new Device("sleeping", "All"));
+
+    // I2CDIO8 - 8 GPIO I2C board $33
+    Device::add(new NCD8Switch(I2CDIO8, 0, "Switch1", "Office" ))
+    Device::add(new NCD8Switch(I2CDIO8, 1, "Switch2", "Office" ))
+    Device::add(new NCD8Switch(I2CDIO8, 2, "Switch3", "Office" ))
+    Device::add(new NCD8Switch(I2CDIO8, 3, "Switch4", "Office" ))
+    Device::add(new NCD8Switch(I2CDIO8, 4, "Switch5", "Office" ))
+    Device::add(new NCD8Switch(I2CDIO8, 5, "Switch6", "Office" ))
+    Device::add(new NCD8Switch(I2CDIO8, 6, "Switch7", "Office" ))
+    Device::add(new NCD8Switch(I2CDIO8, 7, "Switch8", "Office" ))
 
     // I2CIO4R4G5LE board
     // 4 Relays
@@ -61,6 +73,7 @@ void setup() {
 void loop() {
     IoT::loop();
     handleSleeping();
+    handleSwitch1();
 //    scanI2Caddresses();
 }
 
@@ -72,6 +85,17 @@ void handleSleeping() {
         Log.info("sleeping has changed %d",sleepingChanged);
 
         sleeping = sleepingChanged;
+    }
+}
+
+void handleSwitch1() {
+
+    int switch1Changed = Device::getChangedValue("switch1");
+    if( switch1Changed != -1 ) {
+
+        Log.info("Switch1 has changed %d",switch1Changed);
+
+        switch1 = switch1Changed;
     }
 }
 
