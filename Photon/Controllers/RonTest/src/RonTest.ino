@@ -51,14 +51,14 @@ void setup() {
     Device::add(new Device("sleeping", "All"));
 
     // I2CDIO8 - 8 GPIO I2C board $33
-    Device::add(new NCD8Switch(I2CDIO8, 0, "Switch1", "Office" ))
-    Device::add(new NCD8Switch(I2CDIO8, 1, "Switch2", "Office" ))
-    Device::add(new NCD8Switch(I2CDIO8, 2, "Switch3", "Office" ))
-    Device::add(new NCD8Switch(I2CDIO8, 3, "Switch4", "Office" ))
-    Device::add(new NCD8Switch(I2CDIO8, 4, "Switch5", "Office" ))
-    Device::add(new NCD8Switch(I2CDIO8, 5, "Switch6", "Office" ))
-    Device::add(new NCD8Switch(I2CDIO8, 6, "Switch7", "Office" ))
-    Device::add(new NCD8Switch(I2CDIO8, 7, "Switch8", "Office" ))
+    Device::add(new NCD8Switch(I2CDIO8, 0, "Switch1", "Office" ));
+    Device::add(new NCD8Switch(I2CDIO8, 1, "Switch2", "Office" ));
+    Device::add(new NCD8Switch(I2CDIO8, 2, "Switch3", "Office" ));
+    Device::add(new NCD8Switch(I2CDIO8, 3, "Switch4", "Office" ));
+    Device::add(new NCD8Switch(I2CDIO8, 4, "Switch5", "Office" ));
+    Device::add(new NCD8Switch(I2CDIO8, 5, "Switch6", "Office" ));
+    Device::add(new NCD8Switch(I2CDIO8, 6, "Switch7", "Office" ));
+    Device::add(new NCD8Switch(I2CDIO8, 7, "Switch8", "Office" ));
 
     // I2CIO4R4G5LE board
     // 4 Relays
