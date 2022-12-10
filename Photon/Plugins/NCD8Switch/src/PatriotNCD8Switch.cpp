@@ -125,7 +125,7 @@ bool NCD8Switch::isSwitchOn() {
     return false;
 }
 
-void NCD4Switch::reset() {
+void NCD8Switch::reset() {
     Log.error("Resetting board");
     Wire.reset();
     // Do we need any delay here?
@@ -226,7 +226,7 @@ bool NCD8Switch::didSwitchChange()
  * notify()
  * Publish switch state
  */
-void NCD4Switch::notify()
+void NCD8Switch::notify()
 {
     String message = String(_value);
     IoT::publishMQTT(_name + "/get/position",message);

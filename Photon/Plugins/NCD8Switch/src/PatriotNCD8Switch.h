@@ -45,6 +45,7 @@ public:
     
     void    begin();
     int     initializeBoard();
+    void    reset();
     void    loop();
     
     // Override to prevent MQTT from setting _percent.
