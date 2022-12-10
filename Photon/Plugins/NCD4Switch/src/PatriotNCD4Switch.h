@@ -17,7 +17,8 @@
 
  Changelog:
  2021-01-18: Initial creation
-*/
+ 2022-12-10: Change MQTT message to patriot/<device>/get/position
+ */
 
 #pragma once
 

@@ -1,4 +1,4 @@
-/******************************************************************
+/**
  NCD GPIO Switch control
 
  Features:
@@ -19,34 +19,41 @@
 
  Datasheets:
 
- ******************************************************************/
+ Changelog:
+ 2021-06-20: Initial creation
+ 2022-12-10: Change MQTT message to patriot/<device>/get/position
+ */
 
 #include "PatriotNCD8Switch.h"
+#include "IoT.h"                // Is this needed?
 
-#define MILLIS_PER_SECOND 1000
+//#define MILLIS_PER_SECOND 1000
 #define POLL_INTERVAL_MILLIS 250
+#define FILTER_INCREMENT 25
 
 /**
  * Constructor
  * @param address is the board address set by jumpers (0-7)
- * @param switchNum is the switch number on the NCD 8 GPIO board (1-8)
+ * @param switchIndex is the switch index on the NCD 8 GPIO board (0-7)
  * @param name String name used in MQTT messages
  */
-NCD8Switch::NCD8Switch(int address, int switchNum, String name)
-                : Device(name)
+NCD8Switch::NCD8Switch(int boardAddress, int switchIndex, String name, String room)
+                : Device(name, room)
 {
-    _address = address;
+    _boardAddress = boardAddress;
     _lastPollTime = 0;
-    _lastState    = 0;
-    _switchBitmap = 0;
     _type         = 'S';
+    _filter       = 0;
     
-    if(_switchNum > 0 && switchNum <= 8) {
-        _switchBitmap = 0x01 << (switchNum-1);
+    if(switchIndex > 0 && switchIndex <= 7) {
+        _switchBitmap = 0x01 << switchIndex;
+    } else {
+        _switchBitmap = 0x01;   // If 0 or invalid, set to first switch
     }
 }
 
 void NCD8Switch::begin() {
+
     if(_switchBitmap == 0) {
         Log.error("Invalid switchNum");
         return;
@@ -69,17 +76,22 @@ int NCD8Switch::initializeBoard() {
     
     retries = 0;
     do {
-        Wire.beginTransmission(_address);
+        Wire.beginTransmission(_boardAddress);
         Wire.write(0x00);                   // Select IO Direction register
         Wire.write(0xff);                   // Set all 8 to inputs
         status = Wire.endTransmission();    // Write 'em, Dano
-        
-        Wire.beginTransmission(_address);
+    } while( status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Set IODIR failed");
+    }
+    
+    retries = 0;
+    do {
+        Wire.beginTransmission(_boardAddress);
         Wire.write(0x06);                   // Select pull-up resistor register
         Wire.write(0xff);                   // pull-ups enabled on all 8 outputs
         status = Wire.endTransmission();
     } while( status != 0 && retries++ < 3);
-    
     if(status != 0) {
         Log.error("Initialize board failed");
     }
@@ -95,7 +107,7 @@ bool NCD8Switch::isSwitchOn() {
     int retries = 0;
     int status;
     do {
-        Wire.beginTransmission(_address);
+        Wire.beginTransmission(_boardAddress);
         Wire.write(0x09);       // GPIO Register
         status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
@@ -103,7 +115,7 @@ bool NCD8Switch::isSwitchOn() {
         Log.error("Error selecting GPIO register");
     }
     
-    Wire.requestFrom(_address, 1);      // Read 1 byte
+    Wire.requestFrom(_boardAddress, 1);      // Read 1 byte
     
     if (Wire.available() == 1)
     {
@@ -114,21 +126,111 @@ bool NCD8Switch::isSwitchOn() {
     return false;
 }
 
+void NCD4Switch::reset() {
+    Log.error("Resetting board");
+    Wire.reset();
+    // Do we need any delay here?
+    Wire.begin();
+
+    // Issue PCA9634 SWRST
+    Wire.beginTransmission(_boardAddress);
+    Wire.write(0x06);
+    Wire.write(0xa5);
+    Wire.write(0x5a);
+    byte status = Wire.endTransmission();
+    if(status != 0){
+        Log.error("NCD8Switch reset write failed for switch bitmap: "+String(_switchBitmap)+", re-initializing board");
+    }
+    begin();
+}
+
 /**
  * loop()
  */
 void NCD8Switch::loop()
 {
-    //TODO: Poll switch periodically (.25 seconds?),
-    //      and publish MQTT message if it changes
-    long current = millis();
-    if(current > _lastPollTime + POLL_INTERVAL_MILLIS)
+    if (isTimeToCheckSwitch())
     {
-        _lastPollTime = current;
-        bool newIsOn = isSwitchOn();
-        if(newIsOn != _isOn) {
-            _isOn = newIsOn;
-            publish("patriot/" + _name, _isOn ? "100" : "0" );
+        if (didSwitchChange())
+        {
+            notify();
         }
     }
-};
+
+//    //TODO: Poll switch periodically (.25 seconds?),
+//    //      and publish MQTT message if it changes
+//    long current = millis();
+//    if(current > _lastPollTime + POLL_INTERVAL_MILLIS)
+//    {
+//        _lastPollTime = current;
+//        bool newIsOn = isSwitchOn();
+//        if(newIsOn != _isOn) {
+//            _isOn = newIsOn;
+//            publish("patriot/" + _name + "/get/position", _isOn ? "100" : "0" );
+//        }
+//    }
+}
+
+// Private Helper Methods
+/**
+ * isTimeToCheckSwitch()
+ * @return bool if enough time has elapsed to sample switch again
+ */
+bool NCD8Switch::isTimeToCheckSwitch()
+{
+    long currentTime = millis();
+    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
+    {
+        return false;
+    }
+    _lastPollTime = currentTime;
+    return true;
+}
+
+
+/**
+ * didSwitchChange()
+ * @return bool if switch has changed since last reading
+ */
+bool NCD8Switch::didSwitchChange()
+{
+    int newValue = isSwitchOn() ? 100 : 0;
+    bool oldState = (_value != 0);
+    
+    if(newValue == 100) {   // Is switch on?
+        _filter += FILTER_INCREMENT;
+        if(_filter > 100) {
+            _filter = 100;
+        }
+    } else {    // Switch is off
+        _filter -= FILTER_INCREMENT;
+        if(_filter < 0) {
+            _filter = 0;
+        }
+    }
+
+    if(oldState == false && _filter == 100) {
+        _value = 100;
+        return true;
+    }
+    
+    if(oldState == true && _filter == 0) {
+        _value = 0;
+        return true;
+    }
+    
+    return false;
+}
+
+
+/**
+ * notify()
+ * Publish switch state
+ */
+void NCD4Switch::notify()
+{
+    String message = String(_value);
+    IoT::publishMQTT(_name + "/get/position",message);
+}
+
+

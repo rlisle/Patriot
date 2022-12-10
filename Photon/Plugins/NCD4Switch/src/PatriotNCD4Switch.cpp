@@ -15,6 +15,7 @@
 
  Changelog:
  2021-01-16: Initial creation
+ 2022-12-10: Change MQTT message to patriot/<device>/get/position
  */
 
 #include "PatriotNCD4Switch.h"
@@ -26,7 +27,7 @@
 /**
  * Constructor
  * @param boardAddress is the board address set by jumpers (0-7) 0x20-0x27
- * @param relayIndex is the relay number of the 1st of 2 relays (0-2)
+ * @param switchIndex is the switch number on the NCD board (0-3)
  * @param name String name used to address the relay.
  */
 NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room)
@@ -40,7 +41,7 @@ NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, Str
     if(switchIndex > 0 && switchIndex <= 3) {
         _switchBitmap = 0x10 << switchIndex;
     } else {
-        _switchBitmap = 0x10;   // If invalid, set to first switch
+        _switchBitmap = 0x10;   // If 0 or invalid, set to first switch
     }
 }
 
