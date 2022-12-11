@@ -44,6 +44,8 @@
 #define MQTT_BROKER "192.168.50.33"
 #define ADDRESS 1      // PWM board lowest switch on
 
+#define VMPIN A0
+
 // Until mystery hangs understood, leave in automatic
 #define CONNECT_TO_CLOUD true
 //SYSTEM_THREAD(ENABLED);
@@ -53,6 +55,8 @@
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
 int sleeping = 0;
+
+unsigned long lastVScanTime = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
@@ -89,6 +93,11 @@ void loop() {
     // - update light dimming
     IoT::loop();
 
+    if(millis() > lastVScanTime + 5000){    // Check voltage every 5 seconds
+        lastVScanTime = millis();
+        handleVoltageMonitor();
+    }
+
     //TODO: calculate sleeping state based on time, motion, and doors
 //    int sleepingChanged  = Device::getChangedValue("sleeping");
 //
@@ -96,3 +105,10 @@ void loop() {
 //        handleSleepingChange(sleepingChanged);
 //    }
 }
+
+void handleVoltageMonitor() {
+    int volts = analogRead(VMPIN);
+    IoT::publishValue("frontpanel/volts", volts);
+}
+
+
