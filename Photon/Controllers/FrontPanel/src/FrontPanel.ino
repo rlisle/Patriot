@@ -18,7 +18,8 @@
   3rd right:      A4  "Porch Lights" #7 red
   bottom:        A0  "Light" (awning) #6 white
  
-
+1.303, 14.42
+ 
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
@@ -107,8 +108,10 @@ void loop() {
 }
 
 void handleVoltageMonitor() {
-    int volts = analogRead(VMPIN);
-    IoT::publishValue("frontpanel/volts", volts);
+    int reading = analogRead(VMPIN);
+    float voltage = (float)reading * 0.00898;
+    String volts = String(voltage,2);
+    IoT::publishMQTT("frontpanel/volts", volts);   // 1605 = 1.303, 14.42 .623 mV
 }
 
 
