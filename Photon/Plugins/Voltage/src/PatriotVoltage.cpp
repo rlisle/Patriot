@@ -17,7 +17,7 @@
  2022-12-12: Initial creation
  */
 
-#include "Voltage.h"
+#include "PatriotVoltage.h"
 #include "IoT.h"
 
 #define POLL_INTERVAL_MILLIS 5000
