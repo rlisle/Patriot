@@ -37,6 +37,5 @@ class Voltage : public Device
     Voltage(int pinNum, String name, String room);
     
     void    begin();
-    void    reset();
     void    loop();
 };

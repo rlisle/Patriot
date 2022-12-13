@@ -5,20 +5,18 @@
   Date: 9/16/17
   
   Switch wiring
-  Top left:       RX  tape label "Cabinet" -> D3 green -> gold
-  Top right:     TX no label (right trim) #4 yellow
-  2nd left:       A7  tape label "Sink" #2 white
-  2nd middle: A5  tape label "Ceiling" (kitchen) #1 red
-  2nd right:     A6  tape label "Indirect" (left trim) #5 blue
-  gnd                     brown?
+  Top left:       tape label "Cabinet" -> D3 green -> gold
+  Top right:     no label (right trim) #4 yellow
+  2nd left:       tape label "Sink" #2 white
+  2nd middle: tape label "Ceiling" (kitchen) #1 red
+  2nd right:     tape label "Indirect" (left trim) #5 blue
+  gnd              brown?
 
-  3rd left:        A1  "Ceiling" D2 blue -> silver
-  3rd l-m:        A2  "DS Flood Lights" #0 green
-  3rd r-m:        A3  "ODS Flood Lights" #3 yellow
-  3rd right:      A4  "Porch Lights" #7 red
-  bottom:        A0  "Light" (awning) #6 white
- 
-1.303, 14.42
+  3rd left:        "Ceiling" D2 blue -> silver
+  3rd l-m:        "DS Flood Lights" #0 green
+  3rd r-m:        "ODS Flood Lights" #3 yellow
+  3rd right:      "Porch Lights" #7 red
+  bottom:        "Light" (awning) #6 white
  
   To update Photon:
     1. Edit this code
@@ -40,6 +38,8 @@
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotNCD8Light.h>
+#include <PatriotNCD8Switch.h>
+#include <PatriotVoltage.h>
 
 #define CONTROLLER_NAME "FrontPanel"
 #define MQTT_BROKER "192.168.50.33"
