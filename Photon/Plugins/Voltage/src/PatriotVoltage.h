@@ -26,15 +26,17 @@
 class Voltage : public Device
 {
  private:
-    long    _lastPollTime;
-    int     _pinNum;
+    system_tick_t   _lastPollTime;
+    int             _pinNum;
+    float           _stepValue;
+    float           _fixedPoint;
 
     bool    isTimeToReadVoltage();
     bool    didVoltageChange();
     void    notify();
 
  public:
-    Voltage(int pinNum, String name, String room);
+    Voltage(int pinNum, String name, String room, float fullScale, int fixedPoint);
     
     void    begin();
     void    loop();

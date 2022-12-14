@@ -24,14 +24,20 @@
 
 /**
  * Constructor
- * @param boardAddress is the board address set by jumpers (0-7) 0x20-0x27
- * @param switchIndex is the switch number on the NCD board (0-3)
- * @param name String name used to address the relay.
+ * @param pinNum is the input pin (A0-A7)
+ * @param name is the name used to address the value
+ * @param room is the room where it is located
+ * @param fullScale is the voltage value corresponding to 3.3v at the input
+ * @param fixPoint is the fixed-point multiplier
+ * So for example with a 10/1 resistor ladder, 3.3v at the input pin = 33 volts.
  */
-Voltage(int pinNum, String name, String room)
+Voltage::Voltage(int pinNum, String name, String room, float fullScale, int fixedPoint)
     : Device(name, room)
 {
     _pinNum = pinNum;
+    // Since Patriot uses integer values, assume fixed point 10x values (eg. 0.0 to 25.5 v)
+    _stepValue = fullScale / 4095.0;
+    _fixedPoint = float(fixedPoint);
     _lastPollTime = 0;
     _type         = 'V';
 }
@@ -39,7 +45,7 @@ Voltage(int pinNum, String name, String room)
 void Voltage::begin()
 {
     // The pin defaults to analog input so need to do anything with it
-    Log.info(name + " started on pin " + String(_pinNum));
+    Log.info(_name + " started on pin " + String(_pinNum));
 }
 
 /**
@@ -73,10 +79,13 @@ bool Voltage::isTimeToReadVoltage()
 /**
  * didVoltageChange()
  * @return bool true if voltage has changed since last reading
+ * Value is scaled and clamped at 255
  */
 bool Voltage::didVoltageChange()
 {
-    int newValue = analogRead(_pinNum);
+    int readValue = analogRead(_pinNum);
+    float floatValue = float(readValue) * _stepValue;
+    int newValue = int(floatValue * _fixedPoint);
     if(newValue != _value) {
         _value = newValue;
         return true;
@@ -92,6 +101,7 @@ bool Voltage::didVoltageChange()
 void Voltage::notify()
 {
     String message = String(_value);
-    IoT::publishMQTT(_name + "/get/value",message);
+    
+    IoT::publishMQTT(_name, message);
 }
 

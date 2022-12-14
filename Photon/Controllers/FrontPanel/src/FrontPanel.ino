@@ -56,8 +56,7 @@
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
 int sleeping = 0;
-
-unsigned long lastVScanTime = 0;
+int voltage = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
@@ -82,6 +81,9 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
 
+    // 12V Monitor (actually 14.4?) with 10:1 R-Ladder
+    Device::add(new Voltage(A0, "volts", "LivingRoom", 33.0, 10));
+
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));
 }
@@ -94,9 +96,9 @@ void loop() {
     // - update light dimming
     IoT::loop();
 
-    if(millis() > lastVScanTime + 5000){    // Check voltage every 5 seconds
-        lastVScanTime = millis();
-        handleVoltageMonitor();
+    int voltageChanged = Device::getChangedValue("FrontPanelVolts");
+    if(voltageChanged != -1){
+        handleVoltageChanged(voltageChanged);
     }
 
     //TODO: calculate sleeping state based on time, motion, and doors
@@ -107,11 +109,11 @@ void loop() {
 //    }
 }
 
-void handleVoltageMonitor() {
-    int reading = analogRead(VMPIN);
-    float voltage = (float)reading * 0.00898;
-    String volts = String(voltage,2);
-    IoT::publishMQTT("frontpanel/volts", volts);   // 1605 = 1.303, 14.42 .623 mV
+void handleVoltageChanged(int volts) {
+    // Do whatever is needed based on new volts value
+    if(volts >= 12) {
+        Log.info("Voltage is over 12: " + String(volts));
+    } else {
+        Log.info("Voltage is under 12: " + String(volts));
+    }
 }
-
-
