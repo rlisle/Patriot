@@ -5,20 +5,19 @@
   Date: 9/16/17
   
   Switch wiring
-  Top left:       RX  tape label "Cabinet" -> D3 green -> gold
-  Top right:     TX no label (right trim) #4 yellow
-  2nd left:       A7  tape label "Sink" #2 white
-  2nd middle: A5  tape label "Ceiling" (kitchen) #1 red
-  2nd right:     A6  tape label "Indirect" (left trim) #5 blue
-  gnd                     brown?
+  Top left:       tape label "Cabinet" -> D3 green -> gold
+  Top right:     no label (right trim) #4 yellow
+  2nd left:       tape label "Sink" #2 white
+  2nd middle: tape label "Ceiling" (kitchen) #1 red
+  2nd right:     tape label "Indirect" (left trim) #5 blue
+  gnd              brown?
 
-  3rd left:        A1  "Ceiling" D2 blue -> silver
-  3rd l-m:        A2  "DS Flood Lights" #0 green
-  3rd r-m:        A3  "ODS Flood Lights" #3 yellow
-  3rd right:      A4  "Porch Lights" #7 red
-  bottom:        A0  "Light" (awning) #6 white
+  3rd left:        "Ceiling" D2 blue -> silver
+  3rd l-m:        "DS Flood Lights" #0 green
+  3rd r-m:        "ODS Flood Lights" #3 yellow
+  3rd right:      "Porch Lights" #7 red
+  bottom:        "Light" (awning) #6 white
  
-
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
@@ -39,10 +38,14 @@
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotNCD8Light.h>
+#include <PatriotNCD8Switch.h>
+#include <PatriotVoltage.h>
 
 #define CONTROLLER_NAME "FrontPanel"
 #define MQTT_BROKER "192.168.50.33"
 #define ADDRESS 1      // PWM board lowest switch on
+
+#define VMPIN A0
 
 // Until mystery hangs understood, leave in automatic
 #define CONNECT_TO_CLOUD true
@@ -53,6 +56,7 @@
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
 int sleeping = 0;
+int voltage = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
@@ -77,6 +81,10 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
 
+    // 12V Monitor (actually 14.27) with 10:1 R-Ladder
+    // Adjust fullScale to reflect actual R-Ladder (36.9)
+    Device::add(new Voltage(A0, "volts", "LivingRoom", 36.9, 10));
+
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));
 }
@@ -89,10 +97,24 @@ void loop() {
     // - update light dimming
     IoT::loop();
 
+    int voltageChanged = Device::getChangedValue("FrontPanelVolts");
+    if(voltageChanged != -1){
+        handleVoltageChanged(voltageChanged);
+    }
+
     //TODO: calculate sleeping state based on time, motion, and doors
 //    int sleepingChanged  = Device::getChangedValue("sleeping");
 //
 //    if( sleepingChanged != -1 ) {
 //        handleSleepingChange(sleepingChanged);
 //    }
+}
+
+void handleVoltageChanged(int volts) {
+    // Do whatever is needed based on new volts value
+    if(volts >= 12) {
+        Log.info("Voltage is over 12: " + String(volts));
+    } else {
+        Log.info("Voltage is under 12: " + String(volts));
+    }
 }

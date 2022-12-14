@@ -16,7 +16,10 @@
 
  Datasheets:
 
-*/
+ Changelog:
+ 2021-06-20: Initial creation
+ 2022-12-10: Change MQTT message to patriot/<device>/get/position
+ */
 
 #pragma once
 
@@ -26,19 +29,23 @@
 class NCD8Switch : public Device
 {
 private:
-    int     _address;
-    int     _switchBitmap;
-    int     _lastState;     // Bitmap of 8 switches
     long    _lastPollTime;
-    bool    _isOn;          // current/last switch state
-    
-    int    initializeBoard();
-    bool   isSwitchOn();          // Read the switch state
+    int8_t  _filter;
+
+    int8_t  _boardAddress;
+    int8_t  _switchBitmap;
+
+    bool      isSwitchOn();
+    bool      isTimeToCheckSwitch();
+    bool      didSwitchChange();
+    void      notify();
 
 public:
-    NCD8Switch(int address, int switchNum, String name);
+    NCD8Switch(int address, int switchIndex, String name, String room);
     
     void    begin();
+    int     initializeBoard();
+    void    reset();
     void    loop();
     
     // Override to prevent MQTT from setting _percent.

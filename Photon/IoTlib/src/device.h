@@ -16,6 +16,7 @@ http://www.github.com/rlisle/Patriot
  * P presence/proximity detector
  * S switch
  * T temperature
+ * V voltage
  * X checklist state
 
 Written by Ron Lisle
