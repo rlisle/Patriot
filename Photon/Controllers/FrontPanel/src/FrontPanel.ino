@@ -81,8 +81,9 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
 
-    // 12V Monitor (actually 14.4?) with 10:1 R-Ladder
-    Device::add(new Voltage(A0, "volts", "LivingRoom", 33.0, 10));
+    // 12V Monitor (actually 14.27) with 10:1 R-Ladder
+    // Adjust fullScale to reflect actual R-Ladder (36.9)
+    Device::add(new Voltage(A0, "volts", "LivingRoom", 36.9, 10));
 
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));
