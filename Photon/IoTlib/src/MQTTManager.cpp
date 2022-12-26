@@ -46,7 +46,7 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     
     _lastMQTTtime = Time.now();
     doConnect();
-    _mqtt->subscribe(kPublishName + "/#");      // Are subscribes persisted? If not, move to doConnect()
+    _mqtt->subscribe(kPublishName + "/#");      // I believe that subscribes are persisted. If not, move to doConnect()
     
     if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
@@ -156,7 +156,17 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 
 void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 {
-    // This is ok here because log is on a separate topic now.
+    if(lcTopic.startsWith(kPublishName)) {
+        parsePatriotMessage(lcTopic, lcMessage);
+    } else if(lcTopic.startsWith("shellies/em/emeter/")) {
+        parsePowerMessage(lcTopic, lcMessage);
+    }
+    //TODO: if we wanted, we could do something with log messages
+}
+
+void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
+{
+    // This is ok only if subscribe doesn't include everything (#)
     Log.info("Parser received: " + lcTopic + ", " + lcMessage);
     
     String subtopics[5];
@@ -172,6 +182,9 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
     } while(numTopics < 5 && end > 0);
     subtopics[numTopics++] = lcTopic.substring(start);  // Last one
     
+    //TODO: move to a plugin
+    // Parse "shellies/em/emeter/+/power
+    if(subtopics[0] == "shellies" && subtopics[1] == )
     if(subtopics[0] == kPublishName && numTopics > 1) {
         
         // ACK
