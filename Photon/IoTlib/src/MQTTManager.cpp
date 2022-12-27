@@ -157,56 +157,52 @@ void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length
 void MQTTManager::parseMessage(String lcTopic, String lcMessage)
 {
     if(lcTopic.startsWith(kPublishName)) {
-        parsePatriotMessage(lcTopic, lcMessage);
+        Log.info("Parser received: " + lcTopic + ", " + lcMessage);
+        parsePatriotMessage(lcTopic.substring(8), lcMessage);   // Skip over "patriot/"
     } else if(lcTopic.startsWith("shellies/em/emeter/")) {
-        parsePowerMessage(lcTopic, lcMessage);
+        Log.info("Parser received: " + lcTopic + ", " + lcMessage);
+        parsePowerMessage(lcTopic.substring(19), lcMessage);    // Skip over "shellies/em/emeter/"
     }
-    //TODO: if we wanted, we could do something with log messages
+    //TODO: if we wanted, we could do something with log messages, etc.
 }
 
 void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
 {
-    // This is ok only if subscribe doesn't include everything (#)
-    Log.info("Parser received: " + lcTopic + ", " + lcMessage);
-    
     String subtopics[5];
-    int start = 0;
-    int end = lcTopic.indexOf('/');     // patriot/memory = 7
+    int start = 8;
+    int end = lcTopic.indexOf('/');
     int numTopics = 0;
     if(end <= 0) return;    // guard agains just "patriot"
     do {
-        subtopics[numTopics] = lcTopic.substring(start, end);   // [0] = patriot
+        subtopics[numTopics] = lcTopic.substring(start, end);
         start = end+1;
         end = lcTopic.indexOf('/', start);
         numTopics++;
-    } while(numTopics < 5 && end > 0);
+    } while(numTopics < 4 && end > 0);
     subtopics[numTopics++] = lcTopic.substring(start);  // Last one
     
-    //TODO: move to a plugin
-    // Parse "shellies/em/emeter/+/power
-    if(subtopics[0] == "shellies" && subtopics[1] == )
-    if(subtopics[0] == kPublishName && numTopics > 1) {
+    if(numTopics > 0) {
         
         // ACK
-        if(subtopics[1] == "ack") {                         // patriot/ack/<device>/<command>
+        if(subtopics[0] == "ack") {                         // patriot/ack/<device>/<command>
             // Ignore Acknowledgements
             
             // ALIVE
-        } else if(subtopics[1] == "alive" && numTopics > 2) {                // patriot/alive/<controller>
+        } else if(subtopics[0] == "alive" && numTopics > 1) {                // patriot/alive/<controller>
             
             //TODO: Refactor to allow unknown controller names (array)
-            if(subtopics[2] == "frontpanel") {
+            if(subtopics[1] == "frontpanel") {
                 _lastAliveFrontPanel = Time.now();
-            } else if(subtopics[2] == "leftslide") {
+            } else if(subtopics[1] == "leftslide") {
                 _lastAliveLeftSlide = Time.now();
-            } else if(subtopics[2] == "rearpanel") {
+            } else if(subtopics[1] == "rearpanel") {
                 _lastAliveRearPanel = Time.now();
             }
             
             // BRIGHTNESS
-        } else if(numTopics > 2 && subtopics[2] == "brightness") {           // patriot/<device>/brightness value
+        } else if(numTopics > 1 && subtopics[1] == "brightness") {           // patriot/<device>/brightness value
             int value = lcMessage.toInt();
-            String deviceName = subtopics[1];
+            String deviceName = subtopics[0];
             Device *device = Device::get(deviceName);
             if( device != NULL && value > 0) {
                 Log.info(_controllerName + " setting " + deviceName + " brightness = " + lcMessage);
@@ -215,17 +211,17 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             }
             
         // HOLD
-        } else if(numTopics > 2 && subtopics[2] == "hold") {             // patriot/<device>/hold n/a
-            Device *device = Device::get(subtopics[1]);
+        } else if(numTopics > 1 && subtopics[1] == "hold") {             // patriot/<device>/hold n/a
+            Device *device = Device::get(subtopics[0]);
             if( device != NULL) {
                 // message is currently ignored and can be anything
-                Log.info(_controllerName + ": hold " + subtopics[1]);
+                Log.info(_controllerName + ": hold " + subtopics[0]);
                 device->setHold(lcMessage != "0"); // not sure what message will be
             }
             
 
             // LATLONG
-        } else if(subtopics[1] == "latlong") {                                  // patriot/latlong lat,long
+        } else if(subtopics[0] == "latlong") {                                  // patriot/latlong lat,long
             // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
             // Spanish Fort, AL: 30.6685° N, 87.9109° W
             // Bonifay, FL: 30.7919° N, 85.6797° W
@@ -251,27 +247,27 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             }
             
             // LOGLEVEL
-        } else if(subtopics[1] == "loglevel") {
-            if(numTopics == 2 || subtopics[2] == _controllerName || subtopics[2] == "all" ) {
+        } else if(subtopics[0] == "loglevel") {
+            if(numTopics == 1 || subtopics[1] == _controllerName || subtopics[1] == "all" ) {
                 Log.warn(_controllerName + " setting logLevel = " + lcMessage);
                 parseLogLevel(lcMessage);
             }
             
             // MEMORY
-        } else if(subtopics[1] == "memory") {
+        } else if(subtopics[0] == "memory") {
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info(_controllerName + ": free memory = %d", System.freeMemory());
             }
             
             // QUERY
-        } else if(subtopics[1] == "query") {
+        } else if(subtopics[0] == "query") {
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info(_controllerName + ": received query addressed to us");
                 Device::publishStates();
             }
             
             // RESET
-        } else if(subtopics[1] == "reset") {
+        } else if(subtopics[0] == "reset") {
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info(_controllerName + ": reset addressed to us");
                 Device::resetAll();
@@ -279,19 +275,19 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             }
             
             // SET
-        } else if(numTopics > 2 && subtopics[2] == "set") {             // patriot/<device>/set value
-            Device *device = Device::get(subtopics[1]);
+        } else if(numTopics > 1 && subtopics[1] == "set") {             // patriot/<device>/set value
+            Device *device = Device::get(subtopics[0]);
             if( device != NULL) {
                 int value = lcMessage.toInt();  // 0 if not numerical
                 if(lcMessage == "on" || lcMessage == "true") value = device->brightness();
                 else if(lcMessage == "off" || lcMessage == "false") value = 0;
-                Log.info(_controllerName + ": set " + subtopics[1] + " = " + String(value));
+                Log.info(_controllerName + ": set " + subtopics[0] + " = " + String(value));
                 device->setValue(value);
-                sendAck(subtopics[1], "set", lcMessage);
+                sendAck(subtopics[0], "set", lcMessage);
             }
             
             // TIMEZONE
-        } else if(subtopics[1] == "timezone") {
+        } else if(subtopics[0] == "timezone") {
             // San Francisco/PST -8
             // Austin/CST -6
             // Windsor/EST -5
@@ -309,6 +305,33 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             } else {
                 Log.error("Invalid timezone");
             }
+        }
+    }
+}
+
+// This handles only messages like shellies/em/emeter/+/power #.# where + == 0 or 1
+void MQTTManager::parsePowerMessage(String lcTopicEnd, String lcMessage)
+{
+    int lineNum;
+    float fValue;
+    int amps = 0;
+    
+    if(lcTopic == "0/power") {
+        lineNum = 0;
+    } else if(lcTopic == "1/power") {
+        lineNum = 1;
+    } else {
+        return;
+    }
+    
+    //TODO: decode floating point message and expose as a device
+    fValue = lcMessage.toFloat();
+    if(fValue > 0.0 && fValue < 6000.0) {
+        Log.info("Power line %d = %f",lineNum,fValue);
+        _powerUsage[lineNum] = fValue;
+        if(lineNum == 1) {
+            amps = int((_powerUsage[0] + _powerUsage[1]) / 120);
+            publish(kPublishName + "/amps/position", String(amps));
         }
     }
 }
