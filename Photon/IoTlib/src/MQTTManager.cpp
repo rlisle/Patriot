@@ -316,9 +316,9 @@ void MQTTManager::parsePowerMessage(String lcTopicEnd, String lcMessage)
     float fValue;
     int amps = 0;
     
-    if(lcTopic == "0/power") {
+    if(lcTopicEnd == "0/power") {
         lineNum = 0;
-    } else if(lcTopic == "1/power") {
+    } else if(lcTopicEnd == "1/power") {
         lineNum = 1;
     } else {
         return;
