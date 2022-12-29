@@ -28,6 +28,8 @@ public:
     MQTTManager(String brokerIP, String controllerName, bool mqttLogging);
     
     bool        publish(String topic, String message, bool retain = false);
+    void        parsePatriotMessage(String topic, String message);
+    void        parsePowerMessage(String topic, String message);
     void        parseMessage(String topic, String message);
     void        loop();
     void        mqttHandler(char* topic, byte* payload, unsigned int length);
