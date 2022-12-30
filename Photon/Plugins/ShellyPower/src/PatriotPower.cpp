@@ -27,9 +27,10 @@
  * @param room is the room where it is located
  */
 Power::Power(String name, String room)
-    : Device(name, room)
+    : Device(name, room, 'W')
 {
-    _type         = 'W';
+    _powerUsage[0] = 0.0;
+    _powerUsage[1] = 0.0;
 }
 
 /**

@@ -27,14 +27,11 @@ class Power : public Device
  private:
     float   _powerUsage[2];
     
-    void    parsePowerMessage(String lcTopicEnd, String lcMessage);
-
     void    notify();
 
  public:
     Power(String name, String room);
     
-    void    begin();
     void    loop();
     void    mqtt(String topic, String message);
 };
