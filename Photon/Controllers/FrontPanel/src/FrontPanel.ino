@@ -86,7 +86,7 @@ void createDevices() {
     // Adjust fullScale to reflect actual R-Ladder (36.9)
     Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
     
-    Device::add(new Power("Power", "Status"));
+//    Device::add(new Power("Power", "Status"));
 
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));

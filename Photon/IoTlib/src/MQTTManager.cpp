@@ -152,7 +152,7 @@ void MQTTManager::parseMQTTMessage(String lcTopic, String lcMessage)
 void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
 {
     String subtopics[5];
-    int start = 8;
+    int start = 0;
     int end = lcTopic.indexOf('/');
     int numTopics = 0;
     if(end <= 0) return;    // guard agains just "patriot"
