@@ -40,24 +40,13 @@ void Power::loop()
 
 void Power::mqtt(String topic, String message)
 {
-    if(lcTopic.startsWith("shellies/em/emeter/")) {
-        Log.info("Parser received: " + lcTopic + ", " + lcMessage);
-        // Parse remainder of message after "shellies/em/emeter/"
-        parsePowerMessage(topic.substring(19), message);
-}
-    
-// Private Helper Methods
-    
-// This handles only messages like shellies/em/emeter/+/power #.# where + == 0 or 1
-void MQTTManager::parsePowerMessage(String lcTopicEnd, String lcMessage)
-{
     int lineNum;
     float fValue;
     int amps = 0;
-
-    if(lcTopicEnd == "0/power") {
+    
+    if(topic == "shellies/em/emeter/0/power") {
         lineNum = 0;
-    } else if(lcTopicEnd == "1/power") {
+    } else if(topic == "shellies/em/emeter/1/power") {
         lineNum = 1;
     } else {
         return;

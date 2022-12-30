@@ -164,7 +164,10 @@ void Device::mqttAll(String topic, String message)
 {
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
-        ptr->mqtt(topic, message);
+        // Currently only the Power plugin parses MIDI
+        if(ptr->_type == 'W') {
+            ptr->mqtt(topic, message);
+        }
     }
 }
 

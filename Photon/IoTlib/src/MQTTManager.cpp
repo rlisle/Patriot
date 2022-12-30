@@ -161,11 +161,6 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
     if(lcTopic.startsWith(kPublishName)) {
         Log.info("Parser received: " + lcTopic + ", " + lcMessage);
         parsePatriotMessage(lcTopic.substring(8), lcMessage);   // Skip over "patriot/"
-        
-    //TODO: move to power plugin
-//    } else if(lcTopic.startsWith("shellies/em/emeter/")) {
-//        Log.info("Parser received: " + lcTopic + ", " + lcMessage);
-//        parsePowerMessage(lcTopic.substring(19), lcMessage);    // Skip over "shellies/em/emeter/"
     }
     //TODO: if we wanted, we could do something with log messages, etc.
     
