@@ -29,6 +29,8 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _networkStatus = Starting;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
+    _powerUsage[0] = 0.0;
+    _powerUsage[1] = 0.0;
     
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
@@ -159,11 +161,15 @@ void MQTTManager::parseMessage(String lcTopic, String lcMessage)
     if(lcTopic.startsWith(kPublishName)) {
         Log.info("Parser received: " + lcTopic + ", " + lcMessage);
         parsePatriotMessage(lcTopic.substring(8), lcMessage);   // Skip over "patriot/"
-    } else if(lcTopic.startsWith("shellies/em/emeter/")) {
-        Log.info("Parser received: " + lcTopic + ", " + lcMessage);
-        parsePowerMessage(lcTopic.substring(19), lcMessage);    // Skip over "shellies/em/emeter/"
+        
+    //TODO: move to power plugin
+//    } else if(lcTopic.startsWith("shellies/em/emeter/")) {
+//        Log.info("Parser received: " + lcTopic + ", " + lcMessage);
+//        parsePowerMessage(lcTopic.substring(19), lcMessage);    // Skip over "shellies/em/emeter/"
     }
     //TODO: if we wanted, we could do something with log messages, etc.
+    
+    Devices::mqttAll(lcTopic, lcMessage);
 }
 
 void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
@@ -305,33 +311,6 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             } else {
                 Log.error("Invalid timezone");
             }
-        }
-    }
-}
-
-// This handles only messages like shellies/em/emeter/+/power #.# where + == 0 or 1
-void MQTTManager::parsePowerMessage(String lcTopicEnd, String lcMessage)
-{
-    int lineNum;
-    float fValue;
-    int amps = 0;
-    
-    if(lcTopicEnd == "0/power") {
-        lineNum = 0;
-    } else if(lcTopicEnd == "1/power") {
-        lineNum = 1;
-    } else {
-        return;
-    }
-    
-    //TODO: decode floating point message and expose as a device
-    fValue = lcMessage.toFloat();
-    if(fValue > 0.0 && fValue < 6000.0) {
-        Log.info("Power line %d = %f",lineNum,fValue);
-        _powerUsage[lineNum] = fValue;
-        if(lineNum == 1) {
-            amps = int((_powerUsage[0] + _powerUsage[1]) / 120);
-            publish(kPublishName + "/amps/position", String(amps));
         }
     }
 }

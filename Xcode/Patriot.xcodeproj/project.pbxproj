@@ -51,6 +51,7 @@
 		27841D7527871CE400DFCCFD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/NCD4Relay/src; sourceTree = "<group>"; };
 		27841D7627871CE400DFCCFD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Relay/library.properties; sourceTree = "<group>"; };
 		27841D7727871CFD00DFCCFD /* relay.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = relay.ino; path = ../Photon/Plugins/NCD4Relay/examples/relay/relay.ino; sourceTree = "<group>"; };
+		279E08C7295DE4B60059951F /* ShellyPower */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShellyPower; path = ../Photon/Plugins/ShellyPower; sourceTree = "<group>"; };
 		27A0F26C279DE9950021E84D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../Photon/Plugins/MR24/LICENSE; sourceTree = "<group>"; };
 		27A0F26D279DE9950021E84D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Plugins/MR24/README.md; sourceTree = "<group>"; };
 		27A0F26E279DE9950021E84D /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/MR24/library.properties; sourceTree = "<group>"; };
@@ -378,6 +379,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				279E08C7295DE4B60059951F /* ShellyPower */,
 				2751BD46294755EE00FA360C /* Voltage */,
 				2769F3C82729635500E8FE57 /* Checklist */,
 				2733856125B29C420032BB1F /* Curtain */,

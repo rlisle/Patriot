@@ -140,6 +140,10 @@ void Device::setLatLong(float latitude, float longitude) {
     // Nothing to do. Device will override if needed.
 }
 
+void Device::mqtt(String topic, String message) {
+    // Nothing to do. Device will override if needed.
+}
+
 void Device::setAllLatLong(float latitude, float longitude) {
     Device *ptr = _devices;
     for (int i = 0; i < count() && ptr != NULL; i++)
@@ -155,6 +159,15 @@ int Device::count()
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
+
+void Device::mqttAll(String topic, String message)
+{
+    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
+    {
+        ptr->mqtt(topic, message);
+    }
+}
+
 
 // Particle.io Devices, Checklist, and Status variables
 

@@ -17,6 +17,7 @@ http://www.github.com/rlisle/Patriot
  * S switch
  * T temperature
  * V voltage
+ * W power
  * X checklist state
 
 Written by Ron Lisle
@@ -68,6 +69,9 @@ public:
 
     // Perform things continuously, such as fading or slewing
     virtual void loop() {};
+
+    // Each plugin can receive and parse MQTT if needed
+    virtual void mqtt(String topic, String message);    
     
     //
     // Static Collection Methods (previously in Devices)
@@ -84,6 +88,8 @@ public:
     static int     getChangedValue(String name);
     static int     count();
     static void    setAllLatLong(float latitude, float longitude);
+    
+    static void    mqttAll(String topic, String message);
 
     /**
      Particle.io variable "States"

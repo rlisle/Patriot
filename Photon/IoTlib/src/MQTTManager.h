@@ -44,6 +44,8 @@ private:
     NetworkStatus _networkStatus;
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
+    
+    float     _powerUsage[2];
 
     bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
