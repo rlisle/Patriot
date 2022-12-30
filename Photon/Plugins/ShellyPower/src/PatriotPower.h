@@ -25,6 +25,7 @@
 class Power : public Device
 {
  private:
+    float   _powerUsage[2];
     
     void    parsePowerMessage(String lcTopicEnd, String lcMessage);
 

@@ -29,10 +29,8 @@ public:
     
     bool        publish(String topic, String message, bool retain = false);
     void        parsePatriotMessage(String topic, String message);
-    void        parsePowerMessage(String topic, String message);
-    void        parseMessage(String topic, String message);
+    void        parseMQTTMessage(String topic, String message);
     void        loop();
-    void        mqttHandler(char* topic, byte* payload, unsigned int length);
     
     String      controllerName() { return _controllerName; };
         
@@ -45,8 +43,6 @@ private:
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
     
-    float     _powerUsage[2];
-
     bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
 

@@ -29,8 +29,6 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _networkStatus = Starting;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
-    _powerUsage[0] = 0.0;
-    _powerUsage[1] = 0.0;
     
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
@@ -138,33 +136,17 @@ bool MQTTManager::publish(String topic, String message, bool retain) {
     return false;
 }
 
-/**
- * Handle received MQTT messages
- */
-void MQTTManager::mqttHandler(char* rawTopic, byte* payload, unsigned int length) {
-    
-    char p[length + 1];
-    memcpy(p, payload, length);
-    p[length] = 0;
-    String message(p);
-    String topic(rawTopic);
-    
-    _lastMQTTtime = Time.now();
-    
-    parseMessage(topic.toLowerCase(), message.toLowerCase());
-}
-
 //Mark - Parser
 
-void MQTTManager::parseMessage(String lcTopic, String lcMessage)
+void MQTTManager::parseMQTTMessage(String lcTopic, String lcMessage)
 {
+    _lastMQTTtime = Time.now();
+
     if(lcTopic.startsWith(kPublishName)) {
         Log.info("Parser received: " + lcTopic + ", " + lcMessage);
         parsePatriotMessage(lcTopic.substring(8), lcMessage);   // Skip over "patriot/"
     }
     //TODO: if we wanted, we could do something with log messages, etc.
-    
-    Devices::mqttAll(lcTopic, lcMessage);
 }
 
 void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)

@@ -18,6 +18,8 @@
  */
 #include "PatriotPower.h"
 #include "IoT.h"
+#include "constants.h"
+
 
 /**
  * Constructor
@@ -42,7 +44,6 @@ void Power::mqtt(String topic, String message)
 {
     int lineNum;
     float fValue;
-    int amps = 0;
     
     if(topic == "shellies/em/emeter/0/power") {
         lineNum = 0;
@@ -53,13 +54,13 @@ void Power::mqtt(String topic, String message)
     }
 
     //TODO: decode floating point message and expose as a device
-    fValue = lcMessage.toFloat();
+    fValue = message.toFloat();
     if(fValue > 0.0 && fValue < 6000.0) {
         Log.info("Power line %d = %f",lineNum,fValue);
         _powerUsage[lineNum] = fValue;
         if(lineNum == 1) {
-            amps = int((_powerUsage[0] + _powerUsage[1]) / 120);
-            publish(kPublishName + "/amps/position", String(amps));
+            _value = int((_powerUsage[0] + _powerUsage[1]) / 120);
+            notify();
         }
     }
 }
@@ -73,7 +74,6 @@ void Power::mqtt(String topic, String message)
 void Power::notify()
 {
     String message = String(_value);
-    
-    IoT::publishMQTT(_name, message);
+    IoT::publishMQTT(kPublishName + "/amps/position", message);
 }
 

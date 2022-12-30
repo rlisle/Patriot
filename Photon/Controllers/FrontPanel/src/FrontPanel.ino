@@ -40,6 +40,7 @@
 #include <PatriotNCD8Light.h>
 #include <PatriotNCD8Switch.h>
 #include <PatriotVoltage.h>
+#include <PatriotPower.h>
 
 #define CONTROLLER_NAME "FrontPanel"
 #define MQTT_BROKER "192.168.50.33"
@@ -84,6 +85,8 @@ void createDevices() {
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)
     Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
+    
+    Device::add(new Power("Power", "Status"));
 
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));
