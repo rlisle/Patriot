@@ -41,6 +41,7 @@ void Device::setBrightness(int value) {
     // but it will adjust the level of one that is already on
     if(_value != 0) {
         setValue(value);
+        buildStatusVariable();
     }
 }
 
@@ -103,7 +104,6 @@ Device *Device::get(String name)
     for (int i = 0; i < count() && ptr != NULL; i++)
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-            //Log.info("getDeviceWithName "+name+" found.");
             return ptr;
         }
         ptr = ptr->_next;
@@ -162,12 +162,10 @@ int Device::count()
 
 void Device::mqttAll(String topic, String message)
 {
-    Log.info("mqttAll: " + topic);
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         // Currently only the Power plugin parses MIDI
         if(ptr->_type == 'W') {
-            Log.info("mqttAll type == W");
             ptr->mqtt(topic, message);
         }
     }

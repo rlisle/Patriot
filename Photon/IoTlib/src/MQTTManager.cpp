@@ -143,7 +143,6 @@ void MQTTManager::parseMQTTMessage(String lcTopic, String lcMessage)
     _lastMQTTtime = Time.now();
 
     if(lcTopic.startsWith(kPublishName)) {
-        Log.info("Parser received: " + lcTopic + ", " + lcMessage);
         parsePatriotMessage(lcTopic.substring(8), lcMessage);   // Skip over "patriot/"
     }
     //TODO: if we wanted, we could do something with log messages, etc.
@@ -188,7 +187,6 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             String deviceName = subtopics[0];
             Device *device = Device::get(deviceName);
             if( device != NULL && value > 0) {
-                Log.info(_controllerName + " setting " + deviceName + " brightness = " + lcMessage);
                 device->setBrightness(value);
                 sendAck(deviceName, "brightness", lcMessage);
             }
@@ -264,7 +262,6 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 int value = lcMessage.toInt();  // 0 if not numerical
                 if(lcMessage == "on" || lcMessage == "true") value = device->brightness();
                 else if(lcMessage == "off" || lcMessage == "false") value = 0;
-                Log.info(_controllerName + ": set " + subtopics[0] + " = " + String(value));
                 device->setValue(value);
                 sendAck(subtopics[0], "set", lcMessage);
             }
