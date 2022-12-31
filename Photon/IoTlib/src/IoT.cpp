@@ -89,8 +89,10 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length)
     String topic(rawTopic);
     String lcTopic = topic.toLowerCase();
 
+    if(topic.startsWith("log")) {
+        return;
+    }
     _mqttManager->parseMQTTMessage(lcTopic, lcMessage);
-    
     Device::mqttAll(lcTopic, lcMessage);
 }
 

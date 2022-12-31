@@ -47,8 +47,10 @@ void Power::mqtt(String topic, String message)
     float fValue;
     
     if(topic == "shellies/em/emeter/0/power") {
+        Log.info("Line 0 received " + message);
         lineNum = 0;
     } else if(topic == "shellies/em/emeter/1/power") {
+        Log.info("Line 1 received " + message);
         lineNum = 1;
     } else {
         return;
@@ -63,6 +65,8 @@ void Power::mqtt(String topic, String message)
             _value = int((_powerUsage[0] + _powerUsage[1]) / 120);
             notify();
         }
+    } else {
+        Log.info("power value out of range: " + String(fValue));
     }
 }
 
