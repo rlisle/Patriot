@@ -91,6 +91,8 @@ void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length)
 
     if(topic.startsWith("log")) {
         return;
+    } else {
+        Log.info("mqttHandler: " + lcTopic + ", " + lcMessage);
     }
     _mqttManager->parseMQTTMessage(lcTopic, lcMessage);
     Device::mqttAll(lcTopic, lcMessage);

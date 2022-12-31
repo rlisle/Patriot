@@ -15,6 +15,7 @@
 //#include <PatriotNCD4Switch.h>
 //#include <PatriotNCD4Relay.h>
 //#include <PatriotNCD8Switch.h>
+#include <PatriotPower.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
@@ -24,11 +25,11 @@
 
 //While debugging, use serial and disable MQTT logging if needed
 SerialLogHandler logHandler;
-#define MQTT_LOGGING true
+#define MQTT_LOGGING false
 
-#define ADDRESS 1      // PWM board address A0 jumper set
-#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
-#define I2CDIO8 0x20   // 8xGPIO address (no jumpers)
+//#define ADDRESS 1      // PWM board address A0 jumper set
+//#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
+//#define I2CDIO8 0x20   // 8xGPIO address (no jumpers)
 
 //Using Threads may cause problems with other libraries, etc.
 //So not doing it anymore
@@ -37,21 +38,22 @@ SerialLogHandler logHandler;
 SYSTEM_MODE(AUTOMATIC);
 
 //Used to determine I2C addresses for debugging I2C boards
-unsigned long lastScan = 0;
-unsigned long scanInterval = 15000;
+//unsigned long lastScan = 0;
+//unsigned long scanInterval = 15000;
 
-unsigned long lastVScan = 0;
-unsigned long vScanInterval = 5000;
+//unsigned long lastVScan = 0;
+//unsigned long vScanInterval = 5000;
 
-int sleeping = 0;
-int switch1 = 0;
+//int sleeping = 0;
+//int switch1 = 0;
+int amps = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);   // or ANT_EXTERNAL
     WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CLOUD_ENABLED, MQTT_LOGGING);
     
-    Device::add(new Device("sleeping", "All"));
+//    Device::add(new Device("sleeping", "All"));
 
     // I2CDIO8 - 8 GPIO I2C board $33
 //    Device::add(new NCD8Switch(I2CDIO8, 0, "Switch1", "Office" ));
@@ -70,48 +72,58 @@ void setup() {
     // 4 GPIO
 //    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
 
+    Device::add(new Power("amps", "Status"));
+    
     Log.info("RonTest started");
 }
 
 void loop() {
     IoT::loop();
     
-    handleSleeping();
+//    handleSleeping();
 //    handleSwitch1();
 //    scanI2Caddresses();
+    handleAmps();
 
-    if(millis() > lastVScan + vScanInterval){
-        lastVScan = millis();
-        handleVoltageMonitor();
+//    if(millis() > lastVScan + vScanInterval){
+//        lastVScan = millis();
+//        handleVoltageMonitor();
+//    }
+}
+
+//void handleVoltageMonitor() {
+//    int volts = analogRead(A0);
+//    IoT::publishValue("volts", volts);
+//}
+
+void handleAmps() {
+    int ampsChanged = Device::getChangedValue("amps");
+    if( ampsChanged != -1 ) {
+        Log.info("amps changed %d",ampsChanged);
     }
 }
 
-void handleVoltageMonitor() {
-    int volts = analogRead(A0);
-    IoT::publishValue("volts", volts);
-}
+//void handleSleeping() {
+//
+//    int sleepingChanged = Device::getChangedValue("sleeping");
+//    if( sleepingChanged != -1 ) {
+//
+//        Log.info("sleeping has changed %d",sleepingChanged);
+//
+//        sleeping = sleepingChanged;
+//    }
+//}
 
-void handleSleeping() {
-
-    int sleepingChanged = Device::getChangedValue("sleeping");
-    if( sleepingChanged != -1 ) {
-
-        Log.info("sleeping has changed %d",sleepingChanged);
-
-        sleeping = sleepingChanged;
-    }
-}
-
-void handleSwitch1() {
-
-    int switch1Changed = Device::getChangedValue("switch1");
-    if( switch1Changed != -1 ) {
-
-        Log.info("Switch1 has changed %d",switch1Changed);
-
-        switch1 = switch1Changed;
-    }
-}
+//void handleSwitch1() {
+//
+//    int switch1Changed = Device::getChangedValue("switch1");
+//    if( switch1Changed != -1 ) {
+//
+//        Log.info("Switch1 has changed %d",switch1Changed);
+//
+//        switch1 = switch1Changed;
+//    }
+//}
 
 
 // Diagnostic Functions
