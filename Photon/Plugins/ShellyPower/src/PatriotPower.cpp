@@ -47,26 +47,22 @@ void Power::mqtt(String topic, String message)
     float fValue;
     
     if(topic == "shellies/em/emeter/0/power") {
-        Log.info("Line 0 received " + message);
         lineNum = 0;
     } else if(topic == "shellies/em/emeter/1/power") {
-        Log.info("Line 1 received " + message);
         lineNum = 1;
     } else {
         return;
     }
 
-    //TODO: decode floating point message and expose as a device
     fValue = message.toFloat();
     if(fValue > 0.0 && fValue < 6000.0) {
-        Log.info("Power line %d = %f",lineNum,fValue);
         _powerUsage[lineNum] = fValue;
         if(lineNum == 1) {
             _value = int((_powerUsage[0] + _powerUsage[1]) / 120);
             notify();
         }
     } else {
-        Log.info("power value out of range: " + String(fValue));
+        Log.warn("power value out of range: " + String(fValue));
     }
 }
 
