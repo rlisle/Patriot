@@ -46,7 +46,7 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     
     _lastMQTTtime = Time.now();
     doConnect();
-    _mqtt->subscribe(kPublishName + "/#");      // I believe that subscribes are persisted. If not, move to doConnect()
+    _mqtt->subscribe("#");
     
     if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
