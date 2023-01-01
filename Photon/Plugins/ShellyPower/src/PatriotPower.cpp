@@ -45,6 +45,7 @@ void Power::mqtt(String topic, String message)
 {
     int lineNum;
     float fValue;
+    int newValue = _value;
     
     if(topic == "shellies/em/emeter/0/power") {
         lineNum = 0;
@@ -58,8 +59,11 @@ void Power::mqtt(String topic, String message)
     if(fValue > 0.0 && fValue < 6000.0) {
         _powerUsage[lineNum] = fValue;
         if(lineNum == 1) {
-            _value = int((_powerUsage[0] + _powerUsage[1]) / 120);
-            notify();
+            newValue = int((_powerUsage[0] + _powerUsage[1]) / 120);
+            if(newValue != _value) {
+                _value = newValue;
+                notify();
+            }
         }
     } else {
         Log.warn("power value out of range: " + String(fValue));
@@ -75,6 +79,6 @@ void Power::mqtt(String topic, String message)
 void Power::notify()
 {
     String message = String(_value);
-    IoT::publishMQTT(kPublishName + "/amps/position", message);
+    IoT::publishMQTT("amps/position", message);
 }
 
