@@ -21,6 +21,7 @@
 #include "IoT.h"
 
 #define POLL_INTERVAL_MILLIS 5000
+#define TOLERANCE 2
 
 /**
  * Constructor
@@ -86,7 +87,8 @@ bool Voltage::didVoltageChange()
     int readValue = analogRead(_pinNum);
     float floatValue = float(readValue) * _stepValue;
     int newValue = int(floatValue * _fixedPoint);
-    if(newValue != _value) {
+    int difference = newValue - _value;
+    if(difference > TOLERANCE || difference < -TOLERANCE) {
         _value = newValue;
         return true;
     }

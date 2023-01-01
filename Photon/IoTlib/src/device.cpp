@@ -41,6 +41,7 @@ void Device::setBrightness(int value) {
     // but it will adjust the level of one that is already on
     if(_value != 0) {
         setValue(value);
+        buildStatusVariable();
     }
 }
 
@@ -103,7 +104,6 @@ Device *Device::get(String name)
     for (int i = 0; i < count() && ptr != NULL; i++)
     {
         if (ptr->name().equalsIgnoreCase(name)) {
-            //Log.info("getDeviceWithName "+name+" found.");
             return ptr;
         }
         ptr = ptr->_next;
@@ -140,6 +140,10 @@ void Device::setLatLong(float latitude, float longitude) {
     // Nothing to do. Device will override if needed.
 }
 
+void Device::mqtt(String topic, String message) {
+    // Nothing to do. Device will override if needed.
+}
+
 void Device::setAllLatLong(float latitude, float longitude) {
     Device *ptr = _devices;
     for (int i = 0; i < count() && ptr != NULL; i++)
@@ -155,6 +159,18 @@ int Device::count()
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next) i++;
     return i;
 }
+
+void Device::mqttAll(String topic, String message)
+{
+    for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
+    {
+        // Currently only the Power plugin parses MIDI
+        if(ptr->_type == 'W') {
+            ptr->mqtt(topic, message);
+        }
+    }
+}
+
 
 // Particle.io Devices, Checklist, and Status variables
 

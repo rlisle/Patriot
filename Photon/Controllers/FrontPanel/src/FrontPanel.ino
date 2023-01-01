@@ -40,6 +40,7 @@
 #include <PatriotNCD8Light.h>
 #include <PatriotNCD8Switch.h>
 #include <PatriotVoltage.h>
+//#include <PatriotPower.h>
 
 #define CONTROLLER_NAME "FrontPanel"
 #define MQTT_BROKER "192.168.50.33"
@@ -83,7 +84,9 @@ void createDevices() {
 
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)
-    Device::add(new Voltage(A0, "volts", "LivingRoom", 36.9, 10));
+    Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
+    
+//    Device::add(new Power("Power", "Status"));
 
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));
@@ -97,10 +100,10 @@ void loop() {
     // - update light dimming
     IoT::loop();
 
-    int voltageChanged = Device::getChangedValue("FrontPanelVolts");
-    if(voltageChanged != -1){
-        handleVoltageChanged(voltageChanged);
-    }
+//    int voltageChanged = Device::getChangedValue("FrontPanelVolts");
+//    if(voltageChanged != -1){
+//        handleVoltageChanged(voltageChanged);
+//    }
 
     //TODO: calculate sleeping state based on time, motion, and doors
 //    int sleepingChanged  = Device::getChangedValue("sleeping");
@@ -110,11 +113,11 @@ void loop() {
 //    }
 }
 
-void handleVoltageChanged(int volts) {
-    // Do whatever is needed based on new volts value
-    if(volts >= 12) {
-        Log.info("Voltage is over 12: " + String(volts));
-    } else {
-        Log.info("Voltage is under 12: " + String(volts));
-    }
-}
+//void handleVoltageChanged(int volts) {
+//    // Do whatever is needed based on new volts value
+//    if(volts >= 12) {
+//        Log.info("Voltage is over 12: " + String(volts));
+//    } else {
+//        Log.info("Voltage is under 12: " + String(volts));
+//    }
+//}

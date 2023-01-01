@@ -73,7 +73,7 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
     
     Log.info("Particle.io subscribe received data: '"+event+"', '"+data+"'");
     
-    _mqttManager->parseMessage(event.toLowerCase(), data.toLowerCase());
+    _mqttManager->parsePatriotMessage(event.toLowerCase(), data.toLowerCase());
 }
 
 /**
@@ -81,7 +81,19 @@ void IoT::subscribeHandler(const char *eventName, const char *rawData)
  */
 void IoT::mqttHandler(char* rawTopic, byte* payload, unsigned int length)
 {
-    _mqttManager->mqttHandler(rawTopic, payload, length);
+    char p[length + 1];
+    memcpy(p, payload, length);
+    p[length] = 0;
+    String message(p);
+    String lcMessage = message.toLowerCase();
+    String topic(rawTopic);
+    String lcTopic = topic.toLowerCase();
+
+    if(topic.startsWith("log")) {
+        return;
+    }
+    _mqttManager->parseMQTTMessage(lcTopic, lcMessage);
+    Device::mqttAll(lcTopic, lcMessage);
 }
 
 /**

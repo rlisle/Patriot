@@ -28,9 +28,9 @@ public:
     MQTTManager(String brokerIP, String controllerName, bool mqttLogging);
     
     bool        publish(String topic, String message, bool retain = false);
-    void        parseMessage(String topic, String message);
+    void        parsePatriotMessage(String topic, String message);
+    void        parseMQTTMessage(String topic, String message);
     void        loop();
-    void        mqttHandler(char* topic, byte* payload, unsigned int length);
     
     String      controllerName() { return _controllerName; };
         
@@ -42,7 +42,7 @@ private:
     NetworkStatus _networkStatus;
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
-
+    
     bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
 

@@ -40,8 +40,6 @@
 		2737F7ED28E8984100408830 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/NCD16LightTest/project.properties; sourceTree = "<group>"; };
 		2737F7EE28E8984100408830 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/NCD16LightTest/README.md; sourceTree = "<group>"; };
 		2751BD46294755EE00FA360C /* Voltage */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Voltage; path = ../Photon/Plugins/Voltage; sourceTree = "<group>"; };
-		2752EF1729323B1B00580EB9 /* MQTT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MQTT.h; path = ../Photon/IoTlib/src/MQTT.h; sourceTree = "<group>"; };
-		2752EF1829323B1B00580EB9 /* MQTT.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MQTT.cpp; path = ../Photon/IoTlib/src/MQTT.cpp; sourceTree = "<group>"; };
 		2755615325CC1FAA00FEE0FF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		2755615425CC1FAA00FEE0FF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		2755DBE4259DFA3900971ABA /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = device.cpp; path = ../Photon/IoTlib/src/device.cpp; sourceTree = "<group>"; };
@@ -53,6 +51,7 @@
 		27841D7527871CE400DFCCFD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/NCD4Relay/src; sourceTree = "<group>"; };
 		27841D7627871CE400DFCCFD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Relay/library.properties; sourceTree = "<group>"; };
 		27841D7727871CFD00DFCCFD /* relay.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = relay.ino; path = ../Photon/Plugins/NCD4Relay/examples/relay/relay.ino; sourceTree = "<group>"; };
+		279E08C7295DE4B60059951F /* ShellyPower */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShellyPower; path = ../Photon/Plugins/ShellyPower; sourceTree = "<group>"; };
 		27A0F26C279DE9950021E84D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../Photon/Plugins/MR24/LICENSE; sourceTree = "<group>"; };
 		27A0F26D279DE9950021E84D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Plugins/MR24/README.md; sourceTree = "<group>"; };
 		27A0F26E279DE9950021E84D /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/MR24/library.properties; sourceTree = "<group>"; };
@@ -329,8 +328,6 @@
 				E4849C5A2566AB3C00A39734 /* IoT.cpp */,
 				E4849C662566AB3C00A39734 /* MQTTManager.h */,
 				E4849C622566AB3C00A39734 /* MQTTManager.cpp */,
-				2752EF1729323B1B00580EB9 /* MQTT.h */,
-				2752EF1829323B1B00580EB9 /* MQTT.cpp */,
 			);
 			name = IoTlib;
 			sourceTree = "<group>";
@@ -382,6 +379,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				279E08C7295DE4B60059951F /* ShellyPower */,
 				2751BD46294755EE00FA360C /* Voltage */,
 				2769F3C82729635500E8FE57 /* Checklist */,
 				2733856125B29C420032BB1F /* Curtain */,
