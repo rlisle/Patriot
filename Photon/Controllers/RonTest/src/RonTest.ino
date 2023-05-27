@@ -31,11 +31,10 @@ SerialLogHandler logHandler;
 //#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 //#define I2CDIO8 0x20   // 8xGPIO address (no jumpers)
 
-//Using Threads may cause problems with other libraries, etc.
-//So not doing it anymore
-//SYSTEM_THREAD(ENABLED);
-//SYSTEM_MODE(SEMI_AUTOMATIC);
-SYSTEM_MODE(AUTOMATIC);
+//Using Threads may have been causing problems with other libraries, etc.
+//So were previously commented out. Restoring now.
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 //Used to determine I2C addresses for debugging I2C boards
 //unsigned long lastScan = 0;
