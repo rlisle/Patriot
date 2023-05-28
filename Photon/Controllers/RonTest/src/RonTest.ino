@@ -29,7 +29,7 @@ SerialLogHandler logHandler;
 #define MQTT_LOGGING false
 
 //#define ADDRESS 1      // PWM board address A0 jumper set
-//#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
+#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 //#define I2CDIO8 0x20   // 8xGPIO address (no jumpers)
 
 //Using Threads may have been causing problems with other libraries, etc.
@@ -73,7 +73,7 @@ void setup() {
     // 4 GPIO
 //    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
 
-    Device::add(new Power("amps", "Status"));
+//    Device::add(new Power("amps", "Status"));
     
     Log.info("RonTest started");
 }
@@ -84,7 +84,7 @@ void loop() {
 //    handleSleeping();
 //    handleSwitch1();
 //    scanI2Caddresses();
-    handleAmps();
+//    handleAmps();
 
 //    if(millis() > lastVScan + vScanInterval){
 //        lastVScan = millis();
@@ -92,17 +92,24 @@ void loop() {
 //    }
 }
 
+void handleAwning() {
+    int awningChanged = Device::getChangedValue("TestAwning");
+    if( awningChanged != -1 ) {
+        Log.info("awning changed %d",awningChanged);
+    }
+}
+
 //void handleVoltageMonitor() {
 //    int volts = analogRead(A0);
 //    IoT::publishValue("volts", volts);
 //}
 
-void handleAmps() {
-    int ampsChanged = Device::getChangedValue("amps");
-    if( ampsChanged != -1 ) {
-        Log.info("amps changed %d",ampsChanged);
-    }
-}
+//void handleAmps() {
+//    int ampsChanged = Device::getChangedValue("amps");
+//    if( ampsChanged != -1 ) {
+//        Log.info("amps changed %d",ampsChanged);
+//    }
+//}
 
 //void handleSleeping() {
 //
