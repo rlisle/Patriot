@@ -10,7 +10,7 @@
  
  To build this code:
  1. Update version number in library.properties
- 2. "particle library upload"
+ 2. "particle library upload" (uiot)
  3. Add library to controller (if needed) or update version
  4. "particle library add iot"
  
@@ -38,6 +38,7 @@ bool IoT::_cloudEnabled = false;
 void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool mqttLogging)
 {
     _cloudEnabled = enableCloud;
+//    Particle.connect();       // Only needed if SYSTEM_MODE(AUTOMATIC) NOT set (or defaulted to)
 
     Time.zone(-6);              // CST
     handleDaylightSavings();

@@ -20,10 +20,7 @@ Author: Ron Lisle
 
  Using SYSTEM_THREAD(ENABLED) is recommended,
  and runs network on separate theread.
- Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
- manually connect, but everything is automatic
- after that. This allows running loop and MQTT
- even if no internet available
+ Using SYSTEM_MODE(AUTOMATIC)
 
  */
 #include <IoT.h>
@@ -44,8 +41,8 @@ Author: Ron Lisle
 #define ADDRESS 1      // NCD8Light PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
-//SYSTEM_THREAD(ENABLED);
-//SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(AUTOMATIC);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
@@ -55,7 +52,7 @@ bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
 
 void setup() {
-    //WiFi.selectAntenna(ANT_EXTERNAL);
+    WiFi.selectAntenna(ANT_EXTERNAL);
     //WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD, MQTT_LOGGING);
     createDevices();
@@ -65,6 +62,7 @@ void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
+    // Device::add(new Awning(I2CR4IO4, 2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));

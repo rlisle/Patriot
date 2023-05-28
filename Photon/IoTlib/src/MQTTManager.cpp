@@ -424,6 +424,25 @@ void MQTTManager::log(const char *category, String message) {
 }
 
 //TODO: move to its own class
+// Status LEDs
+// RGB LED
+// Breathing white: Wifi off
+// Breathing blue: Wifi on but not connected to network
+// Breathing green: Connected to network but not Cloud
+// Breathing Cyan: Cloud connected
+// Breathing rainbow: Device Signal'ed
+// Blinking Magenta: Safe mode, ready to flash, not running code.
+//   - Hold setup while booting, release when magenta.
+// Blinking green: connecting to Wifi
+// Blinking cyan: connecting to Cloud
+// Blinking blue: Listening mode
+// Blinking yellow: DFU mode
+//
+// Blue LED
+// 3 short blinks: Starting to connect
+// 2 short blinks: Wifi connected
+// 1 short blink: MQTT connected
+//
 void MQTTManager::updateStatusLed() {
     
     if(millis() >= _lastBlinkTimeMs + BLINK_INTERVAL) {
