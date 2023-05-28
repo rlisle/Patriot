@@ -29,6 +29,7 @@ Author: Ron Lisle
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
 #include <PatriotPIR.h>
+//#include <PatriotAwning.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define CONTROLLER_NAME "RearPanel"
@@ -65,6 +66,7 @@ void createDevices() {
     // Device::add(new Awning(I2CR4IO4, 2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
+    
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
     
     // Photon I/O

@@ -15,7 +15,7 @@
 //#include <PatriotNCD4Switch.h>
 //#include <PatriotNCD4Relay.h>
 //#include <PatriotNCD8Switch.h>
-#include <PatriotPower.h>
+//#include <PatriotPower.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
