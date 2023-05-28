@@ -16,6 +16,7 @@
 //#include <PatriotNCD4Relay.h>
 //#include <PatriotNCD8Switch.h>
 //#include <PatriotPower.h>
+#include <PatriotAwning.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
@@ -67,7 +68,8 @@ void setup() {
     // I2CIO4R4G5LE board
     // 4 Relays
 //    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
-    
+    Device::add(new Awning(I2CR4IO4, 2, "TestAwning", "Outside"));     // 2x Relays: 2, 3
+
     // 4 GPIO
 //    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
 
