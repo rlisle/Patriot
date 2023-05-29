@@ -36,19 +36,13 @@ MQTTManager* IoT::_mqttManager = NULL;
  */
 void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool mqttLogging)
 {
-    _cloudEnabled = enableCloud;
-//    Particle.connect();       // Only needed if SYSTEM_MODE(AUTOMATIC) NOT set (or defaulted to)
-
     Time.zone(-6);              // CST
     handleDaylightSavings();
     
     // Expose particle.io variables
     Device::expose();
     
-    // Subscribe doesn't require a connection before calling.
-    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
-
-    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
+    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging, enableCloud);
 }
 
 /**

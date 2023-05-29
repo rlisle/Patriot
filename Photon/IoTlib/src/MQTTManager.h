@@ -18,7 +18,7 @@
 #include "Particle.h"
 #include "MQTT.h"
 
-enum NetworkStatus { Disconnected, WiFiStarting, MqttStarting, MqttConnected, CloudConnected };
+enum NetworkStatus { Disconnected, WifiStarting, MqttStarting, MqttConnected, CloudConnected };
 
 class MQTTManager : public LogHandler
 {

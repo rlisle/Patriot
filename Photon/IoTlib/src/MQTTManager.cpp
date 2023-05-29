@@ -22,6 +22,7 @@
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool cloudEnabled, bool mqttLogging)
 {
+    _networkStatus = Disconnected;
     _controllerName = controllerName.toLowerCase();
     _cloudEnabled = cloudEnabled;
     _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
@@ -90,6 +91,9 @@ void MQTTManager::manageNetwork()
             if(_mqtt->isConnected()) {
                 _mqtt->subscribe("#");
                 _networkStatus = MqttConnected;
+                if(_cloudEnabled) {
+                    Particle.connect();
+                }
                 Log.info("MQTT connected");
             }
             break;
@@ -97,6 +101,7 @@ void MQTTManager::manageNetwork()
         case MqttConnected:
             if(_cloudEnabled) {
                 if(Particle.connected()) {
+                    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
                     _networkStatus = CloudConnected;
                     Log.info("Cloud connected");
                 }
@@ -111,6 +116,7 @@ void MQTTManager::manageNetwork()
             break;
             
         default: // unknown state
+            Log.info("Unknown network status");
             break;
     }
 
@@ -156,7 +162,7 @@ bool MQTTManager::publish(String topic, String message, bool retain) {
         _mqtt->publish(topic, (const uint8_t*)message.c_str(), message.length(), retain, retain ? MQTT::QOS1 : MQTT::QOS0);
         return true;
     } else {
-        Log.warn("publish while not connected: " + topic + ", " + message);
+        Log.warn("publish while MQTT not connected: " + topic + ", " + message);
     }
     return false;
 }
@@ -464,9 +470,11 @@ void MQTTManager::log(const char *category, String message) {
 // Blinking yellow: DFU mode
 //
 // Blue LED
-// 3 short blinks: Starting to connect
-// 2 short blinks: Wifi connected
-// 1 short blink: MQTT connected
+// 5 blinks: Disconnected
+// 4 blinks: WiFi Starting to connect
+// 3 blinks: MQTT Starting to connect
+// 2 blinks: MQTT connected
+// 1 blink:  Cloud connected
 //
 void MQTTManager::updateStatusLed() {
     
@@ -479,21 +487,35 @@ void MQTTManager::updateStatusLed() {
         
         switch (_networkStatus)
         {
-            case Starting:  // 3 short blinks off, on, off, on, off, off
+            case Disconnected:  // 5 short blinks
+                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5 || _blinkPhase == 7 || _blinkPhase == 9) {
+                    nextLed = HIGH;
+                } else if(_blinkPhase > 12) {
+                    _blinkPhase = 0;
+                }
+                break;
+            case WifiStarting:  // 4 short blinks
+                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5 || _blinkPhase == 7) {
+                    nextLed = HIGH;
+                } else if(_blinkPhase > 10) {
+                    _blinkPhase = 0;
+                }
+                break;
+            case MqttStarting:  // 3 short blinks off, on, off, on, off, off
                 if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5) {
                     nextLed = HIGH;
                 } else if(_blinkPhase > 8) {
                     _blinkPhase = 0;
                 }
                 break;
-            case Wifi: // 2 short blink off, on, off, off
+            case MqttConnected: // 2 short blink off, on, off, off
                 if(_blinkPhase == 1 || _blinkPhase == 3) {
                     nextLed = HIGH;
                 } else if(_blinkPhase > 8) {
                     _blinkPhase = 0;
                 }
                 break;
-            case Mqtt:    // 1 short blink
+            case CloudConnected:    // 1 short blink
                 if(_blinkPhase == 1) {
                     nextLed = HIGH;
                 } else if(_blinkPhase > 8) {
