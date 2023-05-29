@@ -20,11 +20,10 @@
 #define MQTT_ALIVE_SECONDS 60*5
 #define BLINK_INTERVAL  250
 
-MQTTManager::MQTTManager(String brokerIP, String controllerName, bool cloudEnabled, bool mqttLogging)
+MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
     _networkStatus = Disconnected;
     _controllerName = controllerName.toLowerCase();
-    _cloudEnabled = cloudEnabled;
     _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
     _lastAliveTime = 0;
     _logging = 0;
@@ -91,22 +90,19 @@ void MQTTManager::manageNetwork()
             if(_mqtt->isConnected()) {
                 _mqtt->subscribe("#");
                 _networkStatus = MqttConnected;
-                if(_cloudEnabled) {
-                    Particle.connect();
-                }
+                Log.info("Connecting to Particle");
+                Particle.connect();
                 Log.info("MQTT connected");
             }
             break;
             
         case MqttConnected:
-            if(_cloudEnabled) {
-                if(Particle.connected()) {
-                    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
-                    _networkStatus = CloudConnected;
-                    Log.info("Cloud connected");
-                }
+            if(Particle.connected()) {
+                Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
+                _networkStatus = CloudConnected;
+                Log.info("Cloud connected, subscribing...");
             } else {
-                //TODO: Once connected, check for disconnect, etc.
+                Log.info("Cloud enabled but particle not connected");
             }
             break;
             

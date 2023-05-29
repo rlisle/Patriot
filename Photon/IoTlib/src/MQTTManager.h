@@ -46,9 +46,6 @@ private:
     bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
     
-    bool      _cloudEnabled;
-
-
     void      connectMQTT();
     void      (*_callback)(char*,uint8_t*,unsigned int);
     int       parseValue(String message);
