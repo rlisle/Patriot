@@ -34,7 +34,7 @@ MQTTManager* IoT::_mqttManager = NULL;
  * It must be called exactly once by the sketch
  *  Network may not be connected yet.
  */
-void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool mqttLogging)
+void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
 {
     Time.zone(-6);              // CST
     handleDaylightSavings();
@@ -42,7 +42,7 @@ void IoT::begin(String brokerIP, String controllerName, bool enableCloud, bool m
     // Expose particle.io variables
     Device::expose();
     
-    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging, enableCloud);
+    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
 }
 
 /**

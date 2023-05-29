@@ -25,7 +25,7 @@ class MQTTManager : public LogHandler
 public:
     LogLevel    _logLevel;
 
-    MQTTManager(String brokerIP, String controllerName, bool cloudEnabled, bool mqttLogging);
+    MQTTManager(String brokerIP, String controllerName, bool mqttLogging);
     
     bool        publish(String topic, String message, bool retain = false);
     void        parsePatriotMessage(String topic, String message);
