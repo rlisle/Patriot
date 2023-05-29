@@ -20,13 +20,13 @@
 #define MQTT_ALIVE_SECONDS 60*5
 #define BLINK_INTERVAL  250
 
-MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
+MQTTManager::MQTTManager(String brokerIP, String controllerName, bool cloudEnabled, bool mqttLogging)
 {
     _controllerName = controllerName.toLowerCase();
+    _cloudEnabled = cloudEnabled;
     _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
     _lastAliveTime = 0;
     _logging = 0;
-    _networkStatus = Starting;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
     
@@ -45,8 +45,7 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     Log.info("Connecting to MQTT");
     
     _lastMQTTtime = Time.now();
-    doConnect();
-    _mqtt->subscribe("#");
+//    _mqtt->subscribe("#");
     
     if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
@@ -61,17 +60,6 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     
 }
 
-void MQTTManager::doConnect() {
-    const char *user = NULL;
-    const char *pw = NULL;
-    String willTopic = kPublishName + "/" + _controllerName + "/status";
-    MQTT::EMQTT_QOS willQoS = MQTT::QOS0;
-    uint8_t willRetain = 0;
-    String willMessage = "Offline";
-    bool clean = false;
-    _mqtt->connect(_controllerName + "Id", user, pw, willTopic, willQoS, willRetain, willMessage, clean);
-}
-
 void MQTTManager::loop()
 {
     _mqtt->loop();
@@ -82,32 +70,69 @@ void MQTTManager::loop()
 
 void MQTTManager::manageNetwork()
 {
-    // Update network status
-    if(_mqtt->isConnected()) {
-        if(_networkStatus != Mqtt) {
-            _networkStatus = Mqtt;
-            Log.info("MQTT connected");
-        }
-    } else if(WiFi.ready()) {
-        if(_networkStatus == Mqtt) {
-            _networkStatus = Wifi;
-            _lastMQTTtime = Time.now();
-            doConnect();
-            Log.warn("MQTT reconnecting...");
-        }
-    } else {
-        if(_networkStatus != Starting) {
-            Log.error("Network lost: no WiFi");
-            _networkStatus = Starting;
-        }
+    //TODO: Turn on WiFi if needed
+    switch (_networkStatus)
+    {
+        case Disconnected:
+            WiFi.on();
+            WiFi.connect();
+            _networkStatus = WifiStarting;
+            break;
+            
+        case WifiStarting:
+            if(WiFi.ready()) {
+                connectMQTT();
+                _networkStatus = MqttStarting;
+            }
+            break;
+            
+        case MqttStarting:
+            if(_mqtt->isConnected()) {
+                _mqtt->subscribe("#");
+                _networkStatus = MqttConnected;
+                Log.info("MQTT connected");
+            }
+            break;
+            
+        case MqttConnected:
+            if(_cloudEnabled) {
+                if(Particle.connected()) {
+                    _networkStatus = CloudConnected;
+                    Log.info("Cloud connected");
+                }
+            } else {
+                //TODO: Once connected, check for disconnect, etc.
+            }
+            break;
+            
+        case CloudConnected:
+            //TODO: Once connected, check for disconnect, etc.
+            
+            break;
+            
+        default: // unknown state
+            break;
     }
-    
+
     // If no MQTT received within timeout period then reboot
     if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
         Log.error("MQTT Timeout.");
         doReboot();
     }
 }
+
+void MQTTManager::connectMQTT() {
+    const char *user = NULL;
+    const char *pw = NULL;
+    String willTopic = kPublishName + "/" + _controllerName + "/status";
+    MQTT::EMQTT_QOS willQoS = MQTT::QOS0;
+    uint8_t willRetain = 0;
+    String willMessage = "Offline";
+    bool clean = false;
+    _mqtt->connect(_controllerName + "Id", user, pw, willTopic, willQoS, willRetain, willMessage, clean);
+    _lastMQTTtime = Time.now();
+}
+
 
 void MQTTManager::sendAlivePeriodically() {
     if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
@@ -118,7 +143,7 @@ void MQTTManager::sendAlivePeriodically() {
 }
 
 void MQTTManager::doReboot() {
-    Log.warn("Resetting");
+    Log.warn("Rebooting...");
     Device::resetAll();
     System.reset(RESET_NO_WAIT);
 }

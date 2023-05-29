@@ -18,14 +18,14 @@
 #include "Particle.h"
 #include "MQTT.h"
 
-enum NetworkStatus { Starting, Wifi, Mqtt };
+enum NetworkStatus { Disconnected, WiFiStarting, MqttStarting, MqttConnected, CloudConnected };
 
 class MQTTManager : public LogHandler
 {
 public:
     LogLevel    _logLevel;
 
-    MQTTManager(String brokerIP, String controllerName, bool mqttLogging);
+    MQTTManager(String brokerIP, String controllerName, bool cloudEnabled, bool mqttLogging);
     
     bool        publish(String topic, String message, bool retain = false);
     void        parsePatriotMessage(String topic, String message);
@@ -45,8 +45,11 @@ private:
     
     bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
+    
+    bool      _cloudEnabled;
 
-    void      doConnect();
+
+    void      connectMQTT();
     void      (*_callback)(char*,uint8_t*,unsigned int);
     int       parseValue(String message);
     String    parseDeviceName(String subtopic);

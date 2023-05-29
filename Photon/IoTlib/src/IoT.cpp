@@ -28,7 +28,6 @@
 // Static Variables
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
-bool IoT::_cloudEnabled = false;
 
 /**
  * Begin gets everything going.
