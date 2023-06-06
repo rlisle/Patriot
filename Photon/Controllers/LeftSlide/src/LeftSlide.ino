@@ -90,11 +90,11 @@ void loop() {
     IoT::loop();
 
     //TODO: move to MR24 plugin
-    handleCouchPresence();
+//    handleCouchPresence();
 }
 
 //TODO: move to MR24 plugin
-void handleCouchPresence() {
+/*void handleCouchPresence() {
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     if( couchPresenceChanged != -1) {
         
@@ -136,3 +136,4 @@ int quantize(int value) {
     if(value < 88) return 75;
     return 100;
 }
+*/

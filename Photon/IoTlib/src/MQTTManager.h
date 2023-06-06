@@ -51,8 +51,9 @@ private:
     int       parseValue(String message);
     String    parseDeviceName(String subtopic);
     void      parseLogLevel(String message);
-    void      sendAlivePeriodically();
+    void      updateStatusPeriodically();
     void      updateStatusLed();
+    void      checkNetworkStatus();
     void      manageNetwork();
     void      doReboot();
     void      sendAck(String deviceName, String command, String message);

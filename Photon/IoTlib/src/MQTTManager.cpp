@@ -43,14 +43,18 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     
     Log.info("Connecting to MQTT");
+    connectMQTT();
     
     _lastMQTTtime = Time.now();
-//    _mqtt->subscribe("#");
+    _mqtt->subscribe("#");
     
     if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
         Log.info("MQTT log handler added");
     }
+    
+    //Connect to cloud
+    Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
     
     //TODO: detect loss of other controllers
     _lastAliveFrontPanel = Time.now();
@@ -63,14 +67,33 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
 void MQTTManager::loop()
 {
     _mqtt->loop();
+    updateStatusPeriodically();
     updateStatusLed();
-    manageNetwork();
-    sendAlivePeriodically();
 }
 
-void MQTTManager::manageNetwork()
+void MQTTManager::checkNetworkStatus()
 {
-    //TODO: Turn on WiFi if needed
+    if(WiFi.ready()) {
+        if(_mqtt->isConnected()) {
+            if(Particle.connected()) {
+                _networkStatus = CloudConnected;
+            } else {
+                _networkStatus = MqttConnected;
+            }
+        } else {
+            _networkStatus = MqttStarting;
+        }
+    } else {
+        if(WiFi.connecting()) {
+            _networkStatus = WifiStarting;
+        } else {
+            _networkStatus = Disconnected;
+        }
+    }
+}
+
+/*void MQTTManager::manageNetwork()
+{
     switch (_networkStatus)
     {
         case Disconnected:
@@ -121,7 +144,7 @@ void MQTTManager::manageNetwork()
         Log.error("MQTT Timeout.");
         doReboot();
     }
-}
+}*/
 
 void MQTTManager::connectMQTT() {
     const char *user = NULL;
@@ -136,9 +159,14 @@ void MQTTManager::connectMQTT() {
 }
 
 
-void MQTTManager::sendAlivePeriodically() {
+void MQTTManager::updateStatusPeriodically() {
     if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
         _lastAliveTime = Time.now();
+        
+        // Update Wifi, MQTT and Cloud status
+        checkNetworkStatus();
+        
+        // Send Alive message
         String time = Time.format(Time.now(), "%a %H:%M");
         publish(kPublishName+"/alive/"+_controllerName, time, false);
     }
