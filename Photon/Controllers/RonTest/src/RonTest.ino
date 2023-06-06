@@ -32,7 +32,7 @@ SerialLogHandler logHandler;
 //Using Threads may have been causing problems with other libraries, etc.
 //So were previously commented out. Restoring now.
 SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_MODE(AUTOMATIC);
 
 //Used to determine I2C addresses for debugging I2C boards
 //unsigned long lastScan = 0;
