@@ -44,8 +44,8 @@ Author: Ron Lisle
 
 // Because this controller needs to be connect to the intern
 // it will not use SEMI_AUTOMATIC or threads
-//SYSTEM_THREAD(ENABLED);
-//SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(AUTOMATIC);
 
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
@@ -66,6 +66,7 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD, MQTT_LOGGING);
     createDevices();
 }
+
 void createDevices() {
     // Sensors
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
