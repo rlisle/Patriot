@@ -83,14 +83,14 @@ void MQTTManager::loop()
 void MQTTManager::checkNetworkStatus()
 {
     if(WiFi.ready()) {
-        Log.info("WiFi is ready");
+        //Log.info("WiFi is ready");
         if(_mqtt->isConnected()) {
-            Log.info("mqtt is connected");
+            //Log.info("mqtt is connected");
             if(Particle.connected()) {
-                Log.info("Cloud is connected");
+                //Log.info("Cloud is connected");
                 _networkStatus = CloudConnected;
             } else {
-                Log.info("Cloud NOT connected");
+                //Log.info("Cloud NOT connected");
                 _networkStatus = MqttConnected;
             }
         } else {
@@ -212,14 +212,14 @@ bool MQTTManager::publish(String topic, String message, bool retain) {
         Log.warn("publish while MQTT not connected: " + topic + ", " + message);
 
         //DEBUG: we shouldn't be getting here...
-        _mqtt->connect(_controllerName + "Id");
-        if(_mqtt->isConnected()) {
-            Log.info("mqtt connected now, subscribing...");
-            _lastMQTTtime = Time.now();
-            _mqtt->subscribe("#");
-        } else {
-            Log.info("mqtt still not connected yet");
-        }
+//        _mqtt->connect(_controllerName + "Id");
+//        if(_mqtt->isConnected()) {
+//            Log.info("mqtt connected now, subscribing...");
+//            _lastMQTTtime = Time.now();
+//            _mqtt->subscribe("#");
+//        } else {
+//            Log.info("mqtt still not connected yet");
+//        }
 
     }
     return false;
