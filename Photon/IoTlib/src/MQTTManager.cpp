@@ -17,7 +17,11 @@
 #include "constants.h"
 
 #define MQTT_TIMEOUT_SECONDS 60*16
-#define MQTT_ALIVE_SECONDS 60*5
+
+//#define MQTT_ALIVE_SECONDS 60*5
+//Shorten time for debugging
+#define MQTT_ALIVE_SECONDS 5
+
 #define BLINK_INTERVAL  250
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
@@ -25,7 +29,7 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _networkStatus = Disconnected;
     _controllerName = controllerName.toLowerCase();
     _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
-    _lastAliveTime = 0;
+    _lastAliveTime = Time.now() - MQTT_ALIVE_SECONDS;
     _logging = 0;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
@@ -45,8 +49,13 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     Log.info("Connecting to MQTT");
     connectMQTT();
     
-    _lastMQTTtime = Time.now();
-    _mqtt->subscribe("#");
+    if(_mqtt->isConnected()) {
+        Log.info("mqtt is connected, subscribing...");
+        _lastMQTTtime = Time.now();
+        _mqtt->subscribe("#");
+    } else {
+        Log.info("mqtt not connected yet");
+    }
     
     if(_mqttLogging) {
         LogManager::instance()->addHandler(this);
@@ -74,16 +83,30 @@ void MQTTManager::loop()
 void MQTTManager::checkNetworkStatus()
 {
     if(WiFi.ready()) {
+        Log.info("WiFi is ready");
         if(_mqtt->isConnected()) {
+            Log.info("mqtt is connected");
             if(Particle.connected()) {
+                Log.info("Cloud is connected");
                 _networkStatus = CloudConnected;
             } else {
+                Log.info("Cloud NOT connected");
                 _networkStatus = MqttConnected;
             }
         } else {
+            Log.info("mqtt NOT connected so re-connecting");
             _networkStatus = MqttStarting;
+            connectMQTT();
+            if(_mqtt->isConnected()) {
+                Log.info("mqtt connected now, subscribing...");
+                _lastMQTTtime = Time.now();
+                _mqtt->subscribe("#");
+            } else {
+                Log.info("mqtt still not re-connected");
+            }
         }
     } else {
+        Log.info("WiFi NOT ready");
         if(WiFi.connecting()) {
             _networkStatus = WifiStarting;
         } else {
@@ -187,6 +210,17 @@ bool MQTTManager::publish(String topic, String message, bool retain) {
         return true;
     } else {
         Log.warn("publish while MQTT not connected: " + topic + ", " + message);
+
+        //DEBUG: we shouldn't be getting here...
+        _mqtt->connect(_controllerName + "Id");
+        if(_mqtt->isConnected()) {
+            Log.info("mqtt connected now, subscribing...");
+            _lastMQTTtime = Time.now();
+            _mqtt->subscribe("#");
+        } else {
+            Log.info("mqtt still not connected yet");
+        }
+
     }
     return false;
 }
