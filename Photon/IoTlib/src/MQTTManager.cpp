@@ -17,11 +17,7 @@
 #include "constants.h"
 
 #define MQTT_TIMEOUT_SECONDS 60*16
-
-//#define MQTT_ALIVE_SECONDS 60*5
-//Shorten time for debugging
-#define MQTT_ALIVE_SECONDS 5
-
+#define MQTT_ALIVE_SECONDS 60*5
 #define BLINK_INTERVAL  250
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)

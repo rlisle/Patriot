@@ -33,7 +33,7 @@ Author: Ron Lisle
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotPIR.h>
-#include <PatriotMR24.h>
+//#include <PatriotMR24.h>
 #include <HueLight.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
@@ -42,8 +42,6 @@ Author: Ron Lisle
 #define CONNECT_TO_CLOUD true
 #define LIVINGROOM_MOTION_TIMEOUT 3*60
 
-// Because this controller needs to be connect to the intern
-// it will not use SEMI_AUTOMATIC or threads
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
@@ -52,13 +50,13 @@ SYSTEM_MODE(AUTOMATIC);
 
 byte hueServer[4] = { 192, 168, 50, 39 };   // Changed 10/1/22
 
-bool couchPresenceFiltered = 0;
-long lastCouchPresence = 0;
+//bool couchPresenceFiltered = 0;
+//long lastCouchPresence = 0;
 
-bool livingRoomMotion = false;
-long lastLivingRoomMotion = 0;
+//bool livingRoomMotion = false;
+//long lastLivingRoomMotion = 0;
 
-int couchPresence = 0;
+//int couchPresence = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_EXTERNAL);
@@ -70,7 +68,7 @@ void setup() {
 void createDevices() {
     // Sensors
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
-    Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
+    //Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Philips Hue Lights (currently requires internet connection)
     Device::add(new HueLight("Bedroom", "Bedroom", "1", hueServer, HUE_USERID));
