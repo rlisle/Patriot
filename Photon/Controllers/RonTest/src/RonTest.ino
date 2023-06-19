@@ -12,6 +12,7 @@
  */
 
 #include <IoT.h>
+#include <PatriotCurtain.h>
 #include <PatriotPower.h>
 #include <PatriotAwning.h>
 
@@ -36,7 +37,7 @@ void setup() {
     
     // I2CIO4R4G5LE board
     // 4 Relays
-//    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
+    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
     Device::add(new Awning(I2CR4IO4, 2, "TestAwning", "Outside"));     // 2x Relays: 2, 3
 
     // 4 GPIO
@@ -53,13 +54,6 @@ void loop() {
 //    scanI2Caddresses();
     handleAmps();
 
-}
-
-void handleAwning() {
-    int awningChanged = Device::getChangedValue("TestAwning");
-    if( awningChanged != -1 ) {
-        Log.info("awning changed %d",awningChanged);
-    }
 }
 
 void handleAmps() {
