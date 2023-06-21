@@ -39,6 +39,7 @@ private:
     String    _controllerName;
     long      _lastMQTTtime;
     long      _lastAliveTime;
+    long      _lastCheckTime;
     NetworkStatus _networkStatus;
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
@@ -52,8 +53,8 @@ private:
     String    parseDeviceName(String subtopic);
     void      parseLogLevel(String message);
     void      updateStatusPeriodically();
+    void      checkNetworkStatusPeriodically();
     void      updateStatusLed();
-    void      checkNetworkStatus();
     void      manageNetwork();
     void      doReboot();
     void      sendAck(String deviceName, String command, String message);

@@ -18,6 +18,7 @@
 
 #define MQTT_TIMEOUT_SECONDS 60*16
 #define MQTT_ALIVE_SECONDS 60*5
+#define CHECK_STATUS_SECONDS 5
 #define BLINK_INTERVAL  250
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
@@ -66,47 +67,51 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _lastAliveLeftSlide = Time.now();
     _lastAliveRearPanel = Time.now();
     _lastAliveRonTest = Time.now();
-    
+    _lastCheckTime = Time.now();
 }
 
 void MQTTManager::loop()
 {
     _mqtt->loop();
+    checkNetworkStatusPeriodically();
     updateStatusPeriodically();
     updateStatusLed();
 }
 
-void MQTTManager::checkNetworkStatus()
+void MQTTManager::checkNetworkStatusPeriodically()
 {
-    if(WiFi.ready()) {
-        //Log.info("WiFi is ready");
-        if(_mqtt->isConnected()) {
-            //Log.info("mqtt is connected");
-            if(Particle.connected()) {
-                //Log.info("Cloud is connected");
-                _networkStatus = CloudConnected;
-            } else {
-                //Log.info("Cloud NOT connected");
-                _networkStatus = MqttConnected;
-            }
-        } else {
-            Log.info("mqtt NOT connected so re-connecting");
-            _networkStatus = MqttStarting;
-            connectMQTT();
+    if(Time.now() > _lastCheckTime + CHECK_STATUS_SECONDS) {
+        _lastCheckTime = Time.now();
+        if(WiFi.ready()) {
+            //Log.info("WiFi is ready");
             if(_mqtt->isConnected()) {
-                Log.info("mqtt connected now, subscribing...");
-                _lastMQTTtime = Time.now();
-                _mqtt->subscribe("#");
+                //Log.info("mqtt is connected");
+                if(Particle.connected()) {
+                    //Log.info("Cloud is connected");
+                    _networkStatus = CloudConnected;
+                } else {
+                    //Log.info("Cloud NOT connected");
+                    _networkStatus = MqttConnected;
+                }
             } else {
-                Log.info("mqtt still not re-connected");
+                Log.info("mqtt NOT connected so re-connecting");
+                _networkStatus = MqttStarting;
+                connectMQTT();
+                if(_mqtt->isConnected()) {
+                    Log.info("mqtt connected now, subscribing...");
+                    _lastMQTTtime = Time.now();
+                    _mqtt->subscribe("#");
+                } else {
+                    Log.info("mqtt still not re-connected");
+                }
             }
-        }
-    } else {
-        Log.info("WiFi NOT ready");
-        if(WiFi.connecting()) {
-            _networkStatus = WifiStarting;
         } else {
-            _networkStatus = Disconnected;
+            Log.info("WiFi NOT ready");
+            if(WiFi.connecting()) {
+                _networkStatus = WifiStarting;
+            } else {
+                _networkStatus = Disconnected;
+            }
         }
     }
 }
@@ -181,9 +186,6 @@ void MQTTManager::connectMQTT() {
 void MQTTManager::updateStatusPeriodically() {
     if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
         _lastAliveTime = Time.now();
-        
-        // Update Wifi, MQTT and Cloud status
-        checkNetworkStatus();
         
         // Send Alive message
         String time = Time.format(Time.now(), "%a %H:%M");
