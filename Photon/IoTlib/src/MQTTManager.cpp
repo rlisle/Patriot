@@ -233,6 +233,7 @@ void MQTTManager::parseMQTTMessage(String lcTopic, String lcMessage)
     //TODO: if we wanted, we could do something with log messages, etc.
 }
 
+// Refer to Note "MQTT - Patriot"
 void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
 {
     String subtopics[5];
@@ -250,11 +251,11 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
     
     if(numTopics > 0) {
         
-        // ACK
+        // ACK/<device>/<command>
         if(subtopics[0] == "ack") {                         // patriot/ack/<device>/<command>
             // Ignore Acknowledgements
             
-            // ALIVE
+        // ALIVE/<controller>
         } else if(subtopics[0] == "alive" && numTopics > 1) {                // patriot/alive/<controller>
             
             //TODO: Refactor to allow unknown controller names (array)
@@ -266,7 +267,7 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 _lastAliveRearPanel = Time.now();
             }
             
-            // BRIGHTNESS
+        // <device>/BRIGHTNESS
         } else if(numTopics > 1 && subtopics[1] == "brightness") {           // patriot/<device>/brightness value
             int value = lcMessage.toInt();
             String deviceName = subtopics[0];
@@ -276,7 +277,17 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 sendAck(deviceName, "brightness", lcMessage);
             }
             
-        // HOLD
+        // <controller>/<device> - not implemented/parsed
+
+        // GET/POSITION - not implemented/parsed
+        // GET/STATE - not implemented/parsed
+        // GET/TARGET - not implemented/parsed
+            
+        // DURATION? - not implemented/parsed
+            
+        // <device> - see "Set" below
+            
+        // <device>/HOLD
         } else if(numTopics > 1 && subtopics[1] == "hold") {             // patriot/<device>/hold n/a
             Device *device = Device::get(subtopics[0]);
             if( device != NULL) {
@@ -312,20 +323,20 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 IoT::setLatLong(latitude,longitude);
             }
             
-            // LOGLEVEL
+        // LOGLEVEL/<controller | all>
         } else if(subtopics[0] == "loglevel") {
             if(numTopics == 1 || subtopics[1] == _controllerName || subtopics[1] == "all" ) {
                 Log.warn(_controllerName + " setting logLevel = " + lcMessage);
                 parseLogLevel(lcMessage);
             }
             
-            // MEMORY
+        // MEMORY/<controller | all>
         } else if(subtopics[0] == "memory") {
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info(_controllerName + ": free memory = %d", System.freeMemory());
             }
             
-            // QUERY
+        // QUERY/<controller | all>
         } else if(subtopics[0] == "query") {
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info(_controllerName + ": received query addressed to us");
@@ -340,7 +351,7 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 System.reset(RESET_NO_WAIT);
             }
             
-            // SET
+            // <device>/SET
         } else if(numTopics > 1 && subtopics[1] == "set") {             // patriot/<device>/set value
             Device *device = Device::get(subtopics[0]);
             if( device != NULL) {
@@ -350,7 +361,16 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 device->setValue(value);
                 sendAck(subtopics[0], "set", lcMessage);
             }
-            
+
+        // TEST/<controller | all>
+        } else if(subtopics[0] == "test") {
+            if(numTopics > 1 && (subtopics[1] == _controllerName || subtopics[1] == "all")) {
+                if(lcMessage == "mqtt") {
+                    Log.info(_controllerName + ": test disable MQTT");
+                    //TODO: diable MQTT
+                }
+            }
+
             // TIMEZONE
         } else if(subtopics[0] == "timezone") {
             // San Francisco/PST -8
