@@ -45,14 +45,6 @@ MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLoggin
     _mqttSubscribed = false;
     _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     connectMQTT();
-//    if(_mqtt->isConnected()) {
-//        Log.info("mqtt is connected, subscribing...");
-//        _lastMQTTtime = Time.now();
-//        _mqtt->subscribe("#");
-//        _mqttSubscribed = true;
-//    } else {
-//        Log.info("MQTT not connected yet");
-//    }
     
     if(mqttLogging) {
         LogManager::instance()->addHandler(this);
@@ -91,8 +83,6 @@ void MQTTManager::checkNetworkStatusPeriodically()
                     _lastMQTTtime = Time.now();
                     _mqtt->subscribe("#");
                     _mqttSubscribed = true;
-                } else {
-                    Log.info("MQTT is subscribed"); //DEBUG
                 }
             } else {
                 Log.info("MQTT not connected, retry...");
