@@ -23,46 +23,48 @@
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
-    _networkStatus = Disconnected;
     _controllerName = controllerName.toLowerCase();
-    _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
-    _lastAliveTime = Time.now() - MQTT_ALIVE_SECONDS;
+//    _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
     _logging = 0;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;
-    
+
+    // Setup LOGGING
     // We'll want to start with ALL whenever modifying code.
     // Use MQTT to switch to error when done testing or vs. a vs.
     _logLevel = LOG_LEVEL_ALL;     // See particle doc for options
     //TODO: by default, just the "app" category is used.
     //const LogCategoryFilters &filters) : LogHandler(level, filters)
-    
+
     // Setup blue LED for network status
     pinMode(D7, OUTPUT);    // Blue LED
     digitalWrite(D7, LOW);
-    
-    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
-    
+
+    // Setup MQTT
     Log.info("Connecting to MQTT");
+    _mqttSubscribed = false;
+    _mqtt =  new MQTT((char *)brokerIP.c_str(), 1883, IoT::mqttHandler);
     connectMQTT();
+//    if(_mqtt->isConnected()) {
+//        Log.info("mqtt is connected, subscribing...");
+//        _lastMQTTtime = Time.now();
+//        _mqtt->subscribe("#");
+//        _mqttSubscribed = true;
+//    } else {
+//        Log.info("MQTT not connected yet");
+//    }
     
-    if(_mqtt->isConnected()) {
-        Log.info("mqtt is connected, subscribing...");
-        _lastMQTTtime = Time.now();
-        _mqtt->subscribe("#");
-    } else {
-        Log.info("mqtt not connected yet");
-    }
-    
-    if(_mqttLogging) {
+    if(mqttLogging) {
         LogManager::instance()->addHandler(this);
         Log.info("MQTT log handler added");
     }
     
-    //Connect to cloud
+    // Setup PARTICLE cloud
     Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
-    
-    //TODO: detect loss of other controllers
+    // Reconnection will be performed automatically
+
+    // ALIVE TIMERS
+    _lastAliveTime = Time.now() - MQTT_ALIVE_SECONDS;
     _lastAliveFrontPanel = Time.now();
     _lastAliveLeftSlide = Time.now();
     _lastAliveRearPanel = Time.now();
@@ -74,8 +76,8 @@ void MQTTManager::loop()
 {
     _mqtt->loop();
     checkNetworkStatusPeriodically();
-    updateStatusPeriodically();
-    updateStatusLed();
+    sendAliveMsgPeriodically();
+    blinkStatusLed();
 }
 
 void MQTTManager::checkNetworkStatusPeriodically()
@@ -83,37 +85,35 @@ void MQTTManager::checkNetworkStatusPeriodically()
     if(Time.now() > _lastCheckTime + CHECK_STATUS_SECONDS) {
         _lastCheckTime = Time.now();
         if(WiFi.ready()) {
-            //Log.info("WiFi is ready");
             if(_mqtt->isConnected()) {
-                //Log.info("mqtt is connected");
-                if(Particle.connected()) {
-                    //Log.info("Cloud is connected");
-                    _networkStatus = CloudConnected;
-                } else {
-                    //Log.info("Cloud NOT connected");
-                    _networkStatus = MqttConnected;
-                }
-            } else {
-                Log.info("mqtt NOT connected so re-connecting");
-                _networkStatus = MqttStarting;
-                connectMQTT();
-                if(_mqtt->isConnected()) {
-                    Log.info("mqtt connected now, subscribing...");
+                if(_mqttSubscribed == false) {
+                    Log.info("mqtt connected, subscribing...");
                     _lastMQTTtime = Time.now();
                     _mqtt->subscribe("#");
+                    _mqttSubscribed = true;
                 } else {
-                    Log.info("mqtt still not re-connected");
+                    Log.info("MQTT is subscribed"); //DEBUG
                 }
+            } else {
+                Log.info("MQTT not connected, retry...");
+                connectMQTT();
             }
         } else {
             Log.info("WiFi NOT ready");
-            if(WiFi.connecting()) {
-                _networkStatus = WifiStarting;
-            } else {
-                _networkStatus = Disconnected;
-            }
         }
     }
+}
+
+bool MQTTManager::wifiConnected() {
+    return WiFi.ready();
+}
+
+bool MQTTManager::mqttConnected() {
+    return _mqtt->isConnected();
+}
+
+bool MQTTManager::cloudConnected() {
+    return Particle.connected();
 }
 
 /*void MQTTManager::manageNetwork()
@@ -183,7 +183,7 @@ void MQTTManager::connectMQTT() {
 }
 
 
-void MQTTManager::updateStatusPeriodically() {
+void MQTTManager::sendAliveMsgPeriodically() {
     if(Time.now() > _lastAliveTime + MQTT_ALIVE_SECONDS) {
         _lastAliveTime = Time.now();
         
@@ -546,13 +546,12 @@ void MQTTManager::log(const char *category, String message) {
 // Blinking yellow: DFU mode
 //
 // Blue LED
-// 5 blinks: Disconnected
-// 4 blinks: WiFi Starting to connect
-// 3 blinks: MQTT Starting to connect
-// 2 blinks: MQTT connected
-// 1 blink:  Cloud connected
+// Off: WiFi not connected
+// 3 blinks: WiFi and/or MQTT not connected
+// 2 blinks: MQTT connecting
+// 1 blink: MQTT connected and subscribed
 //
-void MQTTManager::updateStatusLed() {
+void MQTTManager::blinkStatusLed() {
     
     if(millis() >= _lastBlinkTimeMs + BLINK_INTERVAL) {
         
@@ -561,43 +560,29 @@ void MQTTManager::updateStatusLed() {
         
         int nextLed = LOW;
         
-        switch (_networkStatus)
-        {
-            case Disconnected:  // 5 short blinks
-                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5 || _blinkPhase == 7 || _blinkPhase == 9) {
-                    nextLed = HIGH;
-                } else if(_blinkPhase > 12) {
-                    _blinkPhase = 0;
-                }
-                break;
-            case WifiStarting:  // 4 short blinks
-                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5 || _blinkPhase == 7) {
-                    nextLed = HIGH;
-                } else if(_blinkPhase > 10) {
-                    _blinkPhase = 0;
-                }
-                break;
-            case MqttStarting:  // 3 short blinks off, on, off, on, off, off
-                if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5) {
-                    nextLed = HIGH;
-                } else if(_blinkPhase > 8) {
-                    _blinkPhase = 0;
-                }
-                break;
-            case MqttConnected: // 2 short blink off, on, off, off
-                if(_blinkPhase == 1 || _blinkPhase == 3) {
-                    nextLed = HIGH;
-                } else if(_blinkPhase > 8) {
-                    _blinkPhase = 0;
-                }
-                break;
-            case CloudConnected:    // 1 short blink
-                if(_blinkPhase == 1) {
-                    nextLed = HIGH;
-                } else if(_blinkPhase > 8) {
-                    _blinkPhase = 0;
-                }
-                break;
+        // 3 short blinks = WiFi and/or MQTT Not Connected
+        if(!wifiConnected() || !mqttConnected()) {
+            if(_blinkPhase == 1 || _blinkPhase == 3 || _blinkPhase == 5) {
+                nextLed = HIGH;
+            } else if(_blinkPhase > 8) {
+                _blinkPhase = 0;
+            }
+
+        // 2 short blinks = MQTT Connected but Not Subscribed
+        } else if(_mqttSubscribed == false) {
+            if(_blinkPhase == 1 || _blinkPhase == 3) {
+                nextLed = HIGH;
+            } else if(_blinkPhase > 8) {
+                _blinkPhase = 0;
+            }
+            
+        // 1 short blink = Connected and Subscribed
+        } else if(_mqttSubscribed == true) {
+            if(_blinkPhase == 1) {
+                nextLed = HIGH;
+            } else if(_blinkPhase > 8) {
+                _blinkPhase = 0;
+            }
         }
         digitalWrite(D7, nextLed);
     }
