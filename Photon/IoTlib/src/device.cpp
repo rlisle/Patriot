@@ -52,7 +52,7 @@ int  Device::getChangedValue() {
         return -1;
     }
     // Log here is ok because it only occurs when value changes
-    Log.info("Device "+_name+" getChangedValue() changed");
+    //Log.info("Device "+_name+" getChangedValue() changed");
     _previous = _value;
     return _value;
 }

@@ -50,8 +50,8 @@
 
 // Until mystery hangs understood, leave in automatic
 #define CONNECT_TO_CLOUD true
-//SYSTEM_THREAD(ENABLED);
-//SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
@@ -62,7 +62,7 @@ int voltage = 0;
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CONNECT_TO_CLOUD, MQTT_LOGGING);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     createDevices();
 }
 

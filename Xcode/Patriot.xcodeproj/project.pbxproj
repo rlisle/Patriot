@@ -43,6 +43,11 @@
 		2755615325CC1FAA00FEE0FF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		2755615425CC1FAA00FEE0FF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		2755DBE4259DFA3900971ABA /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = device.cpp; path = ../Photon/IoTlib/src/device.cpp; sourceTree = "<group>"; };
+		27691AF52A2373690094689F /* awning.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = awning.ino; path = ../Photon/Plugins/Awning/examples/awning.ino; sourceTree = "<group>"; };
+		27691AF62A23738D0094689F /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Awning/library.properties; sourceTree = "<group>"; };
+		27691AF72A23738D0094689F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../Photon/Plugins/Awning/LICENSE; sourceTree = "<group>"; };
+		27691AF82A2373A10094689F /* PatriotAwning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotAwning.h; path = ../Photon/Plugins/Awning/src/PatriotAwning.h; sourceTree = "<group>"; };
+		27691AF92A2373A10094689F /* PatriotAwning.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotAwning.cpp; path = ../Photon/Plugins/Awning/src/PatriotAwning.cpp; sourceTree = "<group>"; };
 		2769F3C9272963B400E8FE57 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Checklist/library.properties; sourceTree = "<group>"; };
 		2769F3CA2729644400E8FE57 /* PatriotChecklist.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotChecklist.cpp; path = ../Photon/Plugins/Checklist/src/PatriotChecklist.cpp; sourceTree = "<group>"; };
 		2769F3CB2729644400E8FE57 /* PatriotChecklist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotChecklist.h; path = ../Photon/Plugins/Checklist/src/PatriotChecklist.h; sourceTree = "<group>"; };
@@ -192,6 +197,18 @@
 				2737F7EC28E8984100408830 /* src */,
 			);
 			name = NCD16LightTest;
+			sourceTree = "<group>";
+		};
+		27691AF42A23734D0094689F /* Awning */ = {
+			isa = PBXGroup;
+			children = (
+				27691AF92A2373A10094689F /* PatriotAwning.cpp */,
+				27691AF82A2373A10094689F /* PatriotAwning.h */,
+				27691AF62A23738D0094689F /* library.properties */,
+				27691AF72A23738D0094689F /* LICENSE */,
+				27691AF52A2373690094689F /* awning.ino */,
+			);
+			name = Awning;
 			sourceTree = "<group>";
 		};
 		2769F3C82729635500E8FE57 /* Checklist */ = {
@@ -379,6 +396,7 @@
 		E4849C742566B48000A39734 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				27691AF42A23734D0094689F /* Awning */,
 				279E08C7295DE4B60059951F /* ShellyPower */,
 				2751BD46294755EE00FA360C /* Voltage */,
 				2769F3C82729635500E8FE57 /* Checklist */,

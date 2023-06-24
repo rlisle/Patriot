@@ -18,8 +18,6 @@
 #include "Particle.h"
 #include "MQTT.h"
 
-enum NetworkStatus { Starting, Wifi, Mqtt };
-
 class MQTTManager : public LogHandler
 {
 public:
@@ -39,32 +37,35 @@ private:
     String    _controllerName;
     long      _lastMQTTtime;
     long      _lastAliveTime;
-    NetworkStatus _networkStatus;
+    long      _lastCheckTime;
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
-    
-    bool      _mqttLogging;
+//    bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
+    //TODO: convert to extensible dictionary
+    long      _lastAliveFrontPanel;
+    long      _lastAliveLeftSlide;
+    long      _lastAliveRearPanel;
+    long      _lastAliveRonTest;
+    bool    _mqttSubscribed;
 
-    void      doConnect();
+    // Status
+    bool      wifiConnected();
+    bool      mqttConnected();
+    bool      cloudConnected();
+    
+    void      manageNetwork();
+    void      sendAliveMsgPeriodically();
+    void      blinkStatusLed();
+    void      connectMQTT();
+
     void      (*_callback)(char*,uint8_t*,unsigned int);
     int       parseValue(String message);
     String    parseDeviceName(String subtopic);
     void      parseLogLevel(String message);
-    void      sendAlivePeriodically();
-    void      updateStatusLed();
-    void      manageNetwork();
+    void      checkNetworkStatusPeriodically();
     void      doReboot();
     void      sendAck(String deviceName, String command, String message);
-
-
-    
-    //DEBUG
-    long _lastAliveFrontPanel;
-    long _lastAliveLeftSlide;
-    long _lastAliveRearPanel;
-    long _lastAliveRonTest;
-    
     
     // LogHandler methods
     const char* extractFileName(const char *s);

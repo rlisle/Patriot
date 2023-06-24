@@ -2,6 +2,7 @@
  * RonTest Controller
  *
  * Description: This sketch is used for experimenting and testing
+ * Currently testing Awning and Power
  *
  * Author: Ron Lisle
  *
@@ -11,64 +12,35 @@
  */
 
 #include <IoT.h>
-//#include <PatriotCurtain.h>
-//#include <PatriotNCD4Switch.h>
-//#include <PatriotNCD4Relay.h>
-//#include <PatriotNCD8Switch.h>
+#include <PatriotCurtain.h>
 #include <PatriotPower.h>
+#include <PatriotAwning.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
-
-// Running without cloud means Photon must be put into Listen mode to flash
-#define CLOUD_ENABLED true
 
 //While debugging, use serial and disable MQTT logging if needed
 SerialLogHandler logHandler;
 #define MQTT_LOGGING false
 
-//#define ADDRESS 1      // PWM board address A0 jumper set
-//#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
-//#define I2CDIO8 0x20   // 8xGPIO address (no jumpers)
+#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
-//Using Threads may cause problems with other libraries, etc.
-//So not doing it anymore
-//SYSTEM_THREAD(ENABLED);
-//SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
-//Used to determine I2C addresses for debugging I2C boards
-//unsigned long lastScan = 0;
-//unsigned long scanInterval = 15000;
-
-//unsigned long lastVScan = 0;
-//unsigned long vScanInterval = 5000;
-
-//int sleeping = 0;
-//int switch1 = 0;
 int amps = 0;
+int ampsThreshold = 10;     // Report changes > 10 amps
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);   // or ANT_EXTERNAL
     WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, CLOUD_ENABLED, MQTT_LOGGING);
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
-//    Device::add(new Device("sleeping", "All"));
-
-    // I2CDIO8 - 8 GPIO I2C board $33
-//    Device::add(new NCD8Switch(I2CDIO8, 0, "Switch1", "Office" ));
-//    Device::add(new NCD8Switch(I2CDIO8, 1, "Switch2", "Office" ));
-//    Device::add(new NCD8Switch(I2CDIO8, 2, "Switch3", "Office" ));
-//    Device::add(new NCD8Switch(I2CDIO8, 3, "Switch4", "Office" ));
-//    Device::add(new NCD8Switch(I2CDIO8, 4, "Switch5", "Office" ));
-//    Device::add(new NCD8Switch(I2CDIO8, 5, "Switch6", "Office" ));
-//    Device::add(new NCD8Switch(I2CDIO8, 6, "Switch7", "Office" ));
-//    Device::add(new NCD8Switch(I2CDIO8, 7, "Switch8", "Office" ));
-
     // I2CIO4R4G5LE board
     // 4 Relays
-//    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
-    
+    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
+    Device::add(new Awning(I2CR4IO4, 2, "TestAwning", "Outside"));     // 2x Relays: 2, 3
+
     // 4 GPIO
 //    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
 
@@ -80,51 +52,23 @@ void setup() {
 void loop() {
     IoT::loop();
     
-//    handleSleeping();
-//    handleSwitch1();
 //    scanI2Caddresses();
     handleAmps();
 
-//    if(millis() > lastVScan + vScanInterval){
-//        lastVScan = millis();
-//        handleVoltageMonitor();
-//    }
 }
-
-//void handleVoltageMonitor() {
-//    int volts = analogRead(A0);
-//    IoT::publishValue("volts", volts);
-//}
 
 void handleAmps() {
     int ampsChanged = Device::getChangedValue("amps");
     if( ampsChanged != -1 ) {
-        Log.info("amps changed %d",ampsChanged);
+        if(ampsChanged >= amps + 10) {
+            Log.info("amps increased to %d",ampsChanged);
+        }
+        if(ampsChanged <= amps - 10) {
+            Log.info("amps decreased to %d",ampsChanged);
+        }
+        amps = ampsChanged;
     }
 }
-
-//void handleSleeping() {
-//
-//    int sleepingChanged = Device::getChangedValue("sleeping");
-//    if( sleepingChanged != -1 ) {
-//
-//        Log.info("sleeping has changed %d",sleepingChanged);
-//
-//        sleeping = sleepingChanged;
-//    }
-//}
-
-//void handleSwitch1() {
-//
-//    int switch1Changed = Device::getChangedValue("switch1");
-//    if( switch1Changed != -1 ) {
-//
-//        Log.info("Switch1 has changed %d",switch1Changed);
-//
-//        switch1 = switch1Changed;
-//    }
-//}
-
 
 // Diagnostic Functions
 // Search all I2C addresses every 15 seconds -
