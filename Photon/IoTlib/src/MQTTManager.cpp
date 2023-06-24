@@ -84,6 +84,7 @@ void MQTTManager::checkNetworkStatusPeriodically()
                     _mqtt->subscribe("#");
                     _mqttSubscribed = true;
                 }
+                
             } else {
                 Log.info("MQTT not connected, retry...");
                 connectMQTT();
