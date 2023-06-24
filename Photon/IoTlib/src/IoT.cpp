@@ -25,9 +25,14 @@
 #include "IoT.h"
 #include "constants.h"
 
-// Static Variables
+// Global & Static Variables
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
+int          outOfMemory = -1;
+
+void outOfMemoryHandler(system_event_t event, int param) {
+    outOfMemory = param;
+}
 
 /**
  * Begin gets everything going.
@@ -36,6 +41,7 @@ MQTTManager* IoT::_mqttManager = NULL;
  */
 void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
 {
+    System.on(out_of_memory, outOfMemoryHandler);
     Time.zone(-6);              // CST
     handleDaylightSavings();
     
@@ -53,6 +59,14 @@ void IoT::loop()
 {
     Device::loopAll();
     _mqttManager->loop();
+    
+    if (outOfMemory >= 0) {
+        // An out of memory condition occurred - reset device.
+        Log.info("out of memory occurred size=%d", outOfMemory);
+        delay(100);
+
+        System.reset();
+    }
 }
 
 /**
