@@ -29,6 +29,7 @@ SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
 int amps = 0;
+int ampsThreshold = 10;     // Report changes > 10 amps
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);   // or ANT_EXTERNAL
@@ -59,7 +60,13 @@ void loop() {
 void handleAmps() {
     int ampsChanged = Device::getChangedValue("amps");
     if( ampsChanged != -1 ) {
-        Log.info("amps changed %d",ampsChanged);
+        if(ampsChanged >= amps + 10) {
+            Log.info("amps increased to %d",ampsChanged);
+        }
+        if(ampsChanged <= amps - 10) {
+            Log.info("amps decreased to %d",ampsChanged);
+        }
+        amps = ampsChanged;
     }
 }
 
