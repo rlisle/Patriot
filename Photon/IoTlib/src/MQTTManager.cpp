@@ -16,10 +16,10 @@
 #include "IoT.h"
 #include "constants.h"
 
-#define MQTT_TIMEOUT_SECONDS 60*16
-#define MQTT_ALIVE_SECONDS 60*5
+#define MQTT_TIMEOUT_SECONDS 90 // normally 60*6
+#define MQTT_ALIVE_SECONDS 60   // normally 60*5
 #define CHECK_STATUS_SECONDS 5
-#define BLINK_INTERVAL  250
+#define BLINK_INTERVAL  250     // 1/4 second
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
@@ -83,6 +83,13 @@ void MQTTManager::checkNetworkStatusPeriodically()
                     _lastMQTTtime = Time.now();
                     _mqtt->subscribe("#");
                     _mqttSubscribed = true;
+                } else {
+                    // If no MQTT received within timeout period then reboot
+                    if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
+                        Log.error("MQTT Timeout.");
+                        delay(1s);
+                        doReboot();
+                    }
                 }
                 
             } else {
@@ -199,17 +206,6 @@ bool MQTTManager::publish(String topic, String message, bool retain) {
         return true;
     } else {
         Log.warn("publish while MQTT not connected: " + topic + ", " + message);
-
-        //DEBUG: we shouldn't be getting here...
-//        _mqtt->connect(_controllerName + "Id");
-//        if(_mqtt->isConnected()) {
-//            Log.info("mqtt connected now, subscribing...");
-//            _lastMQTTtime = Time.now();
-//            _mqtt->subscribe("#");
-//        } else {
-//            Log.info("mqtt still not connected yet");
-//        }
-
     }
     return false;
 }
@@ -223,7 +219,6 @@ void MQTTManager::parseMQTTMessage(String lcTopic, String lcMessage)
     if(lcTopic.startsWith(kPublishName)) {
         parsePatriotMessage(lcTopic.substring(8), lcMessage);   // Skip over "patriot/"
     }
-    //TODO: if we wanted, we could do something with log messages, etc.
 }
 
 // Refer to Note "MQTT - Patriot"
