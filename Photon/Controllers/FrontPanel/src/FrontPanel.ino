@@ -51,7 +51,7 @@
 // Until mystery hangs understood, leave in automatic
 #define CONNECT_TO_CLOUD true
 SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_MODE(AUTOMATIC);
 
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);

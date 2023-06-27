@@ -40,7 +40,6 @@ private:
     long      _lastCheckTime;
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
-//    bool      _mqttLogging;
     int       _logging; // a counting semaphore to prevent recursion
     //TODO: convert to extensible dictionary
     long      _lastAliveFrontPanel;

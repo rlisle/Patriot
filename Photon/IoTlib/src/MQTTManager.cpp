@@ -114,60 +114,6 @@ bool MQTTManager::cloudConnected() {
     return Particle.connected();
 }
 
-/*void MQTTManager::manageNetwork()
-{
-    switch (_networkStatus)
-    {
-        case Disconnected:
-            WiFi.on();
-            WiFi.connect();
-            _networkStatus = WifiStarting;
-            break;
-            
-        case WifiStarting:
-            if(WiFi.ready()) {
-                connectMQTT();
-                _networkStatus = MqttStarting;
-            }
-            break;
-            
-        case MqttStarting:
-            if(_mqtt->isConnected()) {
-                _mqtt->subscribe("#");
-                _networkStatus = MqttConnected;
-                Log.info("Connecting to Particle");
-                Particle.connect();
-                Log.info("MQTT connected");
-            }
-            break;
-            
-        case MqttConnected:
-            if(Particle.connected()) {
-                Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
-                _networkStatus = CloudConnected;
-                Log.info("Cloud connected, subscribing...");
-            } else {
-                Log.info("Cloud enabled but particle not connected");
-            }
-            break;
-            
-        case CloudConnected:
-            //TODO: Once connected, check for disconnect, etc.
-            
-            break;
-            
-        default: // unknown state
-            Log.info("Unknown network status");
-            break;
-    }
-
-    // If no MQTT received within timeout period then reboot
-    if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
-        Log.error("MQTT Timeout.");
-        doReboot();
-    }
-}*/
-
 void MQTTManager::connectMQTT() {
     const char *user = NULL;
     const char *pw = NULL;
@@ -194,6 +140,7 @@ void MQTTManager::sendAliveMsgPeriodically() {
 void MQTTManager::doReboot() {
     Log.warn("Rebooting...");
     Device::resetAll();
+    delay(200);
     System.reset(RESET_NO_WAIT);
 }
 
