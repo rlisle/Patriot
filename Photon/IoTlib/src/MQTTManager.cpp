@@ -75,7 +75,6 @@ void MQTTManager::loop()
 void MQTTManager::checkNetworkStatusPeriodically()
 {
     if(Time.now() > _lastCheckTime + CHECK_STATUS_SECONDS) {
-        Serial.println("Checking network status");
         _lastCheckTime = Time.now();
         if(WiFi.ready()) {
             if(_mqtt->isConnected()) {
@@ -149,7 +148,6 @@ void MQTTManager::doReboot() {
  * Send MQTT data
  */
 bool MQTTManager::publish(String topic, String message, bool retain) {
-    Serial.println("publish: "+topic+", "+message);
     if(_mqtt->isConnected() && WiFi.ready()) {
         _mqtt->publish(topic, (const uint8_t*)message.c_str(), message.length(), retain, retain ? MQTT::QOS1 : MQTT::QOS0);
         return true;
@@ -176,14 +174,11 @@ void MQTTManager::parseMQTTMessage(String lcTopic, String lcMessage)
 // Refer to Note "MQTT - Patriot"
 void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
 {
-    Serial.println("Parse patriot message: "+lcTopic+" "+lcMessage);
     String subtopics[5];
     int start = 0;
-    int end = lcTopic.indexOf('/'); // Might be -1 if only 1 subtopic
+    int end = lcTopic.indexOf('/');
     int numTopics = 0;
-    if(end <= 0) {      // Uh-oh, this is valid if only a single subtopic
-        Serial.println("Single subtopic: "+lcTopic);
-    } else {
+    if(end > 0) { // Might be -1 if only 1 subtopic
         do {
             subtopics[numTopics] = lcTopic.substring(start, end);
             start = end+1;
@@ -194,9 +189,6 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
     subtopics[numTopics++] = lcTopic.substring(start);  // Last one
     
     if(numTopics > 0) {
-
-        Serial.println("numTopics > 0");
-
         // ACK/<device>/<command>
         if(subtopics[0] == "ack") {                         // patriot/ack/<device>/<command>
             // Ignore Acknowledgements
@@ -284,11 +276,8 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             
         // QUERY/<controller | all>
         } else if(subtopics[0] == "query") {
-            Serial.println("Query "+lcMessage);
-
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info(_controllerName + ": received query addressed to us");
-                Serial.println("Calling publishStates");
                 Device::publishStates();
             }
             
