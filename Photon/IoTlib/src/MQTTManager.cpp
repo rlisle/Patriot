@@ -16,8 +16,8 @@
 #include "IoT.h"
 #include "constants.h"
 
-#define MQTT_TIMEOUT_SECONDS 60*6   // After 6 minutes
-#define MQTT_ALIVE_SECONDS 60*5     // Every 5 minutes
+#define MQTT_TIMEOUT_SECONDS 60*17  // After 17 minutes
+#define MQTT_ALIVE_SECONDS 60*15    // Every 15 minutes
 #define CHECK_STATUS_SECONDS 60     // Every minute
 #define BLINK_INTERVAL  250         // 1/4 second
 
