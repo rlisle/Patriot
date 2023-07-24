@@ -16,10 +16,10 @@
 #include "IoT.h"
 #include "constants.h"
 
-#define MQTT_TIMEOUT_SECONDS 60*16
-#define MQTT_ALIVE_SECONDS 60*5
-#define CHECK_STATUS_SECONDS 5
-#define BLINK_INTERVAL  250
+#define MQTT_TIMEOUT_SECONDS 60*17  // After 17 minutes
+#define MQTT_ALIVE_SECONDS 60*15    // Every 15 minutes
+#define CHECK_STATUS_SECONDS 60     // Every minute
+#define BLINK_INTERVAL  250         // 1/4 second
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
@@ -83,6 +83,13 @@ void MQTTManager::checkNetworkStatusPeriodically()
                     _lastMQTTtime = Time.now();
                     _mqtt->subscribe("#");
                     _mqttSubscribed = true;
+                } else {
+                    // If no MQTT received within timeout period then reboot
+                    if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
+                        Log.error("MQTT Timeout.");
+                        delay(1s);
+                        doReboot();
+                    }
                 }
                 
             } else {
@@ -106,60 +113,6 @@ bool MQTTManager::mqttConnected() {
 bool MQTTManager::cloudConnected() {
     return Particle.connected();
 }
-
-/*void MQTTManager::manageNetwork()
-{
-    switch (_networkStatus)
-    {
-        case Disconnected:
-            WiFi.on();
-            WiFi.connect();
-            _networkStatus = WifiStarting;
-            break;
-            
-        case WifiStarting:
-            if(WiFi.ready()) {
-                connectMQTT();
-                _networkStatus = MqttStarting;
-            }
-            break;
-            
-        case MqttStarting:
-            if(_mqtt->isConnected()) {
-                _mqtt->subscribe("#");
-                _networkStatus = MqttConnected;
-                Log.info("Connecting to Particle");
-                Particle.connect();
-                Log.info("MQTT connected");
-            }
-            break;
-            
-        case MqttConnected:
-            if(Particle.connected()) {
-                Particle.subscribe(kPublishName, IoT::subscribeHandler, MY_DEVICES);
-                _networkStatus = CloudConnected;
-                Log.info("Cloud connected, subscribing...");
-            } else {
-                Log.info("Cloud enabled but particle not connected");
-            }
-            break;
-            
-        case CloudConnected:
-            //TODO: Once connected, check for disconnect, etc.
-            
-            break;
-            
-        default: // unknown state
-            Log.info("Unknown network status");
-            break;
-    }
-
-    // If no MQTT received within timeout period then reboot
-    if(Time.now() > _lastMQTTtime + MQTT_TIMEOUT_SECONDS) {
-        Log.error("MQTT Timeout.");
-        doReboot();
-    }
-}*/
 
 void MQTTManager::connectMQTT() {
     const char *user = NULL;
@@ -187,6 +140,7 @@ void MQTTManager::sendAliveMsgPeriodically() {
 void MQTTManager::doReboot() {
     Log.warn("Rebooting...");
     Device::resetAll();
+    delay(200);
     System.reset(RESET_NO_WAIT);
 }
 
@@ -199,17 +153,6 @@ bool MQTTManager::publish(String topic, String message, bool retain) {
         return true;
     } else {
         Log.warn("publish while MQTT not connected: " + topic + ", " + message);
-
-        //DEBUG: we shouldn't be getting here...
-//        _mqtt->connect(_controllerName + "Id");
-//        if(_mqtt->isConnected()) {
-//            Log.info("mqtt connected now, subscribing...");
-//            _lastMQTTtime = Time.now();
-//            _mqtt->subscribe("#");
-//        } else {
-//            Log.info("mqtt still not connected yet");
-//        }
-
     }
     return false;
 }
@@ -221,9 +164,11 @@ void MQTTManager::parseMQTTMessage(String lcTopic, String lcMessage)
     _lastMQTTtime = Time.now();
 
     if(lcTopic.startsWith(kPublishName)) {
-        parsePatriotMessage(lcTopic.substring(8), lcMessage);   // Skip over "patriot/"
+        String subtopics = lcTopic.substring(8);                    // Skip over "patriot/"
+        if(subtopics.length() > 0) {                                // Must have at least 1 subtopic
+            parsePatriotMessage(lcTopic.substring(8), lcMessage);
+        }
     }
-    //TODO: if we wanted, we could do something with log messages, etc.
 }
 
 // Refer to Note "MQTT - Patriot"
@@ -233,17 +178,17 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
     int start = 0;
     int end = lcTopic.indexOf('/');
     int numTopics = 0;
-    if(end <= 0) return;    // guard agains just "patriot"
-    do {
-        subtopics[numTopics] = lcTopic.substring(start, end);
-        start = end+1;
-        end = lcTopic.indexOf('/', start);
-        numTopics++;
-    } while(numTopics < 4 && end > 0);
+    if(end > 0) { // Might be -1 if only 1 subtopic
+        do {
+            subtopics[numTopics] = lcTopic.substring(start, end);
+            start = end+1;
+            end = lcTopic.indexOf('/', start);
+            numTopics++;
+        } while(numTopics < 4 && end > 0);
+    }
     subtopics[numTopics++] = lcTopic.substring(start);  // Last one
     
     if(numTopics > 0) {
-        
         // ACK/<device>/<command>
         if(subtopics[0] == "ack") {                         // patriot/ack/<device>/<command>
             // Ignore Acknowledgements

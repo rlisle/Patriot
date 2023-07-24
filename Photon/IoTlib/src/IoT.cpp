@@ -63,8 +63,13 @@ void IoT::loop()
     if (outOfMemory >= 0) {
         // An out of memory condition occurred - reset device.
         Log.info("out of memory occurred size=%d", outOfMemory);
-        delay(100);
-
+        delay(500);
+        System.reset();
+    }
+    
+    if(Time.hour() == 3 && System.uptime() > 24*60*60) {
+        Log.info("Performing daily reboot");
+        delay(500);
         System.reset();
     }
 }
