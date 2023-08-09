@@ -6,21 +6,29 @@ Author: Ron Lisle
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
-    3. "particle flash LeftSlide"
+    3. "particle flash left_slide2"
 
-  I/O Map
-    D3 HR24 sensor S1
-    D4 HR24 sensor S2
-    D6 DHT11/22
+  New Photon 2 I/O Map
+    A2 LED1 PWM output
+    A5 LED2 PWM output
+    S4 PIR sensor
  
+  Optional I/O
+     2nd PIR
+ 
+  Previous I/O Map
     Tx HR24 sensor Rx
     Rx HR24 sensor Tx
- 
     A0 PIR sensor
-    A3 Light sensor
     A5 LED 2 PWM output
-    A6 (DAC) Voltage monitor R ladder
     A7 (WKP) LED1 PWM output
+ 
+  Terminal Strip
+    1 +3.3v (top)
+    2 Gnd
+    3 +12v
+    4 -LED1
+    5 -LED2
  
   Using SYSTEM_THREAD(ENABLED) is recommended,
   and runs network on separate theread.
@@ -28,13 +36,16 @@ Author: Ron Lisle
   manually connect, but everything is automatic
   after that. This allows running loop and MQTT
   even if no internet available
+ 
+ History:
+   8/6/23 Convert to Photon 2, remove Hue
  */
 
 #include <IoT.h>
 #include <PatriotLight.h>
 #include <PatriotPIR.h>
 //#include <PatriotMR24.h>
-#include <HueLight.h>
+//#include <HueLight.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
 #define CONTROLLER_NAME "LeftSlide"
@@ -48,7 +59,7 @@ SYSTEM_MODE(AUTOMATIC);
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
-byte hueServer[4] = { 192, 168, 50, 39 };   // Changed 10/1/22
+//byte hueServer[4] = { 192, 168, 50, 39 };   // Changed 10/1/22
 
 //bool couchPresenceFiltered = 0;
 //long lastCouchPresence = 0;

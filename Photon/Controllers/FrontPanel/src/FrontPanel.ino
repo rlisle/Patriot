@@ -4,6 +4,8 @@
   Author: Ron Lisle
   Date: 9/16/17
   
+  Converting to Photon 2 - "front_panel2"
+ 
   Switch wiring
   Top left:       tape label "Cabinet" -> D3 green -> gold
   Top right:     no label (right trim) #4 yellow
@@ -22,9 +24,11 @@
     1. Edit this code
     2. Update IoT and plugins if needed
     3. Put Photon into listen mode using buttons
-    4. "particle flash FrontPanel" or "ffp"
+    4. "particle flash front_panel2" or "ffp" (was FrontPanel)
  
-  Photon is 430033000f47343339383037 FrontPanel
+  Photon 2 is ??? front_panel2
+ 
+  Photon was 430033000f47343339383037 FrontPanel
   RSSI = -66dBm  on 10/1/22
  
  Using SYSTEM_THREAD(ENABLED) is recommended,
@@ -68,6 +72,7 @@ void setup() {
 
 void createDevices() {
 
+    //TODO: Replace all lights with NCD16Lights
     // Inside Lights
     Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", "Kitchen", 2));
     Device::add(new NCD8Light(ADDRESS, 2, "Sink", "Kitchen", 2));
@@ -82,9 +87,10 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
 
+    //TODO: I/O pins not available. Will need a separate NCD board
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)
-    Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
+//    Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
     
 //    Device::add(new Power("Power", "Status"));
 
