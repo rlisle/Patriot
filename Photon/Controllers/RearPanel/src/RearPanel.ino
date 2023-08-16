@@ -5,7 +5,11 @@ Author: Ron Lisle
 
  The controller is located in the office above the piano.
  
- Photon pin assignments
+ Photon 2 pin assignments
+ - No Photon 2 pins used directly.
+ - Use I2C for all I/O.
+ 
+ (old) Photon pin assignments
  - A2-A4 future 12v monitor ?
  - A5 PIR
  
@@ -22,13 +26,22 @@ Author: Ron Lisle
  and runs network on separate theread.
  Using SYSTEM_MODE(AUTOMATIC)
 
+ Migration from Photon 1 to Photon 2:
+ 1. Remove 12v power and disconnect current I2CR4IO4 board - note/photo wires
+ 2. Remove SCT board - note wires
+ 3. Install IoTR4IO4 with Photon 2 and adapter and USB power converter
+ 4. Reconnect wires to IoTR4IO4 board
+ 5. Reprogram/configure Address
+ 6. Reprogram FIR to use R4IO4
+ 
  */
 #include <IoT.h>
 #include <PatriotNCD8Light.h>
 #include <PatriotCurtain.h>
 #include <PatriotNCD4Switch.h>
 #include <PatriotNCD4Relay.h>
-#include <PatriotPIR.h>
+//#include <PatriotPIR.h>
+//#include <PatriotNCD4PIR.h>
 //#include <PatriotAwning.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 
@@ -65,11 +78,11 @@ void createDevices() {
     // Device::add(new Awning(I2CR4IO4, 2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
-    
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
-    
-    // Photon I/O
-    Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+    //Device::add(new NCD4PIR(I2CR4IO4, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+
+    // (deprecated) Photon I/O
+    //Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // I2CPWM8W80C board
     // 8 Dimmers
@@ -80,7 +93,8 @@ void createDevices() {
     Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
     Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    
+    //Device::add(new NCD8Light(ADDRESS, 7, "Unused", "Office", 2));
+
     // Pseudo Devices
     Device::add(new Device("AnyoneHome", "All", 'X'));
     Device::add(new Device("RonHome", "All", 'X'));

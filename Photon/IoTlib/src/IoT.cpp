@@ -48,7 +48,30 @@ void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
     // Expose particle.io variables
     Device::expose();
     
+    // Start H/W Watchdog
+    startWatchdog();
+    
+    // Start MQTT
     _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
+}
+
+/**
+ * Hardware Watchdog
+ */
+void IoT::startWatchdog()
+{
+    // Getting capabiltiies
+    WatchdogInfo info;
+    Watchdog.getInfo(info);
+
+    // Get the capabilities that are always enabled
+    WatchdogCaps mandatoryCaps = info.mandatoryCapabilities();
+
+    // Get the capabilities that can be turned off
+    WatchdogCaps optionalCaps = info.capabilities();
+    
+    Watchdog.init(WatchdogConfiguration().timeout(5m));
+    Watchdog.start();
 }
 
 /**
@@ -67,11 +90,15 @@ void IoT::loop()
         System.reset();
     }
     
+    //TODO: Remove this if watchdog works better
     if(Time.hour() == 3 && System.uptime() > 24*60*60) {
         Log.info("Performing daily reboot");
         delay(500);
         System.reset();
     }
+    
+    Watchdog.refresh();
+    
 }
 
 /**
