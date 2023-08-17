@@ -53,6 +53,8 @@ public:
     static void begin(String brokerIP, String controllerName, bool mqttLogging);
     
     static String controllerName() { return _mqttManager->controllerName(); };
+    
+    static void startWatchdog();
 
     /**
      * Publish a message to MQTT

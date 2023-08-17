@@ -70,7 +70,7 @@ void IoT::startWatchdog()
     // Get the capabilities that can be turned off
     WatchdogCaps optionalCaps = info.capabilities();
     
-    Watchdog.init(WatchdogConfiguration().timeout(5m));
+    Watchdog.init(WatchdogConfiguration().timeout(300s));
     Watchdog.start();
 }
 
