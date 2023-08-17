@@ -72,8 +72,8 @@ void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
     
     //WiFi.useDynamicIP();
-//    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
-//    createDevices();
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+    createDevices();
     
 
 }
@@ -102,61 +102,60 @@ void createDevices() {
 //    Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
 //    //Device::add(new NCD8Light(ADDRESS, 7, "Unused", "Office", 2));
 //
-//    // Pseudo Devices
-//    Device::add(new Device("AnyoneHome", "All", 'X'));
-//    Device::add(new Device("RonHome", "All", 'X'));
-//    Device::add(new Device("ShelleyHome", "All", 'X'));
-//    Device::add(new Device("Nighttime", "All", 'X'));
-//
-//    // Checklist Items -  - define for every non-automated checklist item
-//    
-//    // Pre-Trip checklist items
-//    Device::add(new Device("startList", "All", 'X'));
-//    Device::add(new Device("checkTires", "All", 'X'));
-//    Device::add(new Device("dumpTanks", "All", 'X'));
-//    Device::add(new Device("fillWater", "All", 'X'));
-//    Device::add(new Device("fuel", "All", 'X'));
-//    Device::add(new Device("fillPropane", "All", 'X'));
-//    Device::add(new Device("checkRoof", "All", 'X'));
-//    Device::add(new Device("checkUnderRV", "All", 'X'));
-//    Device::add(new Device("planRoute", "All", 'X'));
-//
-//    // Depart checklist items
-//    Device::add(new Device("bedSlideIn", "All", 'X'));
-//    Device::add(new Device("LRSlideIn", "All", 'X'));
-//    Device::add(new Device("rampAwningIn", "All", 'X'));
-//    Device::add(new Device("closeRamp", "All", 'X'));
-//    Device::add(new Device("rearAwningIn", "All", 'X'));
-//    Device::add(new Device("latchHandles", "All", 'X'));
-//    Device::add(new Device("frontAwningIn", "All", 'X'));
-//    Device::add(new Device("discPropane", "All", 'X'));
-//    Device::add(new Device("waterHeaterOff", "All", 'X'));
-//    Device::add(new Device("hitchTruck", "All", 'X'));
-//    Device::add(new Device("raiseLG", "All", 'X'));
-//    Device::add(new Device("discPower", "All", 'X'));
-//
-//    // Arrive checklist items
-//    Device::add(new Device("connectPower", "All", 'X'));
-//    Device::add(new Device("lowerLG", "All", 'X'));
-//    Device::add(new Device("bedSlideOut", "All", 'X'));
-//    Device::add(new Device("LRSlidesOut", "All", 'X'));
-//    Device::add(new Device("openRamp", "All", 'X'));
-//    Device::add(new Device("rampAwningOut", "All", 'X'));
-//    Device::add(new Device("stepsDown", "All", 'X'));
-//    Device::add(new Device("rearAwningOut", "All", 'X'));
-//    Device::add(new Device("frontAwningOut", "All", 'X'));
-//    Device::add(new Device("propaneOn", "All", 'X'));
-//    Device::add(new Device("waterHose", "All", 'X'));
-//    Device::add(new Device("waterHeaterOn", "All", 'X'));
-//    Device::add(new Device("sewerHose", "All", 'X'));
+    // Pseudo Devices
+    Device::add(new Device("AnyoneHome", "All", 'X'));
+    Device::add(new Device("RonHome", "All", 'X'));
+    Device::add(new Device("ShelleyHome", "All", 'X'));
+    Device::add(new Device("Nighttime", "All", 'X'));
+
+    // Checklist Items -  - define for every non-automated checklist item
+    
+    // Pre-Trip checklist items
+    Device::add(new Device("startList", "All", 'X'));
+    Device::add(new Device("checkTires", "All", 'X'));
+    Device::add(new Device("dumpTanks", "All", 'X'));
+    Device::add(new Device("fillWater", "All", 'X'));
+    Device::add(new Device("fuel", "All", 'X'));
+    Device::add(new Device("fillPropane", "All", 'X'));
+    Device::add(new Device("checkRoof", "All", 'X'));
+    Device::add(new Device("checkUnderRV", "All", 'X'));
+    Device::add(new Device("planRoute", "All", 'X'));
+
+    // Depart checklist items
+    Device::add(new Device("bedSlideIn", "All", 'X'));
+    Device::add(new Device("LRSlideIn", "All", 'X'));
+    Device::add(new Device("rampAwningIn", "All", 'X'));
+    Device::add(new Device("closeRamp", "All", 'X'));
+    Device::add(new Device("rearAwningIn", "All", 'X'));
+    Device::add(new Device("latchHandles", "All", 'X'));
+    Device::add(new Device("frontAwningIn", "All", 'X'));
+    Device::add(new Device("discPropane", "All", 'X'));
+    Device::add(new Device("waterHeaterOff", "All", 'X'));
+    Device::add(new Device("hitchTruck", "All", 'X'));
+    Device::add(new Device("raiseLG", "All", 'X'));
+    Device::add(new Device("discPower", "All", 'X'));
+
+    // Arrive checklist items
+    Device::add(new Device("connectPower", "All", 'X'));
+    Device::add(new Device("lowerLG", "All", 'X'));
+    Device::add(new Device("bedSlideOut", "All", 'X'));
+    Device::add(new Device("LRSlidesOut", "All", 'X'));
+    Device::add(new Device("openRamp", "All", 'X'));
+    Device::add(new Device("rampAwningOut", "All", 'X'));
+    Device::add(new Device("stepsDown", "All", 'X'));
+    Device::add(new Device("rearAwningOut", "All", 'X'));
+    Device::add(new Device("frontAwningOut", "All", 'X'));
+    Device::add(new Device("propaneOn", "All", 'X'));
+    Device::add(new Device("waterHose", "All", 'X'));
+    Device::add(new Device("waterHeaterOn", "All", 'X'));
+    Device::add(new Device("sewerHose", "All", 'X'));
 }
 
 /**
  * LOOP
  */
 void loop() {
-//    IoT::loop();
-    Watchdog.refresh();
+    IoT::loop();
 
 }
 
