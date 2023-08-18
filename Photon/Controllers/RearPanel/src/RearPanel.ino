@@ -115,6 +115,35 @@ void setup() {
 //    }
 //}
 
+/**
+ NCD4Switch Defines
+ */
+#define POLL_INTERVAL_MILLIS 100
+#define FILTER_INCREMENT 25
+
+class NCD4Switch : public Device
+{
+ private:
+    long    _lastPollTime;
+    int8_t  _filter;
+
+    int8_t  _boardAddress;
+    int8_t  _switchBitmap;
+    
+    bool      isSwitchOn();
+    bool      isTimeToCheckSwitch();
+    bool      didSwitchChange();
+    void      notify();
+
+ public:
+    NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room);
+    
+    void    begin();
+    void    reset();
+    void    loop();
+};
+
+
 void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
@@ -198,31 +227,6 @@ void loop() {
 /**
  NCD4Switch
  */
-class NCD4Switch : public Device
-{
- private:
-    long    _lastPollTime;
-    int8_t  _filter;
-
-    int8_t  _boardAddress;
-    int8_t  _switchBitmap;
-    
-    bool      isSwitchOn();
-    bool      isTimeToCheckSwitch();
-    bool      didSwitchChange();
-    void      notify();
-
- public:
-    NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room);
-    
-    void    begin();
-    void    reset();
-    void    loop();
-};
-
-#define POLL_INTERVAL_MILLIS 100
-#define FILTER_INCREMENT 25
-
 /**
  * Constructor
  * @param boardAddress is the board address set by jumpers (0-7) 0x20-0x27
