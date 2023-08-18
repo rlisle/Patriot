@@ -40,16 +40,14 @@ Author: Ron Lisle
  */
 
 #include <IoT.h>
+//#include <PatriotNCD4Switch.h>
 //#include <PatriotNCD8Light.h>
 //#include <PatriotCurtain.h>
-//#include <PatriotNCD4Switch.h>
 //#include <PatriotNCD4Relay.h>
 //#include <PatriotPIR.h>
 //#include <PatriotNCD4PIR.h>
 //#include <PatriotAwning.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
-
-//#include <device.h>
 
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
@@ -58,7 +56,7 @@ Author: Ron Lisle
 #define OFFICE_MOTION_TIMEOUT 15
 
 #define ADDRESS 1      // NCD8Light PWM board address A0 jumper set
-#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
+#define I2CR4IO4 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
@@ -77,45 +75,45 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     createDevices();
     
-//    setupNCD4Switch();  // Debugging NCD4Switch
+    setupNCD4Switch();  // Debugging NCD4Switch
 }
 
-//long    lastPollTime = 0;
-//int     filter = 0;
-//int8_t  boardAddress = 0x20;
-//int8_t  switchBitmap = 0x10;    // Hardcode to 1st input
-//
-//void setupNCD4Switch() {
-//    byte status;
-//    int  retries;
-//
-//    // Only the first device on the I2C link needs to enable it
-//    if(!Wire.isEnabled()) {
-//        Wire.begin();
-//    }
-//
-//    retries = 0;
-//    do {
-//        Wire.beginTransmission(boardAddress);
-//        Wire.write(0x00);                   // Select IO Direction register
-//        Wire.write(0xf0);                   // 0-3 relays, 4-7 in
-//        status = Wire.endTransmission();    // Write 'em, Dano
-//    } while( status != 0 && retries++ < 3);
-//    if(status != 0) {
-//        Log.error("Set IODIR failed");
-//    }
-//    
-//    retries = 0;
-//    do {
-//        Wire.beginTransmission(boardAddress);
-//        Wire.write(0x06);                   // Select pull-up resistor register
-//        Wire.write(0xf0);                   // pull-ups enabled on inputs
-//        status = Wire.endTransmission();
-//    } while( status != 0 && retries++ < 3);
-//    if(status != 0) {
-//        Log.error("Set GPPU failed");
-//    }
-//}
+long    lastPollTime = 0;
+int     filter = 0;
+int8_t  boardAddress = 0x20;
+int8_t  switchBitmap = 0x10;    // Hardcode to 1st input
+
+void setupNCD4Switch() {
+    byte status;
+    int  retries;
+
+    // Only the first device on the I2C link needs to enable it
+    if(!Wire.isEnabled()) {
+        Wire.begin();
+    }
+
+    retries = 0;
+    do {
+        Wire.beginTransmission(boardAddress);
+        Wire.write(0x00);                   // Select IO Direction register
+        Wire.write(0xf0);                   // 0-3 relays, 4-7 in
+        status = Wire.endTransmission();    // Write 'em, Dano
+    } while( status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Set IODIR failed");
+    }
+    
+    retries = 0;
+    do {
+        Wire.beginTransmission(boardAddress);
+        Wire.write(0x06);                   // Select pull-up resistor register
+        Wire.write(0xf0);                   // pull-ups enabled on inputs
+        status = Wire.endTransmission();
+    } while( status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Set GPPU failed");
+    }
+}
 
 void createDevices() {
     // I2CIO4R4G5LE board
