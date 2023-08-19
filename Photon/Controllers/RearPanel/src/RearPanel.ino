@@ -43,7 +43,6 @@ Author: Ron Lisle
 //#include <PatriotNCD4Switch.h>    - embedded
 //#include <PatriotNCD8Light.h>     - embedded
 //#include <PatriotCurtain.h>       - embedded
-//#include <PatriotNCD4Relay.h>
 //#include <PatriotPIR.h>
 //#include <PatriotNCD4PIR.h>
 //#include <PatriotAwning.h>
