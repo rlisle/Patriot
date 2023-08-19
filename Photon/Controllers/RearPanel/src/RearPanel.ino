@@ -82,11 +82,19 @@ bool officeDoor = false;
 bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
 
+int8_t pca9634address;
+
+/**
+ setup
+ */
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
     
     //WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+    
+    //Consolidate PCA9634 initialization
+    initializePCA9634(I2CR4IO4, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
     createDevices();
 }
 
@@ -95,6 +103,8 @@ Plugin definitions need to appear before being used
  
  NCD4Switch
  NCD8Light
+ Curtain
+ 
  */
 
 /**
@@ -108,8 +118,6 @@ class NCD4Switch : public Device
  private:
     long    _lastPollTime;
     int8_t  _filter;
-
-    int8_t  _boardAddress;
     int8_t  _switchBitmap;
     
     bool      isSwitchOn();
@@ -118,7 +126,7 @@ class NCD4Switch : public Device
     void      notify();
 
  public:
-    NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room);
+    NCD4Switch(int8_t switchIndex, String name, String room);
     
     void    begin();
     void    reset();
@@ -158,7 +166,6 @@ class Curtain : public Device
     unsigned long _updateMillis;  // time to send next update msg
     unsigned long _startMillis;
 
-    int8_t  _boardAddress;
     int8_t  _relayIndex;
     
     int8_t  _mode;  // 1 = close, 2 = open, 0 = idle
@@ -174,7 +181,7 @@ class Curtain : public Device
     int     currentPosition();
     
  public:
-    Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room);
+    Curtain(int8_t relayIndex, String name, String room);
     
     void    begin();
     void    reset();
@@ -184,15 +191,56 @@ class Curtain : public Device
 };
 
 
+/**
+ initializePCA9634
+ Initialize a single IO4R4 board
+ iomap = bitmap inputs/outputs
+ @param address IO4R4 board address (0x20 = no jumpers)
+ @param iomap I/O bitmap 0 = input (0xf0)
+ */
+void initializePCA9634(int address, int iomap) {
+    byte status;
+    int  retries;
+    pca9634address = address;
+    
+    // Only the first device on the I2C link needs to enable it
+    if(!Wire.isEnabled()) {
+        Wire.begin();
+    }
+
+    retries = 0;
+    do {
+        Wire.beginTransmission(pca9634address);
+        Wire.write(0x00);                   // Select IO Direction register
+        Wire.write(iomap);                   // 0-3 relays, 4-7 inputs
+        status = Wire.endTransmission();    // Write 'em, Dano
+    } while( status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Set IODIR failed");
+        return;
+    }
+    
+    retries = 0;
+    do {
+        Wire.beginTransmission(pca9634address);
+        Wire.write(0x06);                   // Select pull-up resistor register
+        Wire.write(0xf0 & iomap);           // pull-ups enabled on all inputs
+        status = Wire.endTransmission();
+    } while( status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Set GPPU failed");
+    }
+}
+
 void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
-    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
-    // Device::add(new Awning(I2CR4IO4, 2, "RearAwning", "Outside")); // 2x Relays: 2, 3
+    Device::add(new Curtain(0, "Curtain", "Office"));     // 2x Relays: 0, 1
+    // Device::add(new Awning(2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
-    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
-    //Device::add(new NCD4PIR(I2CR4IO4, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+    Device::add(new NCD4Switch(0, "OfficeDoor", "Office"));
+    //Device::add(new NCD4PIR(1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // (deprecated) Photon I/O
     //Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
@@ -275,14 +323,12 @@ void loop() {
  */
 /**
  * Constructor
- * @param boardAddress is the board address set by jumpers (0-7) 0x20-0x27
  * @param switchIndex is the switch number on the NCD board (0-3)
  * @param name String name used to address the relay.
  */
-NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room)
+NCD4Switch::NCD4Switch(int8_t switchIndex, String name, String room)
     : Device(name, room)
 {
-    _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _lastPollTime = 0;
     _type         = 'S';
     _filter       = 0;
@@ -296,35 +342,36 @@ NCD4Switch::NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, Str
 
 void NCD4Switch::begin() {
 
-    byte status;
-    int  retries;
-
-    // Only the first device on the I2C link needs to enable it
-    if(!Wire.isEnabled()) {
-        Wire.begin();
-    }
-
-    retries = 0;
-    do {
-        Wire.beginTransmission(_boardAddress);
-        Wire.write(0x00);                   // Select IO Direction register
-        Wire.write(0xf0);                   // 0-3 relays, 4-7 in
-        status = Wire.endTransmission();    // Write 'em, Dano
-    } while( status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Set IODIR failed");
-    }
-    
-    retries = 0;
-    do {
-        Wire.beginTransmission(_boardAddress);
-        Wire.write(0x06);                   // Select pull-up resistor register
-        Wire.write(0xf0);                   // pull-ups enabled on inputs
-        status = Wire.endTransmission();
-    } while( status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Set GPPU failed");
-    }
+    // initializePCA9634 does all this once instead of for every device
+//    byte status;
+//    int  retries;
+//
+//    // Only the first device on the I2C link needs to enable it
+//    if(!Wire.isEnabled()) {
+//        Wire.begin();
+//    }
+//
+//    retries = 0;
+//    do {
+//        Wire.beginTransmission(pca9634address);
+//        Wire.write(0x00);                   // Select IO Direction register
+//        Wire.write(0xf0);                   // 0-3 relays, 4-7 in
+//        status = Wire.endTransmission();    // Write 'em, Dano
+//    } while( status != 0 && retries++ < 3);
+//    if(status != 0) {
+//        Log.error("Set IODIR failed");
+//    }
+//    
+//    retries = 0;
+//    do {
+//        Wire.beginTransmission(pca9634address);
+//        Wire.write(0x06);                   // Select pull-up resistor register
+//        Wire.write(0xf0);                   // pull-ups enabled on inputs
+//        status = Wire.endTransmission();
+//    } while( status != 0 && retries++ < 3);
+//    if(status != 0) {
+//        Log.error("Set GPPU failed");
+//    }
 }
 
 /**
@@ -335,7 +382,7 @@ bool NCD4Switch::isSwitchOn() {
     int retries = 0;
     int status;
     do {
-        Wire.beginTransmission(_boardAddress);
+        Wire.beginTransmission(pca9634address);
         Wire.write(0x09);       // GPIO Register
         status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
@@ -343,7 +390,7 @@ bool NCD4Switch::isSwitchOn() {
         Log.error("Error selecting GPIO register");
     }
     
-    Wire.requestFrom(_boardAddress, 1);      // Read 1 byte
+    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
     
     if (Wire.available() == 1)
     {
@@ -361,7 +408,7 @@ void NCD4Switch::reset() {
     Wire.begin();
 
     // Issue PCA9634 SWRST
-    Wire.beginTransmission(_boardAddress);
+    Wire.beginTransmission(pca9634address);
     Wire.write(0x06);
     Wire.write(0xa5);
     Wire.write(0x5a);
@@ -664,14 +711,12 @@ int NCD8Light::scalePWM(float value) {
  */
 /**
  * Constructor
- * @param boardAddress is the board address set by jumpers (0-7)
  * @param relayIndex is the relay number of the 1st of 2 relays (0-2)
  * @param name String name used to address the relay.
  */
-Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room)
+Curtain::Curtain(int8_t relayIndex, String name, String room)
     : Device(name, room)
 {
-    _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _relayIndex  = relayIndex;      // 0 (first 2 relays)
     _stopMillis = 0;
     _mode = 0;
@@ -692,7 +737,7 @@ void Curtain::begin() {
 
     retries = 0;
     do {
-        Wire.beginTransmission(_boardAddress);
+        Wire.beginTransmission(pca9634address);
         Wire.write(0x00);                 // Select IO Direction register
         Wire.write(0xf0);                 // 0-3 out, 4-7 in
         status = Wire.endTransmission();  // Write 'em, Dano
@@ -703,7 +748,7 @@ void Curtain::begin() {
 
     retries = 0;
     do {
-        Wire.beginTransmission(_boardAddress);
+        Wire.beginTransmission(pca9634address);
         Wire.write(0x06);        // Select pull-up resistor register
         Wire.write(0xf0);        // pull-ups enabled on inputs
         status = Wire.endTransmission();
@@ -801,7 +846,7 @@ void Curtain::pulse(bool high) {
     byte status;
     int retries = 0;
     do {
-        Wire.beginTransmission(_boardAddress);
+        Wire.beginTransmission(pca9634address);
         Wire.write(0x09);
         Wire.write(currentState);
         status = Wire.endTransmission();
@@ -884,7 +929,7 @@ void Curtain::reset() {
     Wire.begin();
 
     // Issue PCA9634 SWRST
-    Wire.beginTransmission(_boardAddress);
+    Wire.beginTransmission(pca9634address);
     Wire.write(0x06);
     Wire.write(0xa5);
     Wire.write(0x5a);
@@ -903,7 +948,7 @@ int Curtain::readCurrentState() {
     int retries = 0;
     int status;
     do {
-        Wire.beginTransmission(_boardAddress);
+        Wire.beginTransmission(pca9634address);
         Wire.write(0x09);       // GPIO Register
         status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
@@ -911,7 +956,7 @@ int Curtain::readCurrentState() {
         Log.error("Curtain: Error selecting GPIO register");
     }
     
-    Wire.requestFrom(_boardAddress, 1);      // Read 1 byte
+    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
     
     if (Wire.available() != 1)
     {
