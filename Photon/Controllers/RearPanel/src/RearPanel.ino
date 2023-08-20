@@ -492,151 +492,75 @@ int Curtain::readCurrentState() {
 }
 
 // MARK: - NCD4PIR
+#define PIR_POLL_INTERVAL_MILLIS 1000
 class NCD4PIR : public Device {
  private:
     long    _lastPollTime;
-    int8_t  _filter;
-    int8_t  _switchBitmap;
-    
-    bool      isSwitchOn();
-    bool      isTimeToCheckSwitch();
-    bool      didSwitchChange();
-    void      notify();
+    long    _lastMotion;
+    long    _timeoutMSecs;
+    int8_t  _gpioBitmap;
+
+    bool    isSensorOn();
+    bool    isTimeToCheckSensor();
+    bool    didSensorChange();
+    void    notify();
 
  public:
-    NCD4PIR(int8_t switchIndex, String name, String room);
+    NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutSecs);
     
     void    begin();
     void    reset();
     void    loop();
+    // Override to prevent MQTT from setting _percent.
+    void setValue(int percent) { return; };
 };
-NCD4PIR::NCD4PIR(int8_t switchIndex, String name, String room) : Device(name, room) {
+NCD4PIR::NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutSecs) : Device(name, room), _timeoutMSecs(timeoutSecs * 1000) {
     _lastPollTime = 0;
-    _type         = 'S';
-    _filter       = 0;
+    _lastMotion   = 0;
+    _type         = 'M';    // Motion
     
-    if(switchIndex > 0 && switchIndex <= 3) {
-        _switchBitmap = 0x10 << switchIndex;
+    if(gpioIndex > 0 && gpioIndex <= 3) {
+        _gpioBitmap = 0x10 << gpioIndex;
     } else {
-        _switchBitmap = 0x10;   // If 0 or invalid, set to first switch
+        _gpioBitmap = 0x10;   // If 0 or invalid, set to first gpio
     }
 }
 void NCD4PIR::begin() {
-
+    // Nothing to do here.
     // initializePCA9634 does all this once instead of for every device
-//    byte status;
-//    int  retries;
-//
-//    // Only the first device on the I2C link needs to enable it
-//    if(!Wire.isEnabled()) {
-//        Wire.begin();
-//    }
-//
-//    retries = 0;
-//    do {
-//        Wire.beginTransmission(pca9634address);
-//        Wire.write(0x00);                   // Select IO Direction register
-//        Wire.write(0xf0);                   // 0-3 relays, 4-7 in
-//        status = Wire.endTransmission();    // Write 'em, Dano
-//    } while( status != 0 && retries++ < 3);
-//    if(status != 0) {
-//        Log.error("Set IODIR failed");
-//    }
-//
-//    retries = 0;
-//    do {
-//        Wire.beginTransmission(pca9634address);
-//        Wire.write(0x06);                   // Select pull-up resistor register
-//        Wire.write(0xf0);                   // pull-ups enabled on inputs
-//        status = Wire.endTransmission();
-//    } while( status != 0 && retries++ < 3);
-//    if(status != 0) {
-//        Log.error("Set GPPU failed");
-//    }
 }
-bool NCD4PIR::isSwitchOn() {
-    int retries = 0;
-    int status;
-    do {
-        Wire.beginTransmission(pca9634address);
-        Wire.write(0x09);       // GPIO Register
-        status = Wire.endTransmission();
-    } while(status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Error selecting GPIO register");
-    }
-    
-    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
-    
-    if (Wire.available() == 1)
-    {
-        int data = Wire.read();
-        return((data & _switchBitmap) == 0);    // Inverted
-    }
-    Log.error("Error reading switch");
-    return false;
+bool NCD4PIR::isSensorOn() {
+    return pca9634isInputOn(_gpioBitmap);
 }
 void NCD4PIR::reset() {
     Log.error("Resetting board");
-    Wire.reset();
-    // Do we need any delay here?
-    Wire.begin();
-
-    // Issue PCA9634 SWRST
-    Wire.beginTransmission(pca9634address);
-    Wire.write(0x06);
-    Wire.write(0xa5);
-    Wire.write(0x5a);
-    byte status = Wire.endTransmission();
-    if(status != 0){
-        Log.error("NCD4Switch reset write failed for switch bitmap: "+String(_switchBitmap)+", re-initializing board");
-    }
-    begin();
+    resetPCA9634();
 }
 void NCD4PIR::loop() {
-    if (isTimeToCheckSwitch())
+    if (isTimeToCheckSensor())
     {
-        if (didSwitchChange())
+        if (didSensorChange())
         {
             notify();
         }
     }
 }
-bool NCD4PIR::isTimeToCheckSwitch() {
+bool NCD4PIR::isTimeToCheckSensor() {
     long currentTime = millis();
-    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
+    if (currentTime < _lastPollTime + PIR_POLL_INTERVAL_MILLIS)
     {
         return false;
     }
     _lastPollTime = currentTime;
     return true;
 }
-bool NCD4PIR::didSwitchChange() {
-    int newValue = isSwitchOn() ? 100 : 0;
-    bool oldState = (_value != 0);
-    
-    if(newValue == 100) {   // Is switch on?
-        _filter += FILTER_INCREMENT;
-        if(_filter > 100) {
-            _filter = 100;
-        }
-    } else {    // Switch is off
-        _filter -= FILTER_INCREMENT;
-        if(_filter < 0) {
-            _filter = 0;
-        }
-    }
-
-    if(oldState == false && _filter == 100) {
-        _value = 100;
+bool NCD4PIR::didSensorChange() {
+    //We shouldn't need to filter or debounce
+    int newValue = isSensorOn() ? 100 : 0;
+    if(newValue != _value) {
+        _value = newValue;
         return true;
     }
-    
-    if(oldState == true && _filter == 0) {
-        _value = 0;
-        return true;
-    }
-    
     return false;
 }
 void NCD4PIR::notify() {
@@ -887,6 +811,31 @@ void resetPCA9634() {
     }
     initializePCA9634(I2CR4IO4, 0xf0);
 }
+
+bool pca9634isInputOn(int bitmap) {
+    int retries = 0;
+    int status;
+    do {
+        Wire.beginTransmission(pca9634address);
+        Wire.write(0x09);       // GPIO Register
+        status = Wire.endTransmission();
+    } while(status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Error selecting GPIO register");
+        return false;
+    }
+    
+    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
+    
+    if (Wire.available() == 1)
+    {
+        int data = Wire.read();
+        return((data & bitmap) == 0);    // Inverted
+    }
+    Log.error("Error reading switch");
+    return false;
+}
+
 void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
@@ -895,7 +844,7 @@ void createDevices() {
     
     // 4 GPIO
     Device::add(new NCD4Switch(0, "OfficeDoor", "Office"));
-    //Device::add(new NCD4PIR(1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+    Device::add(new NCD4PIR(1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // (deprecated) Photon I/O
     //Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
@@ -962,6 +911,3 @@ void createDevices() {
 void loop() {
     IoT::loop();
 }
-
-
-
