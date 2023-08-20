@@ -5,17 +5,13 @@ Author: Ron Lisle
 
  The controller is located in the office above the piano.
  
- Photon 2 pin assignments
+ Updated to Photon 2
  - No Photon 2 pins used directly.
  - Use I2C for all I/O.
  
- (old) Photon pin assignments
- - A2-A4 future 12v monitor ?
- - A5 PIR
- 
- To update Photon:
+ To update code:
    1. Edit this code
-   2. Update IoT and plugins if needed
+   2. Update IoT if needed
    3. Put Photon into safe mode using buttons (breathing magenta)
         Press both buttons, release reset, release setup when blinking magenta
    4. "particle flash RearPanel" or "frp"
@@ -40,53 +36,28 @@ Author: Ron Lisle
  */
 
 #include <IoT.h>
-//#include <PatriotNCD4Switch.h>    - embedded
-//#include <PatriotNCD8Light.h>     - embedded
-//#include <PatriotCurtain.h>       - embedded
-//#include <PatriotPIR.h>
-//#include <PatriotNCD4PIR.h>
-//#include <PatriotAwning.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 #include "math.h"
 
 #define MILLIS_PER_SECOND 1000
-
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
 #define MQTT_LOGGING true
-
 #define OFFICE_MOTION_TIMEOUT 15
-
 #define ADDRESS 1      // NCD8Light PWM board address A0 jumper set
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
-
-// Curtain defines
-#define FULL_TIME_MILLIS 6000   // Duration of full open to close or vis-vis
-#define MILLIS_PER_PERCENT 60   // FULL_TIME_MILLIS / 100
-#define MILLIS_PER_UPDATE 1000  // Send updates every second
-#define PULSE_MILLIS 100
-
-// Mode (relay bit)
-#define OPEN_CURTAIN 2
-#define CLOSE_CURTAIN 1
-
-
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
-
 bool officeDoor = false;
 bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
-
 int8_t pca9634address;
 
-/**
- setup
- */
+// MARK: - Setup
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
     
@@ -98,23 +69,10 @@ void setup() {
     createDevices();
 }
 
-/**
-Plugin definitions need to appear before being used
- 
- NCD4Switch
- NCD8Light
- Curtain
- 
- */
-
-/**
- NCD4Switch Defines
- */
+// MARK: - NCD4Switch
 #define POLL_INTERVAL_MILLIS 100
 #define FILTER_INCREMENT 25
-
-class NCD4Switch : public Device
-{
+class NCD4Switch : public Device {
  private:
     long    _lastPollTime;
     int8_t  _filter;
@@ -132,35 +90,151 @@ class NCD4Switch : public Device
     void    reset();
     void    loop();
 };
-
-class NCD8Light : public Device
-{
- private:
-    int8_t  _lightNum;                 // Up to 8 lights supported
-    int8_t   _address;                 // Address of board (eg. 0x40)
-
-    int      _dimmingDuration;
-    float    _currentLevel;            // Use for smooth dimming transitions.
-    float    _targetLevel;
-    float    _incrementPerMillisecond;
+NCD4Switch::NCD4Switch(int8_t switchIndex, String name, String room)
+    : Device(name, room) {
+    _lastPollTime = 0;
+    _type         = 'S';
+    _filter       = 0;
     
-    long     _lastUpdateTime;
+    if(switchIndex > 0 && switchIndex <= 3) {
+        _switchBitmap = 0x10 << switchIndex;
+    } else {
+        _switchBitmap = 0x10;   // If 0 or invalid, set to first switch
+    }
+}
+void NCD4Switch::begin() {
 
-    int8_t  initializeBoard();
-    void    outputPWM();
-    void    startSmoothDimming();
-    int     scalePWM(float value);
+    // initializePCA9634 does all this once instead of for every device
+//    byte status;
+//    int  retries;
+//
+//    // Only the first device on the I2C link needs to enable it
+//    if(!Wire.isEnabled()) {
+//        Wire.begin();
+//    }
+//
+//    retries = 0;
+//    do {
+//        Wire.beginTransmission(pca9634address);
+//        Wire.write(0x00);                   // Select IO Direction register
+//        Wire.write(0xf0);                   // 0-3 relays, 4-7 in
+//        status = Wire.endTransmission();    // Write 'em, Dano
+//    } while( status != 0 && retries++ < 3);
+//    if(status != 0) {
+//        Log.error("Set IODIR failed");
+//    }
+//
+//    retries = 0;
+//    do {
+//        Wire.beginTransmission(pca9634address);
+//        Wire.write(0x06);                   // Select pull-up resistor register
+//        Wire.write(0xf0);                   // pull-ups enabled on inputs
+//        status = Wire.endTransmission();
+//    } while( status != 0 && retries++ < 3);
+//    if(status != 0) {
+//        Log.error("Set GPPU failed");
+//    }
+}
+bool NCD4Switch::isSwitchOn() {
+    int retries = 0;
+    int status;
+    do {
+        Wire.beginTransmission(pca9634address);
+        Wire.write(0x09);       // GPIO Register
+        status = Wire.endTransmission();
+    } while(status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Error selecting GPIO register");
+    }
+    
+    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
+    
+    if (Wire.available() == 1)
+    {
+        int data = Wire.read();
+        return((data & _switchBitmap) == 0);    // Inverted
+    }
+    Log.error("Error reading switch");
+    return false;
+}
+void NCD4Switch::reset() {
+    Log.error("Resetting board");
+    Wire.reset();
+    // Do we need any delay here?
+    Wire.begin();
 
- public:
-    NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
-    void    begin();
-    void    reset();
-    void    setValue(int value);
-    void    loop();
-};
+    // Issue PCA9634 SWRST
+    Wire.beginTransmission(pca9634address);
+    Wire.write(0x06);
+    Wire.write(0xa5);
+    Wire.write(0x5a);
+    byte status = Wire.endTransmission();
+    if(status != 0){
+        Log.error("NCD4Switch reset write failed for switch bitmap: "+String(_switchBitmap)+", re-initializing board");
+    }
+    begin();
+}
+void NCD4Switch::loop() {
+    if (isTimeToCheckSwitch())
+    {
+        if (didSwitchChange())
+        {
+            notify();
+        }
+    }
+}
+bool NCD4Switch::isTimeToCheckSwitch() {
+    // return if enough time has elapsed to sample switch again
+    long currentTime = millis();
+    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
+    {
+        return false;
+    }
+    _lastPollTime = currentTime;
+    return true;
+}
+bool NCD4Switch::didSwitchChange() {
+    int newValue = isSwitchOn() ? 100 : 0;
+    bool oldState = (_value != 0);
+    
+    if(newValue == 100) {   // Is switch on?
+        _filter += FILTER_INCREMENT;
+        if(_filter > 100) {
+            _filter = 100;
+        }
+    } else {    // Switch is off
+        _filter -= FILTER_INCREMENT;
+        if(_filter < 0) {
+            _filter = 0;
+        }
+    }
 
-class Curtain : public Device
-{
+    if(oldState == false && _filter == 100) {
+        _value = 100;
+        return true;
+    }
+    
+    if(oldState == true && _filter == 0) {
+        _value = 0;
+        return true;
+    }
+    
+    return false;
+}
+void NCD4Switch::notify() {
+    String message = String(_value);
+    IoT::publishMQTT(_name + "/get/position",message);
+}
+
+// MARK: - Curtain
+#define FULL_TIME_MILLIS 6000   // Duration of full open to close or vis-vis
+#define MILLIS_PER_PERCENT 60   // FULL_TIME_MILLIS / 100
+#define MILLIS_PER_UPDATE 1000  // Send updates every second
+#define PULSE_MILLIS 100
+// Mode (relay bit)
+#define OPEN_CURTAIN 2
+#define CLOSE_CURTAIN 1
+class Curtain : public Device {
  private:
     unsigned long _stopMillis;    // time to change start/stop pulse
     unsigned long _updateMillis;  // time to send next update msg
@@ -189,19 +263,584 @@ class Curtain : public Device
     void    setHold(bool holding);
     void    loop();
 };
+Curtain::Curtain(int8_t relayIndex, String name, String room) : Device(name, room) {
+    _relayIndex  = relayIndex;      // 0 (first 2 relays)
+    _stopMillis = 0;
+    _mode = 0;
+    _stage = 0;
+    _type  = 'C';
+    _holding = false;
+}
+void Curtain::begin() {
 
+    // Handled in pcr9634init() now.
+//    byte status;
+//    int  retries;
+//
+//    // Only the first device on the I2C link needs to enable it
+//    if(!Wire.isEnabled()) {
+//        Wire.begin();
+//    }
+//
+//    retries = 0;
+//    do {
+//        Wire.beginTransmission(pca9634address);
+//        Wire.write(0x00);                 // Select IO Direction register
+//        Wire.write(0xf0);                 // 0-3 out, 4-7 in
+//        status = Wire.endTransmission();  // Write 'em, Dano
+//    } while( status != 0 && retries++ < 3);
+//    if(status != 0) {
+//        Log.error("Set IODIR failed");
+//    }
+//
+//    retries = 0;
+//    do {
+//        Wire.beginTransmission(pca9634address);
+//        Wire.write(0x06);        // Select pull-up resistor register
+//        Wire.write(0xf0);        // pull-ups enabled on inputs
+//        status = Wire.endTransmission();
+//    } while( status != 0 && retries++ < 3);
+//    if(status != 0) {
+//        Log.error("Set GPPU failed");
+//    }
+}
+void Curtain::setValue(int percent) {
+    // This is how things are turned on or off in Patriot
+    // 0 = closed, 100 = open
+    //FOR DEBUGGING, SETTING ONLY OPEN OR CLOSED
 
-/**
- initializePCA9634
- Initialize a single IO4R4 board
- iomap = bitmap inputs/outputs
- @param address IO4R4 board address (0x20 = no jumpers)
- @param iomap I/O bitmap 0 = input (0xf0)
- */
+    if(percent == _value) {
+        Log.warn("Curtain setValue is the same as previous value, ignoring");
+        //TODO: do we want to issue open/close again just in case?
+        return;
+    }
+
+    _startPosition = _value;
+    _startMillis = millis();
+    
+    _value = percent;           // Should this report current instead?
+    _holding = false;
+    _updateMillis = millis() + MILLIS_PER_UPDATE;
+    Log.info("_updateMillis = %ld",_updateMillis);
+
+    // Send HomeKit acknowledgement
+    IoT::publishMQTT("/ack/" + _name + "/set",String(percent));
+    
+    // Send position updates
+    IoT::publishMQTT(_name + "/get",String(percent));
+    IoT::publishMQTT(_name + "/position",String(_startPosition));
+
+    if(_value > _startPosition) {
+        _mode = OPEN_CURTAIN;
+        IoT::publishMQTT(_name + "/state", "increasing");
+
+    } else {
+        _mode = CLOSE_CURTAIN;
+        IoT::publishMQTT(_name + "/state", "decreasing");
+    }
+
+    // We only need a single pulse if opening or closing all the way
+    if(_value == 0 || _value == 100) {
+        _stage = 3;
+    } else {
+        _stage = 1;
+    }
+    _stopMillis = millis() + PULSE_MILLIS;
+    pulse(true);
+}
+void Curtain::setHold(bool holding) {
+    if(holding == true) {
+        if(_holding == true) {  // Already holding?
+            return;
+        }
+        //TODO: stop movement, but remember target in case hold false
+        
+    } else {        // resume
+        if(_holding == false) { // Not currently holding?
+            return;
+        }
+        //TODO: resume movement - same as setValue using old target
+        
+    }
+    _holding = holding;
+    Log.warn("Curtain setHold not implemented");
+}
+void Curtain::pulse(bool high) {
+    
+    Log.info("Curtain pulse %s",high ? "high" : "low");
+
+    int currentState = readCurrentState();
+    
+    byte bitmap = 0x01 << (_relayIndex + _mode - 1);
+    if(high) {
+        currentState |= bitmap;    // Set relay's bit
+    } else {
+        bitmap = 0xff ^ bitmap;
+        currentState &= bitmap;
+    }
+
+    byte status;
+    int retries = 0;
+    do {
+        Wire.beginTransmission(pca9634address);
+        Wire.write(0x09);
+        Wire.write(currentState);
+        status = Wire.endTransmission();
+    } while(status != 0 && retries++ < 3);
+
+    if(status != 0) {
+        Log.error("Error pulsing relay %d %s", bitmap, high ? "high" : "low");
+    }
+}
+void Curtain::loop() {
+    if(isCurtainRunning()) {
+        
+        if(isTimeToChangePulse()) {
+            switch(_stage) {
+                case 1:
+                    Log.info("Curtain end-of-start pulse");
+                    pulse(false);
+                    
+                    _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_startPosition - _value)) / 100) - PULSE_MILLIS;
+                    
+                    _stage = 2;
+                    break;
+                case 2:
+                    Log.info("Curtain start-of-end pulse");
+                    pulse(true);
+                    _stopMillis = millis() + PULSE_MILLIS;
+                    _stage = 3;
+                    break;
+                case 3:
+                    Log.info("Curtain end-of-end pulse");
+                    pulse(false);
+                    _stopMillis = millis() + FULL_TIME_MILLIS - PULSE_MILLIS;
+                    _stage = 4;
+                    break;
+                case 4:
+                    _stage = 0;
+                    IoT::publishMQTT(_name + "/state", "stopped");
+                    break;
+                default:
+                    Log.error("Invalid _stage %d",_stage);
+            }
+            
+        }
+        
+        // Calculate periodic HomeKit updates to getCurrentPosition
+        if(millis() >= _updateMillis) {
+            _updateMillis += MILLIS_PER_UPDATE;
+            
+            int percentDelta = (int)((millis() - _startMillis) / MILLIS_PER_PERCENT);
+            if(_mode == CLOSE_CURTAIN) percentDelta = -percentDelta;
+//            Log.info("DBG: _startPosition = %d",_startPosition);
+//            Log.info("DBG: curtain percent delta = %d",percentDelta);
+//            Log.info("DBG: _startMillis = %ld",_startMillis);
+//            Log.info("DBG: millis = %ld",millis());
+//            Log.info("DBG: millis delta = %ld",millis() - _startMillis);
+//            _value = _startPosition + percentDelta;
+//            IoT::publishMQTT(_name + "/position", String(_value));
+            IoT::publishMQTT(_name + "/position", String(_startPosition + percentDelta));
+        }
+    }
+};
+bool Curtain::isCurtainRunning() {
+    return(_stage != 0);
+}
+bool Curtain::isTimeToChangePulse() {
+    return(millis() >= _stopMillis);
+}
+void Curtain::reset() {
+    Log.error("Resetting board");
+    Wire.reset();
+    // Do we need any delay here?
+    Wire.begin();
+
+    // Issue PCA9634 SWRST
+    Wire.beginTransmission(pca9634address);
+    Wire.write(0x06);
+    Wire.write(0xa5);
+    Wire.write(0x5a);
+    byte status = Wire.endTransmission();
+    if(status != 0){
+        Log.error("Curtain reset write failed for relayIndex: "+String(_relayIndex)+", re-initializing board");
+    }
+    begin();
+}
+int Curtain::readCurrentState() {
+    int retries = 0;
+    int status;
+    do {
+        Wire.beginTransmission(pca9634address);
+        Wire.write(0x09);       // GPIO Register
+        status = Wire.endTransmission();
+    } while(status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Curtain: Error selecting GPIO register");
+    }
+    
+    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
+    
+    if (Wire.available() != 1)
+    {
+        Log.error("Curtain: Error reading current state");
+        return 0;
+    }
+    
+    int data = Wire.read();
+    return(data);
+}
+
+// MARK: - NCD4PIR
+class NCD4PIR : public Device {
+ private:
+    long    _lastPollTime;
+    int8_t  _filter;
+    int8_t  _switchBitmap;
+    
+    bool      isSwitchOn();
+    bool      isTimeToCheckSwitch();
+    bool      didSwitchChange();
+    void      notify();
+
+ public:
+    NCD4PIR(int8_t switchIndex, String name, String room);
+    
+    void    begin();
+    void    reset();
+    void    loop();
+};
+NCD4PIR::NCD4PIR(int8_t switchIndex, String name, String room) : Device(name, room) {
+    _lastPollTime = 0;
+    _type         = 'S';
+    _filter       = 0;
+    
+    if(switchIndex > 0 && switchIndex <= 3) {
+        _switchBitmap = 0x10 << switchIndex;
+    } else {
+        _switchBitmap = 0x10;   // If 0 or invalid, set to first switch
+    }
+}
+void NCD4PIR::begin() {
+
+    // initializePCA9634 does all this once instead of for every device
+//    byte status;
+//    int  retries;
+//
+//    // Only the first device on the I2C link needs to enable it
+//    if(!Wire.isEnabled()) {
+//        Wire.begin();
+//    }
+//
+//    retries = 0;
+//    do {
+//        Wire.beginTransmission(pca9634address);
+//        Wire.write(0x00);                   // Select IO Direction register
+//        Wire.write(0xf0);                   // 0-3 relays, 4-7 in
+//        status = Wire.endTransmission();    // Write 'em, Dano
+//    } while( status != 0 && retries++ < 3);
+//    if(status != 0) {
+//        Log.error("Set IODIR failed");
+//    }
+//
+//    retries = 0;
+//    do {
+//        Wire.beginTransmission(pca9634address);
+//        Wire.write(0x06);                   // Select pull-up resistor register
+//        Wire.write(0xf0);                   // pull-ups enabled on inputs
+//        status = Wire.endTransmission();
+//    } while( status != 0 && retries++ < 3);
+//    if(status != 0) {
+//        Log.error("Set GPPU failed");
+//    }
+}
+bool NCD4PIR::isSwitchOn() {
+    int retries = 0;
+    int status;
+    do {
+        Wire.beginTransmission(pca9634address);
+        Wire.write(0x09);       // GPIO Register
+        status = Wire.endTransmission();
+    } while(status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("Error selecting GPIO register");
+    }
+    
+    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
+    
+    if (Wire.available() == 1)
+    {
+        int data = Wire.read();
+        return((data & _switchBitmap) == 0);    // Inverted
+    }
+    Log.error("Error reading switch");
+    return false;
+}
+void NCD4PIR::reset() {
+    Log.error("Resetting board");
+    Wire.reset();
+    // Do we need any delay here?
+    Wire.begin();
+
+    // Issue PCA9634 SWRST
+    Wire.beginTransmission(pca9634address);
+    Wire.write(0x06);
+    Wire.write(0xa5);
+    Wire.write(0x5a);
+    byte status = Wire.endTransmission();
+    if(status != 0){
+        Log.error("NCD4Switch reset write failed for switch bitmap: "+String(_switchBitmap)+", re-initializing board");
+    }
+    begin();
+}
+void NCD4PIR::loop() {
+    if (isTimeToCheckSwitch())
+    {
+        if (didSwitchChange())
+        {
+            notify();
+        }
+    }
+}
+bool NCD4PIR::isTimeToCheckSwitch() {
+    long currentTime = millis();
+    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
+    {
+        return false;
+    }
+    _lastPollTime = currentTime;
+    return true;
+}
+bool NCD4PIR::didSwitchChange() {
+    int newValue = isSwitchOn() ? 100 : 0;
+    bool oldState = (_value != 0);
+    
+    if(newValue == 100) {   // Is switch on?
+        _filter += FILTER_INCREMENT;
+        if(_filter > 100) {
+            _filter = 100;
+        }
+    } else {    // Switch is off
+        _filter -= FILTER_INCREMENT;
+        if(_filter < 0) {
+            _filter = 0;
+        }
+    }
+
+    if(oldState == false && _filter == 100) {
+        _value = 100;
+        return true;
+    }
+    
+    if(oldState == true && _filter == 0) {
+        _value = 0;
+        return true;
+    }
+    
+    return false;
+}
+void NCD4PIR::notify() {
+    String message = String(_value);
+    IoT::publishMQTT(_name + "/get/position",message);
+}
+
+// MARK: - NCD8Light
+class NCD8Light : public Device {
+ private:
+    int8_t  _lightNum;                 // Up to 8 lights supported
+    int8_t   _address;                 // Address of board (eg. 0x40)
+
+    int      _dimmingDuration;
+    float    _currentLevel;            // Use for smooth dimming transitions.
+    float    _targetLevel;
+    float    _incrementPerMillisecond;
+    
+    long     _lastUpdateTime;
+
+    int8_t  initializeBoard();
+    void    outputPWM();
+    void    startSmoothDimming();
+    int     scalePWM(float value);
+
+ public:
+    NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
+    void    begin();
+    void    reset();
+    void    setValue(int value);
+    void    loop();
+};
+NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration) : Device(name, room) {
+    /**
+     * @param address is the board address set by jumpers (0-7) 0x01 if low switch set, 0x40 if high
+     * @param lightNum is the channel number on the NCD 8 Light board (0-7)
+     * @param name String name used to address the light.
+     * @param duration Optional seconds value to transition. 0 = immediate, no transition.
+     */
+    _address = address;
+    _lightNum   = lightNum;
+    _dimmingDuration = duration;
+    _currentLevel = 0.0;
+    _targetLevel = 0.0;
+    _incrementPerMillisecond = 0.0;
+    _lastUpdateTime = 0;
+    _type = 'L';
+}
+void NCD8Light::begin() {
+    initializeBoard();
+}
+int8_t NCD8Light::initializeBoard() {
+    int status;
+
+    // Only the first light loaded needs to initialize the I2C link
+    if(!Wire.isEnabled()) {
+        Wire.begin();
+    }
+
+    Wire.beginTransmission(_address);   // Seems unnecessary
+    status = Wire.endTransmission();
+
+    if(status == 0) {
+        Wire.beginTransmission(_address);
+        Wire.write(0);          // Control register - No AI, point to reg0 Mode1
+        Wire.write(0);          // Mode1 reg. Osc on, disable AI, subaddrs, allcall
+        Wire.endTransmission();
+
+        Wire.beginTransmission(_address);
+        Wire.write(1);          // Mode2 register
+        Wire.write(0x04);       // Dimming, Not inverted, totem-pole
+        Wire.endTransmission();
+
+        Wire.beginTransmission(_address);
+        Wire.write(0x8c);       // AI + LEDOUT0
+        Wire.write(0xaa);       // LEDOUT0 LEDs 0-3 dimming
+        Wire.write(0xaa);       // LEDOUT1 LEDS 4-7 dimming
+        Wire.endTransmission();
+
+        outputPWM();            // Force light off
+        
+        Log.info("InitializeBoard " + _name + " sucess");
+        
+    } else {
+        Log.error("InitializeBoard " + _name + " FAILED!");
+    }
+
+    return status;
+}
+void NCD8Light::reset() {
+    Log.error("Resetting board");
+    Wire.reset();
+    // Do we need any delay here?
+    Wire.begin();
+
+    // Issue PCA9634 SWRST
+    Wire.beginTransmission(_address);
+    Wire.write(0x06);
+    Wire.write(0xa5);
+    Wire.write(0x5a);
+    byte status = Wire.endTransmission();
+    if(status != 0){
+        Log.error("NCD8Light reset write failed for light "+String(_lightNum)+", reseting Wire");
+    }
+    initializeBoard();
+}
+void NCD8Light::setValue(int value) { // value = 0-100 (percent)
+    if( value == _value ) {
+        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
+        _currentLevel = _value;
+        outputPWM();
+        return;
+    }
+    
+    _currentLevel = _value;   // hold previous value for transitioning
+    _value = value;
+    _targetLevel = value;
+    if(_dimmingDuration == 0) {
+        _currentLevel = _targetLevel;
+        outputPWM();
+
+    } else {
+        startSmoothDimming();
+    }
+}
+void NCD8Light::startSmoothDimming() {
+    if((int)_currentLevel != _targetLevel){
+        _lastUpdateTime = millis();
+        float delta = _targetLevel - _currentLevel;
+        _incrementPerMillisecond = delta / (float(_dimmingDuration) * 1000);
+        Log.info("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
+    }
+}
+void NCD8Light::loop() {
+    // Is fading transition underway?
+    if(_currentLevel == _targetLevel) {
+        return;
+    }
+    
+    // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
+    
+    long loopTime = millis();
+    float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
+    _currentLevel += _incrementPerMillisecond * millisSinceLastUpdate;
+    if(_incrementPerMillisecond > 0.0) {
+        if(_currentLevel > _targetLevel) {
+            _currentLevel = _targetLevel;
+        }
+    } else {
+        if(_currentLevel < _targetLevel) {
+            _currentLevel = _targetLevel;
+        }
+    }
+    _lastUpdateTime = loopTime;
+    outputPWM();
+};
+void NCD8Light::outputPWM() {
+    int reg = 2 + _lightNum;
+    
+    int retryCount = 3;
+    byte status;
+    do {
+        Wire.beginTransmission(_address);
+        Wire.write(reg);
+        Wire.write(scalePWM(_currentLevel));
+        status = Wire.endTransmission();
+        retryCount--;
+    } while(status != 0 && retryCount > 0);
+    
+    if(status != 0){
+        reset();
+        retryCount = 5;
+        do {
+            Wire.beginTransmission(_address);
+            Wire.write(reg);
+            Wire.write(scalePWM(_currentLevel));
+            status = Wire.endTransmission();
+            retryCount--;
+        } while(status != 0 && retryCount > 0);
+        
+        if(status != 0) {
+            Log.error("NCD8Light outputPWM write failed twice for light "+String(_lightNum)+", level = "+String(_currentLevel));
+            reset();
+        }
+    }
+}
+int NCD8Light::scalePWM(float value) { //Convert 0-100 to 0-255 scaled
+    if (value <= 0) return 0;
+    if (value >= 100) return 255;
+
+    //TODO: This is too extreme. Need to refine algorithm
+    float base = 1.05697667;
+    float pwm = pow(base,value);
+    if (pwm > 255) {
+        pwm = 255;
+    }
+    return (int)pwm;
+}
+
+// MARK: - RearPanel
 void initializePCA9634(int address, int iomap) {
     byte status;
     int  retries;
-    pca9634address = address;
+    pca9634address = address; // 0x20 = no jumpers
     
     // Only the first device on the I2C link needs to enable it
     if(!Wire.isEnabled()) {
@@ -231,7 +870,23 @@ void initializePCA9634(int address, int iomap) {
         Log.error("Set GPPU failed");
     }
 }
+void resetPCA9634() {
+    Log.error("Resetting PCA9634");
+    Wire.reset();
+    // Do we need any delay here?
+    Wire.begin();
 
+    // Issue PCA9634 SWRST
+    Wire.beginTransmission(pca9634address);
+    Wire.write(0x06);
+    Wire.write(0xa5);
+    Wire.write(0x5a);
+    byte status = Wire.endTransmission();
+    if(status != 0){
+        Log.error("resetPCA9634 reset write failed");
+    }
+    initializePCA9634(I2CR4IO4, 0xf0);
+}
 void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
@@ -304,667 +959,9 @@ void createDevices() {
     Device::add(new Device("waterHeaterOn", "All", 'X'));
     Device::add(new Device("sewerHose", "All", 'X'));
 }
-
-/**
- * LOOP
- */
 void loop() {
     IoT::loop();
 }
 
 
-/**
- PLUG-INS
- */
-
-
-/**
- NCD4Switch
- */
-/**
- * Constructor
- * @param switchIndex is the switch number on the NCD board (0-3)
- * @param name String name used to address the relay.
- */
-NCD4Switch::NCD4Switch(int8_t switchIndex, String name, String room)
-    : Device(name, room)
-{
-    _lastPollTime = 0;
-    _type         = 'S';
-    _filter       = 0;
-    
-    if(switchIndex > 0 && switchIndex <= 3) {
-        _switchBitmap = 0x10 << switchIndex;
-    } else {
-        _switchBitmap = 0x10;   // If 0 or invalid, set to first switch
-    }
-}
-
-void NCD4Switch::begin() {
-
-    // initializePCA9634 does all this once instead of for every device
-//    byte status;
-//    int  retries;
-//
-//    // Only the first device on the I2C link needs to enable it
-//    if(!Wire.isEnabled()) {
-//        Wire.begin();
-//    }
-//
-//    retries = 0;
-//    do {
-//        Wire.beginTransmission(pca9634address);
-//        Wire.write(0x00);                   // Select IO Direction register
-//        Wire.write(0xf0);                   // 0-3 relays, 4-7 in
-//        status = Wire.endTransmission();    // Write 'em, Dano
-//    } while( status != 0 && retries++ < 3);
-//    if(status != 0) {
-//        Log.error("Set IODIR failed");
-//    }
-//    
-//    retries = 0;
-//    do {
-//        Wire.beginTransmission(pca9634address);
-//        Wire.write(0x06);                   // Select pull-up resistor register
-//        Wire.write(0xf0);                   // pull-ups enabled on inputs
-//        status = Wire.endTransmission();
-//    } while( status != 0 && retries++ < 3);
-//    if(status != 0) {
-//        Log.error("Set GPPU failed");
-//    }
-}
-
-/**
- * isSwitchOn
- * Return state of switch (inverted: low = 100, high = 0)
- */
-bool NCD4Switch::isSwitchOn() {
-    int retries = 0;
-    int status;
-    do {
-        Wire.beginTransmission(pca9634address);
-        Wire.write(0x09);       // GPIO Register
-        status = Wire.endTransmission();
-    } while(status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Error selecting GPIO register");
-    }
-    
-    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
-    
-    if (Wire.available() == 1)
-    {
-        int data = Wire.read();
-        return((data & _switchBitmap) == 0);    // Inverted
-    }
-    Log.error("Error reading switch");
-    return false;
-}
-
-void NCD4Switch::reset() {
-    Log.error("Resetting board");
-    Wire.reset();
-    // Do we need any delay here?
-    Wire.begin();
-
-    // Issue PCA9634 SWRST
-    Wire.beginTransmission(pca9634address);
-    Wire.write(0x06);
-    Wire.write(0xa5);
-    Wire.write(0x5a);
-    byte status = Wire.endTransmission();
-    if(status != 0){
-        Log.error("NCD4Switch reset write failed for switch bitmap: "+String(_switchBitmap)+", re-initializing board");
-    }
-    begin();
-}
-
-
-
-/**
- * loop()
- */
-void NCD4Switch::loop()
-{
-    if (isTimeToCheckSwitch())
-    {
-        if (didSwitchChange())
-        {
-            notify();
-        }
-    }
-}
-
-// Private Helper Methods
-/**
- * isTimeToCheckSwitch()
- * @return bool if enough time has elapsed to sample switch again
- */
-bool NCD4Switch::isTimeToCheckSwitch()
-{
-    long currentTime = millis();
-    if (currentTime < _lastPollTime + POLL_INTERVAL_MILLIS)
-    {
-        return false;
-    }
-    _lastPollTime = currentTime;
-    return true;
-}
-
-
-/**
- * didSwitchChange()
- * @return bool if switch has changed since last reading
- */
-bool NCD4Switch::didSwitchChange()
-{
-    int newValue = isSwitchOn() ? 100 : 0;
-    bool oldState = (_value != 0);
-    
-    if(newValue == 100) {   // Is switch on?
-        _filter += FILTER_INCREMENT;
-        if(_filter > 100) {
-            _filter = 100;
-        }
-    } else {    // Switch is off
-        _filter -= FILTER_INCREMENT;
-        if(_filter < 0) {
-            _filter = 0;
-        }
-    }
-
-    if(oldState == false && _filter == 100) {
-        _value = 100;
-        return true;
-    }
-    
-    if(oldState == true && _filter == 0) {
-        _value = 0;
-        return true;
-    }
-    
-    return false;
-}
-
-
-/**
- * notify()
- * Publish switch state
- */
-void NCD4Switch::notify()
-{
-    String message = String(_value);
-    IoT::publishMQTT(_name + "/get/position",message);
-}
-
-
-/**
- NCD8Light Plugin
- */
-
-/**
- * Constructor
- * @param address is the board address set by jumpers (0-7) 0x01 if low switch set, 0x40 if high
- * @param lightNum is the channel number on the NCD 8 Light board (0-7)
- * @param name String name used to address the light.
- * @param duration Optional seconds value to transition. 0 = immediate, no transition.
- */
-
-NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration)
-                     : Device(name, room)
-{
-    _address = address;
-    _lightNum   = lightNum;
-    _dimmingDuration = duration;
-    _currentLevel = 0.0;
-    _targetLevel = 0.0;
-    _incrementPerMillisecond = 0.0;
-    _lastUpdateTime = 0;
-    _type = 'L';
-}
-
-void NCD8Light::begin() {
-    initializeBoard();
-}
-
-int8_t NCD8Light::initializeBoard() {
-    int status;
-
-    // Only the first light loaded needs to initialize the I2C link
-    if(!Wire.isEnabled()) {
-        Wire.begin();
-    }
-
-    Wire.beginTransmission(_address);   // Seems unnecessary
-    status = Wire.endTransmission();
-
-    if(status == 0) {
-        Wire.beginTransmission(_address);
-        Wire.write(0);          // Control register - No AI, point to reg0 Mode1
-        Wire.write(0);          // Mode1 reg. Osc on, disable AI, subaddrs, allcall
-        Wire.endTransmission();
-
-        Wire.beginTransmission(_address);
-        Wire.write(1);          // Mode2 register
-        Wire.write(0x04);       // Dimming, Not inverted, totem-pole
-        Wire.endTransmission();
-
-        Wire.beginTransmission(_address);
-        Wire.write(0x8c);       // AI + LEDOUT0
-        Wire.write(0xaa);       // LEDOUT0 LEDs 0-3 dimming
-        Wire.write(0xaa);       // LEDOUT1 LEDS 4-7 dimming
-        Wire.endTransmission();
-
-        outputPWM();            // Force light off
-        
-        Log.info("InitializeBoard " + _name + " sucess");
-        
-    } else {
-        Log.error("InitializeBoard " + _name + " FAILED!");
-    }
-
-    return status;
-}
-
-void NCD8Light::reset() {
-    Log.error("Resetting board");
-    Wire.reset();
-    // Do we need any delay here?
-    Wire.begin();
-
-    // Issue PCA9634 SWRST
-    Wire.beginTransmission(_address);
-    Wire.write(0x06);
-    Wire.write(0xa5);
-    Wire.write(0x5a);
-    byte status = Wire.endTransmission();
-    if(status != 0){
-        Log.error("NCD8Light reset write failed for light "+String(_lightNum)+", reseting Wire");
-    }
-    initializeBoard();
-}
-
-/**
- * Set value
- * @param value Int 0 to 100.
- */
-void NCD8Light::setValue(int value) {
-    if( value == _value ) {
-        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
-        _currentLevel = _value;
-        outputPWM();
-        return;
-    }
-    
-    _currentLevel = _value;   // hold previous value for transitioning
-    _value = value;
-    _targetLevel = value;
-    if(_dimmingDuration == 0) {
-        _currentLevel = _targetLevel;
-        outputPWM();
-
-    } else {
-        startSmoothDimming();
-    }
-}
-
-/**
- * Start smooth dimming
- * Use float _currentValue to smoothly transition
- * An alternative approach would be to calculate # msecs per step
- */
-void NCD8Light::startSmoothDimming() {
-    if((int)_currentLevel != _targetLevel){
-        _lastUpdateTime = millis();
-        float delta = _targetLevel - _currentLevel;
-        _incrementPerMillisecond = delta / (float(_dimmingDuration) * 1000);
-        Log.info("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
-    }
-}
-
-/**
- * Private Methods
- */
-
-/**
- * loop()
- */
-void NCD8Light::loop()
-{
-    // Is fading transition underway?
-    if(_currentLevel == _targetLevel) {
-        return;
-    }
-    
-    // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
-    
-    long loopTime = millis();
-    float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
-    _currentLevel += _incrementPerMillisecond * millisSinceLastUpdate;
-    if(_incrementPerMillisecond > 0.0) {
-        if(_currentLevel > _targetLevel) {
-            _currentLevel = _targetLevel;
-        }
-    } else {
-        if(_currentLevel < _targetLevel) {
-            _currentLevel = _targetLevel;
-        }
-    }
-    _lastUpdateTime = loopTime;
-    outputPWM();
-};
-
-/**
- * Set the output PWM _currentLevel (0-100)
- */
-void NCD8Light::outputPWM() {
-    int reg = 2 + _lightNum;
-    
-    int retryCount = 3;
-    byte status;
-    do {
-        Wire.beginTransmission(_address);
-        Wire.write(reg);
-        Wire.write(scalePWM(_currentLevel));
-        status = Wire.endTransmission();
-        retryCount--;
-    } while(status != 0 && retryCount > 0);
-    
-    if(status != 0){
-        reset();
-        retryCount = 5;
-        do {
-            Wire.beginTransmission(_address);
-            Wire.write(reg);
-            Wire.write(scalePWM(_currentLevel));
-            status = Wire.endTransmission();
-            retryCount--;
-        } while(status != 0 && retryCount > 0);
-        
-        if(status != 0) {
-            Log.error("NCD8Light outputPWM write failed twice for light "+String(_lightNum)+", level = "+String(_currentLevel));
-            reset();
-        }
-    }
-}
-
-/**
- * Convert 0-100 to 0-255 exponential scale
- * 0 = 0, 100 = 255
- */
-int NCD8Light::scalePWM(float value) {
-    if (value <= 0) return 0;
-    if (value >= 100) return 255;
-
-    //TODO: This is too extreme. Need to refine algorithm
-    float base = 1.05697667;
-    float pwm = pow(base,value);
-    if (pwm > 255) {
-        pwm = 255;
-    }
-    return (int)pwm;
-}
-
-
-/**
- Patriot Curtain
- */
-/**
- * Constructor
- * @param relayIndex is the relay number of the 1st of 2 relays (0-2)
- * @param name String name used to address the relay.
- */
-Curtain::Curtain(int8_t relayIndex, String name, String room)
-    : Device(name, room)
-{
-    _relayIndex  = relayIndex;      // 0 (first 2 relays)
-    _stopMillis = 0;
-    _mode = 0;
-    _stage = 0;
-    _type  = 'C';
-    _holding = false;
-}
-
-void Curtain::begin() {
-
-    byte status;
-    int  retries;
-
-    // Only the first device on the I2C link needs to enable it
-    if(!Wire.isEnabled()) {
-        Wire.begin();
-    }
-
-    retries = 0;
-    do {
-        Wire.beginTransmission(pca9634address);
-        Wire.write(0x00);                 // Select IO Direction register
-        Wire.write(0xf0);                 // 0-3 out, 4-7 in
-        status = Wire.endTransmission();  // Write 'em, Dano
-    } while( status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Set IODIR failed");
-    }
-
-    retries = 0;
-    do {
-        Wire.beginTransmission(pca9634address);
-        Wire.write(0x06);        // Select pull-up resistor register
-        Wire.write(0xf0);        // pull-ups enabled on inputs
-        status = Wire.endTransmission();
-    } while( status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Set GPPU failed");
-    }
-}
-
-/**
- * Set value
- * This is how things are turned on/off in Patriot
- * @param percent Int 0 to 100. 0 = closed, >0 = open
- */
-void Curtain::setValue(int percent) {
-
-    //FOR DEBUGGING, SETTING ONLY OPEN OR CLOSED
-    
-    if(percent == _value) {
-        Log.warn("Curtain setValue is the same as previous value, ignoring");
-        //TODO: do we want to issue open/close again just in case?
-        return;
-    }
-
-    _startPosition = _value;
-    _startMillis = millis();
-    
-    _value = percent;           // Should this report current instead?
-    _holding = false;
-    _updateMillis = millis() + MILLIS_PER_UPDATE;
-    Log.info("_updateMillis = %ld",_updateMillis);
-
-    // Send HomeKit acknowledgement
-    IoT::publishMQTT("/ack/" + _name + "/set",String(percent));
-    
-    // Send position updates
-    IoT::publishMQTT(_name + "/get",String(percent));
-    IoT::publishMQTT(_name + "/position",String(_startPosition));
-
-    if(_value > _startPosition) {
-        _mode = OPEN_CURTAIN;
-        IoT::publishMQTT(_name + "/state", "increasing");
-
-    } else {
-        _mode = CLOSE_CURTAIN;
-        IoT::publishMQTT(_name + "/state", "decreasing");
-    }
-
-    // We only need a single pulse if opening or closing all the way
-    if(_value == 0 || _value == 100) {
-        _stage = 3;
-    } else {
-        _stage = 1;
-    }
-    _stopMillis = millis() + PULSE_MILLIS;
-    pulse(true);
-}
-
-void Curtain::setHold(bool holding) {
-    if(holding == true) {
-        if(_holding == true) {  // Already holding?
-            return;
-        }
-        //TODO: stop movement, but remember target in case hold false
-        
-    } else {        // resume
-        if(_holding == false) { // Not currently holding?
-            return;
-        }
-        //TODO: resume movement - same as setValue using old target
-        
-    }
-    _holding = holding;
-    Log.warn("Curtain setHold not implemented");
-}
-
-
-/**
- * Start 1=close, 2=open
- */
-void Curtain::pulse(bool high) {
-    
-    Log.info("Curtain pulse %s",high ? "high" : "low");
-
-    int currentState = readCurrentState();
-    
-    byte bitmap = 0x01 << (_relayIndex + _mode - 1);
-    if(high) {
-        currentState |= bitmap;    // Set relay's bit
-    } else {
-        bitmap = 0xff ^ bitmap;
-        currentState &= bitmap;
-    }
-
-    byte status;
-    int retries = 0;
-    do {
-        Wire.beginTransmission(pca9634address);
-        Wire.write(0x09);
-        Wire.write(currentState);
-        status = Wire.endTransmission();
-    } while(status != 0 && retries++ < 3);
-
-    if(status != 0) {
-        Log.error("Error pulsing relay %d %s", bitmap, high ? "high" : "low");
-    }
-}
-
-/**
- * loop()
- */
-void Curtain::loop()
-{
-    if(isCurtainRunning()) {
-        
-        if(isTimeToChangePulse()) {
-            switch(_stage) {
-                case 1:
-                    Log.info("Curtain end-of-start pulse");
-                    pulse(false);
-                    
-                    _stopMillis = millis() + ((FULL_TIME_MILLIS *  abs(_startPosition - _value)) / 100) - PULSE_MILLIS;
-                    
-                    _stage = 2;
-                    break;
-                case 2:
-                    Log.info("Curtain start-of-end pulse");
-                    pulse(true);
-                    _stopMillis = millis() + PULSE_MILLIS;
-                    _stage = 3;
-                    break;
-                case 3:
-                    Log.info("Curtain end-of-end pulse");
-                    pulse(false);
-                    _stopMillis = millis() + FULL_TIME_MILLIS - PULSE_MILLIS;
-                    _stage = 4;
-                    break;
-                case 4:
-                    _stage = 0;
-                    IoT::publishMQTT(_name + "/state", "stopped");
-                    break;
-                default:
-                    Log.error("Invalid _stage %d",_stage);
-            }
-            
-        }
-        
-        // Calculate periodic HomeKit updates to getCurrentPosition
-        if(millis() >= _updateMillis) {
-            _updateMillis += MILLIS_PER_UPDATE;
-            
-            int percentDelta = (int)((millis() - _startMillis) / MILLIS_PER_PERCENT);
-            if(_mode == CLOSE_CURTAIN) percentDelta = -percentDelta;
-//            Log.info("DBG: _startPosition = %d",_startPosition);
-//            Log.info("DBG: curtain percent delta = %d",percentDelta);
-//            Log.info("DBG: _startMillis = %ld",_startMillis);
-//            Log.info("DBG: millis = %ld",millis());
-//            Log.info("DBG: millis delta = %ld",millis() - _startMillis);
-//            _value = _startPosition + percentDelta;
-//            IoT::publishMQTT(_name + "/position", String(_value));
-            IoT::publishMQTT(_name + "/position", String(_startPosition + percentDelta));
-        }
-    }
-};
-
-bool Curtain::isCurtainRunning() {
-    return(_stage != 0);
-}
-
-bool Curtain::isTimeToChangePulse() {
-    return(millis() >= _stopMillis);
-}
-
-void Curtain::reset() {
-    Log.error("Resetting board");
-    Wire.reset();
-    // Do we need any delay here?
-    Wire.begin();
-
-    // Issue PCA9634 SWRST
-    Wire.beginTransmission(pca9634address);
-    Wire.write(0x06);
-    Wire.write(0xa5);
-    Wire.write(0x5a);
-    byte status = Wire.endTransmission();
-    if(status != 0){
-        Log.error("Curtain reset write failed for relayIndex: "+String(_relayIndex)+", re-initializing board");
-    }
-    begin();
-}
-
-/**
- * readCurrentState
- * Return state of all 4 relays
- */
-int Curtain::readCurrentState() {
-    int retries = 0;
-    int status;
-    do {
-        Wire.beginTransmission(pca9634address);
-        Wire.write(0x09);       // GPIO Register
-        status = Wire.endTransmission();
-    } while(status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Curtain: Error selecting GPIO register");
-    }
-    
-    Wire.requestFrom(pca9634address, 1);      // Read 1 byte
-    
-    if (Wire.available() != 1)
-    {
-        Log.error("Curtain: Error reading current state");
-        return 0;
-    }
-    
-    int data = Wire.read();
-    return(data);
-}
 
