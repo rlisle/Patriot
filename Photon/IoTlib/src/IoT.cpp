@@ -49,7 +49,7 @@ void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
     Device::expose();
     
     // Start H/W Watchdog
-    //startWatchdog();
+    startWatchdog();
     
     // Start MQTT
     _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
