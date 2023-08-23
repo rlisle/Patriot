@@ -8,6 +8,7 @@
  http://www.github.com/rlisle/Patriot
 
  8.1.0 Converted to use 12 bits
+ 10.0.0 Photon 2
  
  Written by Ron Lisle
 

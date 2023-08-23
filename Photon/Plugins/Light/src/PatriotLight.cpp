@@ -171,15 +171,11 @@ int Light::scalePWM(int value) {
 bool Light::isPwmSupported()
 {
     switch(_pin) {
-        case D0:
         case D1:
-        case D2:
-        case D3:
-        case A4:
+        case D15:
+        case D17:
+        case A2:
         case A5:
-        case A7:    // aka WKP
-        case RX:
-        case TX:
             return _forceDigital ? FALSE : TRUE;
         default:
             break;
