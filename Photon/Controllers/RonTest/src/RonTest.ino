@@ -28,7 +28,13 @@ void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);   // or ANT_EXTERNAL
 //    WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
-    
+
+    // Lights
+    Device::add(new Light(A2, "Couch", "Living Room", 2));
+
+    // PIR
+    Device::add(new PIR(A0, "TestMotion", "Living Room", 300));
+
     Log.info("RonTest started");
 }
 

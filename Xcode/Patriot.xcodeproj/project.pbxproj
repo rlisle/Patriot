@@ -69,6 +69,9 @@
 		27BA7D6727D456AA0045A887 /* HueLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HueLight.h; path = ../Photon/Plugins/PhilipsHue/src/HueLight.h; sourceTree = "<group>"; };
 		27BA7D6827D456AA0045A887 /* HueLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HueLight.cpp; path = ../Photon/Plugins/PhilipsHue/src/HueLight.cpp; sourceTree = "<group>"; };
 		27BA7D6927D456C80045A887 /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; name = examples; path = ../Photon/Plugins/PhilipsHue/examples; sourceTree = "<group>"; };
+		27D332122A96CE390044EB83 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/IoTlib/src/PatriotLight.cpp; sourceTree = "<group>"; };
+		27D332132A96D0240044EB83 /* PatriotPIR.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotPIR.cpp; path = ../Photon/IoTlib/src/PatriotPIR.cpp; sourceTree = "<group>"; };
+		27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotCurtain.cpp; path = ../Photon/IoTlib/src/PatriotCurtain.cpp; sourceTree = "<group>"; };
 		27D74327276E1B2300280B2C /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RonPIRTest/project.properties; sourceTree = "<group>"; };
 		27D74328276E1B2300280B2C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RonPIRTest/README.md; sourceTree = "<group>"; };
 		27D74329276E1B2300280B2C /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/RonPIRTest/src; sourceTree = "<group>"; };
@@ -337,6 +340,9 @@
 		E4849C502566A93E00A39734 /* IoTlib */ = {
 			isa = PBXGroup;
 			children = (
+				27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */,
+				27D332132A96D0240044EB83 /* PatriotPIR.cpp */,
+				27D332122A96CE390044EB83 /* PatriotLight.cpp */,
 				E41085942568639C00EFBE84 /* library.properties */,
 				E4849C542566AB3C00A39734 /* constants.h */,
 				E4849C5C2566AB3C00A39734 /* device.h */,

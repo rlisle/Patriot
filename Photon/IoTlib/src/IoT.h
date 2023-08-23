@@ -85,3 +85,115 @@ private:
     static void handleDSTMarch();
     static void handleDSTNovember();
 };
+
+// Device Declarations
+
+class Curtain : public Device {
+ private:
+    unsigned long _stopMillis;    // time to change start/stop pulse
+    unsigned long _updateMillis;  // time to send next update msg
+    unsigned long _startMillis;
+
+    int8_t  _boardAddress;
+    int8_t  _relayIndex;
+    
+    int8_t  _mode;  // 1 = close, 2 = open, 0 = idle
+    int8_t  _stage; //1 = start pulse, 2=running, 3=stop pulse, 4=notDone
+    bool    _holding;
+    
+    int8_t  _startPosition;
+
+    void    pulse(bool start);
+    bool    isCurtainRunning();
+    bool    isTimeToChangePulse();
+    int     readCurrentState();
+    int     currentPosition();
+    
+ public:
+    Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room);
+    
+    void    begin();
+    void    reset();
+    void    setValue(int percent);  // Target state
+    void    setHold(bool holding);
+    void    loop();
+};
+class Light : public Device {
+ private:
+    int       _pin;
+
+    int       _targetValue;             // Same as _value?
+    float     _dimmingDuration;
+    float     _currentValue;          // Use for smooth dimming transitions
+    float     _incrementPerMillisecond;
+
+    long      _lastUpdateTime;
+    bool      _isInverted;              // On state = LOW instead of default HIGH
+    bool      _forceDigital;            // On/Off only, even if PWM supported
+
+    void      startSmoothDimming();
+    void      outputPWM();
+    int       scalePWM(int percent);
+    bool      isPwmSupported();
+
+ public:
+    Light(int pin, String name, String room, bool isInverted=false, bool forceDigital=false);
+    void      begin();
+    
+    void      setValue(int value);      // Set light immediately
+
+    void      setDimmingDuration(float duration);
+    float     getDimmingDuration();
+
+    void      loop();
+};
+class PIR : public Device {
+private:
+    int        _pin;
+    long       _lastPollTime;
+    long       _lastMotion;
+    long       _timeoutMSecs;
+
+    bool      isTimeToCheckSensor();
+    bool      didSensorChange();
+    int       stateWithDelayedOff();
+    void      notify();
+    
+public:
+    PIR(int pinNum, String name, String room, int timeoutSecs);
+
+    void begin();
+    void loop();
+    
+    // Override to prevent MQTT from setting _percent.
+    void setValue(int percent) { return; };
+};
+class Power : public Device {
+ private:
+    float   _powerUsage[2];
+    
+    void    notify();
+
+ public:
+    Power(String name, String room);
+    
+    void    loop();
+    void    mqtt(String topic, String message);
+};
+class Voltage : public Device {
+ private:
+    system_tick_t   _lastPollTime;
+    int             _pinNum;
+    float           _stepValue;
+    float           _fixedPoint;
+
+    bool    isTimeToReadVoltage();
+    bool    didVoltageChange();
+    void    notify();
+
+ public:
+    Voltage(int pinNum, String name, String room, float fullScale, int fixedPoint);
+    
+    void    begin();
+    void    loop();
+};
