@@ -28,6 +28,7 @@
 // Global & Static Variables
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
+
 int          outOfMemory = -1;
 
 void outOfMemoryHandler(system_event_t event, int param) {

@@ -2,7 +2,7 @@
  * RonTest Controller
  *
  * Description: This sketch is used for experimenting and testing
- * Currently testing Awning and Power
+ * Currently testing Photon2
  *
  * Author: Ron Lisle
  *
@@ -12,93 +12,34 @@
  */
 
 #include "Particle.h"
-//#include <IoT.h>
-//#include <PatriotCurtain.h>
-//#include <PatriotPower.h>
-//#include <PatriotAwning.h>
+#include <IoT.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
+#define MQTT_LOGGING true
 
 //While debugging, use serial and disable MQTT logging if needed
 //SerialLogHandler logHandler;
-//#define MQTT_LOGGING false
-
-//#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
-//int amps = 0;
-//int ampsThreshold = 10;     // Report changes > 10 amps
-
-int          outOfMemory = -1;
-
-void outOfMemoryHandler(system_event_t event, int param) {
-    outOfMemory = param;
-}
-
-
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);   // or ANT_EXTERNAL
 //    WiFi.useDynamicIP();
-//    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
-    
-    System.on(out_of_memory, outOfMemoryHandler);
-    startWatchdog();
-    
-    
-    // I2CIO4R4G5LE board
-    // 4 Relays
-//    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
-//    Device::add(new Awning(I2CR4IO4, 2, "TestAwning", "Outside"));     // 2x Relays: 2, 3
-
-    // 4 GPIO
-//    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
-
-//    Device::add(new Power("amps", "Status"));
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
     Log.info("RonTest started");
 }
 
-void startWatchdog()
-{
-    // Getting capabiltiies
-    WatchdogInfo info;
-    Watchdog.getInfo(info);
-
-    // Get the capabilities that are always enabled
-    WatchdogCaps mandatoryCaps = info.mandatoryCapabilities();
-
-    // Get the capabilities that can be turned off
-    WatchdogCaps optionalCaps = info.capabilities();
-    
-    Watchdog.init(WatchdogConfiguration().timeout(5m));
-    Watchdog.start();
-}
-
 void loop() {
-//    IoT::loop();
+    IoT::loop();
     
 //    scanI2Caddresses();
-//    handleAmps();
 
     Watchdog.refresh();
 
 }
-
-//void handleAmps() {
-//    int ampsChanged = Device::getChangedValue("amps");
-//    if( ampsChanged != -1 ) {
-//        if(ampsChanged >= amps + 10) {
-//            Log.info("amps increased to %d",ampsChanged);
-//        }
-//        if(ampsChanged <= amps - 10) {
-//            Log.info("amps decreased to %d",ampsChanged);
-//        }
-//        amps = ampsChanged;
-//    }
-//}
 
 // Diagnostic Functions
 // Search all I2C addresses every 15 seconds -
