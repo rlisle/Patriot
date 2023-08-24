@@ -284,6 +284,22 @@
 			name = HueLight;
 			sourceTree = "<group>";
 		};
+		27D3321E2A9774410044EB83 /* Devices */ = {
+			isa = PBXGroup;
+			children = (
+				27D3321B2A97711A0044EB83 /* PatriotSwitch.cpp */,
+				27D3321A2A976F9F0044EB83 /* PatriotNCD16Dimmer.cpp */,
+				27D332192A976D010044EB83 /* PatriotNCD8Switch.cpp */,
+				27D332172A976B610044EB83 /* PatriotNCD8Light.cpp */,
+				27D332162A976AC00044EB83 /* PatriotNCD4Switch.cpp */,
+				27D332152A97691F0044EB83 /* PatriotNCD4Relay.cpp */,
+				27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */,
+				27D332132A96D0240044EB83 /* PatriotPIR.cpp */,
+				27D332122A96CE390044EB83 /* PatriotLight.cpp */,
+			);
+			name = Devices;
+			sourceTree = "<group>";
+		};
 		27D74326276E1B0500280B2C /* RonPIRTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -346,15 +362,7 @@
 		E4849C502566A93E00A39734 /* IoTlib */ = {
 			isa = PBXGroup;
 			children = (
-				27D3321B2A97711A0044EB83 /* PatriotSwitch.cpp */,
-				27D3321A2A976F9F0044EB83 /* PatriotNCD16Dimmer.cpp */,
-				27D332192A976D010044EB83 /* PatriotNCD8Switch.cpp */,
-				27D332172A976B610044EB83 /* PatriotNCD8Light.cpp */,
-				27D332162A976AC00044EB83 /* PatriotNCD4Switch.cpp */,
-				27D332152A97691F0044EB83 /* PatriotNCD4Relay.cpp */,
-				27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */,
-				27D332132A96D0240044EB83 /* PatriotPIR.cpp */,
-				27D332122A96CE390044EB83 /* PatriotLight.cpp */,
+				27D3321E2A9774410044EB83 /* Devices */,
 				E41085942568639C00EFBE84 /* library.properties */,
 				E4849C542566AB3C00A39734 /* constants.h */,
 				E4849C5C2566AB3C00A39734 /* device.h */,
