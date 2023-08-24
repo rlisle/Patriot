@@ -268,7 +268,6 @@ class NCD16Dimmer : public Device {
     void    setValue(int percent);  // 0-100
     void    loop();
 };
-
 class PIR : public Device {
 private:
     int        _pin;
@@ -301,6 +300,25 @@ class Power : public Device {
     
     void    loop();
     void    mqtt(String topic, String message);
+};
+class Switch : public Device {
+private:
+    int        _pin;
+    long       _lastPollTime;
+    int        _filter;
+
+    bool      isTimeToCheckSwitch();
+    bool      didSwitchChange();
+    void      notify();
+    
+public:
+    Switch(int pinNum, String name, String room);
+
+    void begin();
+    void loop();
+    
+    // Override to prevent MQTT from setting _percent.
+    void setValue(int percent) { return; };
 };
 class Voltage : public Device {
  private:
