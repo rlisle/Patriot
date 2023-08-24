@@ -9,6 +9,8 @@ It subscribes to Particle.io notifications, and distributes them to devices.
 
 http://www.github.com/rlisle/Patriot
 
+Device headers are all included at the bottom of this file.
+ 
 Written by Ron Lisle
 
 BSD license, check LICENSE for more information.
@@ -166,6 +168,107 @@ class NCD4Relay : public Device {
 
     void    loop();
 };
+class NCD4Switch : public Device {
+ private:
+    long    _lastPollTime;
+    int8_t  _filter;
+
+    int8_t  _boardAddress;
+    int8_t  _switchBitmap;
+    
+    bool      isSwitchOn();
+    bool      isTimeToCheckSwitch();
+    bool      didSwitchChange();
+    void      notify();
+
+ public:
+    NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room);
+    
+    void    begin();
+    void    reset();
+    void    loop();
+};
+class NCD8Light : public Device {
+ private:
+    int8_t  _lightNum;                 // Up to 8 lights supported
+    int8_t   _address;                 // Address of board (eg. 0x40)
+
+    int      _dimmingDuration;
+    float    _currentLevel;            // Use for smooth dimming transitions.
+    float    _targetLevel;
+    float    _incrementPerMillisecond;
+    
+    long     _lastUpdateTime;
+
+    int8_t  initializeBoard();
+    void    outputPWM();
+    void    startSmoothDimming();
+    int     scalePWM(float value);
+
+ public:
+    NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
+    void    begin();
+    void    reset();
+    void    setValue(int value);
+    void    loop();
+};
+class NCD8Switch : public Device {
+private:
+    long    _lastPollTime;
+    int8_t  _filter;
+
+    int8_t  _boardAddress;
+    int8_t  _switchBitmap;
+
+    bool      isSwitchOn();
+    bool      isTimeToCheckSwitch();
+    bool      didSwitchChange();
+    void      notify();
+
+public:
+    NCD8Switch(int address, int switchIndex, String name, String room);
+    
+    void    begin();
+    int     initializeBoard();
+    void    reset();
+    void    loop();
+    
+    // Override to prevent MQTT from setting _percent.
+    // Needed because of no auto behavior.
+    // Our own generated MQTT message will reset _percent back to 0.
+    void setPercent(int percent) { return; };
+};
+class NCD16Dimmer : public Device {
+ private:
+    int8_t  _lightNum;                 // Up to 16 lights supported, 0 based
+    int8_t  _address;                  // Address of board (eg. 0x40)
+
+    // Note: Photon didn't support Floating Point but Photon 2 does.
+    // So maybe instead of using int (signed 32 bit) fixed point, we can use FP.
+    // TODO: convert to FP - don't need the following (I think)
+    // (Outputs are 12 bit unsigned, so Lower 19 bits truncated and sign discarded.)
+    // (Using signed ints to simplify underflow (< 0))
+    //
+    int     _dimmingDuration;           // time in msecs
+    int     _currentLevel;              // 0x00000000 to 0x7fffffff
+    int     _targetLevel;               // transitioning to level
+    int     _incrementPerMillisecond;   // Pre-calculated to minimize loop operations
+    
+    long    _lastUpdateTime;            // Time in msecs
+
+    int8_t  initializeBoard();
+    void    outputPWM();
+    void    startSmoothDimming();
+    int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
+
+ public:
+    NCD16Dimmer(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
+    void    begin();
+    void    reset();
+    void    setValue(int percent);  // 0-100
+    void    loop();
+};
+
 class PIR : public Device {
 private:
     int        _pin;
