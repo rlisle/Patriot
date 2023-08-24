@@ -72,6 +72,7 @@
 		27D332122A96CE390044EB83 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/IoTlib/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		27D332132A96D0240044EB83 /* PatriotPIR.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotPIR.cpp; path = ../Photon/IoTlib/src/PatriotPIR.cpp; sourceTree = "<group>"; };
 		27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotCurtain.cpp; path = ../Photon/IoTlib/src/PatriotCurtain.cpp; sourceTree = "<group>"; };
+		27D332152A97691F0044EB83 /* PatriotNCD4Relay.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD4Relay.cpp; path = ../Photon/IoTlib/src/PatriotNCD4Relay.cpp; sourceTree = "<group>"; };
 		27D74327276E1B2300280B2C /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RonPIRTest/project.properties; sourceTree = "<group>"; };
 		27D74328276E1B2300280B2C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RonPIRTest/README.md; sourceTree = "<group>"; };
 		27D74329276E1B2300280B2C /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/RonPIRTest/src; sourceTree = "<group>"; };
@@ -340,6 +341,7 @@
 		E4849C502566A93E00A39734 /* IoTlib */ = {
 			isa = PBXGroup;
 			children = (
+				27D332152A97691F0044EB83 /* PatriotNCD4Relay.cpp */,
 				27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */,
 				27D332132A96D0240044EB83 /* PatriotPIR.cpp */,
 				27D332122A96CE390044EB83 /* PatriotLight.cpp */,

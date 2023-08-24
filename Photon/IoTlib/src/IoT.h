@@ -147,6 +147,25 @@ class Light : public Device {
 
     void      loop();
 };
+class NCD4Relay : public Device {
+ private:
+    int8_t        _relayNum;
+    static int8_t _currentState;
+    static int8_t _address;           // Addresses of board
+
+    void   initializeBoard();
+
+ public:
+    NCD4Relay(int8_t address, int8_t relayNum, String name, String room);
+    
+    void    begin();
+
+    void    setValue(int value);
+    void    setOn();
+    void    setOff();
+
+    void    loop();
+};
 class PIR : public Device {
 private:
     int        _pin;
