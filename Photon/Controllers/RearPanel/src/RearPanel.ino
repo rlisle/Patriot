@@ -64,7 +64,8 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
     //Consolidate PCA9634 initialization
-//    initializePCA9634(I2CR4IO4, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
+    PCA9634::initialize(I2CR4IO4, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
+    
     createDevices();
 }
 
