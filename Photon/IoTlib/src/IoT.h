@@ -337,3 +337,26 @@ class Voltage : public Device {
     void    begin();
     void    loop();
 };
+
+//class NCD4PIR : public Device {
+// private:
+//    long    _lastPollTime;
+//    long    _lastMotion;
+//    long    _timeoutMSecs;
+//    int8_t  _gpioBitmap;
+//
+//    bool    isSensorOn();
+//    bool    isTimeToCheckSensor();
+//    bool    didSensorChange();
+//    void    notify();
+//
+// public:
+//    NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutSecs);
+//    
+//    void    begin();
+//    void    reset();
+//    void    loop();
+//    // Override to prevent MQTT from setting _percent.
+//    void setValue(int percent) { return; };
+//};
+

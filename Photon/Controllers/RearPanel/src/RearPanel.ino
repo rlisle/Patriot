@@ -55,7 +55,7 @@ long lastOfficeMotion = 0;
 bool officeDoor = false;
 bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
-int8_t pca9634address;
+//int8_t pca9634address;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
@@ -77,7 +77,7 @@ void createDevices() {
     
     // 4 GPIO
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
-    Device::add(new NCD4PIR(I2CR4IO4, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+//    Device::add(new NCD4PIR(I2CR4IO4, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // (deprecated) Photon I/O
     //Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));

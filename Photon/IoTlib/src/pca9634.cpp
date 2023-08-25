@@ -7,11 +7,13 @@
 
 #include "IoT.h"
 
+int8_t pca9634address;  //TODO: Add support for multiple boards
+
 void initializePCA9634(int address, int iomap) {
     byte status;
     int  retries;
     pca9634address = address; // 0x20 = no jumpers
-    
+
     // Only the first device on the I2C link needs to enable it
     if(!Wire.isEnabled()) {
         Wire.begin();
@@ -56,7 +58,7 @@ void resetPCA9634() {
     if(status != 0){
         Log.error("resetPCA9634 reset write failed");
     }
-    initializePCA9634(I2CR4IO4, 0xf0);
+    initializePCA9634(pca9634address, 0xf0);
 }
 
 bool pca9634isInputOn(int bitmap) {
