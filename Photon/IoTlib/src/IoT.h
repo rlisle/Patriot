@@ -247,7 +247,7 @@ public:
     // Our own generated MQTT message will reset _percent back to 0.
     void setPercent(int percent) { return; };
 };
-class NCD16Dimmer : public Device {
+class NCD16Light : public Device {
  private:
     int8_t  _lightNum;                 // Up to 16 lights supported, 0 based
     int8_t  _address;                  // Address of board (eg. 0x40)
@@ -271,7 +271,7 @@ class NCD16Dimmer : public Device {
     int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
 
  public:
-    NCD16Dimmer(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
+    NCD16Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
     void    begin();
     void    reset();
     void    setValue(int percent);  // 0-100
