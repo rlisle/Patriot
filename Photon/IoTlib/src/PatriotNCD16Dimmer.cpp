@@ -10,6 +10,11 @@
  - The "Common Bus" appears to be isolated from everything else, so can be used as
   as a + power strip for the LEDs. It can be sourced separately if desired.
  
+ Photon2 has native floating point, so no need to use integer math instead of FP.
+ For now will include PCA9685 within this file.
+ Once another board needs to use it, then will split it out into its own PCA9685 class.
+ 
+ Deprecated:
  Native 32 bit signed int math will be used since Photon does not have native FP support.
  Since D/A is 12 bit, data will be converted from 32b signed to 12 bit unsigned (<< 20?)
  So fixed point math means upper 12 bits are unsigned value (0-4095) and lower 19 bits are fractional (0 - 524,287)
@@ -19,8 +24,7 @@
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
- Based on NCD8Light library.
-
+ 
  BSD license, check license.txt for more information.
  All text above must be included in any redistribution.
 
