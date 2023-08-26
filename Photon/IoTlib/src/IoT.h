@@ -103,7 +103,7 @@ class PCA9685 {
 public:
     static int8_t address;  //TODO: Add support for multiple boards
     
-    static void initialize(int address, int iomap);
+    static void initialize(int address);
     static void reset();
     static void outputPWM(int lightNum, int level); // level 0-0x0fff
 };
