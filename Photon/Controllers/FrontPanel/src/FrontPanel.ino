@@ -67,7 +67,8 @@ void setup() {
 
 void createDevices() {
 
-    //TODO: Replace all lights with NCD16Lights
+    PCA9685::initialize(ADDRESS);
+    
     // Inside Lights
     Device::add(new NCD16Light(ADDRESS, 1, "KitchenCeiling", "Kitchen", 2));
     Device::add(new NCD16Light(ADDRESS, 2, "Sink", "Kitchen", 2));

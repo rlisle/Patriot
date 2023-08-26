@@ -7,6 +7,8 @@
 
 #include "IoT.h"
 
+int8_t PCA9634::address;
+
 void PCA9634::initialize(int address, int iomap) {
     byte status;
     int  retries;

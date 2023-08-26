@@ -56,6 +56,7 @@
 		27841D7527871CE400DFCCFD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/NCD4Relay/src; sourceTree = "<group>"; };
 		27841D7627871CE400DFCCFD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Relay/library.properties; sourceTree = "<group>"; };
 		27841D7727871CFD00DFCCFD /* relay.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = relay.ino; path = ../Photon/Plugins/NCD4Relay/examples/relay/relay.ino; sourceTree = "<group>"; };
+		278712422A9A9AB00088AC70 /* pca9685.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = pca9685.cpp; path = ../Photon/IoTlib/src/pca9685.cpp; sourceTree = "<group>"; };
 		279E08C7295DE4B60059951F /* ShellyPower */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShellyPower; path = ../Photon/Plugins/ShellyPower; sourceTree = "<group>"; };
 		27A0F26C279DE9950021E84D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../Photon/Plugins/MR24/LICENSE; sourceTree = "<group>"; };
 		27A0F26D279DE9950021E84D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Plugins/MR24/README.md; sourceTree = "<group>"; };
@@ -289,6 +290,8 @@
 		27D3321E2A9774410044EB83 /* Devices */ = {
 			isa = PBXGroup;
 			children = (
+				27D3321F2A977AB50044EB83 /* pca9634.cpp */,
+				278712422A9A9AB00088AC70 /* pca9685.cpp */,
 				27B17DC52A9A122F00D45EC8 /* PatriotNCD16Light.cpp */,
 				27D3321B2A97711A0044EB83 /* PatriotSwitch.cpp */,
 				27D332192A976D010044EB83 /* PatriotNCD8Switch.cpp */,
@@ -298,7 +301,6 @@
 				27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */,
 				27D332132A96D0240044EB83 /* PatriotPIR.cpp */,
 				27D332122A96CE390044EB83 /* PatriotLight.cpp */,
-				27D3321F2A977AB50044EB83 /* pca9634.cpp */,
 				27D332202A977D1B0044EB83 /* PatriotNCD4PIR.cpp */,
 			);
 			name = Devices;
