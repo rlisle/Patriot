@@ -44,10 +44,9 @@
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
 
-NCD16Light::NCD16Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration)
+NCD16Light::NCD16Light(int8_t lightNum, String name, String room, int8_t duration)
                      : Device(name, room)
 {
-    _address = address;
     _lightNum   = lightNum;
     _dimmingDuration = duration * 1000; // Convert to msecs
     _value = 0;
@@ -59,61 +58,12 @@ NCD16Light::NCD16Light(int8_t address, int8_t lightNum, String name, String room
 }
 
 void NCD16Light::begin() {
-    initializeBoard();
-}
-
-int8_t NCD16Light::initializeBoard() {
-    int status;
-
-    // Only the first light loaded needs to initialize the I2C link
-    if(!Wire.isEnabled()) {
-        Wire.begin();
-    }
-
-    Wire.beginTransmission(_address);   // Seems unnecessary
-    status = Wire.endTransmission();
-
-    //TODO: retry several times?
-    if(status == 0) {
-        // PCA9685 repo code
-        Wire.beginTransmission(_address);
-        Wire.write(254);    // PRE_SCALE for PWM output freq
-        Wire.write(5);      // 5 = ?
-        Wire.endTransmission();
-        
-        Wire.beginTransmission(_address);
-        Wire.write(0);      // MODE1
-        Wire.write(161);    // 128=Restart Enabled, internal clock, 32=AutoIncrement, 1=AllCall
-        // MODE2 left default: NotInverted, Output on Stop command, OpenDrain, OUTNE
-        Wire.endTransmission();
-
-        outputPWM();            // Force light off
-        
-        Log.info("InitializeBoard " + _name + " sucess");
-        
-    } else {
-        Log.error("InitializeBoard " + _name + " FAILED!");
-    }
-
-    return status;
+    // Initialization done by PCA9685
 }
 
 void NCD16Light::reset() {
-    Log.error("Resetting 9685board");
-    Wire.reset();
-    // Do we need any delay here?
-    Wire.begin();
-
-    // Issue PCA9685 SWRST - this doesn't look correct, so commented out for now
-//    Wire.beginTransmission(_address);
-//    Wire.write(0x06);       // Isn't this LED0???
-//    Wire.write(0xa5);
-//    Wire.write(0x5a);
-//    byte status = Wire.endTransmission();
-//    if(status != 0){
-//        Log.error("NCD16Light reset write failed for light "+String(_lightNum)+", reseting Wire");
-//    }
-    initializeBoard();
+    Log.error("NCD16Light reset");
+    PCA9685::reset();
 }
 
 /**
@@ -196,29 +146,8 @@ void NCD16Light::loop()
  * Set the output PWM _currentLevel (0-4095)
  */
 void NCD16Light::outputPWM() {
-    int reg = 6 + (_lightNum * 4); // 0 based, not 1 based like older plugins
-
     int current4k = _currentLevel >> 19; // Convert 0-0x7fffffff to 0-0xfff
-    int lsb = current4k & 0xff;
-    int msb = current4k >> 8;
-    
-    int retryCount = 3;
-    byte status;
-    do {
-        Wire.beginTransmission(_address);
-        Wire.write(reg);
-        Wire.write(0);      // Delay lsb
-        Wire.write(0);      // Delay msb
-        Wire.write(lsb);    // Off lsb
-        Wire.write(msb);    // Off msb
-        status = Wire.endTransmission();
-        retryCount--;
-    } while(status != 0 && retryCount > 0);
-    
-    if(status != 0) {
-        Log.error("NCD16Light outputPWM write failed for light "+String(_lightNum)+", level = "+String(current4k));
-        reset();
-    }
+    PCA9685::outputPWM(_lightNum, current4k);
 }
 
 /**

@@ -70,18 +70,18 @@ void createDevices() {
     PCA9685::initialize(ADDRESS);
     
     // Inside Lights
-    Device::add(new NCD16Light(ADDRESS, 1, "KitchenCeiling", "Kitchen", 2));
-    Device::add(new NCD16Light(ADDRESS, 2, "Sink", "Kitchen", 2));
-    Device::add(new NCD16Light(ADDRESS, 4, "RightTrim", "Kitchen", 2));
-    Device::add(new NCD16Light(ADDRESS, 5, "LeftTrim", "Living Room", 2));
-    Device::add(new NCD16Light(ADDRESS, 6, "Ceiling", "Kitchen", 2));
-    Device::add(new NCD16Light(ADDRESS, 7, "Cabinets", "Kitchen", 2));
+    Device::add(new NCD16Light(1, "KitchenCeiling", "Kitchen", 2));
+    Device::add(new NCD16Light(2, "Sink", "Kitchen", 2));
+    Device::add(new NCD16Light(4, "RightTrim", "Kitchen", 2));
+    Device::add(new NCD16Light(5, "LeftTrim", "Living Room", 2));
+    Device::add(new NCD16Light(6, "Ceiling", "Kitchen", 2));
+    Device::add(new NCD16Light(7, "Cabinets", "Kitchen", 2));
 
     // Outside Lights
-    Device::add(new NCD16Light(ADDRESS, 8, "DoorSide", "Outside", 2));
-    Device::add(new NCD16Light(ADDRESS, 9, "OtherSide", "Outside", 2));
-    Device::add(new NCD16Light(ADDRESS, 10, "FrontAwning", "Outside", 2));
-    Device::add(new NCD16Light(ADDRESS, 11, "FrontPorch", "Outside", 2));
+    Device::add(new NCD16Light(8, "DoorSide", "Outside", 2));
+    Device::add(new NCD16Light(9, "OtherSide", "Outside", 2));
+    Device::add(new NCD16Light(10, "FrontAwning", "Outside", 2));
+    Device::add(new NCD16Light(11, "FrontPorch", "Outside", 2));
 
     //TODO: I/O pins not available. Will need a separate NCD board
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder

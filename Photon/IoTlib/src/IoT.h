@@ -280,7 +280,7 @@ class NCD16Light : public Device {
     int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
 
  public:
-    NCD16Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
+    NCD16Light(int8_t lightNum, String name, String room, int8_t duration = 0);
     void    begin();
     void    reset();
     void    setValue(int percent);  // 0-100
