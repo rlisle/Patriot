@@ -90,6 +90,15 @@ private:
 
 // Device Declarations
 
+class MCP23008 {
+public:
+    static int8_t address;  //TODO: Add support for multiple boards
+    
+    static void initialize(int address, int iomap);
+    static void reset();
+    static int read();
+    static void write(int ioNum, bool value);
+};
 class PCA9634 {
 public:
     static int8_t address;  //TODO: Add support for multiple boards

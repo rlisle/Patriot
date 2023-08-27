@@ -85,6 +85,7 @@
 		27D74328276E1B2300280B2C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RonPIRTest/README.md; sourceTree = "<group>"; };
 		27D74329276E1B2300280B2C /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/RonPIRTest/src; sourceTree = "<group>"; };
 		27D7432A276E83EB00280B2C /* PIR */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PIR; path = ../Photon/Plugins/PIR; sourceTree = "<group>"; };
+		27FCEF082A9BED190014EA24 /* mcp23008.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = mcp23008.cpp; path = ../Photon/IoTlib/src/mcp23008.cpp; sourceTree = "<group>"; };
 		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
 		E41085872568628F00EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Light/library.properties; sourceTree = "<group>"; };
@@ -302,6 +303,7 @@
 				27D332132A96D0240044EB83 /* PatriotPIR.cpp */,
 				27D332122A96CE390044EB83 /* PatriotLight.cpp */,
 				27D332202A977D1B0044EB83 /* PatriotNCD4PIR.cpp */,
+				27FCEF082A9BED190014EA24 /* mcp23008.cpp */,
 			);
 			name = Devices;
 			sourceTree = "<group>";
