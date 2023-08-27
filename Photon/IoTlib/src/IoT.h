@@ -98,7 +98,6 @@ public:
     static void reset();
     static bool isInputOn(int bitmap);
 };
-
 class PCA9685 {
 public:
     static int8_t address;  //TODO: Add support for multiple boards
@@ -141,30 +140,28 @@ class Curtain : public Device {
 class Light : public Device {
  private:
     int       _pin;
+    int       _dimmingDurationMsecs;
+    float     _percentMaxValue;         // (1 << resolution)-1 / 100
 
-    int       _targetValue;             // Same as _value?
-    float     _dimmingDuration;
-    float     _currentValue;          // Use for smooth dimming transitions
+    // 0-100 scale
+    int       _targetValue;
+    float     _floatValue;
     float     _incrementPerMillisecond;
 
     long      _lastUpdateTime;
+
     bool      _isInverted;              // On state = LOW instead of default HIGH
     bool      _forceDigital;            // On/Off only, even if PWM supported
 
     void      startSmoothDimming();
     void      outputPWM();
-    int       scalePWM(int percent);
+    int       scalePWM(float value);
     bool      isPwmSupported();
 
  public:
     Light(int pin, String name, String room, bool isInverted=false, bool forceDigital=false);
     void      begin();
-    
-    void      setValue(int value);      // Set light immediately
-
-    void      setDimmingDuration(float duration);
-    float     getDimmingDuration();
-
+    void      setValue(int value);
     void      loop();
 };
 class NCD4Relay : public Device {
