@@ -43,7 +43,7 @@
 
 #define CONTROLLER_NAME "FrontPanel"
 #define MQTT_BROKER "192.168.50.33"
-#define ADDRESS 1      // PWM board lowest switch on
+#define ADDRESS 0x41      // PWM board lowest switch on
 
 #define VMPIN A0
 
@@ -70,18 +70,18 @@ void createDevices() {
     PCA9685::initialize(ADDRESS);
     
     // Inside Lights
-    Device::add(new NCD16Light(1, "KitchenCeiling", "Kitchen", 2));
-    Device::add(new NCD16Light(2, "Sink", "Kitchen", 2));
-    Device::add(new NCD16Light(4, "RightTrim", "Kitchen", 2));
-    Device::add(new NCD16Light(5, "LeftTrim", "Living Room", 2));
-    Device::add(new NCD16Light(6, "Ceiling", "Kitchen", 2));
-    Device::add(new NCD16Light(7, "Cabinets", "Kitchen", 2));
+    Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
+    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
+    Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
+    Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
+    Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));
+    Device::add(new NCD16Light(7, "Cabinets2", "Kitchen", 2));
 
     // Outside Lights
-    Device::add(new NCD16Light(8, "DoorSide", "Outside", 2));
-    Device::add(new NCD16Light(9, "OtherSide", "Outside", 2));
-    Device::add(new NCD16Light(10, "FrontAwning", "Outside", 2));
-    Device::add(new NCD16Light(11, "FrontPorch", "Outside", 2));
+    Device::add(new NCD16Light(8, "DoorSide2", "Outside", 2));
+    Device::add(new NCD16Light(9, "OtherSide2", "Outside", 2));
+    Device::add(new NCD16Light(10, "FrontAwning2", "Outside", 2));
+    Device::add(new NCD16Light(11, "FrontPorch2", "Outside", 2));
 
     //TODO: I/O pins not available. Will need a separate NCD board
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder

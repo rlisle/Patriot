@@ -61,7 +61,7 @@ void PCA9685::reset() {
 }
 
 void PCA9685::outputPWM(int lightNum, int level) {
-    int reg = 6 + (lightNum * 4); // 0 based, not 1 based like older plugins
+    int reg = 6 + (lightNum * 4);       // 0 based
 
     int lsb = level & 0xff;
     int msb = level >> 8;

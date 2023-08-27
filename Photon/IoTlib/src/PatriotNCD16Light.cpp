@@ -39,7 +39,7 @@
 /**
  * Constructor
  * @param address is the board address set by 6 jumpers: 0x01 if low switch set, 0x40 if high
- * @param lightNum is the channel number on the NCD 16 Dimmer board (0 based: 0 - 15) Note older plugins appear 1 based (bug?)
+ * @param lightNum is the channel number on the NCD 16 Dimmer board (1 - 16)
  * @param name String name used to address the light.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
@@ -47,7 +47,9 @@
 NCD16Light::NCD16Light(int8_t lightNum, String name, String room, int8_t duration)
                      : Device(name, room)
 {
-    _lightNum   = lightNum;
+    _lightNum   = lightNum - 1;
+    if(_lightNum < 0) _lightNum = 0;
+    if(_lightNum > 15) _lightNum = 15;
     _dimmingDuration = duration * 1000; // Convert to msecs
     _value = 0;
     _currentLevel = 0;

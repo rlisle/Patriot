@@ -277,6 +277,7 @@ class NCD16Light : public Device {
     int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
 
  public:
+    // lightNum is passed 1 based (1-16) but converted to 0-based in _lightNum
     NCD16Light(int8_t lightNum, String name, String room, int8_t duration = 0);
     void    begin();
     void    reset();
