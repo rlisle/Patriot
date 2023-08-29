@@ -7,13 +7,15 @@
 
 #include "IoT.h"
 
-int8_t MCP23008::address;
+int8_t MCP23008::_address;
+int8_t MCP23008::_iomap;
 
 void MCP23008::initialize(int address, int iomap) {
     byte status;
     int  retries;
     
-    address = address; // 0x20 = no jumpers
+    _address = address; // 0x20 = no jumpers
+    _iomap = iomap;     // 1's = input
 
     // Only the first device on the I2C link needs to enable it
     if(!Wire.isEnabled()) {
@@ -22,9 +24,9 @@ void MCP23008::initialize(int address, int iomap) {
 
     retries = 0;
     do {
-        Wire.beginTransmission(address);
-        Wire.write(0x00);                   // Select IO Direction register
-        Wire.write(iomap);                   // 1 output, 0 input
+        Wire.beginTransmission(_address);
+        Wire.write(0x00);           // Select IO Direction register
+        Wire.write(_iomap);          // 0 output, 1 input
         status = Wire.endTransmission();    // Write 'em, Dano
     } while( status != 0 && retries++ < 3);
     if(status != 0) {
@@ -34,39 +36,55 @@ void MCP23008::initialize(int address, int iomap) {
     
     retries = 0;
     do {
-        Wire.beginTransmission(address);
-        Wire.write(0x06);                   // Select pull-up resistor register
-        Wire.write(0xff ^ iomap);           // pull-ups enabled on all inputs
+        Wire.beginTransmission(_address);
+        Wire.write(0x06);               // Select pull-up resistor register
+        Wire.write(_iomap);              // pull-ups enabled on all inputs
         status = Wire.endTransmission();
     } while( status != 0 && retries++ < 3);
     if(status != 0) {
         Log.error("MCP23008 Set GPPU failed");
+        return;
     }
+
+    retries = 0;
+    do {
+        Wire.beginTransmission(_address);
+        Wire.write(0x01);               // Polarity register
+        Wire.write(_iomap);             // Invert all inputs
+        status = Wire.endTransmission();
+    } while( status != 0 && retries++ < 3);
+    if(status != 0) {
+        Log.error("MCP23008 set polarity failed");
+        return;
+    }
+
+    Log.info("MCP23008 initialize success");
 }
 
 void MCP23008::reset() {
-    Log.error("MCP23008 Resetting PCA9634");
+    Log.error("MCP23008 Resetting");
     Wire.reset();
     // Do we need any delay here?
     Wire.begin();
 
-    // Issue PCA9634 SWRST
-    Wire.beginTransmission(address);
-    Wire.write(0x06);
-    Wire.write(0xa5);
-    Wire.write(0x5a);
-    byte status = Wire.endTransmission();
-    if(status != 0){
-        Log.error("MCP23008 resetPCA9634 reset write failed");
-    }
-    initialize(address, 0xf0);
+//    // Issue PCA9634 SWRST
+//    Wire.beginTransmission(_address);
+//    Wire.write(0x06);
+//    Wire.write(0xa5);
+//    Wire.write(0x5a);
+//    byte status = Wire.endTransmission();
+//    if(status != 0){
+//        Log.error("MCP23008 reset write failed");
+//    }
+    initialize(_address, _iomap);
 }
 
 int MCP23008::read() {
     int retries = 0;
     int status;
+    
     do {
-        Wire.beginTransmission(address);
+        Wire.beginTransmission(_address);
         Wire.write(0x09);       // GPIO Register
         status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
@@ -75,7 +93,7 @@ int MCP23008::read() {
         return false;
     }
     
-    Wire.requestFrom(address, 1);      // Read 1 byte
+    Wire.requestFrom(_address, 1);      // Read 1 byte
     
     if (Wire.available() == 1)
     {
@@ -90,7 +108,7 @@ void MCP23008::write(int ioNum, bool value) {
     int retryCount = 3;
     byte status;
     do {
-        Wire.beginTransmission(address);
+        Wire.beginTransmission(_address);
         Wire.write(0x09);   // GPIO register
         
         //TODO: Need to insert bit into existing mask

@@ -92,7 +92,8 @@ private:
 
 class MCP23008 {
 public:
-    static int8_t address;  //TODO: Add support for multiple boards
+    static int8_t _address;  //TODO: Add support for multiple boards
+    static int8_t _iomap;
     
     static void initialize(int address, int iomap);
     static void reset();
@@ -240,8 +241,6 @@ class NCD8Switch : public Device {
 private:
     long    _lastPollTime;
     int8_t  _filter;
-
-    int8_t  _boardAddress;
     int8_t  _switchBitmap;
 
     bool      isSwitchOn();
@@ -250,11 +249,7 @@ private:
     void      notify();
 
 public:
-    NCD8Switch(int address, int switchIndex, String name, String room);
-    
-    void    begin();
-    int     initializeBoard();
-    void    reset();
+    NCD8Switch(int switchIndex, String name, String room);
     void    loop();
     
     // Override to prevent MQTT from setting _percent.

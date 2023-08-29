@@ -43,7 +43,9 @@
 
 #define CONTROLLER_NAME "FrontPanel"
 #define MQTT_BROKER "192.168.50.33"
-#define ADDRESS 0x41      // PWM board lowest switch on
+#define DIMMER_ADDRESS 0x41      // PWM board lowest switch on
+#define SWITCH_ADDRESS 0x20
+#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
 
 #define VMPIN A0
 
@@ -53,7 +55,7 @@ SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
 #define MQTT_LOGGING true
-//SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
+SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
 int sleeping = 0;
 int voltage = 0;
@@ -67,7 +69,7 @@ void setup() {
 
 void createDevices() {
 
-    PCA9685::initialize(ADDRESS);
+    PCA9685::initialize(DIMMER_ADDRESS);
     
     // Inside Lights
     Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
@@ -89,6 +91,19 @@ void createDevices() {
 //    Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
     
 //    Device::add(new Power("Power", "Status"));
+
+    // Inputs - test/debug at this point
+    
+    MCP23008::initialize(SWITCH_ADDRESS, SWITCH_IOMAP);
+    
+    Device::add(new NCD8Switch(1, "Input1", "Living Room"));
+    Device::add(new NCD8Switch(2, "Input2", "Living Room"));
+    Device::add(new NCD8Switch(3, "Input3", "Living Room"));
+    Device::add(new NCD8Switch(4, "Input4", "Living Room"));
+    Device::add(new NCD8Switch(5, "Input5", "Living Room"));
+    Device::add(new NCD8Switch(6, "Input6", "Living Room"));
+    Device::add(new NCD8Switch(7, "Input7", "Living Room"));
+    Device::add(new NCD8Switch(8, "Input8", "Living Room"));
 
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));
