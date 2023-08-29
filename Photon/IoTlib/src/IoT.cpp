@@ -86,7 +86,7 @@ void IoT::loop()
     
     if (outOfMemory >= 0) {
         // An out of memory condition occurred - reset device.
-        Log.info("out of memory occurred size=%d", outOfMemory);
+        Log.error("out of memory occurred size=%d", outOfMemory);
         delay(500);
         System.reset();
     }

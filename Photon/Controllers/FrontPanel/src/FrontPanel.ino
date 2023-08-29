@@ -54,8 +54,8 @@
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
-#define MQTT_LOGGING true
-SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
+#define MQTT_LOGGING false
+SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
 
 int sleeping = 0;
 int voltage = 0;
@@ -70,7 +70,7 @@ void setup() {
 void createDevices() {
 
     PCA9685::initialize(DIMMER_ADDRESS);
-    
+
     // Inside Lights
     Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
     Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
