@@ -63,27 +63,31 @@ int voltage = 0;
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
     WiFi.useDynamicIP();
+    
+    // This also sets timezone and DST
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+    
+    // Set timezone and DST
     createDevices();
 }
 
 void createDevices() {
 
-    PCA9685::initialize(DIMMER_ADDRESS);
-
-    // Inside Lights
-    Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
-    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
-    Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
-    Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
-    Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));
-    Device::add(new NCD16Light(7, "Cabinets2", "Kitchen", 2));
-
-    // Outside Lights
-    Device::add(new NCD16Light(8, "DoorSide2", "Outside", 2));
-    Device::add(new NCD16Light(9, "OtherSide2", "Outside", 2));
-    Device::add(new NCD16Light(10, "FrontAwning2", "Outside", 2));
-    Device::add(new NCD16Light(11, "FrontPorch2", "Outside", 2));
+//    PCA9685::initialize(DIMMER_ADDRESS);
+//
+//    // Inside Lights
+//    Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
+//    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
+//    Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
+//    Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
+//    Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));
+//    Device::add(new NCD16Light(7, "Cabinets2", "Kitchen", 2));
+//
+//    // Outside Lights
+//    Device::add(new NCD16Light(8, "DoorSide2", "Outside", 2));
+//    Device::add(new NCD16Light(9, "OtherSide2", "Outside", 2));
+//    Device::add(new NCD16Light(10, "FrontAwning2", "Outside", 2));
+//    Device::add(new NCD16Light(11, "FrontPorch2", "Outside", 2));
 
     //TODO: I/O pins not available. Will need a separate NCD board
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
@@ -94,16 +98,16 @@ void createDevices() {
 
     // Inputs - test/debug at this point
     
-    MCP23008::initialize(SWITCH_ADDRESS, SWITCH_IOMAP);
-    
-    Device::add(new NCD8Switch(1, "Input1", "Living Room"));
-    Device::add(new NCD8Switch(2, "Input2", "Living Room"));
-    Device::add(new NCD8Switch(3, "Input3", "Living Room"));
-    Device::add(new NCD8Switch(4, "Input4", "Living Room"));
-    Device::add(new NCD8Switch(5, "Input5", "Living Room"));
-    Device::add(new NCD8Switch(6, "Input6", "Living Room"));
-    Device::add(new NCD8Switch(7, "Input7", "Living Room"));
-    Device::add(new NCD8Switch(8, "Input8", "Living Room"));
+//    MCP23008::initialize(SWITCH_ADDRESS, SWITCH_IOMAP);
+//    
+//    Device::add(new NCD8Switch(1, "Input1", "Living Room"));
+//    Device::add(new NCD8Switch(2, "Input2", "Living Room"));
+//    Device::add(new NCD8Switch(3, "Input3", "Living Room"));
+//    Device::add(new NCD8Switch(4, "Input4", "Living Room"));
+//    Device::add(new NCD8Switch(5, "Input5", "Living Room"));
+//    Device::add(new NCD8Switch(6, "Input6", "Living Room"));
+//    Device::add(new NCD8Switch(7, "Input7", "Living Room"));
+//    Device::add(new NCD8Switch(8, "Input8", "Living Room"));
 
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));
