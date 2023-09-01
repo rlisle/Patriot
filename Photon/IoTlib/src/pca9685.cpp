@@ -1,5 +1,5 @@
 //
-//  pca9634.cpp
+//  pca9685.cpp
 //  Patriot
 //
 //  Created by Ron Lisle on 8/24/23.
@@ -60,6 +60,8 @@ void PCA9685::reset() {
     initialize(address);
 }
 
+// Note: PCA9685 has 12 bit D/A resolution
+// TODO: stagger delay times so LEDS are on at different times
 void PCA9685::outputPWM(int lightNum, int level) {
     int reg = 6 + (lightNum * 4);       // 0 based
 
