@@ -41,7 +41,7 @@
  */
 #include <IoT.h>
 
-#define CONTROLLER_NAME "FrontPanel"
+#define CONTROLLER_NAME "FrontPanel2"
 #define MQTT_BROKER "192.168.50.33"
 #define DIMMER_ADDRESS 0x41      // PWM board lowest switch on
 #define SWITCH_ADDRESS 0x20
@@ -62,7 +62,7 @@ int voltage = 0;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
-    WiFi.useDynamicIP();
+//    WiFi.useDynamicIP();
     
     // This also sets timezone and DST
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
@@ -73,18 +73,18 @@ void setup() {
 
 void createDevices() {
 
-//    PCA9685::initialize(DIMMER_ADDRESS);
-//
-//    // Inside Lights
-//    Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
-//    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
-//    Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
-//    Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
-//    Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));
-//    Device::add(new NCD16Light(7, "Cabinets2", "Kitchen", 2));
-//
-//    // Outside Lights
-//    Device::add(new NCD16Light(8, "DoorSide2", "Outside", 2));
+    PCA9685::initialize(DIMMER_ADDRESS);
+
+    // Inside Lights
+    Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
+    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 5));  //TODO:
+    Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
+    Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
+    Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));
+    Device::add(new NCD16Light(7, "Cabinets2", "Kitchen", 2));
+
+    // Outside Lights
+    Device::add(new NCD16Light(8, "DoorSide2", "Outside", 2));
 //    Device::add(new NCD16Light(9, "OtherSide2", "Outside", 2));
 //    Device::add(new NCD16Light(10, "FrontAwning2", "Outside", 2));
 //    Device::add(new NCD16Light(11, "FrontPorch2", "Outside", 2));
@@ -99,7 +99,7 @@ void createDevices() {
     // Inputs - test/debug at this point
     
 //    MCP23008::initialize(SWITCH_ADDRESS, SWITCH_IOMAP);
-//    
+//
 //    Device::add(new NCD8Switch(1, "Input1", "Living Room"));
 //    Device::add(new NCD8Switch(2, "Input2", "Living Room"));
 //    Device::add(new NCD8Switch(3, "Input3", "Living Room"));

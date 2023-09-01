@@ -260,7 +260,6 @@ public:
 class NCD16Light : public Device {
  private:
     int8_t  _lightNum;                 // Up to 16 lights supported, 0 based
-    int8_t  _address;                  // Address of board (eg. 0x40)
 
     // Note: Photon didn't support Floating Point but Photon 2 does.
     // So maybe instead of using int (signed 32 bit) fixed point, we can use FP.
@@ -268,17 +267,17 @@ class NCD16Light : public Device {
     // (Outputs are 12 bit unsigned, so Lower 19 bits truncated and sign discarded.)
     // (Using signed ints to simplify underflow (< 0))
     //
-    int     _dimmingDuration;           // time in msecs
-    int     _currentLevel;              // 0x00000000 to 0x7fffffff
-    int     _targetLevel;               // transitioning to level
-    int     _incrementPerMillisecond;   // Pre-calculated to minimize loop operations
+    int     _dimmingMSecs;              // Duration in msecs
+    float   _currentLevel;              // 0x00000000 to 0x7fffffff
+    float   _targetLevel;               // transitioning to level
+    float   _incrementPerMillisecond;   // Pre-calculated to minimize loop operations
     
-    long    _lastUpdateTime;            // Time in msecs
+    unsigned long _lastUpdateTime;      // Time in msecs
 
     int8_t  initializeBoard();
     void    outputPWM();
     void    startSmoothDimming();
-    int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
+//    int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
 
  public:
     // lightNum is passed 1 based (1-16) but converted to 0-based in _lightNum
