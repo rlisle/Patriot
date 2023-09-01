@@ -77,7 +77,7 @@ void createDevices() {
 
     // Inside Lights
     Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
-    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 5));  //TODO:
+    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
     Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
     Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
     Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));

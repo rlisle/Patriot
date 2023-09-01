@@ -143,6 +143,9 @@ void NCD16Light::loop()
  */
 void NCD16Light::outputPWM() {
     int current4k = (int)(_currentLevel * 4095.0 / 100.0);
+    
+    //TODO: Apply an exponential-ish curve
+    //      More lower level steps, fewer higher level steps
     PCA9685::outputPWM(_lightNum, current4k);
 }
 
