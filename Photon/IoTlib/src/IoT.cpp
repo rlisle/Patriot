@@ -177,7 +177,7 @@ void IoT::setTimezone(int timezone) {
 void IoT::handleDaylightSavings() {
     // Read & set persisted value from EEPROM (if present)
     int8_t timezone;
-    EEPROM.get(TIMEZONE_ADDR, timezone);
+    EEPROM.get(TIMEZONE_ADDR, timezone);    // Photon2 uses a file on the Flash file system
     if(timezone == 0xff) {      // 0xff means never written
         timezone = -6;          // Default to CST
     }
@@ -219,6 +219,7 @@ void IoT::handleDSTMarch() {
         default:
             if(day < 14) return;
     }
+    Log.trace("Begin DST");
     Time.beginDST();
 }
 
@@ -252,6 +253,7 @@ void IoT::handleDSTNovember() {
         default:
             if(day > 7) return;
     }
+    Log.trace("Begin DST");
     Time.beginDST();
 }
 

@@ -32,7 +32,6 @@ Device::Device(String name, String room, char type)
 void Device::setValue(int value) {
     Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
-    buildStatusVariable();
 }
 
 void Device::setBrightness(int value) {
@@ -41,7 +40,6 @@ void Device::setBrightness(int value) {
     // but it will adjust the level of one that is already on
     if(_value != 0) {
         setValue(value);
-        buildStatusVariable();
     }
 }
 
@@ -78,7 +76,6 @@ void Device::add(Device *device)
     
     buildDevicesVariable();
     buildChecklistVariable();
-    buildStatusVariable();
 }
 
 void Device::resetAll()
@@ -174,6 +171,26 @@ void Device::mqttAll(String topic, String message)
 
 // Particle.io Devices, Checklist, and Status variables
 
+String Device::calculateStatus() {
+    String status = "";
+    
+    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
+
+        if(ptr->_type != 'X') {     // Ignore checklist items
+            status += String(ptr->_type)+":";
+            status += String(ptr->_name);
+            status += "="+String(ptr->_value);
+            if (ptr->_next != NULL) {
+                status += ",";
+            }
+        }
+    }
+    if(status.length() >= particle::protocol:: MAX_VARIABLE_VALUE_LENGTH) {
+        return("Status variable is too long. Need to extend to a 2nd variable");
+    }
+    return status;
+}
+
 void Device::expose()
 {
     if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
@@ -184,7 +201,8 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kChecklistVariableName + " variable");
     }
-    if(!Particle.variable(kStatusVariableName, globalStatusVariable))
+    // Using a calculated variable
+    if(!Particle.variable(kStatusVariableName, Device::calculateStatus))
     {
         Log.error("Error: Unable to expose " + kStatusVariableName + " variable");
     }
@@ -212,30 +230,6 @@ void Device::buildDevicesVariable()
         globalDevicesVariable = newVariable;
     } else {
         Log.error("Devices variable is too long. Need to extend to a 2nd variable");
-    }
-}
-
-// The Status variable is used to report the current state of each device
-// It is a comma delimited list of <T>:<Name>=<Value>
-void Device::buildStatusVariable()
-{
-    String newVariable = "";
-    
-    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-
-        if(ptr->_type != 'X') {     // Ignore checklist items
-            newVariable += String(ptr->_type)+":";
-            newVariable += String(ptr->_name);
-            newVariable += "="+String(ptr->_value);
-            if (ptr->_next != NULL) {
-                newVariable += ",";
-            }
-        }
-    }
-    if(newVariable.length() < kMaxVariableStringLength) {
-        globalStatusVariable = newVariable;
-    } else {
-        Log.error("Status variable is too long. Need to extend to a 2nd variable");
     }
 }
 
