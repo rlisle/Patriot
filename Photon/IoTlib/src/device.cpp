@@ -74,7 +74,6 @@ void Device::add(Device *device)
     }
     device->begin();
     
-    buildDevicesVariable();
     buildChecklistVariable();
 }
 
@@ -119,7 +118,6 @@ int Device::setValue(String name, int value) {
     Device *ptr = get(name);
     if( ptr == NULL ) return -1;
     ptr->setValue(value);
-    buildDevicesVariable();
     return 0;
 }
 
@@ -172,7 +170,7 @@ void Device::mqttAll(String topic, String message)
 // Particle.io Devices, Checklist, and Status variables
 
 String Device::calculateStatus() {
-    String status = "";
+    String status = Time.timeStr() + ": ";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
 
@@ -193,7 +191,7 @@ String Device::calculateStatus() {
 
 void Device::expose()
 {
-    if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
+    if(!Particle.variable(kDevicesVariableName, calculateDevices))
     {
         Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
     }
@@ -201,7 +199,6 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kChecklistVariableName + " variable");
     }
-    // Using a calculated variable
     if(!Particle.variable(kStatusVariableName, Device::calculateStatus))
     {
         Log.error("Error: Unable to expose " + kStatusVariableName + " variable");
@@ -211,26 +208,24 @@ void Device::expose()
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
 // It is a comma delimited list of <T>:<Name>
 // Note: Alexa skill hasn't been updated to support @<room>, so removing it for now.
-void Device::buildDevicesVariable()
+String Device::calculateDevices()
 {
-    String newVariable = "";
+    String devices = "";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
 
         if(ptr->_type != 'X') {     // Ignore Checklist items
-            newVariable += String(ptr->_type)+":";
-            newVariable += String(ptr->_name);
-//            newVariable += "@"+ptr->_room;
+            devices += String(ptr->_type)+":";
+            devices += String(ptr->_name);
             if (ptr->_next != NULL) {
-                newVariable += ",";
+                devices += ",";
             }
         }
     }
-    if(newVariable.length() < kMaxVariableStringLength) {
-        globalDevicesVariable = newVariable;
-    } else {
-        Log.error("Devices variable is too long. Need to extend to a 2nd variable");
+    if(devices.length() >= kMaxVariableStringLength) {
+        return("Devices variable is too long. Need to extend to a 2nd variable");
     }
+    return devices;
 }
 
 // The Checklist variable is used by the Checklist iOS app.
