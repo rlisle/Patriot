@@ -54,6 +54,7 @@
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
+// Write Log messages to MQTT and/or serial port
 #define MQTT_LOGGING false
 SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
 

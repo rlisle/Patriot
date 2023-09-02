@@ -14,14 +14,6 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
-/**
- * globalChecklistVariable and globalDevicesVariable
- * Lists all the currently active devices and checklist names in CSV format.
- */
-String globalChecklistVariable;
-String globalDevicesVariable;
-String globalStatusVariable;
-
 Device::Device(String name, String room, char type)
 : _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100)
 {
@@ -73,8 +65,6 @@ void Device::add(Device *device)
         ptr->_next = device;
     }
     device->begin();
-    
-    buildChecklistVariable();
 }
 
 void Device::resetAll()
@@ -195,7 +185,7 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
     }
-    if(!Particle.variable(kChecklistVariableName, globalChecklistVariable))
+    if(!Particle.variable(kChecklistVariableName, calculateChecklist))
     {
         Log.error("Error: Unable to expose " + kChecklistVariableName + " variable");
     }
@@ -222,7 +212,7 @@ String Device::calculateDevices()
             }
         }
     }
-    if(devices.length() >= kMaxVariableStringLength) {
+    if(devices.length() >= particle::protocol:: MAX_VARIABLE_VALUE_LENGTH) {
         return("Devices variable is too long. Need to extend to a 2nd variable");
     }
     return devices;
@@ -230,12 +220,11 @@ String Device::calculateDevices()
 
 // The Checklist variable is used by the Checklist iOS app.
 // It is a comma delimited list of <Name>=0|1
-void Device::buildChecklistVariable()
+String Device::calculateChecklist()
 {
     String newChecklist = "";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-
         if(ptr->_type == 'X') {
             newChecklist += String(ptr->_name);
             newChecklist += "="+String(ptr->_value);
@@ -244,11 +233,11 @@ void Device::buildChecklistVariable()
             }
         }
     }
-    if(newChecklist.length() < kMaxVariableStringLength) {
-        globalChecklistVariable = newChecklist;
-    } else {
+    if(newChecklist.length() >= particle::protocol:: MAX_VARIABLE_VALUE_LENGTH) {
         Log.error("Checklist variable is too long. Need to extend to a 2nd variable");
     }
+    if(newChecklist.length() == 0) { Log.info("No checklist items"); }
+    return newChecklist;
 }
 
 

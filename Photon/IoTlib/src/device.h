@@ -94,11 +94,10 @@ public:
     /**
      Particle.io variable "States"
      */
-//    static void buildDevicesVariable();
-    static void buildChecklistVariable();
     static void publishStates();
     static void expose();
 
+    static String calculateChecklist();
     static String calculateStatus();
     static String calculateDevices();
 };
