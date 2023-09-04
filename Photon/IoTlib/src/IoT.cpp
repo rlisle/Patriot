@@ -44,7 +44,7 @@ void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
 {
     System.on(out_of_memory, outOfMemoryHandler);
     Time.zone(-6);              // CST
-    handleDaylightSavings();
+    handleDaylightSavings();    // Set isDST appropriately
     
     // Expose particle.io variables
     Device::expose();
@@ -83,20 +83,21 @@ void IoT::loop()
 {
     Device::loopAll();
     _mqttManager->loop();
-    
+
+    //TODO: enable only for Photon 2
     if (outOfMemory >= 0) {
         // An out of memory condition occurred - reset device.
         Log.error("out of memory occurred size=%d", outOfMemory);
-        delay(500);
+        delay(2000);
         System.reset();
     }
     
-    //TODO: Remove this if watchdog works better
-    if(Time.hour() == 3 && System.uptime() > 24*60*60) {
-        Log.info("Performing daily reboot");
-        delay(500);
-        System.reset();
-    }
+    //TODO: Use this only for Photon 1
+//    if(Time.hour() == 3 && System.uptime() > 24*60*60) {
+//        Log.info("Performing daily reboot");
+//        delay(500);
+//        System.reset();
+//    }
     
     Watchdog.refresh();
     
