@@ -77,13 +77,11 @@ void NCD16Light::reset() {
  */
 void NCD16Light::setValue(int value) {
     if( value == _value ) {
-        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
         outputPWM();
         return;
     }
     
     _targetLevel = (float)value;        // new value
-    Log.info("setValue: target %f",_targetLevel);
     if(_dimmingMSecs == 0) {
         _currentLevel = _targetLevel;
         _value = value;
@@ -110,7 +108,6 @@ void NCD16Light::startSmoothDimming() {
                 _incrementPerMillisecond = -0.001;
             }
         }
-        Log.info("Dimmer "+_name+" setting increment to "+String(_incrementPerMillisecond)+", delta: "+String(delta));
     }
 }
 
@@ -127,13 +124,11 @@ void NCD16Light::loop()
     if(abs(_currentLevel - _targetLevel) < 0.001) { // if ==
         return;
     }
-    Log.info("Loop: current %f, target %f",_currentLevel,_targetLevel);
     
     //TODO: millis will wrap after 49 days
     unsigned long loopTime = millis();
     unsigned long millisSinceLastUpdate = (loopTime - _lastUpdateTime);
     _currentLevel += _incrementPerMillisecond * millisSinceLastUpdate;
-    Log.info("Millis: %ld, updated: %f",millisSinceLastUpdate,_currentLevel);
 
     if(_incrementPerMillisecond > 0) {  // Going up?
         if(_currentLevel > _targetLevel) {
@@ -147,7 +142,6 @@ void NCD16Light::loop()
     
     // Clamp value
     _currentLevel = constrain(_currentLevel, 0.0, 100.0);
-    Log.info("Adjusted level: %f", _currentLevel);
     _value = (int)_currentLevel;
     _lastUpdateTime = loopTime;
     outputPWM();
@@ -176,7 +170,5 @@ int NCD16Light::convertTo4k(int value) {
     float linearValue = (float)value * 4095 / 100;
     // Using 50/50 split now, but could use any proportion
     float combinedValue = constrain(exponentialValue + linearValue / 2, 0.0, 4095.0);
-    
-    Log.info("converted value = %f",combinedValue);
     return int(combinedValue);
 }
