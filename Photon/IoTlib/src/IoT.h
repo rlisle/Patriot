@@ -277,7 +277,7 @@ class NCD16Light : public Device {
     int8_t  initializeBoard();
     void    outputPWM();
     void    startSmoothDimming();
-//    int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
+    int     convertTo4k(int value);     // Convert 0-100 to 0-4095 exponential curve
 
  public:
     // lightNum is passed 1 based (1-16) but converted to 0-based in _lightNum
