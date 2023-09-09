@@ -124,40 +124,28 @@ void NCD16Light::loop()
     if(abs(_currentLevel - _targetLevel) < 0.001) { // if ==
         return;
     }
- 
     
     //TODO: millis will wrap after 49 days
     unsigned long loopTime = millis();
-    Log("Loop start: %ld",loopTime);
-    
     unsigned long millisSinceLastUpdate = (loopTime - _lastUpdateTime);
+    _currentLevel += _incrementPerMillisecond * millisSinceLastUpdate;
     
-    // Start timing loop - repeat 1000 times
-    float saved = _currentLevel;
-    for(int x=0; x<1000000; x++) {
-        _currentLevel = saved;
-        _currentLevel += _incrementPerMillisecond * millisSinceLastUpdate;
-        
-        if(_incrementPerMillisecond > 0) {  // Going up?
-            if(_currentLevel > _targetLevel) {
-                _currentLevel = _targetLevel;
-            }
-        } else {                            // Going down
-            if(_currentLevel < _targetLevel) {
-                _currentLevel = _targetLevel;
-            }
+    if(_incrementPerMillisecond > 0) {  // Going up?
+        if(_currentLevel > _targetLevel) {
+            _currentLevel = _targetLevel;
         }
-        
-        // Clamp value
-        _currentLevel = constrain(_currentLevel, 0.0, 100.0);
-        _value = (int)_currentLevel;
-        _lastUpdateTime = loopTime;
+    } else {                            // Going down
+        if(_currentLevel < _targetLevel) {
+            _currentLevel = _targetLevel;
+        }
     }
-    //End timing loop
-    Log.info("Loop end: %ld, 1M duration: %ld",millis(), millis() - loopTime);
+    
+    // Clamp value
+    _currentLevel = constrain(_currentLevel, 0.0, 100.0);
+    _value = (int)_currentLevel;
+    _lastUpdateTime = loopTime;
 
     outputPWM();
-    
 };
 
 /**
