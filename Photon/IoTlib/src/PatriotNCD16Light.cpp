@@ -153,11 +153,7 @@ void NCD16Light::loop()
  * Convert float 0-100 to 0-0x7fff
  */
 void NCD16Light::outputPWM() {
-//    int current4k = (int)(_currentLevel * 4095.0 / 100.0);
     int current4k = convertTo4k(_currentLevel);
-    
-    //TODO: Apply an exponential-ish curve
-    //      More lower level steps, fewer higher level steps
     PCA9685::outputPWM(_lightNum, current4k);
 }
 

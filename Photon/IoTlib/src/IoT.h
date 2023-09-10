@@ -215,10 +215,8 @@ class NCD4Switch : public Device {
 };
 class NCD8Light : public Device {
  private:
-    int8_t  _lightNum;                 // Up to 8 lights supported
-    int8_t   _address;                 // Address of board (eg. 0x40)
-
-    int      _dimmingDuration;
+    int8_t   _lightNum;                // Up to 8 lights supported
+    int      _dimmingMSecs;
     float    _currentLevel;            // Use for smooth dimming transitions.
     float    _targetLevel;
     float    _incrementPerMillisecond;
@@ -228,13 +226,13 @@ class NCD8Light : public Device {
     int8_t  initializeBoard();
     void    outputPWM();
     void    startSmoothDimming();
-    int     scalePWM(float value);
+    int     convertTo255(int value);
 
  public:
-    NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
+    NCD8Light(int8_t lightNum, String name, String room, int8_t duration = 0);
     void    begin();
     void    reset();
-    void    setValue(int value);
+    void    setValue(int percent);
     void    loop();
 };
 class NCD8Switch : public Device {
