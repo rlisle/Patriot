@@ -104,7 +104,7 @@ class PCA9634 {
 public:
     static int8_t address;  //TODO: Add support for multiple boards
     
-    static void initialize(int address);
+    static int  initialize(int address);
     static void reset();
     static void outputPWM(int lightNum, int level); // level 0-255
 };
@@ -114,7 +114,7 @@ public:
     
     static void initialize(int address);
     static void reset();
-    static void outputPWM(int lightNum, int level); // level 0-0x0fff
+    static void outputPWM(int lightNum, int level); // level 0-4095
 };
 
 class Curtain : public Device {
