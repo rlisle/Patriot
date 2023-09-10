@@ -7,6 +7,8 @@
  - PWM control
  - Smooth transitioning if duration specified
 
+ Requires PCA9634 be installed and running also.
+ 
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
@@ -22,10 +24,6 @@
 #include "IoT.h"
 #include "math.h"
 
-#define MILLIS_PER_SECOND 1000
-
-// NOTE: Requires pca9634 also
-
 /**
  * Constructor
  * @param lightNum is the channel number on the NCD 8 Light board (0-7)
@@ -37,8 +35,9 @@ NCD8Light::NCD8Light(int8_t lightNum, String name, String room, int8_t duration)
                      : Device(name, room)
 {
     _lightNum   = lightNum;
-    _dimmingDuration = duration;
-    _currentLevel = 0.0;
+    _dimmingMSecs = duration * 1000;
+    _value = 0;                 // Base Device class
+    _currentLevel = 0.0;        // These 2 used to perform dimming
     _targetLevel = 0.0;
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
@@ -50,7 +49,7 @@ void NCD8Light::begin() {
 }
 
 void NCD8Light::reset() {
-    Log.error("NCD16Light reset");
+    Log.error("NCD8Light reset");
     PCA9634::reset();
 }
 

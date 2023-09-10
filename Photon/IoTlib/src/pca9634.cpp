@@ -1,9 +1,14 @@
-//
-//  pca9634.cpp
-//  Patriot
-//
-//  Created by Ron Lisle on 8/24/23.
-//
+/**
+  pca9634.cpp
+  Patriot
+
+  Used by NCD8Light
+ 
+  Created by Ron Lisle on 8/24/23.
+
+Datasheets:
+    PCA9634: https://www.nxp.com/docs/en/data-sheet/PCA9634.pdf
+*/
 
 #include "IoT.h"
 

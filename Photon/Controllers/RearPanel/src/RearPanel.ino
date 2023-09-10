@@ -74,12 +74,12 @@ void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
     //TODO: use mcp23008
-    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
+//    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
     // Device::add(new Awning(2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
     //TODO: use mcp23008
-    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
+//    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
 //    Device::add(new NCD4PIR(I2CR4IO4, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // (deprecated) Photon I/O
