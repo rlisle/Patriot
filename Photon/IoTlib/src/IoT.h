@@ -196,7 +196,6 @@ class NCD4Relay : public Device {
 class NCD4Switch : public Device {
  private:
     long    _lastPollTime;
-    int8_t  _filter;
 
     int8_t  _boardAddress;
     int8_t  _switchBitmap;
@@ -207,10 +206,7 @@ class NCD4Switch : public Device {
     void      notify();
 
  public:
-    NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room);
-    
-    void    begin();
-    void    reset();
+    NCD4Switch(int8_t switchIndex, String name, String room);
     void    loop();
 };
 class NCD8Light : public Device {
@@ -238,7 +234,6 @@ class NCD8Light : public Device {
 class NCD8Switch : public Device {
 private:
     long    _lastPollTime;
-    int8_t  _filter;
     int8_t  _switchBitmap;
 
     bool      isSwitchOn();

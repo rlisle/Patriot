@@ -18,20 +18,20 @@
  All text above must be included in any redistribution.
 
  Datasheets:
-
+   https://cdn-shop.adafruit.com/datasheets/MCP23008.pdf
+ 
  Changelog:
  2021-06-20: Initial creation
  2022-12-10: Change MQTT message to patriot/<device>/get/position
+ 2023-08-23: Refactor MCP23008 to separate class
  */
 
 #include "IoT.h"
 
 #define POLL_INTERVAL_MILLIS 250
-#define FILTER_INCREMENT 25
 
 /**
  * Constructor
- * @param address is the board address set by jumpers (0-7)
  * @param switchIndex is the switch number on the NCD 8 GPIO board (1-8)
  * @param name String name used in MQTT messages
  */
@@ -101,29 +101,6 @@ bool NCD8Switch::didSwitchChange()
 {
     int newValue = isSwitchOn() ? 100 : 0;
     bool oldState = (_value != 0);
-
-// I don't think filter is needed
-//    if(newValue == 100) {   // Is switch on?
-//        _filter += FILTER_INCREMENT;
-//        if(_filter > 100) {
-//            _filter = 100;
-//        }
-//    } else {    // Switch is off
-//        _filter -= FILTER_INCREMENT;
-//        if(_filter < 0) {
-//            _filter = 0;
-//        }
-//    }
-//
-//    if(oldState == false && _filter == 100) {
-//        _value = 100;
-//        return true;
-//    }
-//
-//    if(oldState == true && _filter == 0) {
-//        _value = 0;
-//        return true;
-//    }
 
     if(oldState == false && newValue == 100) {
         _value = 100;

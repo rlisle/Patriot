@@ -32,7 +32,7 @@ Author: Ron Lisle
  
  Compiling: particle compile photon2 --target 5.4.1
  Flashing: particle flash rear_panel2 --target 5.4.1
-
+   or shortcut "frp2"
  */
 
 #include <IoT.h>
@@ -45,6 +45,7 @@ Author: Ron Lisle
 #define MQTT_LOGGING true
 #define OFFICE_MOTION_TIMEOUT 15
 #define ADDRESS 1      // NCD8Light PWM board address A0 jumper set
+#define PCA9634 0x41    //
 #define I2CR4IO4 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
 
 SYSTEM_THREAD(ENABLED);
@@ -55,7 +56,6 @@ long lastOfficeMotion = 0;
 bool officeDoor = false;
 bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
-//int8_t pca9634address;
 
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);
@@ -64,8 +64,8 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
     //Consolidate PCA9634 initialization
-    PCA9634::initialize(I2CR4IO4, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
-    
+    //MCP23008::initialize(I2CR4IO4, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
+    PCA9634::initialize(PCA9634);
     createDevices();
 }
 
@@ -73,10 +73,12 @@ void setup() {
 void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
+    //TODO: use mcp23008
     Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
     // Device::add(new Awning(2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
+    //TODO: use mcp23008
     Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
 //    Device::add(new NCD4PIR(I2CR4IO4, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
@@ -85,14 +87,14 @@ void createDevices() {
 
     // I2CPWM8W80C board
     // 8 Dimmers
-    Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", "Office", 2));
-    Device::add(new NCD8Light(ADDRESS, 1, "Loft", "Office", 2));
-    Device::add(new NCD8Light(ADDRESS, 2, "RampPorch", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 3, "RampAwning", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    //Device::add(new NCD8Light(ADDRESS, 7, "Unused", "Office", 2));
+    Device::add(new NCD8Light(0, "OfficeCeiling", "Office", 2));
+    Device::add(new NCD8Light(1, "Loft", "Office", 2));
+    Device::add(new NCD8Light(2, "RampPorch", "Outside", 2));
+    Device::add(new NCD8Light(3, "RampAwning", "Outside", 2));
+    Device::add(new NCD8Light(4, "RearPorch", "Outside", 2));
+    Device::add(new NCD8Light(5, "RearAwning", "Outside", 2));
+    Device::add(new NCD8Light(6, "Piano", "Office", 2));
+    //Device::add(new NCD8Light(7, "Unused", "Office", 2));
 
     // Pseudo Devices
     Device::add(new Device("AnyoneHome", "All", 'X'));
