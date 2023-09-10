@@ -14,11 +14,10 @@ Datasheets:
 
 int8_t PCA9634::address;
 
-int PCA9634::initialize(int address) {
+int PCA9634::initialize(int boardAddress) {
     int status;
-    int  retries;
     
-    address = address; // 0x20 = no jumpers
+    address = boardAddress;
 
     // Only the first device on the I2C link needs to enable it
     if(!Wire.isEnabled()) {
@@ -73,7 +72,7 @@ void PCA9634::reset() {
 }
 
 // 8 bit PWM level 0-255
-void PCA9634::ouputPWM(int lightNum, int level) {
+void PCA9634::outputPWM(int lightNum, int level) {
     int reg = 2 + lightNum;
     
     int retryCount = 3;

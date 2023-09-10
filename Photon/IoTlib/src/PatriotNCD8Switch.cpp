@@ -40,7 +40,6 @@ NCD8Switch::NCD8Switch(int switchIndex, String name, String room)
 {
     _lastPollTime = 0;
     _type         = 'S';
-    _filter       = 0;
     
     if(switchIndex > 0 && switchIndex <= 8) {
         _switchBitmap = 0x01 << (switchIndex-1);

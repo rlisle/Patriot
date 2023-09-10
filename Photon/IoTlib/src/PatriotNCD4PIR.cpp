@@ -4,6 +4,8 @@
 //
 //  Created by Ron Lisle on 8/24/23.
 //
+//  Requires MCP23008 also
+//
 
 #include "IoT.h"
 
@@ -22,14 +24,15 @@ NCD4PIR::NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutSecs) : 
 }
 void NCD4PIR::begin() {
     // Nothing to do here.
-    // initializePCA9634 does all this once instead of for every device
+    // MCP23008 initialize does all this once instead of for every device
 }
 bool NCD4PIR::isSensorOn() {
-    return PCA9634::isInputOn(_gpioBitmap);
+    int input = MCP23008::read();
+    return input & _gpioBitmap;
 }
 void NCD4PIR::reset() {
     Log.error("Resetting board");
-    PCA9634::reset();
+    MCP23008::reset();
 }
 void NCD4PIR::loop() {
     if (isTimeToCheckSensor())

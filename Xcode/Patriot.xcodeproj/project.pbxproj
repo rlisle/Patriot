@@ -291,6 +291,7 @@
 		27D3321E2A9774410044EB83 /* Devices */ = {
 			isa = PBXGroup;
 			children = (
+				27FCEF082A9BED190014EA24 /* mcp23008.cpp */,
 				27D3321F2A977AB50044EB83 /* pca9634.cpp */,
 				278712422A9A9AB00088AC70 /* pca9685.cpp */,
 				27B17DC52A9A122F00D45EC8 /* PatriotNCD16Light.cpp */,
@@ -303,7 +304,6 @@
 				27D332132A96D0240044EB83 /* PatriotPIR.cpp */,
 				27D332122A96CE390044EB83 /* PatriotLight.cpp */,
 				27D332202A977D1B0044EB83 /* PatriotNCD4PIR.cpp */,
-				27FCEF082A9BED190014EA24 /* mcp23008.cpp */,
 			);
 			name = Devices;
 			sourceTree = "<group>";

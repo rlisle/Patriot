@@ -34,7 +34,6 @@ NCD4Switch::NCD4Switch(int8_t switchIndex, String name, String room)
 {
     _lastPollTime = 0;
     _type         = 'S';
-    _filter       = 0;
     
     if(switchIndex > 0 && switchIndex <= 3) {
         _switchBitmap = 0x10 << (switchIndex-1);

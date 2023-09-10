@@ -44,9 +44,8 @@ Author: Ron Lisle
 #define MQTT_BROKER "192.168.50.33"
 #define MQTT_LOGGING true
 #define OFFICE_MOTION_TIMEOUT 15
-#define ADDRESS 1      // NCD8Light PWM board address A0 jumper set
-#define PCA9634 0x41    //
-#define I2CR4IO4 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
+#define PCA9634_ADDRESS 1       // 1st jumper
+#define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
@@ -64,8 +63,8 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
     //Consolidate PCA9634 initialization
-    //MCP23008::initialize(I2CR4IO4, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
-    PCA9634::initialize(PCA9634);
+    //MCP23008::initialize(I2CR4IO4_ADDRESS, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
+    PCA9634::initialize(PCA9634_ADDRESS);
     createDevices();
 }
 
@@ -74,13 +73,13 @@ void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
     //TODO: use mcp23008
-//    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
+//    Device::add(new Curtain(I2CR4IO4_ADDRESS, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
     // Device::add(new Awning(2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
     //TODO: use mcp23008
-//    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
-//    Device::add(new NCD4PIR(I2CR4IO4, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+//    Device::add(new NCD4Switch(I2CR4IO4_ADDRESS, 0, "OfficeDoor", "Office"));
+//    Device::add(new NCD4PIR(I2CR4IO4_ADDRESS, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // (deprecated) Photon I/O
     //Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));

@@ -104,7 +104,7 @@ class PCA9634 {
 public:
     static int8_t address;  //TODO: Add support for multiple boards
     
-    static int  initialize(int address);
+    static int  initialize(int boardAddress);
     static void reset();
     static void outputPWM(int lightNum, int level); // level 0-255
 };
