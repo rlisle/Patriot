@@ -25,6 +25,7 @@
  Datasheets:
 
  Changelog:
+ 2023-09-11: Use mcp23008 and fixed 4 relay 4 GPIO
  2021-01-16: Initial creation based on NCD8Relay
  2022-04-17: Fix issue turning off other relays on same board.
  */
@@ -38,6 +39,7 @@
 #define MILLIS_PER_UPDATE 1000  // Send updates every second
 #define PULSE_MILLIS 100
 
+//TODO: change to 1, 0 so -1 not needed elsewhere
 // Mode (relay bit)
 #define OPEN_CURTAIN 2
 #define CLOSE_CURTAIN 1
@@ -48,10 +50,9 @@
  * @param relayIndex is the relay number of the 1st of 2 relays (0-2)
  * @param name String name used to address the relay.
  */
-Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room)
+Curtain::Curtain(int8_t relayIndex, String name, String room)
     : Device(name, room)
 {
-    _boardAddress = boardAddress;   // 0x20 (no jumpers)
     _relayIndex  = relayIndex;      // 0 (first 2 relays)
     _stopMillis = 0;
     _mode = 0;
@@ -61,36 +62,7 @@ Curtain::Curtain(int8_t boardAddress, int8_t relayIndex, String name, String roo
 }
 
 void Curtain::begin() {
-
-    byte status;
-    int  retries;
-
-    // Only the first device on the I2C link needs to enable it
-    if(!Wire.isEnabled()) {
-        Wire.begin();
-    }
-
-    retries = 0;
-    do {
-        Wire.beginTransmission(_boardAddress);
-        Wire.write(0x00);                 // Select IO Direction register
-        Wire.write(0xf0);                 // 0-3 out, 4-7 in
-        status = Wire.endTransmission();  // Write 'em, Dano
-    } while( status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Set IODIR failed");
-    }
-
-    retries = 0;
-    do {
-        Wire.beginTransmission(_boardAddress);
-        Wire.write(0x06);        // Select pull-up resistor register
-        Wire.write(0xf0);        // pull-ups enabled on inputs
-        status = Wire.endTransmission();
-    } while( status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Set GPPU failed");
-    }
+    // Handled by mcp23008
 }
 
 /**
@@ -99,9 +71,6 @@ void Curtain::begin() {
  * @param percent Int 0 to 100. 0 = closed, >0 = open
  */
 void Curtain::setValue(int percent) {
-
-    //FOR DEBUGGING, SETTING ONLY OPEN OR CLOSED
-    
     if(percent == _value) {
         Log.warn("Curtain setValue is the same as previous value, ignoring");
         //TODO: do we want to issue open/close again just in case?
@@ -166,29 +135,10 @@ void Curtain::setHold(bool holding) {
  */
 void Curtain::pulse(bool high) {
     
-    Log.info("Curtain pulse %s",high ? "high" : "low");
-
-    int currentState = readCurrentState();
-    
-    byte bitmap = 0x01 << (_relayIndex + _mode - 1);
-    if(high) {
-        currentState |= bitmap;    // Set relay's bit
-    } else {
-        bitmap = 0xff ^ bitmap;
-        currentState &= bitmap;
-    }
-
-    byte status;
-    int retries = 0;
-    do {
-        Wire.beginTransmission(_boardAddress);
-        Wire.write(0x09);
-        Wire.write(currentState);
-        status = Wire.endTransmission();
-    } while(status != 0 && retries++ < 3);
-
+    Log.info("Curtain pulse %s", high ? "high" : "low");
+    int status = MCP23008::write(_relayIndex + _mode - 1, high);
     if(status != 0) {
-        Log.error("Error pulsing relay %d %s", bitmap, high ? "high" : "low");
+        Log.error("Error pulsing relay %d %s", _relayIndex + _mode - 1, high ? "high" : "low");
     }
 }
 
@@ -256,50 +206,3 @@ bool Curtain::isCurtainRunning() {
 bool Curtain::isTimeToChangePulse() {
     return(millis() >= _stopMillis);
 }
-
-void Curtain::reset() {
-    Log.error("Resetting board");
-    Wire.reset();
-    // Do we need any delay here?
-    Wire.begin();
-
-    // Issue PCA9634 SWRST
-    Wire.beginTransmission(_boardAddress);
-    Wire.write(0x06);
-    Wire.write(0xa5);
-    Wire.write(0x5a);
-    byte status = Wire.endTransmission();
-    if(status != 0){
-        Log.error("Curtain reset write failed for relayIndex: "+String(_relayIndex)+", re-initializing board");
-    }
-    begin();
-}
-
-/**
- * readCurrentState
- * Return state of all 4 relays
- */
-int Curtain::readCurrentState() {
-    int retries = 0;
-    int status;
-    do {
-        Wire.beginTransmission(_boardAddress);
-        Wire.write(0x09);       // GPIO Register
-        status = Wire.endTransmission();
-    } while(status != 0 && retries++ < 3);
-    if(status != 0) {
-        Log.error("Curtain: Error selecting GPIO register");
-    }
-    
-    Wire.requestFrom(_boardAddress, 1);      // Read 1 byte
-    
-    if (Wire.available() != 1)
-    {
-        Log.error("Curtain: Error reading current state");
-        return 0;
-    }
-    
-    int data = Wire.read();
-    return(data);
-}
-

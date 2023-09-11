@@ -2,6 +2,12 @@
 //  mcp23008.cpp
 //  Patriot
 //
+// MCP23008 Registers
+// 0 I/O Direction - 0 = output, 1 = input (default 0xff all inputs)
+// 1 Input polarity - 1 = inverted
+// 6 Pull up resistor - 1 = 100k Pull-up resistor enabled
+// 9 GPIO
+
 //  Created by Ron Lisle on 8/27/23.
 //
 
@@ -10,8 +16,9 @@
 int8_t MCP23008::_address;
 int8_t MCP23008::_iomap;
 
-void MCP23008::initialize(int address, int iomap) {
-    byte status;
+// For I2CIO4R4G5LE board this s/b 0xf0 if all i/o's are inputs
+int MCP23008::initialize(int address, int iomap) {
+    int  status;
     int  retries;
     
     _address = address; // 0x20 = no jumpers
@@ -31,7 +38,7 @@ void MCP23008::initialize(int address, int iomap) {
     } while( status != 0 && retries++ < 3);
     if(status != 0) {
         Log.error("MCP23008 Set IODIR failed");
-        return;
+        return status;
     }
     
     retries = 0;
@@ -43,7 +50,7 @@ void MCP23008::initialize(int address, int iomap) {
     } while( status != 0 && retries++ < 3);
     if(status != 0) {
         Log.error("MCP23008 Set GPPU failed");
-        return;
+        return status;
     }
 
     retries = 0;
@@ -55,13 +62,14 @@ void MCP23008::initialize(int address, int iomap) {
     } while( status != 0 && retries++ < 3);
     if(status != 0) {
         Log.error("MCP23008 set polarity failed");
-        return;
+        return status;
     }
 
     Log.info("MCP23008 initialize success");
+    return 0;
 }
 
-void MCP23008::reset() {
+int MCP23008::reset() {
     Log.error("MCP23008 Resetting");
     Wire.reset();
     // Do we need any delay here?
@@ -76,7 +84,7 @@ void MCP23008::reset() {
 //    if(status != 0){
 //        Log.error("MCP23008 reset write failed");
 //    }
-    initialize(_address, _iomap);
+    return initialize(_address, _iomap);
 }
 
 int MCP23008::read() {
@@ -90,7 +98,7 @@ int MCP23008::read() {
     } while(status != 0 && retries++ < 3);
     if(status != 0) {
         Log.error("MCP23008 Error selecting GPIO register");
-        return false;
+        return status;
     }
     
     Wire.requestFrom(_address, 1);      // Read 1 byte
@@ -104,22 +112,30 @@ int MCP23008::read() {
     return 0;
 }
 
-void MCP23008::write(int ioNum, bool value) {
+int MCP23008::write(int ioNum, bool value) {
+    // Add or remove bit from current _value
+    int bitmap = 0x01 << ioNum;
+    if(value==true) {   // Set bit
+        value |= bitmap;
+    } else {
+        value &= (0xff ^ bitmap);
+    }
+    
     int retryCount = 3;
-    byte status;
+    int status;
     do {
         Wire.beginTransmission(_address);
         Wire.write(0x09);   // GPIO register
         
-        //TODO: Need to insert bit into existing mask
-        Wire.write(0xff);   // All bits HIGH
+        Wire.write(value);
         
         status = Wire.endTransmission();
         retryCount--;
     } while(status != 0 && retryCount > 0);
     
     if(status != 0) {
-        Log.error("MCP23008 write failed");
+        Log.error("MCP23008 write failed, value = %x", value);
         reset();
     }
+    return status;
 }

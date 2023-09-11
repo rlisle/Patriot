@@ -95,10 +95,10 @@ public:
     static int8_t _address;  //TODO: Add support for multiple boards
     static int8_t _iomap;
     
-    static void initialize(int address, int iomap);
-    static void reset();
+    static int initialize(int address, int iomap);
+    static int reset();
     static int read();
-    static void write(int ioNum, bool value);
+    static int write(int ioNum, bool value);
 };
 class PCA9634 {
 public:
@@ -123,7 +123,6 @@ class Curtain : public Device {
     unsigned long _updateMillis;  // time to send next update msg
     unsigned long _startMillis;
 
-    int8_t  _boardAddress;
     int8_t  _relayIndex;
     
     int8_t  _mode;  // 1 = close, 2 = open, 0 = idle
@@ -132,17 +131,14 @@ class Curtain : public Device {
     
     int8_t  _startPosition;
 
-    void    pulse(bool start);
+    void    pulse(bool high);
     bool    isCurtainRunning();
     bool    isTimeToChangePulse();
-    int     readCurrentState();
-    int     currentPosition();
     
  public:
-    Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room);
+    Curtain(int8_t relayIndex, String name, String room);
     
     void    begin();
-    void    reset();
     void    setValue(int percent);  // Target state
     void    setHold(bool holding);
     void    loop();
