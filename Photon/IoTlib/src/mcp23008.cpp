@@ -13,8 +13,12 @@
 
 #include "IoT.h"
 
+#define POLL_MILLIS 100
+
 int8_t MCP23008::_address;
 int8_t MCP23008::_iomap;
+int8_t MCP23008::_current;
+unsigned long MCP23008::_lastReadMillis;
 
 // For I2CIO4R4G5LE board this s/b 0xf0 if all i/o's are inputs
 int MCP23008::initialize(int address, int iomap) {
@@ -23,6 +27,8 @@ int MCP23008::initialize(int address, int iomap) {
     
     _address = address; // 0x20 = no jumpers
     _iomap = iomap;     // 1's = input
+    _current = 0;
+    _lastReadMillis = 0;
 
     // Only the first device on the I2C link needs to enable it
     if(!Wire.isEnabled()) {
@@ -70,26 +76,18 @@ int MCP23008::initialize(int address, int iomap) {
 }
 
 int MCP23008::reset() {
-    Log.error("MCP23008 Resetting");
+    Log.warn("MCP23008 Resetting");
     Wire.reset();
-    // Do we need any delay here?
-    Wire.begin();
-
-//    // Issue PCA9634 SWRST
-//    Wire.beginTransmission(_address);
-//    Wire.write(0x06);
-//    Wire.write(0xa5);
-//    Wire.write(0x5a);
-//    byte status = Wire.endTransmission();
-//    if(status != 0){
-//        Log.error("MCP23008 reset write failed");
-//    }
     return initialize(_address, _iomap);
 }
 
 int MCP23008::read() {
     int retries = 0;
     int status;
+    
+    if(millis() < _lastReadMillis + POLL_MILLIS) {
+        return _current;
+    }
     
     do {
         Wire.beginTransmission(_address);
@@ -105,36 +103,39 @@ int MCP23008::read() {
     
     if (Wire.available() == 1)
     {
-        int data = Wire.read();
-        return(data);    // Inverted ?
+        _current = Wire.read();
+        _lastReadMillis = millis(); // Don't update if read failed
+        return(_current);    // Inverted ?
     }
     Log.error("MCP23008 Error reading switch");
     return 0;
 }
 
 int MCP23008::write(int ioNum, bool value) {
+    Log.info("MCP23008 write ioNum %d = %d",ioNum,value);
     // Add or remove bit from current _value
     int bitmap = 0x01 << ioNum;
     if(value==true) {   // Set bit
-        value |= bitmap;
+        _current |= bitmap;
     } else {
-        value &= (0xff ^ bitmap);
+        _current &= (0xff ^ bitmap);
     }
-    
+    Log.info("MCP23008 writing %x",_current);
+
     int retryCount = 3;
     int status;
     do {
         Wire.beginTransmission(_address);
         Wire.write(0x09);   // GPIO register
         
-        Wire.write(value);
+        Wire.write(_current);
         
         status = Wire.endTransmission();
         retryCount--;
     } while(status != 0 && retryCount > 0);
     
     if(status != 0) {
-        Log.error("MCP23008 write failed, value = %x", value);
+        Log.error("MCP23008 write failed, value = %x", _current);
         reset();
     }
     return status;

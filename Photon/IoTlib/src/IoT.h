@@ -94,6 +94,8 @@ class MCP23008 {
 public:
     static int8_t _address;  //TODO: Add support for multiple boards
     static int8_t _iomap;
+    static int8_t _current;
+    static unsigned long _lastReadMillis;
     
     static int initialize(int address, int iomap);
     static int reset();
