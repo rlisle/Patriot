@@ -57,6 +57,7 @@
 #define CONTROLLER_NAME "FrontPanel2"
 #define MQTT_BROKER "192.168.50.33"
 #define DIMMER_ADDRESS 0x41      // PWM board lowest switch on
+#define PCA9634_ADDRESS 0x41     // Lowest switch on
 #define SWITCH_ADDRESS 0x20
 #define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
 
@@ -68,8 +69,8 @@ SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
 // Write Log messages to MQTT and/or serial port
-#define MQTT_LOGGING false
-SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
+#define MQTT_LOGGING true
+//SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
 
 int sleeping = 0;
 int voltage = 0;
@@ -87,23 +88,38 @@ void setup() {
 
 void createDevices() {
 
-    PCA9685::initialize(DIMMER_ADDRESS);
-
+    // Required by NCD8Light
+    PCA9634::initialize(PCA9634_ADDRESS);
+    
     // Inside Lights
-    Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
-    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
-    Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
-    Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
-    Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));
-    Device::add(new NCD16Light(7, "Cabinets2", "Kitchen", 2));
+    Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen", 2));
+    Device::add(new NCD8Light(3, "Sink", "Kitchen", 2));
+    Device::add(new NCD8Light(5, "RightTrim", "Kitchen", 2));
+    Device::add(new NCD8Light(6, "LeftTrim", "Living Room", 2));
+    Device::add(new Light(D2, "Ceiling", "Kitchen", 2));
+    Device::add(new Light(D3, "Cabinets", "Kitchen", 2));
 
     // Outside Lights
-    Device::add(new NCD16Light(8, "DoorSide2", "Outside", 2));
-    Device::add(new NCD16Light(9, "OtherSide2", "Outside", 2));
-    Device::add(new NCD16Light(10, "FrontAwning2", "Outside", 2));
-    Device::add(new NCD16Light(11, "FrontPorch2", "Outside", 2));
+    Device::add(new NCD8Light(1, "DoorSide", "Outside", 2));
+    Device::add(new NCD8Light(4, "OtherSide", "Outside", 2));
+    Device::add(new NCD8Light(7, "FrontAwning", "Outside", 2));
+    Device::add(new NCD8Light(8, "FrontPorch", "Outside", 2));
 
-    //TODO: I/O pins not available. Will need a separate NCD board
+//    PCA9685::initialize(DIMMER_ADDRESS);
+//    // Inside Lights
+//    Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
+//    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
+//    Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
+//    Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
+//    Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));
+//    Device::add(new NCD16Light(7, "Cabinets2", "Kitchen", 2));
+//
+//    // Outside Lights
+//    Device::add(new NCD16Light(8, "DoorSide2", "Outside", 2));
+//    Device::add(new NCD16Light(9, "OtherSide2", "Outside", 2));
+//    Device::add(new NCD16Light(10, "FrontAwning2", "Outside", 2));
+//    Device::add(new NCD16Light(11, "FrontPorch2", "Outside", 2));
+
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)
 //    Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
@@ -156,3 +172,62 @@ void loop() {
 //        Log.info("Voltage is under 12: " + String(volts));
 //    }
 //}
+
+// From Photon1
+#include <IoT.h>
+#include <PatriotLight.h>
+#include <PatriotNCD8Light.h>
+#include <PatriotNCD8Switch.h>
+#include <PatriotVoltage.h>
+//#include <PatriotPower.h>
+
+#define CONTROLLER_NAME "FrontPanel"
+#define MQTT_BROKER "192.168.50.33"
+#define ADDRESS 1      // PWM board lowest switch on
+
+#define VMPIN A0
+
+// Until mystery hangs understood, leave in automatic
+#define CONNECT_TO_CLOUD true
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(AUTOMATIC);
+
+#define MQTT_LOGGING true
+//SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
+
+int sleeping = 0;
+int voltage = 0;
+
+void setup() {
+    WiFi.selectAntenna(ANT_INTERNAL);
+    WiFi.useDynamicIP();
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+    createDevices();
+}
+
+void createDevices() {
+
+    // Inside Lights
+    Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", "Kitchen", 2));
+    Device::add(new NCD8Light(ADDRESS, 2, "Sink", "Kitchen", 2));
+    Device::add(new NCD8Light(ADDRESS, 4, "RightTrim", "Kitchen", 2));
+    Device::add(new NCD8Light(ADDRESS, 5, "LeftTrim", "Living Room", 2));
+    Device::add(new Light(D2, "Ceiling", "Kitchen", 2));
+    Device::add(new Light(D3, "Cabinets", "Kitchen", 2));
+
+    // Outside Lights
+    Device::add(new NCD8Light(ADDRESS, 0, "DoorSide", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 3, "OtherSide", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", "Outside", 2));
+    Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
+
+    // 12V Monitor (actually 14.27) with 10:1 R-Ladder
+    // Adjust fullScale to reflect actual R-Ladder (36.9)
+    Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
+    
+//    Device::add(new Power("Power", "Status"));
+
+    // Complex Calculation pseudo-devices
+    Device::add(new Device("sleeping", "All"));
+}
+
