@@ -1,27 +1,22 @@
 /**
  NCD PCA9685 16-channel 12-Bit PWM board control
 
- Up to 8 I2C boards can reside on a single I2C bus. ???
+ Up to 8 I2C boards can reside on a single I2C bus.
  
  Features:
  - PWM control
  - Smooth transitioning if duration specified
  
+ Requires PCA9685 be installed and running also
+ 
  - The "Common Bus" appears to be isolated from everything else, so can be used as
   as a + power strip for the LEDs. It can be sourced separately if desired.
  
  Photon2 has native floating point, so no need to use integer math scaled to 7fffffff.
- All I2C code is in pac9685 class.
+ All I2C code is in pca9685 class.
  
  PCA9685 D/A resolution is 12 bits (0-0fff): 4096 steps
  
- Deprecated:
- Native 32 bit signed int math will be used since Photon does not have native FP support.
- Since D/A is 12 bit, data will be converted from 32b signed to 12 bit unsigned (<< 20?)
- So fixed point math means upper 12 bits are unsigned value (0-4095) and lower 19 bits are fractional (0 - 524,287)
- leaving top bit for sign which is discarded during signed to unsigned conversion.
- Smallest value (1) = 524,288 (0x0008 0000) which when >> 19 = 001
-
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
@@ -44,7 +39,6 @@
 // NOTE: Requires pca9685 also
 /**
  * Constructor
- * @param address is the board address set by 6 jumpers: 0x01 if low switch set, 0x40 if high
  * @param lightNum is the channel number on the NCD 16 Dimmer board (1 - 16)
  * @param name String name used to address the light.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.

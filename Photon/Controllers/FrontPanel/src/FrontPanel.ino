@@ -5,7 +5,12 @@
   Date: 9/16/17
   
   Converting to Photon 2 - "front_panel2"
- 
+  To update Photon:
+   1. Edit this code
+   2. Update IoT and plugins if needed
+   3. Put Photon into listen mode using buttons
+   4. "particle flash front_panel2 --target 5.4.1" or "ffp2"
+
   Switch wiring
   Top left:       tape label "Cabinet" -> D3 green -> gold
   Top right:     no label (right trim) #4 yellow
@@ -19,12 +24,20 @@
   3rd r-m:        "ODS Flood Lights" #3 yellow
   3rd right:      "Porch Lights" #7 red
   bottom:        "Light" (awning) #6 white
+
+  Terminal Strips
+   Top: LED Drivers
+    *
+    *
+    *
+    *
+    *
+    *
+   Top 12v: Fuse #5 Purple/White
+   Gnd
+   Middle 12v: Fuse #2 Orange/White
+   Bottom 12v: Fuse #14 Gray/White Awning
  
-  To update Photon:
-    1. Edit this code
-    2. Update IoT and plugins if needed
-    3. Put Photon into listen mode using buttons
-    4. "particle flash front_panel2" or "ffp" (was FrontPanel)
  
   Photon 2 is ??? front_panel2
  

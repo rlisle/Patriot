@@ -9,6 +9,11 @@
 
  Requires PCA9634 be installed and running also.
  
+ Photon2 has native floating point, so no need to use integer math scaled to 7fffffff.
+ All I2C code is in pca9685 class.
+
+ PCA9634 D/A resolution is 8 bits
+ 
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
@@ -26,7 +31,7 @@
 
 /**
  * Constructor
- * @param lightNum is the channel number on the NCD 8 Light board (0-7)
+ * @param lightNum is the channel number on the NCD 8 Light board (1-8)
  * @param name String name used to address the light.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
@@ -34,7 +39,7 @@
 NCD8Light::NCD8Light(int8_t lightNum, String name, String room, int8_t duration)
                      : Device(name, room)
 {
-    _lightNum   = lightNum;
+    _lightNum   = lightNum-1;   // Convert to 0 based
     _dimmingMSecs = duration * 1000;
     _value = 0;                 // Base Device class
     _currentLevel = 0.0;        // These 2 used to perform dimming
@@ -131,8 +136,8 @@ void NCD8Light::loop()
 };
 
 /**
- * Set the output PWM to 0-4095 (12 bits)
- * Convert float 0-100 to 0-0x7fff
+ * Set the output PWM to 0-255 (8 bits)
+ * Convert float 0-100 to 0-0x00ff
  */
 void NCD8Light::outputPWM() {
     int current255 = convertTo255(_currentLevel);
