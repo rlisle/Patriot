@@ -4,7 +4,7 @@
  Up to 8 I2C boards can reside on a single I2C bus.
  
  Features:
- - PWM control
+ - PWM control - N-channel open collector outputs
  - Smooth transitioning if duration specified
  
  Requires PCA9685 be installed and running also
