@@ -18,7 +18,7 @@
  */
 
 #include "IoT.h"
-//#include "math.h"
+#include "math.h"
 
 /**
  * Constructor
@@ -27,28 +27,28 @@
  * @param isInverted True if On = output LOW
  * @param forceDigital True if output On/Off only (even if pin supports PWM)
  */
-Light::Light(int pinNum, String name, String room, bool isInverted, bool forceDigital)
+Light::Light(int pinNum, String name, String room, int durationMSecs)
         : Device(name, room),
           _pin(pinNum),
-          _isInverted(isInverted),
-          _forceDigital(forceDigital)
+          _durationMSecs(durationMSecs)
 {
-    _targetValue             = 0.0;
-    _floatValue            = 0.0;
-    _incrementPerMillisecond = 0.0;
-    _lastUpdateTime          = 0;
-    _type                    = 'L';
+    _targetPercent      = 0.0;
+    _currentPercent     = 0.0;
+    _incrementPerMSec   = 0.0;
+    _lastUpdateTime     = 0;
+    _type               = 'L';
 }
 
 void Light::begin() {
-    _dimmingDurationMsecs = isPwmSupported() ? 2000 : 0;
     pinMode(_pin, OUTPUT);
-    
-    int resolution = analogWriteResolution(_pin, 16);
-    _percentMaxValue = (1 << ((resolution-1) - 1)) / 100.0;
-    Log.info("Begin _percentMaxValue = %f",_percentMaxValue);
-    
-    outputPWM();
+    if(isPwmSupported(_pin) == true) {
+        // Try to set 12 bit resolution. May only support 8 bit
+        _pinResolution = analogWriteResolution(_pin, 12);
+        _maxLevel = (1 << _pinResolution) - 1;
+    } else {
+        _durationMSecs = 0;
+    }
+    outputPWM(0.0);
 }
 
 /**
@@ -57,14 +57,14 @@ void Light::begin() {
  */
 void Light::setValue(int value) 
 {
-    if(_targetValue == value) {
-        outputPWM();
+    _targetPercent = value;
+    if(_value == value) {
+        outputPWM((float)value);
         return;
     }
-    _targetValue = value;
-    if(_dimmingDurationMsecs == 0) {
+    if(_durationMSecs == 0) {
         _value = value;
-        outputPWM();
+        outputPWM((float)_value);
     } else {
         startSmoothDimming();
     }
@@ -75,14 +75,14 @@ void Light::setValue(int value)
  * Use floatValue to smoothly transition
  */
 void Light::startSmoothDimming() {
-    Log.info("startSmoothDimming");
-    _lastUpdateTime = millis();         // Starting now
-    _floatValue = (float)_value;        // Starting point
-    Log.info("Initial value = %f",_floatValue);
-    float delta = (float)_targetValue - _floatValue;    // 0-100 scale
-    Log.info("Delta = %f",delta);
-    _incrementPerMillisecond = delta / (float)_dimmingDurationMsecs;
-    Log.info("Increment per msec = %f",_incrementPerMillisecond);
+    _lastUpdateTime = millis();             // Starting now
+    _currentPercent = (float)_value;        // Starting point
+    Log.info("Light pin %d MaxLevel = %d", _pin, _maxLevel);
+    Log.info("Initial value = %.4f",_currentPercent);
+    float delta = (float)_targetPercent - _currentPercent;
+    Log.info("Delta = %.4f",delta);
+    _incrementPerMSec = delta / (float)_durationMSecs;
+    Log.info("Increment per msec = %.4f",_incrementPerMSec);
 }
 
 /**
@@ -96,61 +96,57 @@ void Light::startSmoothDimming() {
 void Light::loop()
 {
     // Is any fading transition done?
-    if(_value == _targetValue) {
+    if(_value == _targetPercent) {
+        _currentPercent = (float)_targetPercent;
         return;
     }
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
-    _floatValue += _incrementPerMillisecond * millisSinceLastUpdate;
-    _value = (int)_floatValue;
-    if(_incrementPerMillisecond > 0) {
-        if(_floatValue > _targetValue) {
-            _value = _targetValue;
+    _currentPercent += _incrementPerMSec * millisSinceLastUpdate;
+    _value = (int)round(_currentPercent);
+    if(_incrementPerMSec > 0) {
+        if(_currentPercent > _targetPercent) {
+            _value = _targetPercent;
+            _currentPercent = _targetPercent;
         }
     } else {
-        if(_floatValue < _targetValue) {
-            _value = _targetValue;
+        if(_currentPercent < _targetPercent) {
+            _value = _targetPercent;
+            _currentPercent = _targetPercent;
         }
     }
     _lastUpdateTime = loopTime;
-    outputPWM();
+    outputPWM(_currentPercent);
 };
 
 /**
- * Set the output PWM value (0-255) based on 0-100 value
+ * Set the output PWM value (0-maxLevel) based on 0-100 value
  */
-void Light::outputPWM() {
-    if(isPwmSupported()) {
-        Log.info("outputPWM %x",(int)_floatValue);
-        int pwm = scalePWM(_floatValue);
+void Light::outputPWM(float percent) {
+    if(isPwmSupported(_pin)) {
+        int pwm = convertToPinResolution(_currentPercent);
+        Log.info("Light pin %d percent %.1f outputPWM %d", _pin, percent, pwm);
         analogWrite(_pin, pwm);
     } else {
         bool isOn = _value > 49;
-        bool isHigh = (isOn && !_isInverted) || (!isOn && _isInverted);
-        digitalWrite(_pin, scalePWM(isHigh ? HIGH : LOW));
+        digitalWrite(_pin, isOn ? HIGH : LOW);
     }
 }
 
 /**
- * Convert 0-100 to 0-0x0000ffff (16 bit) exponential scale
- * 0 = 0, 100 = 0x0000ffff
+ * Convert 0-100 to 0-_maxLevel exponential scale
+ * 0 = 0, 100 = _maxLevel
  */
-int Light::scalePWM(float value) {
-    Log.info("percentMaxValue = %f",_percentMaxValue);
-    float outputValue = value * _percentMaxValue;
-    Log.info("outputValue = %f",outputValue);
-    int intValue = (int)outputValue;
-    Log.info("scaleValue = %d",intValue);
-    return intValue;
-    
-////    float base = 1.05697667;        // 255
-//    float base = 1.08673221;          // 4095
-//    float pwm = pow(base,value);
-//    if (pwm > 4095) {
-//        return(4095);
-//    }
-//    return (int) pwm;
+int Light::convertToPinResolution(float percent) {
+    if(percent < 0.5) return 0;
+    float base = pow(_maxLevel, 1.0 / 100.0);
+    float exponentialValue = pow(base, percent);
+    float linearValue = percent * _maxLevel / 100.0;
+    // Using 50/50 split now, but could use any proportion
+    float combinedValue = constrain(exponentialValue + linearValue / 2, 0.0, _maxLevel);
+    Log.info("exp: %.2f, lin: %.2f, total: %d", exponentialValue, linearValue, int(combinedValue));
+    return int(combinedValue);
 }
 
 /**
@@ -158,15 +154,15 @@ int Light::scalePWM(float value) {
  * @param pin number
  * @return bool true if pin supports PWM
  */
-bool Light::isPwmSupported()
+bool Light::isPwmSupported(int pin)
 {
-    switch(_pin) {
+    switch(pin) {
         case D1:
+        case D13:
+        case D14:
         case D15:
-        case D17:
-        case A2:
-        case A5:
-            return _forceDigital ? FALSE : TRUE;
+        case D16:
+            return TRUE;
         default:
             break;
     };

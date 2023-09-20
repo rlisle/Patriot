@@ -11,7 +11,37 @@
    3. Put Photon into listen mode using buttons
    4. "particle flash front_panel2 --target 5.4.1" or "ffp2"
 
-  Switch wiring
+  PHOTON 2 PINS
+  RST - nc
+  3V3 - nc
+  Mode - nc
+  Gnd - nc - 12v monitor R ladder -
+  D11/A0/ADC4 - 12v monitor R ladder
+  D12/A1/ADC5
+  D13/A2/ADC3/PWM
+  D14/A5/ADC0/PWM
+  D19/S4
+  D18/S3
+  D17/SCK
+  D15/MOSI/PWM - Ceiling
+  D16/MISO/PWM - Cabinets
+  D9/RX
+  D8/TX
+ 
+  LI+ - nc
+  EN - nc
+  VSUB (5v) - nc
+  D10
+  D7
+  D6
+  D5
+  D4
+  D3
+  D2
+  D1/A4/ADC1/PWM/Wire SCL
+  D0/A3/ADC2/Wire SDA
+ 
+  SWITCH WIRING
   Top left:       tape label "Cabinet" -> D3 green -> gold
   Top right:     no label (right trim) #4 yellow
   2nd left:       tape label "Sink" #2 white
@@ -25,7 +55,7 @@
   3rd right:      "Porch Lights" #7 red
   bottom:        "Light" (awning) #6 white
 
-  Terminal Strips
+  TERMINAL STRIPS
    Top: LED Drivers
     *
     *
@@ -39,7 +69,8 @@
    Bottom 12v: Fuse #14 Gray/White Awning
  
  
-  Photon 2 is ??? front_panel2
+  Photon 2 is 0a10aced202194944a0446ac front_panel2
+  RSSI = -63dBm on 9/17/23
  
   Photon was 430033000f47343339383037 FrontPanel
   RSSI = -66dBm  on 10/1/22
@@ -89,21 +120,21 @@ void setup() {
 void createDevices() {
 
     // Required by NCD8Light
-    PCA9634::initialize(PCA9634_ADDRESS);
-    
-    // Inside Lights
-    Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen", 2));
-    Device::add(new NCD8Light(3, "Sink", "Kitchen", 2));
-    Device::add(new NCD8Light(5, "RightTrim", "Kitchen", 2));
-    Device::add(new NCD8Light(6, "LeftTrim", "Living Room", 2));
-    Device::add(new Light(D2, "Ceiling", "Kitchen", 2));
-    Device::add(new Light(D3, "Cabinets", "Kitchen", 2));
+//    PCA9634::initialize(PCA9634_ADDRESS);
 
-    // Outside Lights
-    Device::add(new NCD8Light(1, "DoorSide", "Outside", 2));
-    Device::add(new NCD8Light(4, "OtherSide", "Outside", 2));
-    Device::add(new NCD8Light(7, "FrontAwning", "Outside", 2));
-    Device::add(new NCD8Light(8, "FrontPorch", "Outside", 2));
+//    // Inside Lights
+//    Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen", 2));
+//    Device::add(new NCD8Light(3, "Sink", "Kitchen", 2));
+//    Device::add(new NCD8Light(5, "RightTrim", "Kitchen", 2));
+//    Device::add(new NCD8Light(6, "LeftTrim", "Living Room", 2));
+    Device::add(new Light(D15, "Ceiling", "Kitchen", 200));     //s/b 2000
+    Device::add(new Light(D16, "Cabinets", "Kitchen", 200));    //s/b 2000
+
+//    // Outside Lights
+//    Device::add(new NCD8Light(1, "DoorSide", "Outside", 2));
+//    Device::add(new NCD8Light(4, "OtherSide", "Outside", 2));
+//    Device::add(new NCD8Light(7, "FrontAwning", "Outside", 2));
+//    Device::add(new NCD8Light(8, "FrontPorch", "Outside", 2));
 
 //    PCA9685::initialize(DIMMER_ADDRESS);
 //    // Inside Lights
@@ -128,16 +159,16 @@ void createDevices() {
 
     // Inputs - test/debug at this point
     
-    MCP23008::initialize(SWITCH_ADDRESS, SWITCH_IOMAP);
-
-    Device::add(new NCD8Switch(1, "Input1", "Living Room"));
-    Device::add(new NCD8Switch(2, "Input2", "Living Room"));
-    Device::add(new NCD8Switch(3, "Input3", "Living Room"));
-    Device::add(new NCD8Switch(4, "Input4", "Living Room"));
-    Device::add(new NCD8Switch(5, "Input5", "Living Room"));
-    Device::add(new NCD8Switch(6, "Input6", "Living Room"));
-    Device::add(new NCD8Switch(7, "Input7", "Living Room"));
-    Device::add(new NCD8Switch(8, "Input8", "Living Room"));
+//    MCP23008::initialize(SWITCH_ADDRESS, SWITCH_IOMAP);
+//
+//    Device::add(new NCD8Switch(1, "Input1", "Living Room"));
+//    Device::add(new NCD8Switch(2, "Input2", "Living Room"));
+//    Device::add(new NCD8Switch(3, "Input3", "Living Room"));
+//    Device::add(new NCD8Switch(4, "Input4", "Living Room"));
+//    Device::add(new NCD8Switch(5, "Input5", "Living Room"));
+//    Device::add(new NCD8Switch(6, "Input6", "Living Room"));
+//    Device::add(new NCD8Switch(7, "Input7", "Living Room"));
+//    Device::add(new NCD8Switch(8, "Input8", "Living Room"));
 
     // Complex Calculation pseudo-devices
     Device::add(new Device("sleeping", "All"));
@@ -172,62 +203,3 @@ void loop() {
 //        Log.info("Voltage is under 12: " + String(volts));
 //    }
 //}
-
-// From Photon1
-#include <IoT.h>
-#include <PatriotLight.h>
-#include <PatriotNCD8Light.h>
-#include <PatriotNCD8Switch.h>
-#include <PatriotVoltage.h>
-//#include <PatriotPower.h>
-
-#define CONTROLLER_NAME "FrontPanel"
-#define MQTT_BROKER "192.168.50.33"
-#define ADDRESS 1      // PWM board lowest switch on
-
-#define VMPIN A0
-
-// Until mystery hangs understood, leave in automatic
-#define CONNECT_TO_CLOUD true
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(AUTOMATIC);
-
-#define MQTT_LOGGING true
-//SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
-
-int sleeping = 0;
-int voltage = 0;
-
-void setup() {
-    WiFi.selectAntenna(ANT_INTERNAL);
-    WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
-    createDevices();
-}
-
-void createDevices() {
-
-    // Inside Lights
-    Device::add(new NCD8Light(ADDRESS, 1, "KitchenCeiling", "Kitchen", 2));
-    Device::add(new NCD8Light(ADDRESS, 2, "Sink", "Kitchen", 2));
-    Device::add(new NCD8Light(ADDRESS, 4, "RightTrim", "Kitchen", 2));
-    Device::add(new NCD8Light(ADDRESS, 5, "LeftTrim", "Living Room", 2));
-    Device::add(new Light(D2, "Ceiling", "Kitchen", 2));
-    Device::add(new Light(D3, "Cabinets", "Kitchen", 2));
-
-    // Outside Lights
-    Device::add(new NCD8Light(ADDRESS, 0, "DoorSide", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 3, "OtherSide", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 6, "FrontAwning", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 7, "FrontPorch", "Outside", 2));
-
-    // 12V Monitor (actually 14.27) with 10:1 R-Ladder
-    // Adjust fullScale to reflect actual R-Ladder (36.9)
-    Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
-    
-//    Device::add(new Power("Power", "Status"));
-
-    // Complex Calculation pseudo-devices
-    Device::add(new Device("sleeping", "All"));
-}
-

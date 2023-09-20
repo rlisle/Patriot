@@ -148,26 +148,22 @@ class Curtain : public Device {
 class Light : public Device {
  private:
     int       _pin;
-    int       _dimmingDurationMsecs;
-    float     _percentMaxValue;         // (1 << resolution)-1 / 100
-
-    // 0-100 scale
-    int       _targetValue;
-    float     _floatValue;
-    float     _incrementPerMillisecond;
-
+    int       _durationMSecs;
+    int       _pinResolution;
+    int       _maxLevel;
+    int       _targetPercent;
+    float     _currentPercent;
+    float     _incrementPerMSec;
     long      _lastUpdateTime;
 
-    bool      _isInverted;              // On state = LOW instead of default HIGH
-    bool      _forceDigital;            // On/Off only, even if PWM supported
-
+    int8_t    initializePin();
+    void      outputPWM(float value);
     void      startSmoothDimming();
-    void      outputPWM();
-    int       scalePWM(float value);
-    bool      isPwmSupported();
+    int       convertToPinResolution(float percent);
+    bool      isPwmSupported(int pin);
 
  public:
-    Light(int pin, String name, String room, bool isInverted=false, bool forceDigital=false);
+    Light(int pin, String name, String room, int durationMSecs);
     void      begin();
     void      setValue(int value);
     void      loop();
