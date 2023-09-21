@@ -28,6 +28,7 @@ int PCA9634::initialize(int boardAddress) {
     status = Wire.endTransmission();
 
     if(status == 0) {
+        //TODO: handle additional errors
         Wire.beginTransmission(address);
         Wire.write(0);          // Control register - No AI, point to reg0 Mode1
         Wire.write(0);          // Mode1 reg. Osc on, disable AI, subaddrs, allcall

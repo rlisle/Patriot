@@ -8,6 +8,8 @@
  - Smooth transitioning if duration specified
 
  Requires PCA9634 be installed and running also.
+ Note that address switches on board have no offset.
+        Address is as-is.
  
  Photon2 has native floating point, so no need to use integer math scaled to 7fffffff.
  All I2C code is in pca9685 class.

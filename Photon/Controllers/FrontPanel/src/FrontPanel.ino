@@ -88,7 +88,7 @@
 #define CONTROLLER_NAME "FrontPanel2"
 #define MQTT_BROKER "192.168.50.33"
 #define DIMMER_ADDRESS 0x41      // PWM board lowest switch on
-#define PCA9634_ADDRESS 0x41     // Lowest switch on
+#define PCA9634_ADDRESS 0x01     // Lowest switch on
 #define SWITCH_ADDRESS 0x20
 #define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
 
@@ -120,21 +120,24 @@ void setup() {
 void createDevices() {
 
     // Required by NCD8Light
-//    PCA9634::initialize(PCA9634_ADDRESS);
+    int status = PCA9634::initialize(PCA9634_ADDRESS);
+    if(status != 0) {
+        Log.error("PCA9634 failed to initialize");
+    }
 
-//    // Inside Lights
-//    Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen", 2));
-//    Device::add(new NCD8Light(3, "Sink", "Kitchen", 2));
-//    Device::add(new NCD8Light(5, "RightTrim", "Kitchen", 2));
-//    Device::add(new NCD8Light(6, "LeftTrim", "Living Room", 2));
+    // Inside Lights
+    Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen", 2));
+    Device::add(new NCD8Light(3, "Sink", "Kitchen", 2));
+    Device::add(new NCD8Light(5, "RightTrim", "Kitchen", 2));
+    Device::add(new NCD8Light(6, "LeftTrim", "Living Room", 2));
     Device::add(new Light(D15, "Ceiling", "Kitchen", 200));     //s/b 2000
     Device::add(new Light(D16, "Cabinets", "Kitchen", 200));    //s/b 2000
 
-//    // Outside Lights
-//    Device::add(new NCD8Light(1, "DoorSide", "Outside", 2));
-//    Device::add(new NCD8Light(4, "OtherSide", "Outside", 2));
-//    Device::add(new NCD8Light(7, "FrontAwning", "Outside", 2));
-//    Device::add(new NCD8Light(8, "FrontPorch", "Outside", 2));
+    // Outside Lights
+    Device::add(new NCD8Light(1, "DoorSide", "Outside", 2));
+    Device::add(new NCD8Light(4, "OtherSide", "Outside", 2));
+    Device::add(new NCD8Light(7, "FrontAwning", "Outside", 2));
+    Device::add(new NCD8Light(8, "FrontPorch", "Outside", 2));
 
 //    PCA9685::initialize(DIMMER_ADDRESS);
 //    // Inside Lights
