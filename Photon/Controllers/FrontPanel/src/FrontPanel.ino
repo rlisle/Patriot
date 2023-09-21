@@ -139,21 +139,6 @@ void createDevices() {
     Device::add(new NCD8Light(7, "FrontAwning", "Outside", 2));
     Device::add(new NCD8Light(8, "FrontPorch", "Outside", 2));
 
-//    PCA9685::initialize(DIMMER_ADDRESS);
-//    // Inside Lights
-//    Device::add(new NCD16Light(1, "KitchenCeiling2", "Kitchen", 2));
-//    Device::add(new NCD16Light(2, "Sink2", "Kitchen", 2));
-//    Device::add(new NCD16Light(4, "RightTrim2", "Kitchen", 2));
-//    Device::add(new NCD16Light(5, "LeftTrim2", "Living Room", 2));
-//    Device::add(new NCD16Light(6, "Ceiling2", "Kitchen", 2));
-//    Device::add(new NCD16Light(7, "Cabinets2", "Kitchen", 2));
-//
-//    // Outside Lights
-//    Device::add(new NCD16Light(8, "DoorSide2", "Outside", 2));
-//    Device::add(new NCD16Light(9, "OtherSide2", "Outside", 2));
-//    Device::add(new NCD16Light(10, "FrontAwning2", "Outside", 2));
-//    Device::add(new NCD16Light(11, "FrontPorch2", "Outside", 2));
-
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)
 //    Device::add(new Voltage(A0, "FP volts", "LivingRoom", 36.9, 10));
