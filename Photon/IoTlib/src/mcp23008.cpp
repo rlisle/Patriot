@@ -8,6 +8,8 @@
 // 6 Pull up resistor - 1 = 100k Pull-up resistor enabled
 // 9 GPIO
 
+// Datasheet: https://media.ncd.io/sites/2/20170721134638/MCP23008-29.pdf
+
 //  Created by Ron Lisle on 8/27/23.
 //
 

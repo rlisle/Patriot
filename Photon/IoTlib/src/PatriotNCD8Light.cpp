@@ -31,24 +31,28 @@
 #include "IoT.h"
 #include "math.h"
 
+//#define CURVE_BASE 1.056976670749058    // pow(255.0, 1.0 / 100.0)
+#define CURVE_BASE 1.05701804056138     // pow(256.0, 1.0 / 100.0)
+// ^0 = 1, ^1 = 1.057, ^100 = 256 so subtract 1 from result for 0-255
+
 /**
  * Constructor
  * @param lightNum is the channel number on the NCD 8 Light board (1-8)
  * @param name String name used to address the light.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
-
-NCD8Light::NCD8Light(int8_t lightNum, String name, String room, int8_t duration)
+NCD8Light::NCD8Light(int8_t lightNum, String name, String room, int8_t duration, int8_t curve)
                      : Device(name, room)
 {
-    _lightNum   = lightNum-1;   // Convert to 0 based
-    _dimmingMSecs = duration * 1000;
-    _value = 0;                 // Base Device class
-    _currentLevel = 0.0;        // These 2 used to perform dimming
-    _targetLevel = 0.0;
+    _lightNum       = lightNum-1;       // Convert to 0 based
+    _dimmingMSecs   = duration * 1000;
+    _curve          = curve;
+    _value          = 0;                // Base Device class
+    _currentLevel   = 0.0;              // These 2 used to perform dimming
+    _targetLevel    = 0.0;
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
-    _type = 'L';
+    _type           = 'L';
 }
 
 void NCD8Light::begin() {
@@ -143,6 +147,7 @@ void NCD8Light::loop()
  */
 void NCD8Light::outputPWM() {
     int current255 = convertTo255(_currentLevel);
+//    Log.info("outputPWM light %d, level %d", _lightNum, current255);
     PCA9634::outputPWM(_lightNum, current255);
 }
 
@@ -151,11 +156,25 @@ void NCD8Light::outputPWM() {
  Convert 0 => 0, 100 => 255 with exponential scale
  */
 int NCD8Light::convertTo255(int value) {
-    //TODO: precalculate this
-    float base = pow(255.0, 1.0 / 100.0);
-    float exponentialValue = pow(base, float(value));
-    float linearValue = (float)value * 255 / 100;
-    // Using 50/50 split now, but could use any proportion
-    float combinedValue = constrain(exponentialValue + linearValue / 2, 0.0, 255.0);
-    return int(combinedValue);
+    if(value == 0) return 0;
+    float expValue = pow(CURVE_BASE, float(value)) - 1.0;
+    float linValue = (float)value * 255 / 100;
+
+    // Curve argument specifies curve shape
+    // 0 = Linear
+    // 1 = Exponential
+    // 2 = 50/50 split
+    // 3 = 75/25 split
+    if(_curve == 0) {           // Linear
+        return linValue;
+    } else if(_curve == 1) {    // Exponential (redundant)
+        return expValue;
+    }
+    // Else return 2 = 1/2 + 1/2, 3 = 1/3 + 2/3, 4 = 1/4 + 3/4
+    float expAmount = 1.0 / _curve;
+    float linAmount = (_curve - 1) / _curve;
+    float linearPart = linValue * linAmount;
+    float exponentialPart = expValue * expAmount;
+    float combinedValue = constrain(exponentialPart + linearPart, 0.0, 255.0);
+    return round(combinedValue);
 }

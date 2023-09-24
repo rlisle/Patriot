@@ -148,6 +148,7 @@ class Curtain : public Device {
 class Light : public Device {
  private:
     int       _pin;
+    int       _curve;
     int       _durationMSecs;
     int       _pinResolution;
     int       _maxLevel;
@@ -163,7 +164,7 @@ class Light : public Device {
     bool      isPwmSupported(int pin);
 
  public:
-    Light(int pin, String name, String room, int durationMSecs);
+    Light(int pin, String name, String room, int durationMSecs, int curve = 2);
     void      begin();
     void      setValue(int value);
     void      loop();
@@ -207,6 +208,7 @@ class NCD8Light : public Device {
  private:
     int8_t   _lightNum;                // Up to 8 lights supported
     int      _dimmingMSecs;
+    int       _curve;                  // 0 = linear, 1 = exp, 2 = 50/50
     float    _currentLevel;            // Use for smooth dimming transitions.
     float    _targetLevel;
     float    _incrementPerMillisecond;
@@ -219,7 +221,7 @@ class NCD8Light : public Device {
     int     convertTo255(int value);
 
  public:
-    NCD8Light(int8_t lightNum, String name, String room, int8_t duration = 0);
+    NCD8Light(int8_t lightNum, String name, String room, int8_t duration = 2, int8_t curve = 0);
     void    begin();
     void    reset();
     void    setValue(int percent);

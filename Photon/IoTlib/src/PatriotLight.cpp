@@ -27,10 +27,11 @@
  * @param isInverted True if On = output LOW
  * @param forceDigital True if output On/Off only (even if pin supports PWM)
  */
-Light::Light(int pinNum, String name, String room, int durationMSecs)
+Light::Light(int pinNum, String name, String room, int durationMSecs, int curve)
         : Device(name, room),
           _pin(pinNum),
-          _durationMSecs(durationMSecs)
+          _durationMSecs(durationMSecs),
+          _curve(curve)
 {
     _targetPercent      = 0.0;
     _currentPercent     = 0.0;
@@ -77,12 +78,12 @@ void Light::setValue(int value)
 void Light::startSmoothDimming() {
     _lastUpdateTime = millis();             // Starting now
     _currentPercent = (float)_value;        // Starting point
-    Log.info("Light pin %d MaxLevel = %d", _pin, _maxLevel);
-    Log.info("Initial value = %.4f",_currentPercent);
+//    Log.info("Light pin %d MaxLevel = %d", _pin, _maxLevel);
+//    Log.info("Initial value = %.4f",_currentPercent);
     float delta = (float)_targetPercent - _currentPercent;
-    Log.info("Delta = %.4f",delta);
+//    Log.info("Delta = %.4f",delta);
     _incrementPerMSec = delta / (float)_durationMSecs;
-    Log.info("Increment per msec = %.4f",_incrementPerMSec);
+//    Log.info("Increment per msec = %.4f",_incrementPerMSec);
 }
 
 /**
@@ -126,10 +127,10 @@ void Light::loop()
 void Light::outputPWM(float percent) {
     if(isPwmSupported(_pin)) {
         int pwm = convertToPinResolution(_currentPercent);
-        Log.info("Light pin %d percent %.1f outputPWM %d", _pin, percent, pwm);
+//        Log.info("Light pin %d percent %.1f outputPWM %d", _pin, percent, pwm);
         analogWrite(_pin, pwm);
     } else {
-        bool isOn = _value > 49;
+        bool isOn = percent >= 50.0;
         digitalWrite(_pin, isOn ? HIGH : LOW);
     }
 }
@@ -137,15 +138,32 @@ void Light::outputPWM(float percent) {
 /**
  * Convert 0-100 to 0-_maxLevel exponential scale
  * 0 = 0, 100 = _maxLevel
+ * This function is reusable by other dimming controllers
+ * Dependencies: float _maxLevel, int _curve
  */
 int Light::convertToPinResolution(float percent) {
     if(percent < 0.5) return 0;
     float base = pow(_maxLevel, 1.0 / 100.0);
     float exponentialValue = pow(base, percent);
     float linearValue = percent * _maxLevel / 100.0;
-    // Using 50/50 split now, but could use any proportion
-    float combinedValue = constrain(exponentialValue + linearValue / 2, 0.0, _maxLevel);
-    Log.info("exp: %.2f, lin: %.2f, total: %d", exponentialValue, linearValue, int(combinedValue));
+
+    // Curve argument specifies curve shape
+    // 0 = Linear
+    // 1 = Exponential
+    // 2 = 50/50 split
+    // 3 = 75/25 split
+    if(_curve == 0) {           // Linear
+        return linearValue;
+    } else if(_curve == 1) {    // Exponential (redundant)
+        return exponentialValue;
+    }
+    // Else return 2 = 1/2 + 1/2, 3 = 1/3 + 2/3, 4 = 1/4 + 3/4
+    float exponentialAmount = 1.0 / _curve;
+    float linearAmount = (_curve - 1) / _curve;
+    float linearPart = linearValue * linearAmount;
+    float exponentialPart = exponentialValue * exponentialAmount;
+    float combinedValue = constrain(exponentialPart + linearPart, 0.0, _maxLevel);
+//    Log.info("exp: %.2f, lin: %.2f, total: %d", exponentialValue, linearValue, int(combinedValue));
     return int(combinedValue);
 }
 

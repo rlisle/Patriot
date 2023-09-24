@@ -68,11 +68,20 @@
    Middle 12v: Fuse #2 Orange/White
    Bottom 12v: Fuse #14 Gray/White Awning
  
+  I2CDIO8 Inputs
+  1. Front Door switch
+  2.
+  3.
+  4.
+  5.
+  6.
+  7.
+  8.
  
   Photon 2 is 0a10aced202194944a0446ac front_panel2
   RSSI = -63dBm on 9/17/23
  
-  Photon was 430033000f47343339383037 FrontPanel
+  Original Photon was 430033000f47343339383037 FrontPanel
   RSSI = -66dBm  on 10/1/22
  
  Using SYSTEM_THREAD(ENABLED) is recommended,
@@ -92,7 +101,7 @@
 #define SWITCH_ADDRESS 0x20
 #define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
 
-#define VMPIN A0
+#define CURVE 0 // 0 = Linear, 1 = exponential, 2 = 50/50
 
 // Until mystery hangs understood, leave in automatic
 #define CONNECT_TO_CLOUD true
@@ -127,7 +136,7 @@ void createDevices() {
 
     // Inside Lights
     Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen", 2));
-    Device::add(new NCD8Light(3, "Sink", "Kitchen", 2));
+    Device::add(new NCD8Light(3, "Sink", "Kitchen", 2, 3));
     Device::add(new NCD8Light(5, "RightTrim", "Kitchen", 2));
     Device::add(new NCD8Light(6, "LeftTrim", "Living Room", 2));
     Device::add(new Light(D15, "Ceiling", "Kitchen", 200));     //s/b 2000
@@ -148,8 +157,8 @@ void createDevices() {
     // Inputs - test/debug at this point
     
 //    MCP23008::initialize(SWITCH_ADDRESS, SWITCH_IOMAP);
-//
-//    Device::add(new NCD8Switch(1, "Input1", "Living Room"));
+
+//    Device::add(new NCD8Switch(1, "FrontDoor", "Living Room"));
 //    Device::add(new NCD8Switch(2, "Input2", "Living Room"));
 //    Device::add(new NCD8Switch(3, "Input3", "Living Room"));
 //    Device::add(new NCD8Switch(4, "Input4", "Living Room"));
