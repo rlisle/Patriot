@@ -123,6 +123,7 @@ void Light::loop()
 void Light::outputPWM(float percent) {
     if(isPwmSupported(_pin)) {
         int pwm = convertToPinResolution(_currentPercent);
+//        Log.info("Pin #%d = %.1f curve %d PWM %d", _pin, _currentPercent, _curve, pwm);
         analogWrite(_pin, pwm);
     } else {
         bool isOn = percent >= 50.0;
@@ -138,6 +139,7 @@ void Light::outputPWM(float percent) {
  */
 int Light::convertToPinResolution(float percent) {
     if(percent < 0.5) return 0;
+    if(percent >= 99.5) return _maxLevel;
     float base = pow(_maxLevel, 1.0 / 100.0);
     float exponentialValue = pow(base, percent);
     float linearValue = percent * _maxLevel / 100.0;
@@ -154,7 +156,7 @@ int Light::convertToPinResolution(float percent) {
     }
     // Else return 2 = 1/2 + 1/2, 3 = 1/3 + 2/3, 4 = 1/4 + 3/4
     float exponentialAmount = 1.0 / _curve;
-    float linearAmount = (_curve - 1) / _curve;
+    float linearAmount = (float)(_curve - 1) / (float)_curve;
     float linearPart = linearValue * linearAmount;
     float exponentialPart = exponentialValue * exponentialAmount;
     float combinedValue = constrain(exponentialPart + linearPart, 0.0, _maxLevel);

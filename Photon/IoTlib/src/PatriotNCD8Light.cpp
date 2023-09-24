@@ -68,16 +68,17 @@ void NCD8Light::reset() {
  * Set value
  * @param value Int 0 to 100.
  */
-void NCD8Light::setValue(int value) {
-    if( value == _value ) {
+void NCD8Light::setValue(int newValue) {
+    int checkedValue = constrain(newValue, 0, 100);
+    if( checkedValue == _value ) {
         outputPWM();
         return;
     }
     
-    _targetLevel = (float)value;        // new value
+    _targetLevel = (float)checkedValue;
     if(_dimmingMSecs == 0) {
         _currentLevel = _targetLevel;
-        _value = value;
+        _value = checkedValue;
         outputPWM();
     } else {
         startSmoothDimming();
@@ -147,7 +148,7 @@ void NCD8Light::loop()
  */
 void NCD8Light::outputPWM() {
     int current255 = convertTo255(_currentLevel);
-    Log.info("NCD8Light #%d = %.1f curve %d PWM %d", _lightNum, _currentLevel, _curve, current255);
+//    Log.info("NCD8Light #%d = %.1f curve %d PWM %d", _lightNum, _currentLevel, _curve, current255);
     PCA9634::outputPWM(_lightNum, current255);
 }
 
@@ -175,7 +176,7 @@ int NCD8Light::convertTo255(int value) {
     float linAmount = (float)(_curve - 1) / (float)_curve;    // 0.5
     float linearPart = linValue * linAmount;
     float exponentialPart = expValue * expAmount;
-    Log.info("Linear %.2f * %.2f, Exp %.2f * %.2f",linValue,linAmount,expValue,expAmount);
+//    Log.info("Linear %.2f * %.2f, Exp %.2f * %.2f",linValue,linAmount,expValue,expAmount);
     float combinedValue = constrain(exponentialPart + linearPart, 0.0, 255.0);
     return round(combinedValue);
 }
