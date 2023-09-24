@@ -98,10 +98,10 @@
 #define MQTT_BROKER "192.168.50.33"
 #define DIMMER_ADDRESS 0x41      // PWM board lowest switch on
 #define PCA9634_ADDRESS 0x01     // Lowest switch on
-#define SWITCH_ADDRESS 0x20
-#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
+//#define SWITCH_ADDRESS 0x20
+//#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
 
-#define CURVE 0 // 0 = Linear, 1 = exponential, 2 = 50/50
+#define CURVE 2 // 0 = Linear, 1 = exponential, 2 = 50/50
 
 // Until mystery hangs understood, leave in automatic
 #define CONNECT_TO_CLOUD true
@@ -135,18 +135,18 @@ void createDevices() {
     }
 
     // Inside Lights
-    Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen", 2));
-    Device::add(new NCD8Light(3, "Sink", "Kitchen", 2, 3));
-    Device::add(new NCD8Light(5, "RightTrim", "Kitchen", 2));
-    Device::add(new NCD8Light(6, "LeftTrim", "Living Room", 2));
-    Device::add(new Light(D15, "Ceiling", "Kitchen", 200));     //s/b 2000
-    Device::add(new Light(D16, "Cabinets", "Kitchen", 200));    //s/b 2000
+    Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen"));
+    Device::add(new NCD8Light(3, "Sink", "Kitchen"));
+    Device::add(new NCD8Light(5, "RightTrim", "Kitchen"));
+    Device::add(new NCD8Light(6, "LeftTrim", "Living Room"));
+    Device::add(new Light(D15, "Ceiling", "Kitchen"));
+    Device::add(new Light(D16, "Cabinets", "Kitchen"));
 
     // Outside Lights
-    Device::add(new NCD8Light(1, "DoorSide", "Outside", 2));
-    Device::add(new NCD8Light(4, "OtherSide", "Outside", 2));
-    Device::add(new NCD8Light(7, "FrontAwning", "Outside", 2));
-    Device::add(new NCD8Light(8, "FrontPorch", "Outside", 2));
+    Device::add(new NCD8Light(1, "DoorSide", "Outside"));
+    Device::add(new NCD8Light(4, "OtherSide", "Outside"));
+    Device::add(new NCD8Light(7, "FrontAwning", "Outside"));
+    Device::add(new NCD8Light(8, "FrontPorch", "Outside"));
 
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)

@@ -45,8 +45,8 @@ NCD8Light::NCD8Light(int8_t lightNum, String name, String room, int8_t duration,
                      : Device(name, room)
 {
     _lightNum       = lightNum-1;       // Convert to 0 based
-    _dimmingMSecs   = duration * 1000;
-    _curve          = curve;
+    _dimmingMSecs   = duration;         // Default 2000
+    _curve          = curve;            // Default 2
     _value          = 0;                // Base Device class
     _currentLevel   = 0.0;              // These 2 used to perform dimming
     _targetLevel    = 0.0;
@@ -147,7 +147,7 @@ void NCD8Light::loop()
  */
 void NCD8Light::outputPWM() {
     int current255 = convertTo255(_currentLevel);
-//    Log.info("outputPWM light %d, level %d", _lightNum, current255);
+    Log.info("NCD8Light #%d = %.1f curve %d PWM %d", _lightNum, _currentLevel, _curve, current255);
     PCA9634::outputPWM(_lightNum, current255);
 }
 
@@ -171,10 +171,11 @@ int NCD8Light::convertTo255(int value) {
         return expValue;
     }
     // Else return 2 = 1/2 + 1/2, 3 = 1/3 + 2/3, 4 = 1/4 + 3/4
-    float expAmount = 1.0 / _curve;
-    float linAmount = (_curve - 1) / _curve;
+    float expAmount = 1.0 / _curve;             // 0.5
+    float linAmount = (float)(_curve - 1) / (float)_curve;    // 0.5
     float linearPart = linValue * linAmount;
     float exponentialPart = expValue * expAmount;
+    Log.info("Linear %.2f * %.2f, Exp %.2f * %.2f",linValue,linAmount,expValue,expAmount);
     float combinedValue = constrain(exponentialPart + linearPart, 0.0, 255.0);
     return round(combinedValue);
 }
