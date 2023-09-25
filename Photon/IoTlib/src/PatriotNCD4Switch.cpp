@@ -15,6 +15,7 @@
    MCP23008 https://cdn-shop.adafruit.com/datasheets/MCP23008.pdf
  
  Changelog:
+ 2023-09-24: Use separate MCP23008 plugin
  2021-01-16: Initial creation
  2022-12-10: Change MQTT message to patriot/<device>/get/position
  2023-08-10: Refactor MCP23008 to separate class
@@ -50,11 +51,6 @@ bool NCD4Switch::isSwitchOn() {
     int data = MCP23008::read();
     return(data & _switchBitmap);    // Inverted by IPOL register
 }
-
-//void NCD4Switch::reset() {
-//    Log.error("Resetting board");
-//    MCP23008::Reset();
-//}
 
 /**
  * loop()

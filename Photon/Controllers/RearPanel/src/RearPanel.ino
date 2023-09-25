@@ -39,7 +39,6 @@ Author: Ron Lisle
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 #include "math.h"
 
-#define MILLIS_PER_SECOND 1000
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
 #define MQTT_LOGGING true
@@ -72,7 +71,6 @@ void setup() {
 void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
-    //TODO: use mcp23008
     Device::add(new Curtain(0, "Curtain", "Office"));     // 2x Relays: 0, 1
     // Device::add(new Awning(2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
@@ -86,14 +84,14 @@ void createDevices() {
 
     // I2CPWM8W80C board
     // 8 Dimmers
-    Device::add(new NCD8Light(0, "OfficeCeiling", "Office", 2));
-    Device::add(new NCD8Light(1, "Loft", "Office", 2));
-    Device::add(new NCD8Light(2, "RampPorch", "Outside", 2));
-    Device::add(new NCD8Light(3, "RampAwning", "Outside", 2));
-    Device::add(new NCD8Light(4, "RearPorch", "Outside", 2));
-    Device::add(new NCD8Light(5, "RearAwning", "Outside", 2));
-    Device::add(new NCD8Light(6, "Piano", "Office", 2));
-    //Device::add(new NCD8Light(7, "Unused", "Office", 2));
+    Device::add(new NCD8Light(1, "OfficeCeiling", "Office"));
+    Device::add(new NCD8Light(2, "Loft", "Office"));
+    Device::add(new NCD8Light(3, "RampPorch", "Outside"));
+    Device::add(new NCD8Light(4, "RampAwning", "Outside"));
+    Device::add(new NCD8Light(5, "RearPorch", "Outside"));
+    Device::add(new NCD8Light(6, "RearAwning", "Outside"));
+    Device::add(new NCD8Light(7, "Piano", "Office"));
+    //Device::add(new NCD8Light(7, "Unused", "Office"));
 
     // Pseudo Devices
     Device::add(new Device("AnyoneHome", "All", 'X'));

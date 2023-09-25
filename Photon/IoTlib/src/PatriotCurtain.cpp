@@ -9,6 +9,8 @@
  This plugin is designed to coexist with up to 2 NCD4Relays
  and up to 4 NCD4Switch devices using the GPIOs on same board.
  
+ Requires MCP23008 be loaded and running first.
+ 
  Features:
  - 2 relay automated curtain control
  - On (open), Off (closed), or timed partially open (1-99)

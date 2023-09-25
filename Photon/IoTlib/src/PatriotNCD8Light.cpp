@@ -41,7 +41,7 @@
  * @param name String name used to address the light.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
-NCD8Light::NCD8Light(int8_t lightNum, String name, String room, int8_t duration, int8_t curve)
+NCD8Light::NCD8Light(int lightNum, String name, String room, int duration, int curve)
                      : Device(name, room)
 {
     _lightNum       = lightNum-1;       // Convert to 0 based
@@ -158,6 +158,7 @@ void NCD8Light::outputPWM() {
  */
 int NCD8Light::convertTo255(int value) {
     if(value == 0) return 0;
+    if(value == 100) return 255;
     float expValue = pow(CURVE_BASE, float(value)) - 1.0;
     float linValue = (float)value * 255 / 100;
 

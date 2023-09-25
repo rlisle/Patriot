@@ -11,26 +11,29 @@
    3. Put Photon into listen mode using buttons
    4. "particle flash front_panel2 --target 5.4.1" or "ffp2"
 
-  PHOTON 2 PINS
+  PHOTON 2 PINS (in order on card)
+ 
+  Left side
   RST - nc
   3V3 - nc
   Mode - nc
-  Gnd - nc - 12v monitor R ladder -
-  D11/A0/ADC4 - 12v monitor R ladder
+  Gnd - nc                  - 12v monitor R ladder gnd
+  D11/A0/ADC4           - 12v monitor R ladder
   D12/A1/ADC5
   D13/A2/ADC3/PWM
   D14/A5/ADC0/PWM
-  D19/S4
+  D19/S4                    - Front Door switch
   D18/S3
   D17/SCK
-  D15/MOSI/PWM - Ceiling
-  D16/MISO/PWM - Cabinets
+  D15/MOSI/PWM      - Ceiling LEDs
+  D16/MISO/PWM      - Cabinets LEDs
   D9/RX
   D8/TX
  
-  LI+ - nc
-  EN - nc
-  VSUB (5v) - nc
+  Right Side
+  LI+                            - nc
+  EN                            -  nc
+  VSUB (5v)                 - nc
   D10
   D7
   D6
@@ -38,8 +41,8 @@
   D4
   D3
   D2
-  D1/A4/ADC1/PWM/Wire SCL
-  D0/A3/ADC2/Wire SDA
+  D1/A4/ADC1/PWM/Wire SCL - NCD I2C
+  D0/A3/ADC2/Wire SDA           - NCD I2C
  
   SWITCH WIRING
   Top left:       tape label "Cabinet" -> D3 green -> gold
@@ -96,7 +99,6 @@
 
 #define CONTROLLER_NAME "FrontPanel2"
 #define MQTT_BROKER "192.168.50.33"
-#define DIMMER_ADDRESS 0x41      // PWM board lowest switch on
 #define PCA9634_ADDRESS 0x01     // Lowest switch on
 //#define SWITCH_ADDRESS 0x20
 //#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
