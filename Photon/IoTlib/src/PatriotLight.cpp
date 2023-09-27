@@ -43,9 +43,9 @@ Light::Light(int pinNum, String name, String room, int durationMSecs, int curve)
 void Light::begin() {
     pinMode(_pin, OUTPUT);
     if(isPwmSupported(_pin) == true) {
-        // Try to set 12 bit resolution. May only support 8 bit
         _pinResolution = analogWriteResolution(_pin, 12);
         _maxLevel = (1 << _pinResolution) - 1;
+        Log.info("Light pin %d resolution = %d, max = %d", _pin, _pinResolution, _maxLevel);
     } else {
         _dimmingMSecs = 0;
     }

@@ -71,16 +71,6 @@
    Middle 12v: Fuse #2 Orange/White
    Bottom 12v: Fuse #14 Gray/White Awning
  
-  I2CDIO8 Inputs
-  1. Front Door switch
-  2.
-  3.
-  4.
-  5.
-  6.
-  7.
-  8.
- 
   Photon 2 is 0a10aced202194944a0446ac front_panel2
   RSSI = -63dBm on 9/17/23
  

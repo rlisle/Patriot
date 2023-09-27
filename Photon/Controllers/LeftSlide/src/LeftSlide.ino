@@ -77,9 +77,9 @@ void setup() {
     Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
     //Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
-    // Lights
-    Device::add(new Light(A2, "Couch", "Living Room", 0));      // s/b 2
-    Device::add(new Light(A5, "LeftVertical", "Living Room", 0));   // "
+    // Lights (default 2s curve 2)
+    Device::add(new Light(A2, "Couch", "Living Room"));
+    Device::add(new Light(A5, "LeftVertical", "Living Room"));   // "
 }
 
 // Mark - Loop
