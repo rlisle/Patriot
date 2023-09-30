@@ -45,7 +45,6 @@ void Light::begin() {
     if(isPwmSupported(_pin) == true) {
         _pinResolution = analogWriteResolution(_pin, 12);
         _maxLevel = (1 << _pinResolution) - 1;
-        Log.info("Light pin %d resolution = %d, max = %d", _pin, _pinResolution, _maxLevel);
     } else {
         _dimmingMSecs = 0;
     }
@@ -76,6 +75,7 @@ void Light::setValue(int value)
  * Use floatValue to smoothly transition
  */
 void Light::startSmoothDimming() {
+    Log.info("Light pin %d resolution = %d, max = %d", _pin, _pinResolution, _maxLevel);
     _lastUpdateTime = millis();             // Starting now
     _currentPercent = (float)_value;        // Starting point
     float delta = (float)_targetPercent - _currentPercent;

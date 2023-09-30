@@ -69,7 +69,28 @@
    Top 12v: Fuse #5 Purple/White
    Gnd
    Middle 12v: Fuse #2 Orange/White
+            also Fuse ? Purple/White marked Ceiling Power
    Bottom 12v: Fuse #14 Gray/White Awning
+ 
+ Fuse Panel
+ 1. Brown/White     Bedroom Lts.
+ 2. Orange/White    Puck Lts (Ceiling Power)
+ 3. Green/White     Storage Lts
+ 4. Blue/White         Br Slide out
+ 5. Purple/White      Kitchen (Front Panel)
+ 6. Pink solid           Furnace
+ 7. Yellow/White      Fan
+ 8. Pink/White         Fuel Pump
+ 9. Blue solid           Water Pump
+ 10. Black/White     Monitor Panel
+ 11. Green/White     Ent
+ 12. n/c
+ 13. Red/White         Garage (RearPanel)
+ 14. Gray/White        Awning
+ 15. New Red           Pepwave
+ 16. n/c
+ 17. n/c
+ 18. n/c
  
   Photon 2 is 0a10aced202194944a0446ac front_panel2
   RSSI = -63dBm on 9/17/23

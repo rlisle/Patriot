@@ -45,7 +45,7 @@ int PCA9634::initialize(int boardAddress) {
         Wire.write(0xaa);       // LEDOUT1 LEDS 4-7 dimming
         Wire.endTransmission();
 
-        Log.info("PCA9634 Initialize address " + String(address) + " sucess");
+        Log.info("PCA9634 Initialize address " + String(address) + " success");
         
     } else {
         Log.error("PCA9634 Initialize " + String(address) + " FAILED!");
@@ -76,7 +76,7 @@ void PCA9634::reset() {
 void PCA9634::outputPWM(int lightNum, int level) {
     int reg = 2 + lightNum;
     
-    int retryCount = 3;
+    int retryCount = 5;
     byte status;
     do {
         Wire.beginTransmission(address);
@@ -84,7 +84,7 @@ void PCA9634::outputPWM(int lightNum, int level) {
         Wire.write(level);
         status = Wire.endTransmission();
         retryCount--;
-    } while(status != 0 && retryCount > 0);
+    } while(status != 0 && retryCount >= 0);
     
     if(status != 0) {
         Log.error("PCA9634 outputPWM write failed for light "+String(lightNum)+", level = "+String(level));
