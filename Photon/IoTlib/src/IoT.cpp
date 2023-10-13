@@ -28,6 +28,7 @@
 // Global & Static Variables
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
+
 int          outOfMemory = -1;
 
 void outOfMemoryHandler(system_event_t event, int param) {
@@ -43,12 +44,35 @@ void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
 {
     System.on(out_of_memory, outOfMemoryHandler);
     Time.zone(-6);              // CST
-    handleDaylightSavings();
+    handleDaylightSavings();    // Set isDST appropriately
     
     // Expose particle.io variables
     Device::expose();
     
+    // Start H/W Watchdog
+    startWatchdog();
+    
+    // Start MQTT
     _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
+}
+
+/**
+ * Hardware Watchdog
+ */
+void IoT::startWatchdog()
+{
+    // Getting capabiltiies
+    WatchdogInfo info;
+    Watchdog.getInfo(info);
+
+    // Get the capabilities that are always enabled
+    WatchdogCaps mandatoryCaps = info.mandatoryCapabilities();
+
+    // Get the capabilities that can be turned off
+    WatchdogCaps optionalCaps = info.capabilities();
+    
+    Watchdog.init(WatchdogConfiguration().timeout(300s));
+    Watchdog.start();
 }
 
 /**
@@ -59,19 +83,24 @@ void IoT::loop()
 {
     Device::loopAll();
     _mqttManager->loop();
-    
+
+    //TODO: enable only for Photon 2
     if (outOfMemory >= 0) {
         // An out of memory condition occurred - reset device.
-        Log.info("out of memory occurred size=%d", outOfMemory);
-        delay(500);
+        Log.error("out of memory occurred size=%d", outOfMemory);
+        delay(2000);
         System.reset();
     }
     
-    if(Time.hour() == 3 && System.uptime() > 24*60*60) {
-        Log.info("Performing daily reboot");
-        delay(500);
-        System.reset();
-    }
+    //TODO: Use this only for Photon 1
+//    if(Time.hour() == 3 && System.uptime() > 24*60*60) {
+//        Log.info("Performing daily reboot");
+//        delay(500);
+//        System.reset();
+//    }
+    
+    Watchdog.refresh();
+    
 }
 
 /**
@@ -149,7 +178,7 @@ void IoT::setTimezone(int timezone) {
 void IoT::handleDaylightSavings() {
     // Read & set persisted value from EEPROM (if present)
     int8_t timezone;
-    EEPROM.get(TIMEZONE_ADDR, timezone);
+    EEPROM.get(TIMEZONE_ADDR, timezone);    // Photon2 uses a file on the Flash file system
     if(timezone == 0xff) {      // 0xff means never written
         timezone = -6;          // Default to CST
     }
@@ -191,6 +220,7 @@ void IoT::handleDSTMarch() {
         default:
             if(day < 14) return;
     }
+    Log.trace("Begin DST");
     Time.beginDST();
 }
 
@@ -224,6 +254,7 @@ void IoT::handleDSTNovember() {
         default:
             if(day > 7) return;
     }
+    Log.trace("Begin DST");
     Time.beginDST();
 }
 

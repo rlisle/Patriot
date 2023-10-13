@@ -56,6 +56,7 @@
 		27841D7527871CE400DFCCFD /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Plugins/NCD4Relay/src; sourceTree = "<group>"; };
 		27841D7627871CE400DFCCFD /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/NCD4Relay/library.properties; sourceTree = "<group>"; };
 		27841D7727871CFD00DFCCFD /* relay.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = relay.ino; path = ../Photon/Plugins/NCD4Relay/examples/relay/relay.ino; sourceTree = "<group>"; };
+		278712422A9A9AB00088AC70 /* pca9685.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = pca9685.cpp; path = ../Photon/IoTlib/src/pca9685.cpp; sourceTree = "<group>"; };
 		279E08C7295DE4B60059951F /* ShellyPower */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShellyPower; path = ../Photon/Plugins/ShellyPower; sourceTree = "<group>"; };
 		27A0F26C279DE9950021E84D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../Photon/Plugins/MR24/LICENSE; sourceTree = "<group>"; };
 		27A0F26D279DE9950021E84D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Plugins/MR24/README.md; sourceTree = "<group>"; };
@@ -65,14 +66,26 @@
 		27AE94DD26F0CC2A004D5CB6 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/Kitchen/src; sourceTree = "<group>"; };
 		27AE94DE26F0CC2A004D5CB6 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/Kitchen/project.properties; sourceTree = "<group>"; };
 		27AE94DF26F0CC2A004D5CB6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/Kitchen/README.md; sourceTree = "<group>"; };
+		27B17DC52A9A122F00D45EC8 /* PatriotNCD16Light.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD16Light.cpp; path = ../Photon/IoTlib/src/PatriotNCD16Light.cpp; sourceTree = "<group>"; };
 		27BA7D6627D456940045A887 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/PhilipsHue/library.properties; sourceTree = "<group>"; };
 		27BA7D6727D456AA0045A887 /* HueLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HueLight.h; path = ../Photon/Plugins/PhilipsHue/src/HueLight.h; sourceTree = "<group>"; };
 		27BA7D6827D456AA0045A887 /* HueLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HueLight.cpp; path = ../Photon/Plugins/PhilipsHue/src/HueLight.cpp; sourceTree = "<group>"; };
 		27BA7D6927D456C80045A887 /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; name = examples; path = ../Photon/Plugins/PhilipsHue/examples; sourceTree = "<group>"; };
+		27D332122A96CE390044EB83 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/IoTlib/src/PatriotLight.cpp; sourceTree = "<group>"; };
+		27D332132A96D0240044EB83 /* PatriotPIR.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotPIR.cpp; path = ../Photon/IoTlib/src/PatriotPIR.cpp; sourceTree = "<group>"; };
+		27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotCurtain.cpp; path = ../Photon/IoTlib/src/PatriotCurtain.cpp; sourceTree = "<group>"; };
+		27D332152A97691F0044EB83 /* PatriotNCD4Relay.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD4Relay.cpp; path = ../Photon/IoTlib/src/PatriotNCD4Relay.cpp; sourceTree = "<group>"; };
+		27D332162A976AC00044EB83 /* PatriotNCD4Switch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD4Switch.cpp; path = ../Photon/IoTlib/src/PatriotNCD4Switch.cpp; sourceTree = "<group>"; };
+		27D332172A976B610044EB83 /* PatriotNCD8Light.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD8Light.cpp; path = ../Photon/IoTlib/src/PatriotNCD8Light.cpp; sourceTree = "<group>"; };
+		27D332192A976D010044EB83 /* PatriotNCD8Switch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD8Switch.cpp; path = ../Photon/IoTlib/src/PatriotNCD8Switch.cpp; sourceTree = "<group>"; };
+		27D3321B2A97711A0044EB83 /* PatriotSwitch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotSwitch.cpp; path = ../Photon/IoTlib/src/PatriotSwitch.cpp; sourceTree = "<group>"; };
+		27D3321F2A977AB50044EB83 /* pca9634.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = pca9634.cpp; path = ../Photon/IoTlib/src/pca9634.cpp; sourceTree = "<group>"; };
+		27D332202A977D1B0044EB83 /* PatriotNCD4PIR.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotNCD4PIR.cpp; path = ../Photon/IoTlib/src/PatriotNCD4PIR.cpp; sourceTree = "<group>"; };
 		27D74327276E1B2300280B2C /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/RonPIRTest/project.properties; sourceTree = "<group>"; };
 		27D74328276E1B2300280B2C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/RonPIRTest/README.md; sourceTree = "<group>"; };
 		27D74329276E1B2300280B2C /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/RonPIRTest/src; sourceTree = "<group>"; };
 		27D7432A276E83EB00280B2C /* PIR */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PIR; path = ../Photon/Plugins/PIR; sourceTree = "<group>"; };
+		27FCEF082A9BED190014EA24 /* mcp23008.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = mcp23008.cpp; path = ../Photon/IoTlib/src/mcp23008.cpp; sourceTree = "<group>"; };
 		E41085852568627000EFBE84 /* PatriotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatriotLight.cpp; path = ../Photon/Plugins/Light/src/PatriotLight.cpp; sourceTree = "<group>"; };
 		E41085862568627000EFBE84 /* PatriotLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatriotLight.h; path = ../Photon/Plugins/Light/src/PatriotLight.h; sourceTree = "<group>"; };
 		E41085872568628F00EFBE84 /* library.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = library.properties; path = ../Photon/Plugins/Light/library.properties; sourceTree = "<group>"; };
@@ -275,6 +288,26 @@
 			name = HueLight;
 			sourceTree = "<group>";
 		};
+		27D3321E2A9774410044EB83 /* Devices */ = {
+			isa = PBXGroup;
+			children = (
+				27FCEF082A9BED190014EA24 /* mcp23008.cpp */,
+				27D3321F2A977AB50044EB83 /* pca9634.cpp */,
+				278712422A9A9AB00088AC70 /* pca9685.cpp */,
+				27B17DC52A9A122F00D45EC8 /* PatriotNCD16Light.cpp */,
+				27D3321B2A97711A0044EB83 /* PatriotSwitch.cpp */,
+				27D332192A976D010044EB83 /* PatriotNCD8Switch.cpp */,
+				27D332172A976B610044EB83 /* PatriotNCD8Light.cpp */,
+				27D332162A976AC00044EB83 /* PatriotNCD4Switch.cpp */,
+				27D332152A97691F0044EB83 /* PatriotNCD4Relay.cpp */,
+				27D332142A96D2BA0044EB83 /* PatriotCurtain.cpp */,
+				27D332132A96D0240044EB83 /* PatriotPIR.cpp */,
+				27D332122A96CE390044EB83 /* PatriotLight.cpp */,
+				27D332202A977D1B0044EB83 /* PatriotNCD4PIR.cpp */,
+			);
+			name = Devices;
+			sourceTree = "<group>";
+		};
 		27D74326276E1B0500280B2C /* RonPIRTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -337,6 +370,7 @@
 		E4849C502566A93E00A39734 /* IoTlib */ = {
 			isa = PBXGroup;
 			children = (
+				27D3321E2A9774410044EB83 /* Devices */,
 				E41085942568639C00EFBE84 /* library.properties */,
 				E4849C542566AB3C00A39734 /* constants.h */,
 				E4849C5C2566AB3C00A39734 /* device.h */,

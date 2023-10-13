@@ -14,14 +14,6 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
-/**
- * globalChecklistVariable and globalDevicesVariable
- * Lists all the currently active devices and checklist names in CSV format.
- */
-String globalChecklistVariable;
-String globalDevicesVariable;
-String globalStatusVariable;
-
 Device::Device(String name, String room, char type)
 : _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100)
 {
@@ -32,7 +24,6 @@ Device::Device(String name, String room, char type)
 void Device::setValue(int value) {
     Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
-    buildStatusVariable();
 }
 
 void Device::setBrightness(int value) {
@@ -41,7 +32,6 @@ void Device::setBrightness(int value) {
     // but it will adjust the level of one that is already on
     if(_value != 0) {
         setValue(value);
-        buildStatusVariable();
     }
 }
 
@@ -75,10 +65,6 @@ void Device::add(Device *device)
         ptr->_next = device;
     }
     device->begin();
-    
-    buildDevicesVariable();
-    buildChecklistVariable();
-    buildStatusVariable();
 }
 
 void Device::resetAll()
@@ -122,7 +108,6 @@ int Device::setValue(String name, int value) {
     Device *ptr = get(name);
     if( ptr == NULL ) return -1;
     ptr->setValue(value);
-    buildDevicesVariable();
     return 0;
 }
 
@@ -174,17 +159,37 @@ void Device::mqttAll(String topic, String message)
 
 // Particle.io Devices, Checklist, and Status variables
 
+String Device::calculateStatus() {
+    String status = Time.timeStr() + ": ";
+    
+    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
+
+        if(ptr->_type != 'X') {     // Ignore checklist items
+            status += String(ptr->_type)+":";
+            status += String(ptr->_name);
+            status += "="+String(ptr->_value);
+            if (ptr->_next != NULL) {
+                status += ",";
+            }
+        }
+    }
+    if(status.length() >= particle::protocol:: MAX_VARIABLE_VALUE_LENGTH) {
+        return("Status variable is too long. Need to extend to a 2nd variable");
+    }
+    return status;
+}
+
 void Device::expose()
 {
-    if(!Particle.variable(kDevicesVariableName, globalDevicesVariable))
+    if(!Particle.variable(kDevicesVariableName, calculateDevices))
     {
         Log.error("Error: Unable to expose " + kDevicesVariableName + " variable");
     }
-    if(!Particle.variable(kChecklistVariableName, globalChecklistVariable))
+    if(!Particle.variable(kChecklistVariableName, calculateChecklist))
     {
         Log.error("Error: Unable to expose " + kChecklistVariableName + " variable");
     }
-    if(!Particle.variable(kStatusVariableName, globalStatusVariable))
+    if(!Particle.variable(kStatusVariableName, Device::calculateStatus))
     {
         Log.error("Error: Unable to expose " + kStatusVariableName + " variable");
     }
@@ -193,60 +198,33 @@ void Device::expose()
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
 // It is a comma delimited list of <T>:<Name>
 // Note: Alexa skill hasn't been updated to support @<room>, so removing it for now.
-void Device::buildDevicesVariable()
+String Device::calculateDevices()
 {
-    String newVariable = "";
+    String devices = "";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
 
         if(ptr->_type != 'X') {     // Ignore Checklist items
-            newVariable += String(ptr->_type)+":";
-            newVariable += String(ptr->_name);
-//            newVariable += "@"+ptr->_room;
+            devices += String(ptr->_type)+":";
+            devices += String(ptr->_name);
             if (ptr->_next != NULL) {
-                newVariable += ",";
+                devices += ",";
             }
         }
     }
-    if(newVariable.length() < kMaxVariableStringLength) {
-        globalDevicesVariable = newVariable;
-    } else {
-        Log.error("Devices variable is too long. Need to extend to a 2nd variable");
+    if(devices.length() >= particle::protocol:: MAX_VARIABLE_VALUE_LENGTH) {
+        return("Devices variable is too long. Need to extend to a 2nd variable");
     }
-}
-
-// The Status variable is used to report the current state of each device
-// It is a comma delimited list of <T>:<Name>=<Value>
-void Device::buildStatusVariable()
-{
-    String newVariable = "";
-    
-    for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-
-        if(ptr->_type != 'X') {     // Ignore checklist items
-            newVariable += String(ptr->_type)+":";
-            newVariable += String(ptr->_name);
-            newVariable += "="+String(ptr->_value);
-            if (ptr->_next != NULL) {
-                newVariable += ",";
-            }
-        }
-    }
-    if(newVariable.length() < kMaxVariableStringLength) {
-        globalStatusVariable = newVariable;
-    } else {
-        Log.error("Status variable is too long. Need to extend to a 2nd variable");
-    }
+    return devices;
 }
 
 // The Checklist variable is used by the Checklist iOS app.
 // It is a comma delimited list of <Name>=0|1
-void Device::buildChecklistVariable()
+String Device::calculateChecklist()
 {
     String newChecklist = "";
     
     for (Device* ptr = _devices; ptr != NULL; ptr = ptr->_next) {
-
         if(ptr->_type == 'X') {
             newChecklist += String(ptr->_name);
             newChecklist += "="+String(ptr->_value);
@@ -255,11 +233,11 @@ void Device::buildChecklistVariable()
             }
         }
     }
-    if(newChecklist.length() < kMaxVariableStringLength) {
-        globalChecklistVariable = newChecklist;
-    } else {
+    if(newChecklist.length() >= particle::protocol:: MAX_VARIABLE_VALUE_LENGTH) {
         Log.error("Checklist variable is too long. Need to extend to a 2nd variable");
     }
+    if(newChecklist.length() == 0) { Log.info("No checklist items"); }
+    return newChecklist;
 }
 
 

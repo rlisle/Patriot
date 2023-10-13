@@ -2,7 +2,7 @@
  * RonTest Controller
  *
  * Description: This sketch is used for experimenting and testing
- * Currently testing Awning and Power
+ * Currently testing Photon2
  *
  * Author: Ron Lisle
  *
@@ -11,41 +11,30 @@
  * - Various based on test/experimentation needs
  */
 
+#include "Particle.h"
 #include <IoT.h>
-#include <PatriotCurtain.h>
-#include <PatriotPower.h>
-#include <PatriotAwning.h>
 
 #define CONTROLLER_NAME "RonTest"
 #define MQTT_BROKER "192.168.50.33"
+#define MQTT_LOGGING true
 
 //While debugging, use serial and disable MQTT logging if needed
-SerialLogHandler logHandler;
-#define MQTT_LOGGING false
-
-#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
+//SerialLogHandler logHandler;
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
-int amps = 0;
-int ampsThreshold = 10;     // Report changes > 10 amps
-
 void setup() {
     WiFi.selectAntenna(ANT_INTERNAL);   // or ANT_EXTERNAL
-    WiFi.useDynamicIP();
+//    WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
-    
-    // I2CIO4R4G5LE board
-    // 4 Relays
-    Device::add(new Curtain(I2CR4IO4, 0, "TestCurtain", "Office"));     // 2x Relays: 0, 1
-    Device::add(new Awning(I2CR4IO4, 2, "TestAwning", "Outside"));     // 2x Relays: 2, 3
 
-    // 4 GPIO
-//    Device::add(new NCD4Switch(I2CR4IO4, 0, "TestDoor", "Office"));
+    // Lights
+    Device::add(new Light(A2, "Couch", "Living Room", 2));
 
-    Device::add(new Power("amps", "Status"));
-    
+    // PIR
+    Device::add(new PIR(A0, "TestMotion", "Living Room", 300));
+
     Log.info("RonTest started");
 }
 
@@ -53,21 +42,9 @@ void loop() {
     IoT::loop();
     
 //    scanI2Caddresses();
-    handleAmps();
 
-}
+    Watchdog.refresh();
 
-void handleAmps() {
-    int ampsChanged = Device::getChangedValue("amps");
-    if( ampsChanged != -1 ) {
-        if(ampsChanged >= amps + 10) {
-            Log.info("amps increased to %d",ampsChanged);
-        }
-        if(ampsChanged <= amps - 10) {
-            Log.info("amps decreased to %d",ampsChanged);
-        }
-        amps = ampsChanged;
-    }
 }
 
 // Diagnostic Functions

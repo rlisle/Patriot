@@ -5,13 +5,13 @@ Author: Ron Lisle
 
  The controller is located in the office above the piano.
  
- Photon pin assignments
- - A2-A4 future 12v monitor ?
- - A5 PIR
+ Updated to Photon 2
+ - No Photon 2 pins used directly.
+ - Use I2C for all I/O.
  
- To update Photon:
+ To update code:
    1. Edit this code
-   2. Update IoT and plugins if needed
+   2. Update IoT if needed
    3. Put Photon into safe mode using buttons (breathing magenta)
         Press both buttons, release reset, release setup when blinking magenta
    4. "particle flash RearPanel" or "frp"
@@ -22,65 +22,77 @@ Author: Ron Lisle
  and runs network on separate theread.
  Using SYSTEM_MODE(AUTOMATIC)
 
+ Migration from Photon 1 to Photon 2:
+ 1. Remove 12v power and disconnect current I2CR4IO4 board - note/photo wires
+ 2. Remove SCT board - note wires
+ 3. Install IoTR4IO4 with Photon 2 and adapter and USB power converter
+ 4. Reconnect wires to IoTR4IO4 board
+ 5. Reprogram/configure Address
+ 6. Reprogram FIR to use R4IO4
+ 
+ Compiling: particle compile photon2 --target 5.4.1
+ Flashing: particle flash rear_panel2 --target 5.4.1
+   or shortcut "frp2"
  */
+
 #include <IoT.h>
-#include <PatriotNCD8Light.h>
-#include <PatriotCurtain.h>
-#include <PatriotNCD4Switch.h>
-#include <PatriotNCD4Relay.h>
-#include <PatriotPIR.h>
-//#include <PatriotAwning.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
+#include "math.h"
 
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.50.33"
 #define MQTT_LOGGING true
-
 #define OFFICE_MOTION_TIMEOUT 15
-
-#define ADDRESS 1      // NCD8Light PWM board address A0 jumper set
-#define I2CR4IO4 0x20  // 4xRelay+4GPIO address
+#define PCA9634_ADDRESS 1       // 1st jumper
+#define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
-
 bool officeDoor = false;
 bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
 
 void setup() {
-    WiFi.selectAntenna(ANT_EXTERNAL);
+    WiFi.selectAntenna(ANT_INTERNAL);
+    
     //WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+    
+    //Consolidate PCA9634 initialization
+    MCP23008::initialize(I2CR4IO4_ADDRESS, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
+    PCA9634::initialize(PCA9634_ADDRESS);
     createDevices();
 }
+
 
 void createDevices() {
     // I2CIO4R4G5LE board
     // 4 Relays
-    Device::add(new Curtain(I2CR4IO4, 0, "Curtain", "Office"));     // 2x Relays: 0, 1
-    // Device::add(new Awning(I2CR4IO4, 2, "RearAwning", "Outside")); // 2x Relays: 2, 3
+    Device::add(new Curtain(0, "Curtain", "Office"));     // 2x Relays: 0, 1
+    // Device::add(new Awning(2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
-    
-    Device::add(new NCD4Switch(I2CR4IO4, 0, "OfficeDoor", "Office"));
-    
-    // Photon I/O
-    Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+    //TODO: use mcp23008
+    Device::add(new NCD4Switch(1, "OfficeDoor", "Office"));
+//    Device::add(new NCD4PIR(I2CR4IO4_ADDRESS, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+
+    // (deprecated) Photon I/O
+    //Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // I2CPWM8W80C board
     // 8 Dimmers
-    Device::add(new NCD8Light(ADDRESS, 0, "OfficeCeiling", "Office", 2));
-    Device::add(new NCD8Light(ADDRESS, 1, "Loft", "Office", 2));
-    Device::add(new NCD8Light(ADDRESS, 2, "RampPorch", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 3, "RampAwning", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 4, "RearPorch", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 5, "RearAwning", "Outside", 2));
-    Device::add(new NCD8Light(ADDRESS, 6, "Piano", "Office", 2));
-    
+    Device::add(new NCD8Light(1, "OfficeCeiling", "Office"));
+    Device::add(new NCD8Light(2, "Loft", "Office"));
+    Device::add(new NCD8Light(3, "RampPorch", "Outside"));
+    Device::add(new NCD8Light(4, "RampAwning", "Outside"));
+    Device::add(new NCD8Light(5, "RearPorch", "Outside"));
+    Device::add(new NCD8Light(6, "RearAwning", "Outside"));
+    Device::add(new NCD8Light(7, "Piano", "Office"));
+    //Device::add(new NCD8Light(7, "Unused", "Office"));
+
     // Pseudo Devices
     Device::add(new Device("AnyoneHome", "All", 'X'));
     Device::add(new Device("RonHome", "All", 'X'));
@@ -129,11 +141,6 @@ void createDevices() {
     Device::add(new Device("waterHeaterOn", "All", 'X'));
     Device::add(new Device("sewerHose", "All", 'X'));
 }
-
-/**
- * LOOP
- */
 void loop() {
     IoT::loop();
 }
-
