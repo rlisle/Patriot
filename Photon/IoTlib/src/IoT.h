@@ -94,19 +94,21 @@ class MCP23008 {
 public:
     static int8_t _address;  //TODO: Add support for multiple boards
     static int8_t _iomap;
+    static int8_t _current;
+    static unsigned long _lastReadMillis;
     
-    static void initialize(int address, int iomap);
-    static void reset();
+    static int initialize(int address, int iomap);
+    static int reset();
     static int read();
-    static void write(int ioNum, bool value);
+    static int write(int ioNum, bool value);
 };
 class PCA9634 {
 public:
     static int8_t address;  //TODO: Add support for multiple boards
     
-    static void initialize(int address, int iomap);
+    static int  initialize(int boardAddress);
     static void reset();
-    static bool isInputOn(int bitmap);
+    static void outputPWM(int lightNum, int level); // level 0-255
 };
 class PCA9685 {
 public:
@@ -114,7 +116,7 @@ public:
     
     static void initialize(int address);
     static void reset();
-    static void outputPWM(int lightNum, int level); // level 0-0x0fff
+    static void outputPWM(int lightNum, int level); // level 0-4095
 };
 
 class Curtain : public Device {
@@ -123,7 +125,6 @@ class Curtain : public Device {
     unsigned long _updateMillis;  // time to send next update msg
     unsigned long _startMillis;
 
-    int8_t  _boardAddress;
     int8_t  _relayIndex;
     
     int8_t  _mode;  // 1 = close, 2 = open, 0 = idle
@@ -132,17 +133,14 @@ class Curtain : public Device {
     
     int8_t  _startPosition;
 
-    void    pulse(bool start);
+    void    pulse(bool high);
     bool    isCurtainRunning();
     bool    isTimeToChangePulse();
-    int     readCurrentState();
-    int     currentPosition();
     
  public:
-    Curtain(int8_t boardAddress, int8_t relayIndex, String name, String room);
+    Curtain(int8_t relayIndex, String name, String room);
     
     void    begin();
-    void    reset();
     void    setValue(int percent);  // Target state
     void    setHold(bool holding);
     void    loop();
@@ -150,26 +148,23 @@ class Curtain : public Device {
 class Light : public Device {
  private:
     int       _pin;
-    int       _dimmingDurationMsecs;
-    float     _percentMaxValue;         // (1 << resolution)-1 / 100
-
-    // 0-100 scale
-    int       _targetValue;
-    float     _floatValue;
-    float     _incrementPerMillisecond;
-
+    int       _curve;
+    int       _dimmingMSecs;
+    int       _pinResolution;
+    int       _maxLevel;
+    int       _targetPercent;
+    float     _currentPercent;
+    float     _incrementPerMSec;
     long      _lastUpdateTime;
 
-    bool      _isInverted;              // On state = LOW instead of default HIGH
-    bool      _forceDigital;            // On/Off only, even if PWM supported
-
+    int8_t    initializePin();
+    void      outputPWM(float value);
     void      startSmoothDimming();
-    void      outputPWM();
-    int       scalePWM(float value);
-    bool      isPwmSupported();
+    int       convertToPinResolution(float percent);
+    bool      isPwmSupported(int pin);
 
  public:
-    Light(int pin, String name, String room, bool isInverted=false, bool forceDigital=false);
+    Light(int pin, String name, String room, int durationMSecs = 2000, int curve = 2);
     void      begin();
     void      setValue(int value);
     void      loop();
@@ -196,7 +191,6 @@ class NCD4Relay : public Device {
 class NCD4Switch : public Device {
  private:
     long    _lastPollTime;
-    int8_t  _filter;
 
     int8_t  _boardAddress;
     int8_t  _switchBitmap;
@@ -207,40 +201,35 @@ class NCD4Switch : public Device {
     void      notify();
 
  public:
-    NCD4Switch(int8_t boardAddress, int8_t switchIndex, String name, String room);
-    
-    void    begin();
-    void    reset();
+    NCD4Switch(int8_t switchIndex, String name, String room);
     void    loop();
 };
 class NCD8Light : public Device {
  private:
-    int8_t  _lightNum;                 // Up to 8 lights supported
-    int8_t   _address;                 // Address of board (eg. 0x40)
-
-    int      _dimmingDuration;
+    int      _lightNum;                // Up to 8 lights supported
+    int      _dimmingMSecs;            // Default 2000
+    int       _curve;                  // 0 = linear, 1 = exp, 2 = 50/50
     float    _currentLevel;            // Use for smooth dimming transitions.
     float    _targetLevel;
     float    _incrementPerMillisecond;
     
     long     _lastUpdateTime;
 
-    int8_t  initializeBoard();
+    int     initializeBoard();
     void    outputPWM();
     void    startSmoothDimming();
-    int     scalePWM(float value);
+    int     convertTo255(int value);
 
  public:
-    NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration = 0);
+    NCD8Light(int lightNum, String name, String room, int durationMSecs = 2000, int curve = 2);
     void    begin();
     void    reset();
-    void    setValue(int value);
+    void    setValue(int percent);
     void    loop();
 };
 class NCD8Switch : public Device {
 private:
     long    _lastPollTime;
-    int8_t  _filter;
     int8_t  _switchBitmap;
 
     bool      isSwitchOn();
@@ -277,7 +266,7 @@ class NCD16Light : public Device {
     int8_t  initializeBoard();
     void    outputPWM();
     void    startSmoothDimming();
-//    int     convertPercent(int percent); // Convert 0-100 percent to 32 bit signed (0-7fffffff)
+    int     convertTo4k(int value);     // Convert 0-100 to 0-4095 exponential curve
 
  public:
     // lightNum is passed 1 based (1-16) but converted to 0-based in _lightNum

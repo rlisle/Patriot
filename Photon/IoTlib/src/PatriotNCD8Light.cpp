@@ -7,6 +7,15 @@
  - PWM control
  - Smooth transitioning if duration specified
 
+ Requires PCA9634 be installed and running also.
+ Note that address switches on board have no offset.
+        Address is as-is.
+ 
+ Photon2 has native floating point, so no need to use integer math scaled to 7fffffff.
+ All I2C code is in pca9685 class.
+
+ PCA9634 D/A resolution is 8 bits
+ 
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
@@ -16,115 +25,61 @@
  All text above must be included in any redistribution.
 
  Datasheets:
-
+     PCA9634: https://www.nxp.com/docs/en/data-sheet/PCA9634.pdf
  */
 
 #include "IoT.h"
 #include "math.h"
 
-#define MILLIS_PER_SECOND 1000
+//#define CURVE_BASE 1.056976670749058    // pow(255.0, 1.0 / 100.0)
+#define CURVE_BASE 1.05701804056138     // pow(256.0, 1.0 / 100.0)
+// ^0 = 1, ^1 = 1.057, ^100 = 256 so subtract 1 from result for 0-255
 
 /**
  * Constructor
- * @param address is the board address set by jumpers (0-7) 0x01 if low switch set, 0x40 if high
- * @param lightNum is the channel number on the NCD 8 Light board (0-7)
+ * @param lightNum is the channel number on the NCD 8 Light board (1-8)
  * @param name String name used to address the light.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
-
-NCD8Light::NCD8Light(int8_t address, int8_t lightNum, String name, String room, int8_t duration)
+NCD8Light::NCD8Light(int lightNum, String name, String room, int duration, int curve)
                      : Device(name, room)
 {
-    _address = address;
-    _lightNum   = lightNum;
-    _dimmingDuration = duration;
-    _currentLevel = 0.0;
-    _targetLevel = 0.0;
+    _lightNum       = lightNum-1;       // Convert to 0 based
+    _dimmingMSecs   = duration;         // Default 2000
+    _curve          = curve;            // Default 2
+    _value          = 0;                // Base Device class
+    _currentLevel   = 0.0;              // These 2 used to perform dimming
+    _targetLevel    = 0.0;
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
-    _type = 'L';
+    _type           = 'L';
 }
 
 void NCD8Light::begin() {
-    initializeBoard();
-}
-
-int8_t NCD8Light::initializeBoard() {
-    int status;
-
-    // Only the first light loaded needs to initialize the I2C link
-    if(!Wire.isEnabled()) {
-        Wire.begin();
-    }
-
-    Wire.beginTransmission(_address);   // Seems unnecessary
-    status = Wire.endTransmission();
-
-    if(status == 0) {
-        Wire.beginTransmission(_address);
-        Wire.write(0);          // Control register - No AI, point to reg0 Mode1
-        Wire.write(0);          // Mode1 reg. Osc on, disable AI, subaddrs, allcall
-        Wire.endTransmission();
-
-        Wire.beginTransmission(_address);
-        Wire.write(1);          // Mode2 register
-        Wire.write(0x04);       // Dimming, Not inverted, totem-pole
-        Wire.endTransmission();
-
-        Wire.beginTransmission(_address);
-	    Wire.write(0x8c);       // AI + LEDOUT0
-	    Wire.write(0xaa);       // LEDOUT0 LEDs 0-3 dimming 
-	    Wire.write(0xaa);       // LEDOUT1 LEDS 4-7 dimming
-        Wire.endTransmission();
-
-        outputPWM();            // Force light off
-        
-        Log.info("InitializeBoard " + _name + " sucess");
-        
-    } else {
-        Log.error("InitializeBoard " + _name + " FAILED!");
-    }
-
-    return status;
+    // Initialization done by PCA9634
 }
 
 void NCD8Light::reset() {
-    Log.error("Resetting board");
-    Wire.reset();
-    // Do we need any delay here?
-    Wire.begin();
-
-    // Issue PCA9634 SWRST
-    Wire.beginTransmission(_address);
-    Wire.write(0x06);
-    Wire.write(0xa5);
-    Wire.write(0x5a);
-    byte status = Wire.endTransmission();
-    if(status != 0){
-        Log.error("NCD8Light reset write failed for light "+String(_lightNum)+", reseting Wire");
-    }
-    initializeBoard();
+    Log.error("NCD8Light reset");
+    PCA9634::reset();
 }
 
 /**
  * Set value
  * @param value Int 0 to 100.
  */
-void NCD8Light::setValue(int value) {
-    if( value == _value ) {
-        Log.info("Dimmer " + _name + " setValue " + String(value) + " same so outputPWM without dimming");
-        _currentLevel = _value;
+void NCD8Light::setValue(int newValue) {
+    int checkedValue = constrain(newValue, 0, 100);
+    if( checkedValue == _value ) {
         outputPWM();
         return;
     }
     
-    _currentLevel = _value;   // hold previous value for transitioning
-    _value = value;
-    _targetLevel = value;
-    if(_dimmingDuration == 0) {
+    _targetLevel = (float)checkedValue;
+    if(_dimmingMSecs == 0) {
         _currentLevel = _targetLevel;
+        _value = checkedValue;
         outputPWM();
-
     } else {
         startSmoothDimming();
     }
@@ -136,11 +91,17 @@ void NCD8Light::setValue(int value) {
  * An alternative approach would be to calculate # msecs per step
  */
 void NCD8Light::startSmoothDimming() {
-    if((int)_currentLevel != _targetLevel){
+    if(abs(_currentLevel - _targetLevel) > 0.001) { // if !=
         _lastUpdateTime = millis();
         float delta = _targetLevel - _currentLevel;
-        _incrementPerMillisecond = delta / (float(_dimmingDuration) * 1000);
-        Log.info("Light "+_name+" setting increment to "+String(_incrementPerMillisecond));
+        _incrementPerMillisecond = delta / _dimmingMSecs;
+        if(abs(_incrementPerMillisecond) < 0.001) {
+            if(delta > 0) {
+                _incrementPerMillisecond = 0.001;
+            } else {
+                _incrementPerMillisecond = -0.001;
+            }
+        }
     }
 }
 
@@ -153,76 +114,70 @@ void NCD8Light::startSmoothDimming() {
  */
 void NCD8Light::loop()
 {
-    // Is fading transition underway?
-    if(_currentLevel == _targetLevel) {
+    // Is dimming transition underway?
+    if(abs(_currentLevel - _targetLevel) < 0.001) { // if ==
         return;
     }
-    
-    // _currentLevel, _targetLevel, and _incrementPerMillisend are floats for smoother transitioning
-    
-    long loopTime = millis();
-    float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
+
+    //TODO: millis will wrap after 49 days
+    unsigned long loopTime = millis();
+    unsigned long millisSinceLastUpdate = (loopTime - _lastUpdateTime);
     _currentLevel += _incrementPerMillisecond * millisSinceLastUpdate;
-    if(_incrementPerMillisecond > 0.0) {
+    
+    if(_incrementPerMillisecond > 0) {  // Going up?
         if(_currentLevel > _targetLevel) {
             _currentLevel = _targetLevel;
         }
-    } else {
+    } else {                            // Going down
         if(_currentLevel < _targetLevel) {
             _currentLevel = _targetLevel;
         }
     }
+    
+    // Clamp value
+    _currentLevel = constrain(_currentLevel, 0.0, 100.0);
+    _value = (int)_currentLevel;
     _lastUpdateTime = loopTime;
+
     outputPWM();
 };
 
 /**
- * Set the output PWM _currentLevel (0-100)
+ * Set the output PWM to 0-255 (8 bits)
+ * Convert float 0-100 to 0-0x00ff
  */
 void NCD8Light::outputPWM() {
-    int reg = 2 + _lightNum;
-    
-    int retryCount = 3;
-    byte status;
-    do {
-        Wire.beginTransmission(_address);
-        Wire.write(reg);
-        Wire.write(scalePWM(_currentLevel));
-        status = Wire.endTransmission();
-        retryCount--;
-    } while(status != 0 && retryCount > 0);
-    
-    if(status != 0){
-        reset();
-        retryCount = 5;
-        do {
-            Wire.beginTransmission(_address);
-            Wire.write(reg);
-            Wire.write(scalePWM(_currentLevel));
-            status = Wire.endTransmission();
-            retryCount--;
-        } while(status != 0 && retryCount > 0);
-        
-        if(status != 0) {
-            Log.error("NCD8Light outputPWM write failed twice for light "+String(_lightNum)+", level = "+String(_currentLevel));
-            reset();
-        }
-    }
+    int current255 = convertTo255(_currentLevel);
+//    Log.info("NCD8Light #%d = %.1f curve %d PWM %d", _lightNum, _currentLevel, _curve, current255);
+    PCA9634::outputPWM(_lightNum, current255);
 }
 
-/**
- * Convert 0-100 to 0-255 exponential scale
- * 0 = 0, 100 = 255
- */
-int NCD8Light::scalePWM(float value) {
-    if (value <= 0) return 0;
-    if (value >= 100) return 255;
 
-    //TODO: This is too extreme. Need to refine algorithm
-    float base = 1.05697667;
-    float pwm = pow(base,value);
-    if (pwm > 255) {
-        pwm = 255;
+/**
+ Convert 0 => 0, 100 => 255 with exponential scale
+ */
+int NCD8Light::convertTo255(int value) {
+    if(value == 0) return 0;
+    if(value == 100) return 255;
+    float expValue = pow(CURVE_BASE, float(value)) - 1.0;
+    float linValue = (float)value * 255 / 100;
+
+    // Curve argument specifies curve shape
+    // 0 = Linear
+    // 1 = Exponential
+    // 2 = 50/50 split
+    // 3 = 75/25 split
+    if(_curve == 0) {           // Linear
+        return linValue;
+    } else if(_curve == 1) {    // Exponential (redundant)
+        return expValue;
     }
-    return (int)pwm;
+    // Else return 2 = 1/2 + 1/2, 3 = 1/3 + 2/3, 4 = 1/4 + 3/4
+    float expAmount = 1.0 / _curve;             // 0.5
+    float linAmount = (float)(_curve - 1) / (float)_curve;    // 0.5
+    float linearPart = linValue * linAmount;
+    float exponentialPart = expValue * expAmount;
+//    Log.info("Linear %.2f * %.2f, Exp %.2f * %.2f",linValue,linAmount,expValue,expAmount);
+    float combinedValue = constrain(exponentialPart + linearPart, 0.0, 255.0);
+    return round(combinedValue);
 }
