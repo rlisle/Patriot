@@ -12,22 +12,22 @@
    4. "particle flash front_panel2 --target 5.4.1" or "ffp2"
 
   NCD 16x Dimmer
-  1.
-  2.
-  3.
-  4.
-  5.
+  1. DS Flood Lights
+  2. Awning Light
+  3. Ceiling
+  4. Porch Lights
+  5. ODS Flood Lights
   6.
   7.
   8.
   9.
   10.
   11.
-  12.
-  13.
-  14.
-  15.
-  16.
+  12. Indirect
+  13. Cabinet
+  14. Sink
+  15. Ceiling
+  16. ?
  
   PHOTON 2 PINS (in order on card)
   Left side
@@ -131,7 +131,6 @@
 #define CONTROLLER_NAME "FrontPanel2"
 #define MQTT_BROKER "192.168.50.33"
 #define PCA9685_ADDRESS 0x41       // Lowest jumper set
-//#define PCA9634_ADDRESS 0x01     // Lowest switch on
 //#define SWITCH_ADDRESS 0x20
 //#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
 
@@ -167,19 +166,19 @@ void createDevices() {
         Log.error("PCA9685 failed to initialize");
     }
 
-    // Inside Lights    TODO: set actual light #s
-    Device::add(new NCD16Light(1, "KitchenCeiling", "Kitchen"));
-    Device::add(new NCD16Light(2, "Sink", "Kitchen"));
-    Device::add(new NCD16Light(3, "RightTrim", "Kitchen"));
-    Device::add(new NCD16Light(4, "LeftTrim", "Living Room"));
-    Device::add(new NCD16Light(5, "Ceiling", "Kitchen"));
-    Device::add(new NCD16Light(6, "Cabinets", "Kitchen"));
+    // Inside Lights    TODO: set actual light #s     TODO: set wire colors
+    Device::add(new NCD16Light(3, "KitchenCeiling", "Kitchen"));    // R
+    Device::add(new NCD16Light(14, "Sink", "Kitchen"));              // B
+    Device::add(new NCD16Light(12, "RightTrim", "Kitchen"));         // G
+    Device::add(new NCD16Light(16, "LeftTrim", "Living Room"));      // Y
+    Device::add(new NCD16Light(15, "Ceiling", "Kitchen"));           // W
+    Device::add(new NCD16Light(13, "Cabinets", "Kitchen"));          // R
 
     // Outside Lights
-    Device::add(new NCD16Light(7, "DoorSide", "Outside"));
-    Device::add(new NCD16Light(8, "OtherSide", "Outside"));
-    Device::add(new NCD16Light(9, "FrontAwning", "Outside"));
-    Device::add(new NCD16Light(10, "FrontPorch", "Outside"));
+    Device::add(new NCD16Light(1, "DoorSide", "Outside"));          // B
+    Device::add(new NCD16Light(5, "OtherSide", "Outside"));         // G
+    Device::add(new NCD16Light(2, "FrontAwning", "Outside"));       // Y
+    Device::add(new NCD16Light(4, "FrontPorch", "Outside"));       // W
 
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)
