@@ -270,7 +270,7 @@ class NCD16Light : public Device {
 
  public:
     // lightNum is passed 1 based (1-16) but converted to 0-based in _lightNum
-    NCD16Light(int8_t lightNum, String name, String room, int8_t duration = 0);
+    NCD16Light(int8_t lightNum, String name, String room, int8_t duration = 2);
     void    begin();
     void    reset();
     void    setValue(int percent);  // 0-100
