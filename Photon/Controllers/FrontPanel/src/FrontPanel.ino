@@ -129,7 +129,7 @@
 #include <IoT.h>
 
 #define CONTROLLER_NAME "FrontPanel2"
-#define MQTT_BROKER "192.168.50.33"
+#define MQTT_BROKER "192.168.1.7"  // was "192.168.50.33" on Pepwave
 #define PCA9685_ADDRESS 0x41       // Lowest jumper set
 //#define SWITCH_ADDRESS 0x20
 //#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
@@ -161,18 +161,18 @@ void setup() {
 void createDevices() {
 
     // Required by NCD8Light
-    int status = PCA9685::initialize(PCA9685_ADDRESS);
-    if(status != 0) {
-        Log.error("PCA9685 failed to initialize");
-    }
+    PCA9685::initialize(PCA9685_ADDRESS);
+//    if(status != 0) {
+//        Log.error("PCA9685 failed to initialize");
+//    }
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors
-    Device::add(new NCD16Light(3, "KitchenCeiling", "Kitchen"));    // R
-    Device::add(new NCD16Light(14, "Sink", "Kitchen"));              // B
+    Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen"));    // R
+    Device::add(new NCD16Light(13, "Sink", "Kitchen"));              // B
     Device::add(new NCD16Light(12, "RightTrim", "Kitchen"));         // G
     Device::add(new NCD16Light(16, "LeftTrim", "Living Room"));      // Y
-    Device::add(new NCD16Light(15, "Ceiling", "Kitchen"));           // W
-    Device::add(new NCD16Light(13, "Cabinets", "Kitchen"));          // R
+    Device::add(new NCD16Light(3, "Ceiling", "Kitchen"));           // W
+    Device::add(new NCD16Light(14, "Cabinets", "Kitchen"));          // R
 
     // Outside Lights
     Device::add(new NCD16Light(1, "DoorSide", "Outside"));          // B
