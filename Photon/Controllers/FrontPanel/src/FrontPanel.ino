@@ -11,8 +11,25 @@
    3. Put Photon into listen mode using buttons
    4. "particle flash front_panel2 --target 5.4.1" or "ffp2"
 
-  PHOTON 2 PINS (in order on card)
+  NCD 16x Dimmer
+  1. DS Flood Lights
+  2. Awning Light
+  3. Ceiling
+  4. Porch Lights
+  5. ODS Flood Lights
+  6.
+  7.
+  8.
+  9.
+  10.
+  11.
+  12. Indirect
+  13. Cabinet
+  14. Sink
+  15. Ceiling
+  16. ?
  
+  PHOTON 2 PINS (in order on card)
   Left side
   RST - nc
   3V3 - nc
@@ -105,12 +122,15 @@
  after that. This allows running loop and MQTT
  even if no internet available
 
+ History
+ 10/13/23 Upgrade NCD 8x dimmer with 16x board (12-bit)
+ 
  */
 #include <IoT.h>
 
 #define CONTROLLER_NAME "FrontPanel2"
-#define MQTT_BROKER "192.168.50.33"
-#define PCA9634_ADDRESS 0x01     // Lowest switch on
+#define MQTT_BROKER "192.168.1.7"  // was "192.168.50.33" on Pepwave
+#define PCA9685_ADDRESS 0x41       // Lowest jumper set
 //#define SWITCH_ADDRESS 0x20
 //#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
 
@@ -125,7 +145,6 @@ SYSTEM_MODE(AUTOMATIC);
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
 
-int sleeping = 0;
 int voltage = 0;
 
 void setup() {
@@ -142,24 +161,24 @@ void setup() {
 void createDevices() {
 
     // Required by NCD8Light
-    int status = PCA9634::initialize(PCA9634_ADDRESS);
-    if(status != 0) {
-        Log.error("PCA9634 failed to initialize");
-    }
+    PCA9685::initialize(PCA9685_ADDRESS);
+//    if(status != 0) {
+//        Log.error("PCA9685 failed to initialize");
+//    }
 
-    // Inside Lights
-    Device::add(new NCD8Light(2, "KitchenCeiling", "Kitchen"));
-    Device::add(new NCD8Light(3, "Sink", "Kitchen"));
-    Device::add(new NCD8Light(5, "RightTrim", "Kitchen"));
-    Device::add(new NCD8Light(6, "LeftTrim", "Living Room"));
-    Device::add(new Light(D15, "Ceiling", "Kitchen"));
-    Device::add(new Light(D16, "Cabinets", "Kitchen"));
+    // Inside Lights    TODO: set actual light #s     TODO: set wire colors
+    Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen"));    // R
+    Device::add(new NCD16Light(13, "Sink", "Kitchen"));              // B
+    Device::add(new NCD16Light(12, "RightTrim", "Kitchen"));         // G
+    Device::add(new NCD16Light(16, "LeftTrim", "Living Room"));      // Y
+    Device::add(new NCD16Light(3, "Ceiling", "Kitchen"));           // W
+    Device::add(new NCD16Light(14, "Cabinets", "Kitchen"));          // R
 
     // Outside Lights
-    Device::add(new NCD8Light(1, "DoorSide", "Outside"));
-    Device::add(new NCD8Light(4, "OtherSide", "Outside"));
-    Device::add(new NCD8Light(7, "FrontAwning", "Outside"));
-    Device::add(new NCD8Light(8, "FrontPorch", "Outside"));
+    Device::add(new NCD16Light(1, "DoorSide", "Outside"));          // B
+    Device::add(new NCD16Light(5, "OtherSide", "Outside"));         // G
+    Device::add(new NCD16Light(2, "FrontAwning", "Outside"));       // Y
+    Device::add(new NCD16Light(4, "FrontPorch", "Outside"));       // W
 
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)
@@ -180,8 +199,6 @@ void createDevices() {
 //    Device::add(new NCD8Switch(7, "Input7", "Living Room"));
 //    Device::add(new NCD8Switch(8, "Input8", "Living Room"));
 
-    // Complex Calculation pseudo-devices
-    Device::add(new Device("sleeping", "All"));
 }
 
 void loop() {
@@ -195,13 +212,6 @@ void loop() {
 //    int voltageChanged = Device::getChangedValue("FrontPanelVolts");
 //    if(voltageChanged != -1){
 //        handleVoltageChanged(voltageChanged);
-//    }
-
-    //TODO: calculate sleeping state based on time, motion, and doors
-//    int sleepingChanged  = Device::getChangedValue("sleeping");
-//
-//    if( sleepingChanged != -1 ) {
-//        handleSleepingChange(sleepingChanged);
 //    }
 }
 
