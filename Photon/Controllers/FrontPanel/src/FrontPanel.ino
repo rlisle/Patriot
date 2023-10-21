@@ -129,7 +129,7 @@
 #include <IoT.h>
 
 #define CONTROLLER_NAME "FrontPanel2"
-#define MQTT_BROKER "192.168.1.7"  // was "192.168.50.33" on Pepwave
+#define MQTT_BROKER "192.168.1.66" // Macbook Air on M2000 IP, was "192.168.50.33" on Pepwave
 #define PCA9685_ADDRESS 0x41       // Lowest jumper set
 //#define SWITCH_ADDRESS 0x20
 //#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs

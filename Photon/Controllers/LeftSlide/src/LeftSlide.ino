@@ -47,7 +47,7 @@ Author: Ron Lisle
 //#include <PatriotMR24.h>
 
 #define CONTROLLER_NAME "LeftSlide"
-#define MQTT_BROKER "192.168.50.33"
+#define MQTT_BROKER "192.168.1.66"
 #define CONNECT_TO_CLOUD true
 #define LIVINGROOM_MOTION_TIMEOUT 3*60
 

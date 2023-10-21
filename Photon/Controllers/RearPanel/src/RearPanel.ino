@@ -14,9 +14,9 @@ Author: Ron Lisle
    2. Update IoT if needed
    3. Put Photon into safe mode using buttons (breathing magenta)
         Press both buttons, release reset, release setup when blinking magenta
-   4. "particle flash RearPanel" or "frp"
+   4. "frp2" or "particle flash rear_panel2"
  
- Since Cloud is not connected, photon should normally be breathing green
+ Since Cloud is not connected, photon shuld normally be breathing green
 
  Using SYSTEM_THREAD(ENABLED) is recommended,
  and runs network on separate theread.
@@ -40,7 +40,7 @@ Author: Ron Lisle
 #include "math.h"
 
 #define CONTROLLER_NAME "RearPanel"
-#define MQTT_BROKER "192.168.50.33"
+#define MQTT_BROKER "192.168.1.66"
 #define MQTT_LOGGING true
 #define OFFICE_MOTION_TIMEOUT 15
 #define PCA9634_ADDRESS 1       // 1st jumper
