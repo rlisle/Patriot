@@ -16,15 +16,14 @@
 #include "IoT.h"
 #include "constants.h"
 
-#define MQTT_TIMEOUT_SECONDS 60*17  // After 17 minutes
-#define MQTT_ALIVE_SECONDS 60*15    // Every 15 minutes
+#define MQTT_TIMEOUT_SECONDS 60*5  // After 5 minutes
+#define MQTT_ALIVE_SECONDS 60*3    // Every 3 minutes
 #define CHECK_STATUS_SECONDS 60     // Every minute
 #define BLINK_INTERVAL  250         // 1/4 second
 
 MQTTManager::MQTTManager(String brokerIP, String controllerName, bool mqttLogging)
 {
     _controllerName = controllerName.toLowerCase();
-//    _mqttLogging = mqttLogging; //TODO: deprecate this. It's only needed in this method.
     _logging = 0;
     _lastBlinkTimeMs = 0;
     _blinkPhase = 0;

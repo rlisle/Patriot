@@ -56,6 +56,7 @@ SYSTEM_MODE(AUTOMATIC);
 
 #define PIR_POLL_INTERVAL_MILLIS 500
 
+// Generally uncomment only 1 of the following 2 lines
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
@@ -74,7 +75,7 @@ void setup() {
     
     // Create Devices
     // Sensors
-    Device::add(new PIR(A0, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
+    Device::add(new PIR(D19, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
     //Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Lights (default 2s curve 2)

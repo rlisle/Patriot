@@ -75,7 +75,6 @@ void createDevices() {
     // Device::add(new Awning(2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
-    //TODO: use mcp23008
     Device::add(new NCD4Switch(1, "OfficeDoor", "Office"));
 //    Device::add(new NCD4PIR(I2CR4IO4_ADDRESS, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 

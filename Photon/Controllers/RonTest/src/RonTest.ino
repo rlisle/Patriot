@@ -15,11 +15,11 @@
 #include <IoT.h>
 
 #define CONTROLLER_NAME "RonTest"
-#define MQTT_BROKER "192.168.50.33"
-#define MQTT_LOGGING true
+#define MQTT_BROKER "192.168.1.66"
+#define MQTT_LOGGING false // using USB
 
 //While debugging, use serial and disable MQTT logging if needed
-//SerialLogHandler logHandler;
+SerialLogHandler logHandler;
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
@@ -30,10 +30,10 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
     // Lights
-    Device::add(new Light(A2, "Couch", "Living Room", 2));
+    Device::add(new Light(A2, "TestLight1", "Living Room", 2));
 
     // PIR
-    Device::add(new PIR(A0, "TestMotion", "Living Room", 300));
+    Device::add(new PIR(A0, "TestMotion1", "Living Room", 300));
 
     Log.info("RonTest started");
 }
@@ -43,7 +43,7 @@ void loop() {
     
 //    scanI2Caddresses();
 
-    Watchdog.refresh();
+//    Watchdog.refresh();   // This is done in IoT::loop now
 
 }
 
