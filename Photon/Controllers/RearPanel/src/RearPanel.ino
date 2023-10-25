@@ -39,15 +39,18 @@ Author: Ron Lisle
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 #include "math.h"
 
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(AUTOMATIC);
+
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.1.66"
-#define MQTT_LOGGING true
 #define OFFICE_MOTION_TIMEOUT 15
 #define PCA9634_ADDRESS 1       // 1st jumper
 #define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
 
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(AUTOMATIC);
+// Generally uncomment only 1 of the following 2 lines
+#define MQTT_LOGGING true
+//SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
 bool officeMotion = false;
 long lastOfficeMotion = 0;
