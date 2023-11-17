@@ -15,7 +15,7 @@
 #include <IoT.h>
 
 #define CONTROLLER_NAME "RonTest"
-#define MQTT_BROKER "192.168.1.66"
+#define MQTT_BROKER "192.168.0.33"
 #define MQTT_LOGGING false // using USB
 
 //While debugging, use serial and disable MQTT logging if needed

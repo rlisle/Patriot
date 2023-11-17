@@ -203,7 +203,7 @@ void Device::expose()
 int Device::setSSID(String info) {
     //TODO: parse ssid & password from info CSL
     
-    WiFi.setCredentials("LalaIoT", "01120112");
+    return WiFi.setCredentials("LalaIoT", "01120112");
 }
 
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
