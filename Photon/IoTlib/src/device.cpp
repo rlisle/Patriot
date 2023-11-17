@@ -193,6 +193,17 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kStatusVariableName + " variable");
     }
+    if(!Particle.function(kSSIDFunctionName, Device::setSSID))
+    {
+        Log.error("Error: Unable to expose " + kSSIDFunctionName + " function");
+    }
+}
+
+// Set SSID info using CSL SSID, password
+int Device::setSSID(String info) {
+    //TODO: parse ssid & password from info CSL
+    
+    WiFi.setCredentials("LalaIoT", "01120112");
 }
 
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
