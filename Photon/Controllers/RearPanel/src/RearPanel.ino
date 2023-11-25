@@ -4,6 +4,7 @@ Description: This sketch controls all the switches in the Cyclone 4005 rear cont
 Author: Ron Lisle
 
  The controller is located in the office above the piano.
+ Power provided via Fuse #13, #14
  
  Updated to Photon 2
  - No Photon 2 pins used directly.
@@ -59,6 +60,7 @@ bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
 
 void setup() {
+//    WiFi.setCredentials("LalaIoT", "01120112");
     WiFi.selectAntenna(ANT_INTERNAL);
     
     //WiFi.useDynamicIP();

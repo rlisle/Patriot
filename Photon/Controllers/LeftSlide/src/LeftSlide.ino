@@ -69,6 +69,7 @@ long lastLivingRoomMotion = 0;
 //int couchPresence = 0;
 
 void setup() {
+//    WiFi.setCredentials("LalaIoT", "01120112");
     WiFi.selectAntenna(ANT_INTERNAL);
 //    WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);

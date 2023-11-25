@@ -43,7 +43,7 @@ void outOfMemoryHandler(system_event_t event, int param) {
 void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
 {
     System.on(out_of_memory, outOfMemoryHandler);
-    Time.zone(-6);              // CST
+    Time.zone(-6);              // CT
     handleDaylightSavings();    // Set isDST appropriately
     
     // Expose particle.io variables
