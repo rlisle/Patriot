@@ -129,7 +129,7 @@
 #include <IoT.h>
 
 #define CONTROLLER_NAME "FrontPanel2"
-#define MQTT_BROKER "192.168.1.66" // Macbook Air on M2000 IP, was "192.168.50.33" on Pepwave
+#define MQTT_BROKER "192.168.0.33"
 #define PCA9685_ADDRESS 0x41       // Lowest jumper set
 //#define SWITCH_ADDRESS 0x20
 //#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
@@ -148,6 +148,10 @@ SYSTEM_MODE(AUTOMATIC);
 int voltage = 0;
 
 void setup() {
+    // Temporary Code to set SSID
+//    int setConfig(const particle::NetworkInterfaceConfig& conf);
+//    WiFi.setCredentials("LalaIoT", "01120112");
+    
     WiFi.selectAntenna(ANT_INTERNAL);
 //    WiFi.useDynamicIP();
     
@@ -168,17 +172,17 @@ void createDevices() {
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors
     Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen"));    // R
-    Device::add(new NCD16Light(13, "Sink", "Kitchen"));              // B
-    Device::add(new NCD16Light(12, "RightTrim", "Kitchen"));         // G
-    Device::add(new NCD16Light(16, "LeftTrim", "Living Room"));      // Y
-    Device::add(new NCD16Light(3, "Ceiling", "Kitchen"));           // W
-    Device::add(new NCD16Light(14, "Cabinets", "Kitchen"));          // R
+    Device::add(new NCD16Light(13, "Sink",      "Kitchen"));         // B
+    Device::add(new NCD16Light(12, "LeftTrim",  "Kitchen"));         // G?
+    Device::add(new NCD16Light(16, "RightTrim", "Living Room"));     // Y?
+    Device::add(new NCD16Light(3,  "Ceiling",   "Living Room"));     // W
+    Device::add(new NCD16Light(14, "Cabinets",  "Kitchen"));         // R
 
     // Outside Lights
     Device::add(new NCD16Light(1, "DoorSide", "Outside"));          // B
     Device::add(new NCD16Light(5, "OtherSide", "Outside"));         // G
     Device::add(new NCD16Light(2, "FrontAwning", "Outside"));       // Y
-    Device::add(new NCD16Light(4, "FrontPorch", "Outside"));       // W
+    Device::add(new NCD16Light(4, "FrontPorch", "Outside"));        // W
 
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)

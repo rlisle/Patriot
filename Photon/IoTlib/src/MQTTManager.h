@@ -41,11 +41,13 @@ private:
     unsigned long _lastBlinkTimeMs;
     int           _blinkPhase;
     int       _logging; // a counting semaphore to prevent recursion
+    
     //TODO: convert to extensible dictionary
     long      _lastAliveFrontPanel;
     long      _lastAliveLeftSlide;
     long      _lastAliveRearPanel;
     long      _lastAliveRonTest;
+    
     bool    _mqttSubscribed;
 
     // Status
