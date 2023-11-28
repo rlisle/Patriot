@@ -165,7 +165,7 @@ void MQTTManager::parseMQTTMessage(String lcTopic, String lcMessage)
     if(lcTopic.startsWith(kPublishName)) {
         String subtopics = lcTopic.substring(8);                    // Skip over "patriot/"
         if(subtopics.length() > 0) {                                // Must have at least 1 subtopic
-            parsePatriotMessage(lcTopic.substring(8), lcMessage);
+            parsePatriotMessage(subtopics, lcMessage);
         }
     }
 }
@@ -214,16 +214,6 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 sendAck(deviceName, "brightness", lcMessage);
             }
             
-        // <controller>/<device> - not implemented/parsed
-
-        // GET/POSITION - not implemented/parsed
-        // GET/STATE - not implemented/parsed
-        // GET/TARGET - not implemented/parsed
-            
-        // DURATION? - not implemented/parsed
-            
-        // <device> - see "Set" below
-            
         // <device>/HOLD
         } else if(numTopics > 1 && subtopics[1] == "hold") {             // patriot/<device>/hold n/a
             Device *device = Device::get(subtopics[0]);
@@ -232,15 +222,15 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 Log.info(_controllerName + ": hold " + subtopics[0]);
                 device->setHold(lcMessage != "0"); // not sure what message will be
             }
-            
 
-            // LATLONG
-        } else if(subtopics[0] == "latlong") {                                  // patriot/latlong lat,long
+        // LATLONG
+        } else if(subtopics[0] == "latlong") {  // Currently unused Nov '23:  patriot/latlong lat,long
             // Windsor, ON: 42.3149, -83.0364 (park: 42.14413, -82.94876)
             // Spanish Fort, AL: 30.6685° N, 87.9109° W
             // Bonifay, FL: 30.7919° N, 85.6797° W
             // White Springs, FL: 30.3297° N, 82.7590° W
             // Tampa, FL: 27.9506° N, 82.4572° W
+            // Big Oaks site 91 Cedar Park: 30.50859, -9787821
             // Austin lat/long: 30.2672° N, 97.7431° W (30.266666, -97.733330)
             //                  30.28267 N, 97.63624 W via iPhone maps in office.
             // eg. float longitude = -97.63624;
@@ -254,7 +244,7 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             //TODO: handle '-' because toFloat doc says it doesn't
             float latitude = latString.toFloat();
             float longitude = lonString.toFloat();
-            Log.trace("lat/long = " + String(latitude) + "," + String(longitude));
+            Log.info("lat/long = " + String(latitude) + "," + String(longitude));
             if(latitude != 0 && longitude != 0) {
                 Log.trace("Setting lat/long: " + String(latitude) + "," + String(longitude));
                 IoT::setLatLong(latitude,longitude);

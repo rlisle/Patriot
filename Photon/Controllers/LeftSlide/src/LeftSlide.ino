@@ -47,7 +47,7 @@ Author: Ron Lisle
 //#include <PatriotMR24.h>
 
 #define CONTROLLER_NAME "LeftSlide"
-#define MQTT_BROKER "192.168.1.66"
+#define MQTT_BROKER "192.168.0.33"
 #define CONNECT_TO_CLOUD true
 #define LIVINGROOM_MOTION_TIMEOUT 3*60
 
@@ -69,6 +69,7 @@ long lastLivingRoomMotion = 0;
 //int couchPresence = 0;
 
 void setup() {
+//    WiFi.setCredentials("LalaIoT", "01120112");
     WiFi.selectAntenna(ANT_INTERNAL);
 //    WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);

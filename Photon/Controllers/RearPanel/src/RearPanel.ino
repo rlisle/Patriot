@@ -4,6 +4,7 @@ Description: This sketch controls all the switches in the Cyclone 4005 rear cont
 Author: Ron Lisle
 
  The controller is located in the office above the piano.
+ Power provided via Fuse #13, #14
  
  Updated to Photon 2
  - No Photon 2 pins used directly.
@@ -43,7 +44,7 @@ SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
 #define CONTROLLER_NAME "RearPanel"
-#define MQTT_BROKER "192.168.1.66"
+#define MQTT_BROKER "192.168.0.33"
 #define OFFICE_MOTION_TIMEOUT 15
 #define PCA9634_ADDRESS 1       // 1st jumper
 #define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
@@ -59,6 +60,7 @@ bool officeDoorCountdown = false;
 long lastOfficeDoor = 0;
 
 void setup() {
+//    WiFi.setCredentials("LalaIoT", "01120112");
     WiFi.selectAntenna(ANT_INTERNAL);
     
     //WiFi.useDynamicIP();
@@ -93,7 +95,7 @@ void createDevices() {
     Device::add(new NCD8Light(5, "RearPorch", "Outside"));
     Device::add(new NCD8Light(6, "RearAwning", "Outside"));
     Device::add(new NCD8Light(7, "Piano", "Office"));
-    //Device::add(new NCD8Light(7, "Unused", "Office"));
+    //Device::add(new NCD8Light(8, "Unused", "Office"));
 
     // Pseudo Devices
     Device::add(new Device("AnyoneHome", "All", 'X'));
