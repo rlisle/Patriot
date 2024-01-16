@@ -44,6 +44,8 @@ void whenOfficeDoorChanges();
 // Behaviors
 void turnOnRearPorchLightWhenRearDoorOpens();
 
+// Typedefs
+typedef unsigned long msecs;
 
 // State
 bool officeMotion = false;
