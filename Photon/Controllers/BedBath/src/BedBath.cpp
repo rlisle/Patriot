@@ -13,6 +13,8 @@
 SYSTEM_MODE(AUTOMATIC);
 SYSTEM_THREAD(ENABLED);
 
+typedef unsigned long msecs;
+
 // Generally only use 1 or the other
 // Write logs to MQTT if true
 #define MQTT_LOGGING false
@@ -26,6 +28,10 @@ void setup() {
   //WiFi.useDynamicIP();
 
   IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+
+  Device::add(new Device("Awake", "All", 'P'));
+  Device::add(new Device("Test", "All", 'P'));
+
 }
 
 void loop() {
