@@ -39,6 +39,7 @@
 		2737F7EC28E8984100408830 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../Photon/Controllers/NCD16LightTest/src; sourceTree = "<group>"; };
 		2737F7ED28E8984100408830 /* project.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = project.properties; path = ../Photon/Controllers/NCD16LightTest/project.properties; sourceTree = "<group>"; };
 		2737F7EE28E8984100408830 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../Photon/Controllers/NCD16LightTest/README.md; sourceTree = "<group>"; };
+		273906712B57F12F00F92BC2 /* RearPanel2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RearPanel2; path = ../Photon/Controllers/RearPanel2; sourceTree = "<group>"; };
 		2751BD46294755EE00FA360C /* Voltage */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Voltage; path = ../Photon/Plugins/Voltage; sourceTree = "<group>"; };
 		2755615325CC1FAA00FEE0FF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		2755615425CC1FAA00FEE0FF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
@@ -386,6 +387,7 @@
 		E4849C6E2566AC0F00A39734 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				273906712B57F12F00F92BC2 /* RearPanel2 */,
 				2737F7EB28E8981300408830 /* NCD16LightTest */,
 				27D74326276E1B0500280B2C /* RonPIRTest */,
 				27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */,

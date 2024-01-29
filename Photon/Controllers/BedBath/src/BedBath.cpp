@@ -4,8 +4,8 @@
  * Date: 1/14/24
  */
 #include "Particle.h"
-#include "IoT.h"
-#include "secrets.h"
+//#include "IoT.h"
+//#include "secrets.h"
 
 #define CONTROLLER_NAME "BedBath"
 #define MQTT_BROKER "192.168.0.33"
@@ -24,16 +24,16 @@ SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
 void setup() {
 //  WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
-  WiFi.selectAntenna(ANT_INTERNAL);
+//  WiFi.selectAntenna(ANT_INTERNAL);
   //WiFi.useDynamicIP();
 
-  IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+//  IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
-  Device::add(new Device("Awake", "All", 'P'));
-  Device::add(new Device("Test", "All", 'P'));
+//  Device::add(new Device("Awake", "All", 'P'));
+//  Device::add(new Device("Test", "All", 'P'));
 
 }
 
 void loop() {
-  IoT::loop();
+//  IoT::loop();
 }
