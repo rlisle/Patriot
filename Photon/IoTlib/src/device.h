@@ -39,10 +39,11 @@ class Device {
     int        _previous;   // Value before getChanged called
     char       _type;       // Character designating device type: L, S, etc.
     int        _brightness; // Persisted value to use with next setOn (used by IoT, not device itself)
+    void       (*_changeHandler)(int, int);  // Called whenever value changes, passing new and old values
 
 public:
 
-    Device(String name, String room, char type = 'L');
+    Device(String name, String room, char type = 'L', void (*handler)(int,int) = NULL);
 
     // begin() is called automatically when device is added.
     // Do any heavy lifting or publishing here and not in constructor.
@@ -63,7 +64,7 @@ public:
     virtual int brightness() { return _brightness; };
     virtual void setBrightness(int value);
 
-    virtual int  getChangedValue();
+    //virtual int  getChangedValue();
     
     virtual void setLatLong(float latitude, float longitude);
 
@@ -85,7 +86,7 @@ public:
     static Device* get(String name);
     static int     value(String name);
     static int     setValue(String name, int value);
-    static int     getChangedValue(String name);
+//    static int     getChangedValue(String name);
     static int     count();
     static void    setAllLatLong(float latitude, float longitude);
     

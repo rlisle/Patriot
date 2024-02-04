@@ -25,6 +25,9 @@
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
+typedef unsigned long msecs;
+
+//TODO: change to const
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.0.33"
 #define OFFICE_MOTION_TIMEOUT 15
@@ -37,34 +40,60 @@ SYSTEM_MODE(AUTOMATIC);
 // View logs with CLI using 'particle serial monitor --follow'
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
 
-// Define forward declarations
-void createDevices();
-// Inputs
-void whenOfficeDoorChanges();
-// Behaviors
-void turnOnRearPorchLightWhenRearDoorOpens();
-
-// Typedefs
-typedef unsigned long msecs;
 
 // State
 bool officeMotion = false;
 unsigned long msecsLastOfficeMotion = 0;
-
 bool officeDoorOpen = false;
 unsigned long msecsOfficeDoorOpened = 0;
 bool officeDoorTimer = false;
 
+//TODO: move to IoT
+// struct ChangeHandler {
+//     int value;
+//     String deviceName;
+    
+// };
+
+//ChangeHandler officeDoorHandler;
+
+//------------
+// Behaviors
+//------------
+void handleRearDoorOpens() {
+    //TODO: only if at night
+    Device::setValue("RearPorch", 100);
+    //TODO: only if not alreay on
+    officeDoorTimer = true;
+}
+
+void handleRearDoorCloses() {
+    // Nothing to do?
+}
+
+void turnOffRearPorchAfter15mins() {
+    if(officeDoorTimer == true && (millis() > msecsOfficeDoorOpened + OFFICE_DOOR_LIGHT_TIMEOUT)) {
+        Device::setValue("RearPorch", 0);
+        officeDoorTimer = false;
+    }
+}
+
 //---------
 // Inputs
 //---------
+// Move this into IoT once when done
+bool isChanged(bool var) {
+    return var != -1;
+}
+
 void didOfficeDoorChange() {
    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
    if(officeDoorChanged != -1){
+       // If porch light is already on, then leave it on
         officeDoorOpen = officeDoorChanged > 0;
         if(officeDoorOpen) {    // For now ignoring when door closes
             msecsOfficeDoorOpened = millis();
-            turnOnRearPorchLightWhenRearDoorOpens();
+            handleRearDoorOpens();
         }
    }
 }
@@ -76,21 +105,6 @@ void didOfficeDoorChange() {
 //         turnOnRearPorchLightFor15MinutesWhenRearDoorOpens();
 //    }    
 // }
-
-//------------
-// Behaviors
-//------------
-void turnOnRearPorchLightWhenRearDoorOpens() {
-    Device::setValue("RearPorch", 100);
-    officeDoorTimer = true;
-}
-
-void turnOffRearPorchAfter15mins() {
-    if(officeDoorTimer == true && (millis() > msecsOfficeDoorOpened + OFFICE_DOOR_LIGHT_TIMEOUT)) {
-        Device::setValue("RearPorch", 0);
-        officeDoorTimer = false;
-    }
-}
 
 
 //---------------

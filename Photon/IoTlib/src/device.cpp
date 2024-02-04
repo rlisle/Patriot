@@ -81,6 +81,11 @@ void Device::loopAll()
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         ptr->loop();
+        if(ptr->_value != ptr->_previous) {
+            if(ptr->changeHandler != NULL) {
+                ptr->changeHandler(ptr->_value, ptr->_previous);
+            }
+        }
     }
 }
 
