@@ -64,7 +64,7 @@ public:
     virtual int brightness() { return _brightness; };
     virtual void setBrightness(int value);
 
-    //virtual int  getChangedValue();
+    virtual int  getChangedValue();
     
     virtual void setLatLong(float latitude, float longitude);
 
