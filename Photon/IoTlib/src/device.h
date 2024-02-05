@@ -86,7 +86,7 @@ public:
     static Device* get(String name);
     static int     value(String name);
     static int     setValue(String name, int value);
-//    static int     getChangedValue(String name);
+    static int     getChangedValue(String name);
     static int     count();
     static void    setAllLatLong(float latitude, float longitude);
     
