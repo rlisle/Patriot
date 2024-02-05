@@ -14,7 +14,7 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
-Device::Device(String name, String room, char type, void (*handler)(int,int) = NULL)
+Device::Device(String name, String room, char type, void (*handler)(int,int))
 : _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100)
 {
     // Do any setup work in begin() not here.
