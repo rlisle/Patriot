@@ -39,11 +39,10 @@ class Device {
     int        _previous;   // Value before getChanged called
     char       _type;       // Character designating device type: L, S, etc.
     int        _brightness; // Persisted value to use with next setOn (used by IoT, not device itself)
-    void       (*_changeHandler)(int, int);  // Called whenever value changes, passing new and old values
 
 public:
 
-    Device(String name, String room, char type = 'L', void (*handler)(int,int) = NULL);
+    Device(String name, String room, char type = 'L');
 
     // begin() is called automatically when device is added.
     // Do any heavy lifting or publishing here and not in constructor.

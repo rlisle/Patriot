@@ -201,7 +201,7 @@ class NCD4Switch : public Device {
     void      notify();
 
  public:
-    NCD4Switch(int8_t switchIndex, String name, String room, void (*handler)(int,int));
+    NCD4Switch(int8_t switchIndex, String name, String room);
     void    loop();
 };
 class NCD8Light : public Device {

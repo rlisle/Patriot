@@ -66,10 +66,10 @@ void IoT::startWatchdog()
     Watchdog.getInfo(info);
 
     // Get the capabilities that are always enabled
-    //WatchdogCaps mandatoryCaps = info.mandatoryCapabilities();
+    WatchdogCaps mandatoryCaps = info.mandatoryCapabilities();
 
     // Get the capabilities that can be turned off
-    //WatchdogCaps optionalCaps = info.capabilities();
+    WatchdogCaps optionalCaps = info.capabilities();
     
     Watchdog.init(WatchdogConfiguration().timeout(300s));
     Watchdog.start();
@@ -208,19 +208,14 @@ void IoT::handleDSTMarch() {
             break;
         case 2:
             if(day < 9) return;
-            break;
         case 3:
             if(day < 10) return;
-            break;
         case 4:
             if(day < 11) return;
-            break;
         case 5:
             if(day < 12) return;
-            break;
         case 6:
             if(day < 13) return;
-            break;
         case 7:     // Saturday
         default:
             if(day < 14) return;

@@ -14,7 +14,7 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
-Device::Device(String name, String room, char type, void (*handler)(int,int))
+Device::Device(String name, String room, char type)
 : _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100)
 {
     // Do any setup work in begin() not here.
@@ -81,11 +81,6 @@ void Device::loopAll()
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         ptr->loop();
-        if(ptr->_value != ptr->_previous) {
-            if(ptr->_changeHandler != NULL) {
-                ptr->_changeHandler(ptr->_value, ptr->_previous);
-            }
-        }
     }
 }
 
