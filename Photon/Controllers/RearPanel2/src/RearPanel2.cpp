@@ -48,26 +48,30 @@ bool officeDoorOpen = false;
 unsigned long msecsOfficeDoorOpened = 0;
 bool officeDoorTimer = false;
 
-//TODO: move to IoT
-// struct ChangeHandler {
-//     int value;
-//     String deviceName;
-    
-// };
-
-//ChangeHandler officeDoorHandler;
 
 //------------
 // Behaviors
 //------------
-void handleRearDoorOpens() {
+void officeDoorOpened();
+void officeDoorClosed();
+
+void handleOfficeDoor(int value, int oldValue) {
+    if(value > 0 && oldValue == 0) {
+        officeDoorOpened();
+    }
+    if(value == 0 && oldValue > 0) {
+        officeDoorClosed();
+    }
+}
+
+void officeDoorOpened() {
     //TODO: only if at night
     Device::setValue("RearPorch", 100);
-    //TODO: only if not alreay on
+    //TODO: only if not already on
     officeDoorTimer = true;
 }
 
-void handleRearDoorCloses() {
+void officeDoorClosed() {
     // Nothing to do?
 }
 
@@ -82,21 +86,21 @@ void turnOffRearPorchAfter15mins() {
 // Inputs
 //---------
 // Move this into IoT once when done
-bool isChanged(bool var) {
-    return var != -1;
-}
+// bool isChanged(bool var) {
+//     return var != -1;
+// }
 
-void didOfficeDoorChange() {
-   int officeDoorChanged = Device::getChangedValue("OfficeDoor");
-   if(officeDoorChanged != -1){
-       // If porch light is already on, then leave it on
-        officeDoorOpen = officeDoorChanged > 0;
-        if(officeDoorOpen) {    // For now ignoring when door closes
-            msecsOfficeDoorOpened = millis();
-            handleRearDoorOpens();
-        }
-   }
-}
+// void didOfficeDoorChange() {
+//    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
+//    if(officeDoorChanged != -1){
+//        // If porch light is already on, then leave it on
+//         officeDoorOpen = officeDoorChanged > 0;
+//         if(officeDoorOpen) {    // For now ignoring when door closes
+//             msecsOfficeDoorOpened = millis();
+//             handleRearDoorOpens();
+//         }
+//    }
+// }
 
 // void didOfficeMotionChange() {
 //    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
@@ -117,7 +121,7 @@ void createDevices() {
     // Device::add(new Awning(2, "RearAwning", "Outside")); // 2x Relays: 2, 3
     
     // 4 GPIO
-    Device::add(new NCD4Switch(1, "OfficeDoor", "Office"));
+    Device::add(new NCD4Switch(1, "OfficeDoor", "Office", handleOfficeDoor));
 //    Device::add(new NCD4PIR(I2CR4IO4_ADDRESS, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
 
     // (deprecated) Photon I/O
@@ -203,8 +207,8 @@ void loop() {
   IoT::loop();
 
     // Call behavior methods
-    didOfficeDoorChange();
-    turnOffRearPorchAfter15mins();
+    //didOfficeDoorChange();
+    //turnOffRearPorchAfter15mins();
 //    didOfficeMotionChange();
 }
 
