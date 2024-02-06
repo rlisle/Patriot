@@ -6,11 +6,14 @@
  * https://docs.particle.io/firmware/best-practices/firmware-template/
  * 
  * To update code:
- *  1. Edit this code
+ *  1. Edit this code (VSCode or Xcode)
  *  2. Update IoT if needed
+ * If USB connected using VSCode:
  *  3. Put Photon into safe mode using buttons (breathing magenta):
  *     Press both buttons, release reset, release setup when blinking magenta
  *  4. "frp2" or "particle flash rear_panel2"
+ * If OTA
+ *  3. "frp"
  * 
  * Compiling: particle compile photon2 --target 5.4.1 (5.5?)
  * Flashing: particle flash rear_panel2 --target 5.4.1 or shortcut "frp2"
@@ -19,7 +22,7 @@
 // Include Particle Device OS APIs
 //#include "Particle.h"
 #include <IoT.h>
-#include "../../../secrets.h"
+//#include "../../../secrets.h"
 #include "math.h"
 
 SYSTEM_THREAD(ENABLED);
@@ -138,11 +141,13 @@ void createDevices() {
     Device::add(new NCD8Light(7, "Piano", "Office"));
     //Device::add(new NCD8Light(8, "Unused", "Office"));
 
-    // Pseudo Devices
-    Device::add(new Device("AnyoneHome", "All", 'X'));
-    Device::add(new Device("RonHome", "All", 'X'));
-    Device::add(new Device("ShelleyHome", "All", 'X'));
-    Device::add(new Device("Nighttime", "All", 'X'));
+    // Status Pseudo Devices
+//    Device::add(new Device("AnyoneHome", "Status", 'S'));
+    Device::add(new Device("RonHome", "Status", 'S'));
+    Device::add(new Device("ShelleyHome", "Status", 'S'));
+    Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("PartOfDay", "Status", 'S'));
 
     // Checklist Items -  - define for every non-automated checklist item
     
