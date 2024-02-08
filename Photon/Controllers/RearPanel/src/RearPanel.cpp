@@ -15,8 +15,8 @@
  * If OTA
  *  3. "frp"
  * 
- * Compiling: particle compile photon2 --target 5.4.1 (5.5?)
- * Flashing: particle flash rear_panel2 --target 5.4.1 or shortcut "frp2"
+ * Compiling: particle compile photon2 --target 5.6.0
+ * Flashing: particle flash rear_panel2 --target 5.6.0 or shortcut "frp"
  */
 
 // Include Particle Device OS APIs
@@ -51,68 +51,9 @@ bool officeDoorOpen = false;
 unsigned long msecsOfficeDoorOpened = 0;
 bool officeDoorTimer = false;
 
-
-//------------
-// Behaviors
-//------------
-void officeDoorOpened();
-void officeDoorClosed();
-
-void handleOfficeDoor(int value, int oldValue) {
-    if(value > 0 && oldValue == 0) {
-        officeDoorOpened();
-    }
-    if(value == 0 && oldValue > 0) {
-        officeDoorClosed();
-    }
-}
-
-void officeDoorOpened() {
-    //TODO: only if at night
-    Device::setValue("RearPorch", 100);
-    //TODO: only if not already on
-    officeDoorTimer = true;
-}
-
-void officeDoorClosed() {
-    // Nothing to do?
-}
-
-void turnOffRearPorchAfter15mins() {
-    if(officeDoorTimer == true && (millis() > msecsOfficeDoorOpened + OFFICE_DOOR_LIGHT_TIMEOUT)) {
-        Device::setValue("RearPorch", 0);
-        officeDoorTimer = false;
-    }
-}
-
-//---------
-// Inputs
-//---------
-// Move this into IoT once when done
-// bool isChanged(bool var) {
-//     return var != -1;
-// }
-
-// void didOfficeDoorChange() {
-//    int officeDoorChanged = Device::getChangedValue("OfficeDoor");
-//    if(officeDoorChanged != -1){
-//        // If porch light is already on, then leave it on
-//         officeDoorOpen = officeDoorChanged > 0;
-//         if(officeDoorOpen) {    // For now ignoring when door closes
-//             msecsOfficeDoorOpened = millis();
-//             handleRearDoorOpens();
-//         }
-//    }
-// }
-
-// void didOfficeMotionChange() {
-//    int officeMotionChanged = Device::getChangedValue("OfficeMotion");
-//    if(officeDoorChanged != -1){
-//         officeDoorOpen = officeDoorChanged > 0;
-//         turnOnRearPorchLightFor15MinutesWhenRearDoorOpens();
-//    }    
-// }
-
+#include "DoorBehavior.h"
+#include "SleepingBehavior.h"
+#include "NighttimeBehavior.h"
 
 //---------------
 // Setup Methods
@@ -145,9 +86,8 @@ void createDevices() {
 //    Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Nighttime", "Status", 'S'));
-    Device::add(new Device("Sleeping", "Status", 'S'));
-    Device::add(new Device("PartOfDay", "Status", 'S'));
+    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
+    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
 
     // Checklist Items -  - define for every non-automated checklist item
     
