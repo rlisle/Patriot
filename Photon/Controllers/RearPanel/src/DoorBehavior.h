@@ -27,6 +27,7 @@ void turnOffRearPorchAfter15mins() {
 }
 
 void handleOfficeDoor(int value, int oldValue) {
+    Log.info("handleOfficeDoor");
     if(value > 0 && oldValue == 0) {
         officeDoorOpened();
     }

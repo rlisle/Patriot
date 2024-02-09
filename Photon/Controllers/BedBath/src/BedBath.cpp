@@ -3,9 +3,9 @@
  * Author: Ron Lisle
  * Date: 1/14/24
  */
-#include "Particle.h"
+//#include "Particle.h"
 #include "IoT.h"
-#include "secrets.h"
+//#include "secrets.h"
 
 #define CONTROLLER_NAME "BedBath"
 #define MQTT_BROKER "192.168.0.33"
@@ -29,8 +29,8 @@ void setup() {
 
   IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
-  Device::add(new Device("Awake", "All", 'P'));
-  Device::add(new Device("Test", "All", 'P'));
+  Device::add(new Device("Awake", "Status", 'S'));
+  Device::add(new Light(D7, "Light", "Bathroom", 0));
 
 }
 

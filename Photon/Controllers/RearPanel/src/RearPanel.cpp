@@ -23,7 +23,7 @@
 //#include "Particle.h"
 #include <IoT.h>
 //#include "../../../secrets.h"
-#include "math.h"
+//#include "math.h"
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
@@ -34,7 +34,6 @@ typedef unsigned long msecs;
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.0.33"
 #define OFFICE_MOTION_TIMEOUT 15
-#define OFFICE_DOOR_LIGHT_TIMEOUT 15*1000
 #define PCA9634_ADDRESS 1       // 1st jumper
 #define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
 

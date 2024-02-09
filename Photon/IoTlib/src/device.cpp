@@ -82,7 +82,9 @@ void Device::loopAll()
     {
         ptr->loop();
         if(ptr->_value != ptr->_previous) {
+            Log.info("Device::loopAll value changed");
             if(ptr->_changeHandler != NULL) {
+                Log.info("Device::loopAll calling handler");
                 ptr->_changeHandler(ptr->_value, ptr->_previous);
             }
         }
