@@ -43,17 +43,41 @@ typedef unsigned long msecs;
 // View logs with CLI using 'particle serial monitor --follow'
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
 
-
 // State
 bool officeMotion = false;
 unsigned long msecsLastOfficeMotion = 0;
-bool officeDoorOpen = false;
-unsigned long msecsOfficeDoorOpened = 0;
-bool officeDoorTimer = false;
 
+// Behaviors
 #include "DoorBehavior.h"
 #include "SleepingBehavior.h"
 #include "NighttimeBehavior.h"
+
+// Forward references
+void createDevices();
+
+
+void setup() {
+//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
+    WiFi.selectAntenna(ANT_INTERNAL);
+    
+    //WiFi.useDynamicIP();
+    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+    
+    //Consolidate PCA9634 initialization
+    MCP23008::initialize(I2CR4IO4_ADDRESS, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
+    PCA9634::initialize(PCA9634_ADDRESS);
+    createDevices();
+}
+
+//-------------
+// LOOP
+//-------------
+void loop() {
+    IoT::loop();
+
+    turnOffRearPorchAfter15mins();
+}
+
 
 //---------------
 // Setup Methods
@@ -131,29 +155,3 @@ void createDevices() {
     Device::add(new Device("waterHeaterOn", "All", 'X'));
     Device::add(new Device("sewerHose", "All", 'X'));
 }
-
-void setup() {
-//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
-    WiFi.selectAntenna(ANT_INTERNAL);
-    
-    //WiFi.useDynamicIP();
-    IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
-    
-    //Consolidate PCA9634 initialization
-    MCP23008::initialize(I2CR4IO4_ADDRESS, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
-    PCA9634::initialize(PCA9634_ADDRESS);
-    createDevices();
-}
-
-//-------------
-// LOOP
-//-------------
-void loop() {
-  IoT::loop();
-
-    // Call behavior methods
-    //didOfficeDoorChange();
-    //turnOffRearPorchAfter15mins();
-//    didOfficeMotionChange();
-}
-

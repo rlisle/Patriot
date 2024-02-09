@@ -1,23 +1,18 @@
 //------------
 // Door Behaviors
 //------------
-void officeDoorOpened();
-void officeDoorClosed();
+#define OFFICE_DOOR_LIGHT_TIMEOUT 15*1000
 
-void handleOfficeDoor(int value, int oldValue) {
-    if(value > 0 && oldValue == 0) {
-        officeDoorOpened();
-    }
-    if(value == 0 && oldValue > 0) {
-        officeDoorClosed();
-    }
-}
+bool officeDoorOpen = false;
+unsigned long msecsOfficeDoorOpened = 0;
+bool isTimingOfficeDoor = false;
 
 void officeDoorOpened() {
     //TODO: only if at night
     Device::setValue("RearPorch", 100);
     //TODO: only if not already on
-    officeDoorTimer = true;
+    isTimingOfficeDoor = true;
+    msecsOfficeDoorOpened = millis();
 }
 
 void officeDoorClosed() {
@@ -25,8 +20,17 @@ void officeDoorClosed() {
 }
 
 void turnOffRearPorchAfter15mins() {
-    if(officeDoorTimer == true && (millis() > msecsOfficeDoorOpened + OFFICE_DOOR_LIGHT_TIMEOUT)) {
+    if(isTimingOfficeDoor == true && (millis() > msecsOfficeDoorOpened + OFFICE_DOOR_LIGHT_TIMEOUT)) {
         Device::setValue("RearPorch", 0);
-        officeDoorTimer = false;
+        isTimingOfficeDoor = false;
+    }
+}
+
+void handleOfficeDoor(int value, int oldValue) {
+    if(value > 0 && oldValue == 0) {
+        officeDoorOpened();
+    }
+    if(value == 0 && oldValue > 0) {
+        officeDoorClosed();
     }
 }
