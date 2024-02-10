@@ -1,5 +1,5 @@
 /* 
- * Project Patriot RearPanel2
+ * Project Patriot RearPanel
  * Author: Ron Lisle
  * Date: 1/5/24
  * For comprehensive documentation and examples, please visit:
@@ -52,9 +52,14 @@ unsigned long msecsLastOfficeMotion = 0;
 #include "NighttimeBehavior.h"
 #include "HomeBehaviors.h"
 
-// Forward references
-void createDevices();
+//-------------
+// LOOP
+//-------------
+void loop() {
+    IoT::loop();
 
+    turnOffRearPorchAfter15mins();
+}
 
 void setup() {
 //    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
@@ -66,23 +71,6 @@ void setup() {
     //Consolidate PCA9634 initialization
     MCP23008::initialize(I2CR4IO4_ADDRESS, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
     PCA9634::initialize(PCA9634_ADDRESS);
-    createDevices();
-}
-
-//-------------
-// LOOP
-//-------------
-void loop() {
-    IoT::loop();
-
-    turnOffRearPorchAfter15mins();
-}
-
-
-//---------------
-// Setup Methods
-//---------------
-void createDevices() {
 
     // Behaviors
     Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
