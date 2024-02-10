@@ -8,7 +8,10 @@
   To update Photon:
    1. Edit this code
    2. Update IoT and plugins if needed
+   USB:
    3. Put Photon into listen mode using buttons
+   4. "particle flash --usb <binname>"
+   OTA:
    4. "particle flash front_panel2 --target 5.6.0" or "ffp"
 
   NCD 16x Dimmer

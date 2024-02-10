@@ -2,8 +2,6 @@
 // Nighttime Behaviors
 //------------
 
-#include <IoT.h>
-
 void nighttime();
 void daytime();
 
