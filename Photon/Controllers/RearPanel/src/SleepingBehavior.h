@@ -1,10 +1,15 @@
 //------------
 // Sleeping Behaviors
 //------------
+
+#include <IoT.h>
+
 void sleeping();
 void awake();
 
 void handleSleeping(int value, int oldValue) {
+    Log.info("handleSleeping");
+
     if(value > 0 && oldValue == 0) {
         sleeping();
     }

@@ -1,10 +1,16 @@
 //------------
 // Nighttime Behaviors
 //------------
+
+#include <IoT.h>
+
 void nighttime();
 void daytime();
 
 void handleNighttime(int value, int oldValue) {
+
+    Log.info("handleNighttime");
+
     if(value > 0 && oldValue == 0) {
         nighttime();
     }

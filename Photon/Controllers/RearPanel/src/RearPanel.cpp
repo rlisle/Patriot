@@ -50,6 +50,7 @@ unsigned long msecsLastOfficeMotion = 0;
 #include "DoorBehavior.h"
 #include "SleepingBehavior.h"
 #include "NighttimeBehavior.h"
+#include "HomeBehaviors.h"
 
 // Forward references
 void createDevices();
@@ -82,6 +83,14 @@ void loop() {
 // Setup Methods
 //---------------
 void createDevices() {
+
+    // Behaviors
+    Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
+    Device::add(new Device("RonHome", "Status", 'S', handleRonHome));
+    Device::add(new Device("ShelleyHome", "Status", 'S', handleShelleyHome));
+    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
+    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+
     // I2CIO4R4G5LE board
     // 4 Relays
     Device::add(new Curtain(0, "Curtain", "Office"));     // 2x Relays: 0, 1
@@ -104,13 +113,6 @@ void createDevices() {
     Device::add(new NCD8Light(6, "RearAwning", "Outside"));
     Device::add(new NCD8Light(7, "Piano", "Office"));
     //Device::add(new NCD8Light(8, "Unused", "Office"));
-
-    // Status Pseudo Devices
-//    Device::add(new Device("AnyoneHome", "Status", 'S'));
-    Device::add(new Device("RonHome", "Status", 'S'));
-    Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
-    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
 
     // Checklist Items -  - define for every non-automated checklist item
     
