@@ -15,14 +15,14 @@ All text above must be included in any redistribution.
 #include "constants.h"
 
 Device::Device(String name, String room, char type, void (*handler)(int,int))
-: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100)
+: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100), _changeHandler(handler)
 {
     // Do any setup work in begin() not here.
 }
 
 // Actual device will override this in most cases
 void Device::setValue(int value) {
-    Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
+//    Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
 }
 
@@ -51,9 +51,9 @@ int  Device::getChangedValue() {
 
 void Device::add(Device *device)
 {
-    Log.info("addDevice name: "+String(device->name()));
+//    Log.info("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
-        Log.info("  first device");
+//        Log.info("  first device");
         _devices = device;
     } else {
         Device *ptr = _devices;
@@ -82,10 +82,9 @@ void Device::loopAll()
     {
         ptr->loop();
         if(ptr->_value != ptr->_previous) {
-            Log.info("Device::loopAll value changed");
             if(ptr->_changeHandler != NULL) {
-                Log.info("Device::loopAll calling handler");
                 ptr->_changeHandler(ptr->_value, ptr->_previous);
+                ptr->_previous = ptr->_value;
             }
         }
     }

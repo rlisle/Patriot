@@ -22,6 +22,10 @@ typedef unsigned long msecs;
 // View logs with CLI using 'particle serial monitor --follow'
 SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
+// Behaviors
+#include "SleepingBehavior.h"
+
+
 void setup() {
 //  WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
 //  WiFi.selectAntenna(ANT_INTERNAL);
@@ -29,7 +33,8 @@ void setup() {
 
   IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
-  Device::add(new Device("Awake", "Status", 'S'));
+  Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+
   Device::add(new Light(D7, "Light", "Bathroom", 0));
 
 }
