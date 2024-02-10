@@ -9,7 +9,7 @@
    1. Edit this code
    2. Update IoT and plugins if needed
    3. Put Photon into listen mode using buttons
-   4. "particle flash front_panel2 --target 5.4.1" or "ffp2"
+   4. "particle flash front_panel2 --target 5.6.0" or "ffp"
 
   NCD 16x Dimmer
   1. DS Flood Lights
@@ -172,12 +172,6 @@ void setup() {
     // Behaviors
     Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
     Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
-
-    // Set timezone and DST
-    createDevices();
-}
-
-void createDevices() {
 
     // Required by NCD8Light
     PCA9685::initialize(PCA9685_ADDRESS);
