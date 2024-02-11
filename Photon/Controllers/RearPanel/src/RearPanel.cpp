@@ -89,7 +89,7 @@ void setup() {
     MCP23008::initialize(I2CR4IO4_ADDRESS, 0xd0);   // Address 0x20 (no jumpers)
     PCA9634::initialize(PCA9634_ADDRESS);
 
-    MCP23008::write(5,1);   // Apply power to PIR
+    MCP23008::write(5,true);   // Apply power to PIR. Pin can source 25ma
 
     // Behaviors
     Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
