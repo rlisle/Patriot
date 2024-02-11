@@ -3,8 +3,8 @@
  * Author: Ron Lisle
  * Date: 1/14/24
  */
-#include "Particle.h"
-//#include "IoT.h"
+//#include "Particle.h"
+#include "IoT.h"
 //#include "secrets.h"
 
 #define CONTROLLER_NAME "BedBath"
@@ -22,18 +22,23 @@ typedef unsigned long msecs;
 // View logs with CLI using 'particle serial monitor --follow'
 SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
+// Behaviors
+#include "SleepingBehavior.h"
+
+
 void setup() {
 //  WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
 //  WiFi.selectAntenna(ANT_INTERNAL);
-  //WiFi.useDynamicIP();
+//  WiFi.useDynamicIP();
 
-//  IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
+  IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
-//  Device::add(new Device("Awake", "All", 'P'));
-//  Device::add(new Device("Test", "All", 'P'));
+  Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+
+  Device::add(new Light(D7, "Light", "Bathroom", 0));
 
 }
 
 void loop() {
-//  IoT::loop();
+  IoT::loop();
 }

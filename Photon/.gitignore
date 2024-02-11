@@ -13,7 +13,7 @@
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-target/*
+target/
 
 # Platform-specific settings
 .DS_Store

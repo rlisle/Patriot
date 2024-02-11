@@ -30,8 +30,9 @@
  * @param switchIndex is the switch number on the NCD board (0-3)
  * @param name String name used to address the relay.
  */
-NCD4Switch::NCD4Switch(int8_t switchIndex, String name, String room)
-    : Device(name, room)
+//Device(String name, String room, char type = 'L', void (*handler)(int,int) = NULL);
+NCD4Switch::NCD4Switch(int8_t switchIndex, String name, String room, void (*handler)(int,int) = NULL)
+    : Device(name, room, 'S', handler)
 {
     _lastPollTime = 0;
     _type         = 'S';
