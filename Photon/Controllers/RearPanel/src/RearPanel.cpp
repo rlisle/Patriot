@@ -74,7 +74,7 @@ void loop() {
 
 void setup() {
 //    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
-    WiFi.selectAntenna(ANT_INTERNAL);
+//    WiFi.selectAntenna(ANT_INTERNAL);
     
     //WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
@@ -97,10 +97,7 @@ void setup() {
     
     // 4 GPIO
     Device::add(new NCD4Switch(1, "OfficeDoor", "Office", handleOfficeDoor));
-//    Device::add(new NCD4PIR(I2CR4IO4_ADDRESS, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
-
-    // (deprecated) Photon I/O
-    //Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+    Device::add(new NCD4PIR(1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT_MSECS, handleOfficeMotion));
 
     // I2CPWM8W80C board
     // 8 Dimmers

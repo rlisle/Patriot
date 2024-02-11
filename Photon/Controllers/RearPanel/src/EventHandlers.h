@@ -44,6 +44,20 @@ void handleOfficeDoor(int value, int oldValue) {
     } else if(value == 0 && oldValue > 0) { // Closed
         officeDoorOpen = false;
         msecsLastDoorEvent = msecs();
+        isTimingOfficeDoor = true;
+        updateLights();
+    }
+}
+
+void handleOfficeMotion(int value, int oldValue) {
+    Log.info("handleOfficeMotion %d", value);
+    if(value > 0 && oldValue == 0) {        // Movement
+        officeMotion= true;
+        msecsLastOfficeMotion = msecs();
+        isTimingOfficeMotion = true;
+        updateLights();
+    } else if(value == 0 && oldValue > 0) { // No movement
+        officeMotion = false;
         updateLights();
     }
 }

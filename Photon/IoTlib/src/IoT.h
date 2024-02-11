@@ -358,7 +358,7 @@ class NCD4PIR : public Device {
     void    notify();
 
  public:
-    NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutSecs);
+    NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutSecs, void (*handler)(int,int));
     
     void    begin();
     void    reset();
