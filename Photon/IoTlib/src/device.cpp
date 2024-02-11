@@ -14,15 +14,15 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
-Device::Device(String name, String room, char type)
-: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100)
+Device::Device(String name, String room, char type, void (*handler)(int,int))
+: _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100), _changeHandler(handler)
 {
     // Do any setup work in begin() not here.
 }
 
 // Actual device will override this in most cases
 void Device::setValue(int value) {
-    Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
+//    Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
 }
 
@@ -51,9 +51,9 @@ int  Device::getChangedValue() {
 
 void Device::add(Device *device)
 {
-    Log.info("addDevice name: "+String(device->name()));
+//    Log.info("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
-        Log.info("  first device");
+//        Log.info("  first device");
         _devices = device;
     } else {
         Device *ptr = _devices;
@@ -81,6 +81,12 @@ void Device::loopAll()
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         ptr->loop();
+        if(ptr->_value != ptr->_previous) {
+            if(ptr->_changeHandler != NULL) {
+                ptr->_changeHandler(ptr->_value, ptr->_previous);
+                ptr->_previous = ptr->_value;
+            }
+        }
     }
 }
 

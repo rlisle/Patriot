@@ -1,70 +1,100 @@
-# Rear Panel
+# RearPanel2
 
-Controller located above rear control panel.
-It controls the lights and awnings in the
-rear of the RV.
+This firmware project was created using [Particle Developer Tools](https://www.particle.io/developer-tools/) and is compatible with all [Particle Devices](https://www.particle.io/devices/).
 
-It is accessed by removing the bottom plywood panel
-in the cabinet above it.
+Feel free to replace this README.md file with your own content, or keep it for reference.
 
-## Hardware
-1. Photon
-2. NCD 8-Relay IoT board
-3. 2 x MOSFET LED driver boards
+## Table of Contents
+- [Introduction](#introduction)
+- [Prerequisites To Use This Template](#prerequisites-to-use-this-repository)
+- [Getting Started](#getting-started)
+- [Particle Firmware At A Glance](#particle-firmware-at-a-glance)
+  - [Logging](#logging)
+  - [Setup and Loop](#setup-and-loop)
+  - [Delays and Timing](#delays-and-timing)
+  - [Testing and Debugging](#testing-and-debugging)
+  - [GitHub Actions (CI/CD)](#github-actions-cicd)
+  - [OTA](#ota)
+- [Support and Feedback](#support-and-feedback)
+- [Version](#version)
 
+## Introduction
 
-## Published Libraries
-This project uses the published Patriot libraries:
-* PatriotIoT (IoT)
-* PatriotNCD8Relay
-* PatriotLight
+For an in-depth understanding of this project template, please refer to our [documentation](https://docs.particle.io/firmware/best-practices/firmware-template/).
 
-When any library is updated, rerun "particle library add libName" from the project directory.
-* To build the code for validation, run "particle compile photon"
-* To flash the code to the RearPanel photon, run "particle flash RearPanel"
+## Prerequisites To Use This Repository
 
-## Code Organization
+To use this software/firmware on a device, you'll need:
 
-#### ```/src``` folder:  
-Contains all the source files. 
-It should *not* be renamed. 
-Anything that is in this folder when you compile your project will be sent to our compile service
-and compiled into a firmware binary for the Particle device that you have targeted.
+- A [Particle Device](https://www.particle.io/devices/).
+- Windows/Mac/Linux for building the software and flashing it to a device.
+- [Particle Development Tools](https://docs.particle.io/getting-started/developer-tools/developer-tools/) installed and set up on your computer.
+- Optionally, a nice cup of tea (and perhaps a biscuit).
 
-If your application contains multiple files, they should all be included in the `src` folder.
-If your firmware depends on Particle libraries, those dependencies are specified in
-the `project.properties` file referenced below.
+## Getting Started
 
-#### ```.ino``` file:
-This file is the firmware that will run as the primary application on your Particle device.
-It contains a `setup()` and `loop()` function, and can be written in Wiring or C/C++.
-For more information about using the Particle firmware API to create firmware for your
-Particle device, refer to the [Firmware Reference](https://docs.particle.io/reference/firmware/)
-section of the Particle documentation.
+1. While not essential, we recommend running the [device setup process](https://setup.particle.io/) on your Particle device first. This ensures your device's firmware is up-to-date and you have a solid baseline to start from.
 
-#### ```project.properties``` file:  
-This is the file that specifies the name and version number of the libraries that your project depends on.
-Dependencies are added automatically to your `project.properties` file when you add a library to a
-project using the `particle library add` command in the CLI or add a library in the Desktop IDE.
+2. If you haven't already, open this project in Visual Studio Code (File -> Open Folder). Then [compile and flash](https://docs.particle.io/getting-started/developer-tools/workbench/#cloud-build-and-flash) your device. Ensure your device's USB port is connected to your computer.
 
-## Adding additional files to the project
+3. Verify the device's operation by monitoring its logging output:
+    - In Visual Studio Code with the Particle Plugin, open the [command palette](https://docs.particle.io/getting-started/developer-tools/workbench/#particle-commands) and choose "Particle: Serial Monitor".
+    - Or, using the Particle CLI, execute:
+    ```
+    particle serial monitor --follow
+    ```
 
-#### Projects with multiple sources
-If you would like add additional files to your application, they should be added to the `/src` folder.
-All files in the `/src` folder will be sent to the Particle Cloud to produce a compiled binary.
+4. Uncomment the code at the bottom of the cpp file in your src directory to publish to the Particle Cloud! Login to console.particle.io to view your devices events in real time.
 
-#### Projects with external unpublished libraries
-If your project includes a library that has not been registered in the Particle libraries system,
-you should create a new folder named `/lib/<libraryname>/src` under `/<project dir>` and add
-the `.h` and `.cpp` files for your library there. All contents of the `/lib` folder and subfolders
-will also be sent to the Cloud for compilation.
+5. Customize this project! For firmware details, see [Particle firmware](https://docs.particle.io/reference/device-os/api/introduction/getting-started/). For information on the project's directory structure, visit [this link](https://docs.particle.io/firmware/best-practices/firmware-template/#project-overview).
 
-## Compiling your project
+## Particle Firmware At A Glance
 
-When you're ready to compile your project, make sure you have the correct Particle device target
-selected and run `particle compile <platform>` in the CLI or click the Compile button in the
-Desktop IDE. The following files in your project folder will be sent to the compile service:
+### Logging
 
-- Everything in the `/src` folder, including your `.ino` application file
-- The `project.properties` file for your project
-- Any libraries stored under `lib/<libraryname>/src`
+The firmware includes a [logging library](https://docs.particle.io/reference/device-os/api/logging/logger-class/). You can display messages at different levels and filter them:
+
+```
+Log.trace("This is trace message");
+Log.info("This is info message");
+Log.warn("This is warn message");
+Log.error("This is error message");
+```
+
+### Setup and Loop
+
+Particle projects originate from the Wiring/Processing framework, which is based on C++. Typically, one-time setup functions are placed in `setup()`, and the main application runs from the `loop()` function.
+
+For advanced scenarios, explore our [threading support](https://docs.particle.io/firmware/software-design/threading-explainer/).
+
+### Delays and Timing
+
+By default, the setup() and loop() functions are blocking whilst they run, meaning that if you put in a delay, your entire application will wait for that delay to finish before anything else can run. 
+
+For techniques that allow you to run multiple tasks in parallel without creating threads, checkout the code example [here](https://docs.particle.io/firmware/best-practices/firmware-template/).
+
+(Note: Although using `delay()` isn't recommended for best practices, it's acceptable for testing.)
+
+### Testing and Debugging
+
+For firmware testing and debugging guidance, check [this documentation](https://docs.particle.io/troubleshooting/guides/build-tools-troubleshooting/debugging-firmware-builds/).
+
+### GitHub Actions (CI/CD)
+
+This project provides a YAML file for GitHub, automating firmware compilation whenever changes are pushed. More details on [Particle GitHub Actions](https://docs.particle.io/firmware/best-practices/github-actions/) are available.
+
+### OTA
+
+To learn how to utilize Particle's OTA service for device updates, consult [this documentation](https://docs.particle.io/getting-started/cloud/ota-updates/).
+
+Test OTA with the 'Particle: Cloud Flash' command in Visual Studio Code or the CLI command 'particle flash'!
+
+This firmware supports binary assets in OTA packages, allowing the inclusion of audio, images, configurations, and external microcontroller firmware. More details are [here](https://docs.particle.io/reference/device-os/api/asset-ota/asset-ota/).
+
+## Support and Feedback
+
+For support or feedback on this template or any Particle products, please join our [community](https://community.particle.io)!
+
+## Version
+
+Template version 1.0.2

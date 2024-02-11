@@ -8,8 +8,11 @@
   To update Photon:
    1. Edit this code
    2. Update IoT and plugins if needed
+   USB:
    3. Put Photon into listen mode using buttons
-   4. "particle flash front_panel2 --target 5.4.1" or "ffp2"
+   4. "particle flash --usb <binname>"
+   OTA:
+   4. "particle flash front_panel2 --target 5.6.0" or "ffp"
 
   NCD 16x Dimmer
   1. DS Flood Lights
@@ -137,7 +140,6 @@
 #define CURVE 2 // 0 = Linear, 1 = exponential, 2 = 50/50
 
 // Until mystery hangs understood, leave in automatic
-#define CONNECT_TO_CLOUD true
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
@@ -147,22 +149,36 @@ SYSTEM_MODE(AUTOMATIC);
 
 int voltage = 0;
 
+// State
+bool nighttime = true;
+bool sleeping = true;
+
+// Behaviors
+#include "Behaviors.h"
+#include "EventHandlers.h"
+
+//------
+// LOOP
+//------
+void loop() {
+    IoT::loop();
+
+//    int voltageChanged = Device::getChangedValue("FrontPanelVolts");
+//    if(voltageChanged != -1){
+//        handleVoltageChanged(voltageChanged);
+//    }
+}
+
 void setup() {
-    // Temporary Code to set SSID
-//    int setConfig(const particle::NetworkInterfaceConfig& conf);
-//    WiFi.setCredentials("LalaIoT", "01120112");
-    
-    WiFi.selectAntenna(ANT_INTERNAL);
+//    WiFi.selectAntenna(ANT_INTERNAL);
 //    WiFi.useDynamicIP();
     
     // This also sets timezone and DST
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
-    
-    // Set timezone and DST
-    createDevices();
-}
 
-void createDevices() {
+    // Behaviors
+    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
+    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
 
     // Required by NCD8Light
     PCA9685::initialize(PCA9685_ADDRESS);
@@ -203,21 +219,11 @@ void createDevices() {
 //    Device::add(new NCD8Switch(7, "Input7", "Living Room"));
 //    Device::add(new NCD8Switch(8, "Input8", "Living Room"));
 
+    //TODO: Initialize state: Nighttime, Sleeping, Doors, etc.
+
+
 }
 
-void loop() {
-
-    // When IoT loop() is called, it will
-    // - set all previous levels
-    // - read switches and update levels
-    // - update light dimming
-    IoT::loop();
-
-//    int voltageChanged = Device::getChangedValue("FrontPanelVolts");
-//    if(voltageChanged != -1){
-//        handleVoltageChanged(voltageChanged);
-//    }
-}
 
 //void handleVoltageChanged(int volts) {
 //    // Do whatever is needed based on new volts value

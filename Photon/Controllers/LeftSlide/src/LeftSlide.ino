@@ -6,7 +6,7 @@ Author: Ron Lisle
   To update Photon:
     1. Edit this code
     2. Update IoT and plugins if needed
-    3. "particle flash left_slide2 --target 5.4.1"
+    3. "particle flash left_slide2 --target 5.6.0" or shortcut "fls"
 
   New Photon 2 I/O Map
     A2/D13 LED1 PWM output
@@ -43,12 +43,11 @@ Author: Ron Lisle
  */
 
 #include <IoT.h>
-#include "math.h"
+//#include "math.h"
 //#include <PatriotMR24.h>
 
 #define CONTROLLER_NAME "LeftSlide"
 #define MQTT_BROKER "192.168.0.33"
-#define CONNECT_TO_CLOUD true
 #define LIVINGROOM_MOTION_TIMEOUT 3*60
 
 SYSTEM_THREAD(ENABLED);
@@ -68,12 +67,33 @@ long lastLivingRoomMotion = 0;
 
 //int couchPresence = 0;
 
+// Behaviors
+#include "SleepingBehavior.h"
+#include "NighttimeBehavior.h"
+
+
+//-------------
+// LOOP
+//-------------
+void loop() {
+    IoT::loop();
+
+    //TODO: move to MR24 plugin
+//    handleCouchPresence();
+}
+
+//-------------
+// SETUP
+//-------------
 void setup() {
-//    WiFi.setCredentials("LalaIoT", "01120112");
-    WiFi.selectAntenna(ANT_INTERNAL);
+//    WiFi.selectAntenna(ANT_INTERNAL);
 //    WiFi.useDynamicIP();
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
-    
+
+    // Behaviors
+    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
+    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+
     // Create Devices
     // Sensors
     Device::add(new PIR(D19, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
@@ -82,14 +102,6 @@ void setup() {
     // Lights (default 2s curve 2)
     Device::add(new Light(A2, "Couch", "Living Room"));
     Device::add(new Light(A5, "LeftVertical", "Living Room"));   // "
-}
-
-// Mark - Loop
-void loop() {
-    IoT::loop();
-
-    //TODO: move to MR24 plugin
-//    handleCouchPresence();
 }
 
 //TODO: move to MR24 plugin

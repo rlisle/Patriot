@@ -36,6 +36,10 @@ Author: Ron Lisle
    or shortcut "frp2"
  */
 
+// !!!!
+// NOTE: Deprecated - refer to RearPanel2.cpp
+// !!!!
+
 #include <IoT.h>
 #include "secrets.h"   // Modify this to include your passwords: HUE_USERID
 #include "math.h"
