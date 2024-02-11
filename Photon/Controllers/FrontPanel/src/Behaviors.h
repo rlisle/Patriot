@@ -7,8 +7,8 @@ void setAllOutsideLights(int);
 void setInsideNightLights();
 void setInsideDayLights();
 
-/// @brief Set Lights
-/// Update devices based on new state of things
+// Set Lights
+// Update devices based on new state of things
 void updateLights() {
     //TODO: Cleaning
 

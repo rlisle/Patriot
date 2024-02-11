@@ -19,38 +19,46 @@
  * Flashing: particle flash rear_panel2 --target 5.6.0 or shortcut "frp"
  */
 
-// Include Particle Device OS APIs
-//#include "Particle.h"
 #include <IoT.h>
-//#include "../../../secrets.h"
-//#include "math.h"
-
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(AUTOMATIC);
-
-typedef unsigned long msecs;
-
-//TODO: change to const
-#define CONTROLLER_NAME "RearPanel"
-#define MQTT_BROKER "192.168.0.33"
-#define OFFICE_MOTION_TIMEOUT 15
-#define PCA9634_ADDRESS 1       // 1st jumper
-#define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
 
 // Generally uncomment only 1 of the following 2 logs
 #define MQTT_LOGGING true
 // View logs with CLI using 'particle serial monitor --follow'
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
 
+//TODO: change to const
+#define CONTROLLER_NAME "RearPanel"
+#define MQTT_BROKER "192.168.0.33"
+#define OFFICE_MOTION_TIMEOUT_MSECS 60*1000
+#define OFFICE_DOOR_TIMEOUT_MSECS 7*60*1000
+#define PCA9634_ADDRESS 1       // 1st jumper
+#define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
+typedef unsigned long msecs;
+
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(AUTOMATIC);
+
 // State
+bool ronIsHome = true;
+bool shelleyIsHome = true;
+bool anyoneIsHome = true;
+bool nighttime = true;
+bool sleeping = true;
 bool officeMotion = false;
-unsigned long msecsLastOfficeMotion = 0;
+bool officeDoorOpen = false;
+
+// Timing
+msecs lastMinute = 0;
+
+bool isTimingOfficeMotion;
+msecs msecsLastOfficeMotion = 0;
+
+bool isTimingOfficeDoor = false;
+msecs msecsLastDoorEvent = 0;
 
 // Behaviors
-#include "DoorBehavior.h"
-#include "SleepingBehavior.h"
-#include "NighttimeBehavior.h"
-#include "HomeBehaviors.h"
+#include "Behaviors.h"
+#include "EventHandlers.h"
 
 //-------------
 // LOOP
@@ -58,7 +66,10 @@ unsigned long msecsLastOfficeMotion = 0;
 void loop() {
     IoT::loop();
 
-    turnOffRearPorchAfter15mins();
+    if(msecs()-60*1000 > lastMinute) {
+        lastMinute = msecs();
+        handleNextMinute();
+    }
 }
 
 void setup() {
