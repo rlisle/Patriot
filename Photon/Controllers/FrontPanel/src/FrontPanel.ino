@@ -149,9 +149,13 @@ SYSTEM_MODE(AUTOMATIC);
 
 int voltage = 0;
 
+// State
+bool nighttime = true;
+bool sleeping = true;
+
 // Behaviors
-#include "SleepingBehavior.h"
-#include "NighttimeBehavior.h"
+#include "Behaviors.h"
+#include "EventHandlers.h"
 
 //------
 // LOOP
@@ -214,6 +218,9 @@ void setup() {
 //    Device::add(new NCD8Switch(6, "Input6", "Living Room"));
 //    Device::add(new NCD8Switch(7, "Input7", "Living Room"));
 //    Device::add(new NCD8Switch(8, "Input8", "Living Room"));
+
+    //TODO: Initialize state: Nighttime, Sleeping, Doors, etc.
+
 
 }
 
