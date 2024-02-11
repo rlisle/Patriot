@@ -37,7 +37,7 @@ NCD4Switch::NCD4Switch(int8_t switchIndex, String name, String room, void (*hand
     _lastPollTime = 0;
     _type         = 'S';
     
-    if(switchIndex > 0 && switchIndex <= 3) {
+    if(switchIndex > 0 && switchIndex <= 4) {
         _switchBitmap = 0x10 << (switchIndex-1);
     } else {
         _switchBitmap = 0x10;   // If 0 or invalid, set to first switch

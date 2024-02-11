@@ -17,6 +17,11 @@
  * 
  * Compiling: particle compile photon2 --target 5.6.0
  * Flashing: particle flash rear_panel2 --target 5.6.0 or shortcut "frp"
+ * 
+ * PIR connected via I2CIO4R4 board
+ *   GPIO connector: GP4, Gnd, GP5, GP6, Gnd, GP7
+ *   GP4 = Door, GP5 = PIR Power, GP6 = PIR Input, GP7 n/c
+ *   
  */
 
 #include <IoT.h>
@@ -80,8 +85,11 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
     //Consolidate PCA9634 initialization
-    MCP23008::initialize(I2CR4IO4_ADDRESS, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
+    // GPIO4 = Door, GPIO5 = PIR Power, GPIO6 = PIR Input, GPIO7 n/c
+    MCP23008::initialize(I2CR4IO4_ADDRESS, 0xd0);   // Address 0x20 (no jumpers)
     PCA9634::initialize(PCA9634_ADDRESS);
+
+    MCP23008::write(5,1);   // Apply power to PIR
 
     // Behaviors
     Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
@@ -97,7 +105,7 @@ void setup() {
     
     // 4 GPIO
     Device::add(new NCD4Switch(1, "OfficeDoor", "Office", handleOfficeDoor));
-    Device::add(new NCD4PIR(1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT_MSECS, handleOfficeMotion));
+    Device::add(new NCD4PIR(3, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT_MSECS, handleOfficeMotion));
 
     // I2CPWM8W80C board
     // 8 Dimmers

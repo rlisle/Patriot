@@ -16,7 +16,7 @@ NCD4PIR::NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutMsecs, v
     _lastPollTime = 0;
     _lastMotion   = 0;
     
-    if(gpioIndex > 0 && gpioIndex <= 3) {
+    if(gpioIndex > 0 && gpioIndex <= 4) {
         _gpioBitmap = 0x10 << gpioIndex;
     } else {
         _gpioBitmap = 0x10;   // If 0 or invalid, set to first gpio
