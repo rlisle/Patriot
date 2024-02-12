@@ -6,8 +6,11 @@
 void setAllLights(int);
 void setAllInsideLights(int);
 void setAllOutsideLights(int);
-void setInsideNightLights();
-void setInsideDayLights();
+void setBedtimeLights();
+void setSleepingLights();
+void setEveningAwakeLights();
+void setPreDawnAwakeLights();
+void setDaytimeLights();
 
 bool isAM() {
     return Time.hour() <= 12;
@@ -16,39 +19,39 @@ bool isAM() {
 // Use sleeping, nighttime, and isAM() to determine PartOfDay
 PartOfDay partOfDay() {
     if(sleeping) {
-        return .Sleeping;
+        return Sleeping;
     }
     if(nighttime) {
         if(isAM()) {
-            return .AwakeEarly
+            return AwakeEarly;
         } else {
-            return .Evening
+            return Evening;
         }
     }
     if(isAM()) {
-        return .Morning
+        return Morning;
     }
-    return .Afternoon
+    return Afternoon;
 }
 
 // Update devices based on new state of things
 void updateLights() {
     switch(partOfDay()) {
-        case .Sleeping:
+        case Sleeping:
             Device::setValue("Curtain", 0);
             setSleepingLights();
             break;
-        case .AwakeEarly:
+        case AwakeEarly:
             setPreDawnAwakeLights();
             break;
-        case .Morning:
-        case .Afternoon:
+        case Morning:
+        case Afternoon:
             setDaytimeLights();
             break;
-        case .Evening:
+        case Evening:
             setEveningAwakeLights();
             break;
-        case .Bedtime:
+        case Bedtime:
             setBedtimeLights();
             break;
     }
@@ -83,6 +86,13 @@ void setSleepingLights() {
 
 void setEveningAwakeLights() {
     setAllOutsideLights(100);
+    Device::setValue("OfficeCeiling", 20);
+    Device::setValue("Loft", 0);
+    Device::setValue("Piano", 100);
+}
+
+void setBedtimeLights() {  // Same as above but turn off outside
+    setAllOutsideLights(0);
     Device::setValue("OfficeCeiling", 20);
     Device::setValue("Loft", 0);
     Device::setValue("Piano", 100);

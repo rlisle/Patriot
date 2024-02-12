@@ -45,7 +45,7 @@ enum PartOfDay {
     Evening,        // After sunset
     Bedtime,        // Getting ready for bed (turn of outside lights)
     Sleeping        // After "Goodnight"
-}
+};
 
 /**
  * Main IoT object.
