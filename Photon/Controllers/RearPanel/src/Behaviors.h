@@ -34,11 +34,9 @@ PartOfDay partOfDay() {
     return Afternoon;
 }
 
-// Update devices based on new state of things
 void updateLights() {
     switch(partOfDay()) {
         case Sleeping:
-            Device::setValue("Curtain", 0);
             setSleepingLights();
             break;
         case AwakeEarly:
