@@ -23,20 +23,29 @@ All text above must be included in any redistribution.
 #include "MQTTManager.h"
 
 // PartOfDay
-#define UNINITIALIZED 0
-#define SUNRISE 1
-#define MORNING 2
-#define NOON 3
-#define AFTERNOON 4
-#define SUNSET 5
-#define DUSK 6
-#define NIGHT 7
-#define DAWN 8
+// #define UNINITIALIZED 0
+// #define SUNRISE 1
+// #define MORNING 2
+// #define NOON 3
+// #define AFTERNOON 4
+// #define SUNSET 5
+// #define DUSK 6
+// #define NIGHT 7
+// #define DAWN 8
 
-// Sleeping
-#define AWAKE 1
-#define RETIRING 2
-#define ASLEEP 3
+// // Sleeping
+// #define AWAKE 1
+// #define RETIRING 2
+// #define ASLEEP 3
+enum PartOfDay {
+    Unitialized = 0,
+    AwakeEarly,     // Early morning when waking before dawn
+    Morning,        // After sunrise (either awake or asleep)
+    Afternoon,      //
+    Evening,        // After sunset
+    Bedtime,        // Getting ready for bed (turn of outside lights)
+    Sleeping        // After "Goodnight"
+}
 
 /**
  * Main IoT object.
