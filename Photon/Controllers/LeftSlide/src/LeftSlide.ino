@@ -49,6 +49,7 @@ Author: Ron Lisle
 #define CONTROLLER_NAME "LeftSlide"
 #define MQTT_BROKER "192.168.0.33"
 #define LIVINGROOM_MOTION_TIMEOUT 3*60
+typedef unsigned long msecs;
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
@@ -59,18 +60,27 @@ SYSTEM_MODE(AUTOMATIC);
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
+// State
+bool ronIsHome = true;
+bool shelleyIsHome = true;
+bool anyoneIsHome = true;
+bool nighttime = true;
+bool sleeping = true;
+bool livingRoomMotion = false;
+
+// Timing
+msecs lastMinute = 0;
+
+bool isTimingLivingRoomMotion;
+msecs msecsLastLivingRoomMotion = 0;
+
 //bool couchPresenceFiltered = 0;
 //long lastCouchPresence = 0;
-
-bool livingRoomMotion = false;
-long lastLivingRoomMotion = 0;
-
 //int couchPresence = 0;
 
 // Behaviors
-#include "SleepingBehavior.h"
-#include "NighttimeBehavior.h"
-
+#include "Behaviors.h"
+#include "EventHandlers.h"
 
 //-------------
 // LOOP
@@ -78,7 +88,11 @@ long lastLivingRoomMotion = 0;
 void loop() {
     IoT::loop();
 
-    //TODO: move to MR24 plugin
+    if(msecs()-60*1000 > lastMinute) {
+        lastMinute = msecs();
+        handleNextMinute();
+    }
+
 //    handleCouchPresence();
 }
 
@@ -86,11 +100,16 @@ void loop() {
 // SETUP
 //-------------
 void setup() {
+//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
 //    WiFi.selectAntenna(ANT_INTERNAL);
 //    WiFi.useDynamicIP();
+
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
     // Behaviors
+    Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
+    Device::add(new Device("RonHome", "Status", 'S', handleRonHome));
+    Device::add(new Device("ShelleyHome", "Status", 'S', handleShelleyHome));
     Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
     Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
 

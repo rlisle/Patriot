@@ -79,9 +79,9 @@ void loop() {
 
 void setup() {
 //    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
-//    WiFi.selectAntenna(ANT_INTERNAL);
-    
-    //WiFi.useDynamicIP();
+//    WiFi.selectAntenna(ANT_INTERNAL);    
+//    WiFi.useDynamicIP();
+
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
     //Consolidate PCA9634 initialization
