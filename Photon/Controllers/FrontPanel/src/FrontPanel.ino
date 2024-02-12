@@ -152,6 +152,13 @@ int voltage = 0;
 // State
 bool nighttime = true;
 bool sleeping = true;
+bool livingRoomMotion = false;
+
+// Timing
+msecs lastMinute = 0;
+
+bool isTimingLivingRoomMotion;
+msecs msecsLastLivingRoomMotion = 0;
 
 // Behaviors
 #include "Behaviors.h"
@@ -163,10 +170,10 @@ bool sleeping = true;
 void loop() {
     IoT::loop();
 
-//    int voltageChanged = Device::getChangedValue("FrontPanelVolts");
-//    if(voltageChanged != -1){
-//        handleVoltageChanged(voltageChanged);
-//    }
+    if(msecs()-60*1000 > lastMinute) {
+        lastMinute = msecs();
+        handleNextMinute();
+    }
 }
 
 void setup() {
@@ -177,14 +184,14 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
     // Behaviors
+    Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
+    Device::add(new Device("RonHome", "Status", 'S', handleRonHome));
+    Device::add(new Device("ShelleyHome", "Status", 'S', handleShelleyHome));
     Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
     Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
 
     // Required by NCD8Light
     PCA9685::initialize(PCA9685_ADDRESS);
-//    if(status != 0) {
-//        Log.error("PCA9685 failed to initialize");
-//    }
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors
     Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen"));    // R

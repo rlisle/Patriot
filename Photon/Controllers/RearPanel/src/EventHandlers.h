@@ -20,7 +20,7 @@ void handleNextMinute() {
 }
 
 void handleNighttime(int value, int oldValue) {
-    Log.info("handleNighttime %d", value);
+    Log.info("RP handleNighttime %d", value);
     if(value != oldValue) {
         nighttime = value > 0;
         updateLights();
@@ -28,7 +28,7 @@ void handleNighttime(int value, int oldValue) {
 }
 
 void handleSleeping(int value, int oldValue) {
-    Log.info("handleSleeping %d", value);
+    Log.info("RP handleSleeping %d", value);
     if(value != oldValue) {
         sleeping = value > 0;
         updateLights();
@@ -36,7 +36,7 @@ void handleSleeping(int value, int oldValue) {
 }
 
 void handleOfficeDoor(int value, int oldValue) {
-    Log.info("handleOfficeDoor %d", value);
+    Log.info("RP handleOfficeDoor %d", value);
     if(value > 0 && oldValue == 0) {        // Opened
         officeDoorOpen = true;
         msecsLastDoorEvent = msecs();
@@ -50,7 +50,7 @@ void handleOfficeDoor(int value, int oldValue) {
 }
 
 void handleOfficeMotion(int value, int oldValue) {
-    Log.info("handleOfficeMotion %d", value);
+    Log.info("RP handleOfficeMotion %d", value);
     if(value > 0 && oldValue == 0) {        // Movement
         officeMotion= true;
         msecsLastOfficeMotion = msecs();
@@ -63,7 +63,7 @@ void handleOfficeMotion(int value, int oldValue) {
 }
 
 void handleRonHome(int value, int oldValue) {
-    Log.info("handleRonHome");
+    Log.info("RP handleRonHome");
     if(value != oldValue) {
         ronIsHome = value > 0;
         updateLights();
@@ -71,14 +71,14 @@ void handleRonHome(int value, int oldValue) {
 }
 
 void handleShelleyHome(int value, int oldValue) {
-    Log.info("handleShelleyHome");
+    Log.info("RP handleShelleyHome");
     if(value != oldValue) {
         shelleyIsHome = value > 0;
         updateLights();
     }
 }
 void handleAnyoneHome(int value, int oldValue) {
-    Log.info("handleAnyoneHome");
+    Log.info("RP handleAnyoneHome");
     if(value != oldValue) {
         anyoneIsHome = value > 0;
         updateLights();
