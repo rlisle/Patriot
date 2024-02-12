@@ -1,0 +1,76 @@
+{
+    "bridge": {
+        "name": "Homebridge CC4B",
+        "username": "0E:87:0C:34:43:36",
+        "port": 51656,
+        "pin": "548-95-253",
+        "advertiser": "avahi"
+    },
+    "log": {
+        "method": "file",
+        "path": "/Users/ronlisle/.homebridge/homebridge.log"
+    },
+    "accessories": [
+        {
+            "type": "switch",
+            "name": "AnyoneHome",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/anyonehome/set",
+                "getOn": "patriot/ack/anyonehome/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "RonHome",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/ronhome/set",
+                "getOn": "patriot/ack/ronhome/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "ShelleyHome",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/shelleyhome/set",
+                "getOn": "patriot/ack/shelleyhome/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Nighttime",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/nighttime/set",
+                "getOn": "patriot/ack/nighttime/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Sleeping",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/sleeping/set",
+                "getOn": "patriot/ack/sleeping/set"
+            },
+            "accessory": "mqttthing"
+        }
+    ],
+    "platforms": [
+        {
+            "name": "Config",
+            "port": 8581,
+            "auth": "form",
+            "theme": "auto",
+            "tempUnits": "f",
+            "lang": "auto",
+            "platform": "config"
+        }
+    ]
+}

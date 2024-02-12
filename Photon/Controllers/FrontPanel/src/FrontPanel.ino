@@ -139,6 +139,8 @@
 
 #define CURVE 2 // 0 = Linear, 1 = exponential, 2 = 50/50
 
+typedef unsigned long msecs;
+
 // Until mystery hangs understood, leave in automatic
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
@@ -150,15 +152,22 @@ SYSTEM_MODE(AUTOMATIC);
 int voltage = 0;
 
 // State
+bool ronIsHome = true;
+bool shelleyIsHome = true;
+bool anyoneIsHome = true;
 bool nighttime = true;
 bool sleeping = true;
 bool livingRoomMotion = false;
+bool livingRoomDoorOpen = false;
 
 // Timing
 msecs lastMinute = 0;
 
 bool isTimingLivingRoomMotion;
 msecs msecsLastLivingRoomMotion = 0;
+
+bool isTimingLivingRoomDoor;
+msecs msecsLastLivingRoomDoor = 0;
 
 // Behaviors
 #include "Behaviors.h"

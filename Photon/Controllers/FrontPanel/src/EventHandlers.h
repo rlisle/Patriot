@@ -4,16 +4,16 @@
 
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
-    if(isTimingOfficeDoor) {
-        if(msecsLastDoorEvent < msecs() + OFFICE_DOOR_TIMEOUT_MSECS) {
-            isTimingOfficeDoor = false;
+    if(isTimingLivingRoomDoor) {
+        if(msecsLastLivingRoomDoor < msecs() + FRONT_DOOR_LIGHT_TIMEOUT) {
+            isTimingLivingRoomDoor = false;
             updateLights();
         }
     }
 
-    if(isTimingOfficeMotion) {
-        if(msecsLastOfficeMotion < msecs() + OFFICE_MOTION_TIMEOUT_MSECS) {
-            isTimingOfficeMotion = false;
+    if(isTimingLivingRoomMotion) {
+        if(msecsLastLivingRoomMotion < msecs() + FRONT_DOOR_LIGHT_TIMEOUT) {
+            isTimingLivingRoomMotion = false;
             updateLights();
         }
     }
@@ -39,11 +39,11 @@ void handleLivingRoomDoor(int value, int oldValue) {
     Log.info("FP handleLivingRoomDoor %d", value);
     if(value > 0 && oldValue == 0) {        // Opened
         livingRoomDoorOpen = true;
-        msecsLastDoorEvent = msecs();
+        msecsLastLivingRoomDoor = msecs();
         updateLights();
     } else if(value == 0 && oldValue > 0) { // Closed
         livingRoomDoorOpen = false;
-        msecsLastDoorEvent = msecs();
+        msecsLastLivingRoomDoor = msecs();
         isTimingLivingRoomDoor = true;
         updateLights();
     }
