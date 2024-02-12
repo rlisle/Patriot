@@ -6,12 +6,12 @@
 void handleNextMinute() {
     if(isTimingLivingRoomMotion) {
         if(msecsLastLivingRoomMotion < msecs() + LIVINGROOM_MOTION_TIMEOUT_MSECS) {
-            isTimingOfficeDoor = false;
+            isTimingLivingRoomMotion = false;
             updateLights();
         }
     }
 
-    if(isTimingOfficeMotion) {
+    if(isTimingLivingRoomMotion) {
         if(msecsLastLivingRoomMotion < msecs() + LIVINGROOM_MOTION_TIMEOUT_MSECS) {
             isTimingLivingRoomMotion = false;
             updateLights();
