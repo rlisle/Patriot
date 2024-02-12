@@ -86,23 +86,23 @@ void setSleepingLights() {
 
 void setEveningAwakeLights() {
     setAllOutsideLights(100);
-    Device::setValue("OfficeCeiling", 20);
+    Device::setValue("OfficeCeiling", 5);
     Device::setValue("Loft", 0);
     Device::setValue("Piano", 100);
 }
 
 void setBedtimeLights() {  // Same as above but turn off outside
     setAllOutsideLights(0);
-    Device::setValue("OfficeCeiling", 20);
+    Device::setValue("OfficeCeiling", 5);
     Device::setValue("Loft", 0);
-    Device::setValue("Piano", 100);
+    Device::setValue("Piano", 5);
 }
 
 void setPreDawnAwakeLights() {
     setAllOutsideLights(0);
-    Device::setValue("OfficeCeiling", 20);
+    Device::setValue("OfficeCeiling", 5);
     Device::setValue("Loft", 0);
-    Device::setValue("Piano", 100);
+    Device::setValue("Piano", 5);
 }
 
 void setDaytimeLights() {
