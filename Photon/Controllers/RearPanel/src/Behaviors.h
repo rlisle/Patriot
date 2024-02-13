@@ -35,25 +35,32 @@ PartOfDay partOfDay() {
 }
 
 void updateLights() {
+    Log.info("RP updateLights");
     if(cleaning) {                  //TODO: move to IoT
+        Log.info("RP updateLights cleaning");
         setAllInsideLights(100);
         return;                     // Assumes daytime, so no need to continue
     }
     switch(partOfDay()) {
         case Sleeping:
+            Log.info("RP updateLights Sleeping");
             setSleepingLights();
             break;
         case AwakeEarly:
+            Log.info("RP updateLights AwakeEarly");
             setPreDawnAwakeLights();
             break;
         case Morning:
         case Afternoon:
+            Log.info("RP updateLights daytime");
             setDaytimeLights();
             break;
         case Evening:
+            Log.info("RP updateLights evening");
             setEveningAwakeLights();
             break;
         case Bedtime:
+            Log.info("RP updateLights bedtime");
             setBedtimeLights();
             break;
     }
@@ -109,6 +116,7 @@ void setPreDawnAwakeLights() {
     Device::setValue("Loft", 0);
     Device::setValue("Piano", 5);
     if(officeDoorOpen || isTimingOfficeDoor) {        
+        Log.info("RP PreDawnAwakeLights door open");
         Device::setValue("RearPorch", 100);
     }
 }

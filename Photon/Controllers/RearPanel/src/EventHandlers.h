@@ -46,10 +46,12 @@ void handleSleeping(int value, int oldValue) {
 void handleOfficeDoor(int value, int oldValue) {
     Log.info("RP handleOfficeDoor %d", value);
     if(value > 0 && oldValue == 0) {        // Opened
+        Log.info("RP door opened");
         officeDoorOpen = true;
         msecsLastDoorEvent = msecs();
         updateLights();
     } else if(value == 0 && oldValue > 0) { // Closed
+        Log.info("RP door closed");
         officeDoorOpen = false;
         msecsLastDoorEvent = msecs();
         isTimingOfficeDoor = true;
