@@ -108,12 +108,12 @@ void setSleepingLights() {
 
 void setEveningAwakeLights() {
     setAllOutsideLights(100);
-    Device::setValue("KitchenCeiling", 5);
+    Device::setValue("KitchenCeiling", 50);
     Device::setValue("Sink", 5);
-    Device::setValue("LeftTrim", 5);
-    Device::setValue("RightTrim", 5);
-    Device::setValue("Ceiling", 5);
-    Device::setValue("Cabinets", 5);
+    Device::setValue("LeftTrim", 50);
+    Device::setValue("RightTrim", 10);
+    Device::setValue("Ceiling", 50);
+    Device::setValue("Cabinets", 40)
 }
 
 void setBedtimeLights() {
