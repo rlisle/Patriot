@@ -113,7 +113,7 @@ void setEveningAwakeLights() {
     Device::setValue("LeftTrim", 50);
     Device::setValue("RightTrim", 10);
     Device::setValue("Ceiling", 80);
-    Device::setValue("Cabinets", 40)
+    Device::setValue("Cabinets", 40);
 }
 
 void setBedtimeLights() {
