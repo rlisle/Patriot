@@ -35,6 +35,10 @@ PartOfDay partOfDay() {
 }
 
 void updateLights() {
+    if(cleaning) {                  //TODO: move to IoT
+        setAllInsideLights(100);
+        return;                     // Assumes daytime, so no need to continue
+    }
     switch(partOfDay()) {
         case Sleeping:
             setSleepingLights();
@@ -94,6 +98,9 @@ void setBedtimeLights() {  // Same as above but turn off outside
     Device::setValue("OfficeCeiling", 5);
     Device::setValue("Loft", 0);
     Device::setValue("Piano", 5);
+    if(officeDoorOpen || isTimingOfficeDoor) {        
+        Device::setValue("RearPorch", 100);
+    }
 }
 
 void setPreDawnAwakeLights() {
@@ -101,6 +108,9 @@ void setPreDawnAwakeLights() {
     Device::setValue("OfficeCeiling", 5);
     Device::setValue("Loft", 0);
     Device::setValue("Piano", 5);
+    if(officeDoorOpen || isTimingOfficeDoor) {        
+        Device::setValue("RearPorch", 100);
+    }
 }
 
 void setDaytimeLights() {
