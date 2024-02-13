@@ -34,10 +34,15 @@
 //TODO: change to const
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.0.33"
+
+//TODO: move timeouts into IoT
 #define OFFICE_MOTION_TIMEOUT_MSECS 60*1000
 #define OFFICE_DOOR_TIMEOUT_MSECS 7*60*1000
+
 #define PCA9634_ADDRESS 1       // 1st jumper
 #define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
+
+//TODO: move into IoT
 typedef unsigned long msecs;
 
 SYSTEM_THREAD(ENABLED);
@@ -53,6 +58,7 @@ bool officeMotion = false;
 bool officeDoorOpen = false;
 
 // Timing
+//TODO: move into IoT
 msecs lastMinute = 0;
 
 bool isTimingOfficeMotion;
