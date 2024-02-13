@@ -19,6 +19,14 @@ void handleNextMinute() {
     }
 }
 
+void handleCleaning(int value, int oldValue) {
+    Log.info("RP handleCleaning %d", value);
+    if(value != oldValue) {
+        cleaning = value > 0;
+        updateLights();
+    }
+}
+
 void handleNighttime(int value, int oldValue) {
     Log.info("RP handleNighttime %d", value);
     if(value != oldValue) {

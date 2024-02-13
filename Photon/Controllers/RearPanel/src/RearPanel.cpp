@@ -56,6 +56,7 @@ bool nighttime = true;
 bool sleeping = true;
 bool officeMotion = false;
 bool officeDoorOpen = false;
+bool cleaning = false;
 
 // Timing
 //TODO: move into IoT
