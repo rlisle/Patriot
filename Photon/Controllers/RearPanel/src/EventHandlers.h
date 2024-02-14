@@ -5,14 +5,15 @@
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
     if(isTimingOfficeDoor) {
-        if(msecsLastDoorEvent < msecs() + OFFICE_DOOR_TIMEOUT_MSECS) {
+        if(msecsLastDoorEvent + OFFICE_DOOR_TIMEOUT_MSECS < msecs()) {
+            Log.info("RP turning off isTimingOfficeDoor");
             isTimingOfficeDoor = false;
             updateLights();
         }
     }
 
     if(isTimingOfficeMotion) {
-        if(msecsLastOfficeMotion < msecs() + OFFICE_MOTION_TIMEOUT_MSECS) {
+        if(msecsLastOfficeMotion + OFFICE_MOTION_TIMEOUT_MSECS < msecs()) {
             isTimingOfficeMotion = false;
             updateLights();
         }
@@ -57,6 +58,7 @@ void handleOfficeDoor(int value, int oldValue) {
         isTimingOfficeDoor = true;
         updateLights();
     }
+    Log.info("RP exit handleOfficeDoor");
 }
 
 void handleOfficeMotion(int value, int oldValue) {
