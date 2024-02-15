@@ -127,3 +127,16 @@ void setDaytimeLights() {
     Device::setValue("Loft", 0);
     Device::setValue("Piano", 100);
 }
+
+// Called by livingRoomMotion
+void wakeupIfAfter430am() {
+    if(sleeping==true 
+        && Time.hour() < 10 
+        && ((Time.hour() == 4 && Time.minute() >= 30)
+        || (Time.hour() > 4))) {
+            // Send sleeping = 0
+            sleeping = false;
+            IoT::publishValue("sleeping/set", 0);
+            updateLights();
+        }
+}

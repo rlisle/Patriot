@@ -74,6 +74,18 @@ void handleOfficeMotion(int value, int oldValue) {
     }
 }
 
+void handleLivingRoomMotion(int value, int oldValue) {
+    Log.info("RP handleLivingRoomMotion %d", value);
+    if(value > 0 && oldValue == 0) {        // Movement
+        livingRoomMotion = true;
+        msecsLastLivingRoomMotion = msecs();
+        wakeupIfAfter430am();
+    } else if(value == 0 && oldValue > 0) { // No movement
+        livingRoomMotion = false;
+        // Nothing to do.
+    }
+}
+
 void handleRonHome(int value, int oldValue) {
     Log.info("RP handleRonHome");
     if(value != oldValue) {

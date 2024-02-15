@@ -57,6 +57,7 @@ bool sleeping = true;
 bool officeMotion = false;
 bool officeDoorOpen = false;
 bool cleaning = false;
+bool livingRoomMotion = false;
 
 // Timing
 //TODO: move into IoT
@@ -67,6 +68,8 @@ msecs msecsLastOfficeMotion = 0;
 
 bool isTimingOfficeDoor = false;
 msecs msecsLastDoorEvent = 0;
+
+msecs msecsLastLivingRoomMotion = 0;
 
 // Behaviors
 #include "Behaviors.h"
@@ -105,6 +108,7 @@ void setup() {
     Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
     Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
     Device::add(new Device("Cleaning", "Status", 'S', handleCleaning));
+    Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
 
     // I2CIO4R4G5LE board
     // 4 Relays
