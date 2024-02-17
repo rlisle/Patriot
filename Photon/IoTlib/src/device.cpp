@@ -78,15 +78,20 @@ void Device::resetAll()
 
 void Device::loopAll()
 {
+    bool didAnyChange = false;
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         ptr->loop();
         if(ptr->_value != ptr->_previous) {
+            didAnyChange = true;
             if(ptr->_changeHandler != NULL) {
                 ptr->_changeHandler(ptr->_value, ptr->_previous);
                 ptr->_previous = ptr->_value;
             }
         }
+    }
+    if(didAnyChange == true && _anyChangeHandler != NULL) {
+        _anyChangeHandler();
     }
 }
 

@@ -68,10 +68,10 @@ int kitchen = false;    // Could be on, off, or partial 1-99
 msecs lastMinute = 0;
 
 bool isTimingOfficeMotion;
-msecs msecsLastOfficeMotion = 0;
+//msecs msecsLastOfficeMotion = 0;
 
 bool isTimingOfficeDoor = false;
-msecs msecsLastDoorEvent = 0;
+//msecs msecsLastDoorEvent = 0;
 
 msecs msecsLastLivingRoomMotion = 0;
 
