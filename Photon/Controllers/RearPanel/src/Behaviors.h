@@ -12,6 +12,8 @@ void setEveningAwakeLights();
 void setPreDawnAwakeLights();
 void setDaytimeLights();
 
+//TODO: Curtain sometimes closes when door opens
+
 bool isAM() {
     return Time.hour() <= 12;
 }
@@ -86,7 +88,7 @@ void setAllOutsideLights(int value) {
 }
 
 void setSleepingLights() {
-    Device::setValue("Curtain", 0);
+    Device::setValue("Curtain", 0);     // Close curtain
     setAllLights(0);
     if(officeDoorOpen || isTimingOfficeDoor) {        
         Device::setValue("RearPorch", 100);

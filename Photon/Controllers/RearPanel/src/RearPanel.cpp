@@ -49,6 +49,7 @@ SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
 // State
+//TODO: refactor to Device class. Add Device::
 bool ronIsHome = true;
 bool shelleyIsHome = true;
 bool anyoneIsHome = true;
@@ -58,6 +59,9 @@ bool officeMotion = false;
 bool officeDoorOpen = false;
 bool cleaning = false;
 bool livingRoomMotion = false;
+bool outside = false;
+int couch = false;      // Could be on, off, or partial 1-99
+int kitchen = false;    // Could be on, off, or partial 1-99
 
 // Timing
 //TODO: move into IoT
@@ -102,6 +106,7 @@ void setup() {
     MCP23008::write(5,true);   // Apply power to PIR. Pin can source 25ma
 
     // Behaviors
+    //TODO: refactor to array of structs/enums
     Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
     Device::add(new Device("RonHome", "Status", 'S', handleRonHome));
     Device::add(new Device("ShelleyHome", "Status", 'S', handleShelleyHome));
@@ -109,6 +114,9 @@ void setup() {
     Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
     Device::add(new Device("Cleaning", "Status", 'S', handleCleaning));
     Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
+    Device::add(new Device("Kitchen", "Status", 'S', handleKitchen));
+    Device::add(new Device("Couch", "Status", 'S', handleCouch));
+    Device::add(new Device("Outside", "Status", 'S', handleOutside));
 
     // I2CIO4R4G5LE board
     // 4 Relays

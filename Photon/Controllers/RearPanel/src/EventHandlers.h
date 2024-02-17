@@ -49,7 +49,8 @@ void handleOfficeDoor(int value, int oldValue) {
     if(value > 0 && oldValue == 0) {        // Opened
         Log.info("RP door opened");
         officeDoorOpen = true;
-        msecsLastDoorEvent = msecs();
+        msecsLastDoorEvent = msecs();       // Time how long door is open if needed
+        isTimingOfficeDoor = false;
         updateLights();
     } else if(value == 0 && oldValue > 0) { // Closed
         Log.info("RP door closed");
