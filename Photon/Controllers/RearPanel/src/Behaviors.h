@@ -14,16 +14,20 @@ void setDaytimeLights();
 
 //TODO: Curtain sometimes closes when door opens
 
+bool is(String name) {
+    return Device::get("name")->value();
+}
+
 bool isAM() {
     return Time.hour() <= 12;
 }
 
 // Use sleeping, nighttime, and isAM() to determine PartOfDay
 PartOfDay partOfDay() {
-    if(sleeping) {
+    if(is("sleeping")) {
         return Sleeping;
     }
-    if(nighttime) {
+    if(is("nighttime")) {
         if(isAM()) {
             return AwakeEarly;
         } else {
@@ -38,7 +42,7 @@ PartOfDay partOfDay() {
 
 void updateLights() {
     Log.info("RP updateLights");
-    if(cleaning) {                  //TODO: move to IoT
+    if(is("cleaning")) {                  //TODO: move to IoT
         Log.info("RP updateLights cleaning");
         setAllInsideLights(100);
         return;                     // Assumes daytime, so no need to continue
@@ -90,7 +94,7 @@ void setAllOutsideLights(int value) {
 void setSleepingLights() {
     Device::setValue("Curtain", 0);     // Close curtain
     setAllLights(0);
-    if(officeDoorOpen || isTimingOfficeDoor) {        
+    if(is("officeDoor") || isTimingOfficeDoor) {        
         Device::setValue("RearPorch", 100);
     }
 }
@@ -107,7 +111,7 @@ void setBedtimeLights() {  // Same as above but turn off outside
     Device::setValue("OfficeCeiling", 5);
     Device::setValue("Loft", 0);
     Device::setValue("Piano", 5);
-    if(officeDoorOpen || isTimingOfficeDoor) {        
+    if(is("officeDoor") || isTimingOfficeDoor) {        
         Device::setValue("RearPorch", 100);
     }
 }
@@ -117,7 +121,7 @@ void setPreDawnAwakeLights() {
     Device::setValue("OfficeCeiling", 5);
     Device::setValue("Loft", 0);
     Device::setValue("Piano", 5);
-    if(officeDoorOpen || isTimingOfficeDoor) {        
+    if(is("officeDoor") || isTimingOfficeDoor) {        
         Log.info("RP PreDawnAwakeLights door open");
         Device::setValue("RearPorch", 100);
     }
@@ -132,12 +136,12 @@ void setDaytimeLights() {
 
 // Called by livingRoomMotion
 void wakeupIfAfter430am() {
-    if(sleeping==true 
+    if(is("sleeping") == true 
         && Time.hour() < 10 
         && ((Time.hour() == 4 && Time.minute() >= 30)
         || (Time.hour() > 4))) {
             // Send sleeping = 0
-            sleeping = false;
+            Device::setValue("sleeping", false);
             IoT::publishValue("sleeping/set", 0);
             updateLights();
         }

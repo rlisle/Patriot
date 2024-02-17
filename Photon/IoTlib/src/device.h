@@ -30,6 +30,8 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 
+typedef unsigned long msecs;
+
 class Device {
  protected:
     Device*    _next;       // Linked list
@@ -92,11 +94,13 @@ public:
     static int     getChangedValue(String name);
     static int     count();
     static void    setAllLatLong(float latitude, float longitude);
-    
+
+    static msecs   msecsLastChange(String name);
+
     static void    mqttAll(String topic, String message);
 
     // Called once whenever ANY device value has changed
-    static void    setAnyChangedHandler(void (*handler)(int,int));
+    static void    setAnyChangedHandler(void (*handler)());
 
     /**
      Particle.io variable "States"
