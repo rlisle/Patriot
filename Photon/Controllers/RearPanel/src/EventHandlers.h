@@ -20,29 +20,29 @@ void handleNextMinute() {
     }
 }
 
-void handleCleaning(int value, int oldValue) {
-    Log.info("RP handleCleaning %d", value);
-    if(value != oldValue) {
-        Device::setValue("cleaning", 0);
-        updateLights();
-    }
-}
+// void handleCleaning(int value, int oldValue) {
+//     Log.info("RP handleCleaning %d", value);
+//     if(value != oldValue) {
+//         Device::setValue("cleaning", 0);
+//         updateLights();
+//     }
+// }
 
-void handleNighttime(int value, int oldValue) {
-    Log.info("RP handleNighttime %d", value);
-    if(value != oldValue) {
-        Device::setValue("Nighttime", value);
-        updateLights();
-    }
-}
+// void handleNighttime(int value, int oldValue) {
+//     Log.info("RP handleNighttime %d", value);
+//     if(value != oldValue) {
+//         Device::setValue("Nighttime", value);
+//         updateLights();
+//     }
+// }
 
-void handleSleeping(int value, int oldValue) {
-    Log.info("RP handleSleeping %d", value);
-    if(value != oldValue) {
-        Device::setValue("sleeping", value > 0);
-        updateLights();
-    }
-}
+// void handleSleeping(int value, int oldValue) {
+//     Log.info("RP handleSleeping %d", value);
+//     if(value != oldValue) {
+//         Device::setValue("sleeping", value > 0);
+//         updateLights();
+//     }
+// }
 
 void handleOfficeDoor(int value, int oldValue) {
     Log.info("RP handleOfficeDoor %d", value);
@@ -87,25 +87,26 @@ void handleLivingRoomMotion(int value, int oldValue) {
     }
 }
 
-void handleRonHome(int value, int oldValue) {
-    Log.info("RP handleRonHome");
-    if(value != oldValue) {
-        //ronIsHome = value > 0;
-        updateLights();
-    }
-}
+// void handleRonHome(int value, int oldValue) {
+//     Log.info("RP handleRonHome");
+//     if(value != oldValue) {
+//         //ronIsHome = value > 0;
+//         updateLights();
+//     }
+// }
 
-void handleShelleyHome(int value, int oldValue) {
-    Log.info("RP handleShelleyHome");
-    if(value != oldValue) {
-        //shelleyIsHome = value > 0;
-        updateLights();
-    }
-}
-void handleAnyoneHome(int value, int oldValue) {
-    Log.info("RP handleAnyoneHome");
-    if(value != oldValue) {
-        //anyoneIsHome = value > 0;
-        updateLights();
-    }
-}
+// void handleShelleyHome(int value, int oldValue) {
+//     Log.info("RP handleShelleyHome");
+//     if(value != oldValue) {
+//         //shelleyIsHome = value > 0;
+//         updateLights();
+//     }
+// }
+
+// void handleAnyoneHome(int value, int oldValue) {
+//     Log.info("RP handleAnyoneHome");
+//     if(value != oldValue) {
+//         //anyoneIsHome = value > 0;
+//         updateLights();
+//     }
+// }

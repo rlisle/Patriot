@@ -18,10 +18,13 @@
  * Compiling: particle compile photon2 --target 5.6.0
  * Flashing: particle flash rear_panel2 --target 5.6.0 or shortcut "frp"
  * 
- * PIR connected via I2CIO4R4 board
+ * 
+ * I2CIO4R4G5LE board connected via I2C
+ *   Relays: 0, 1 Curtain, 2, 3 unused
  *   GPIO connector: GP4, Gnd, GP5, GP6, Gnd, GP7
  *   GP4 = Door, GP5 = PIR Power, GP6 = PIR Input, GP7 n/c
- *   
+ * 
+ * I2CPWM8W80C  
  */
 
 #include <IoT.h>
@@ -73,7 +76,7 @@ bool isTimingOfficeMotion;
 bool isTimingOfficeDoor = false;
 //msecs msecsLastDoorEvent = 0;
 
-msecs msecsLastLivingRoomMotion = 0;
+//msecs msecsLastLivingRoomMotion = 0;
 
 // Behaviors
 #include "Behaviors.h"
@@ -85,6 +88,7 @@ msecs msecsLastLivingRoomMotion = 0;
 void loop() {
     IoT::loop();
 
+    //TODO: move to IoT
     if(msecs()-60*1000 > lastMinute) {
         lastMinute = msecs();
         handleNextMinute();
@@ -112,9 +116,9 @@ void setup() {
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
-    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
-    Device::add(new Device("Cleaning", "Status", 'S', handleCleaning));
+    Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
     Device::add(new Device("Kitchen", "Status", 'S'));
     Device::add(new Device("Couch", "Status", 'S'));

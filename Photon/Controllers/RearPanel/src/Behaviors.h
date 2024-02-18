@@ -14,8 +14,17 @@ void setDaytimeLights();
 
 //TODO: Curtain sometimes closes when door opens
 
+// Shortcuts
 bool is(String name) {
+    return Device::get("name")->value() > 0;
+}
+
+int value(String name) {
     return Device::get("name")->value();
+}
+
+int set(String name, int value) {
+    return Device::setValue(name,value);
 }
 
 bool isAM() {
@@ -40,9 +49,10 @@ PartOfDay partOfDay() {
     return Afternoon;
 }
 
+// This method defines all the behavior of the system
 void updateLights() {
     Log.info("RP updateLights");
-    if(is("cleaning")) {                  //TODO: move to IoT
+    if(is("cleaning")) {
         Log.info("RP updateLights cleaning");
         setAllInsideLights(100);
         return;                     // Assumes daytime, so no need to continue
@@ -79,59 +89,59 @@ void setAllLights(int value) {
 }
 
 void setAllInsideLights(int value) {
-    Device::setValue("OfficeCeiling", value);
-    Device::setValue("Loft", value);
-    Device::setValue("Piano", value);
+    set("OfficeCeiling", value);
+    set("Loft", value);
+    set("Piano", value);
 }
 
 void setAllOutsideLights(int value) {
-    Device::setValue("RampPorch", value);
-    Device::setValue("RampAwning", value);
-    Device::setValue("RearPorch", value);
-    Device::setValue("RearAwning", value);
+    set("RampPorch", value);
+    set("RampAwning", value);
+    set("RearPorch", value);
+    set("RearAwning", value);
 }
 
 void setSleepingLights() {
-    Device::setValue("Curtain", 0);     // Close curtain
+    set("Curtain", 0);     // Close curtain
     setAllLights(0);
     if(is("officeDoor") || isTimingOfficeDoor) {        
-        Device::setValue("RearPorch", 100);
+        set("RearPorch", 100);
     }
 }
 
 void setEveningAwakeLights() {
     setAllOutsideLights(100);
-    Device::setValue("OfficeCeiling", 5);
-    Device::setValue("Loft", 0);
-    Device::setValue("Piano", 100);
+    set("OfficeCeiling", 5);
+    set("Loft", 0);
+    set("Piano", 100);
 }
 
 void setBedtimeLights() {  // Same as above but turn off outside
     setAllOutsideLights(0);
-    Device::setValue("OfficeCeiling", 5);
-    Device::setValue("Loft", 0);
-    Device::setValue("Piano", 5);
+    set("OfficeCeiling", 5);
+    set("Loft", 0);
+    set("Piano", 5);
     if(is("officeDoor") || isTimingOfficeDoor) {        
-        Device::setValue("RearPorch", 100);
+        set("RearPorch", 100);
     }
 }
 
 void setPreDawnAwakeLights() {
     setAllOutsideLights(0);
-    Device::setValue("OfficeCeiling", 5);
-    Device::setValue("Loft", 0);
-    Device::setValue("Piano", 5);
+    set("OfficeCeiling", 5);
+    set("Loft", 0);
+    set("Piano", 5);
     if(is("officeDoor") || isTimingOfficeDoor) {        
         Log.info("RP PreDawnAwakeLights door open");
-        Device::setValue("RearPorch", 100);
+        set("RearPorch", 100);
     }
 }
 
 void setDaytimeLights() {
     setAllOutsideLights(0);
-    Device::setValue("OfficeCeiling", 0);
-    Device::setValue("Loft", 0);
-    Device::setValue("Piano", 100);
+    set("OfficeCeiling", 0);
+    set("Loft", 0);
+    set("Piano", 100);
 }
 
 // Called by livingRoomMotion
@@ -141,7 +151,7 @@ void wakeupIfAfter430am() {
         && ((Time.hour() == 4 && Time.minute() >= 30)
         || (Time.hour() > 4))) {
             // Send sleeping = 0
-            Device::setValue("sleeping", false);
+            set("sleeping", false);
             IoT::publishValue("sleeping/set", 0);
             updateLights();
         }
