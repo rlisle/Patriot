@@ -12,8 +12,6 @@ void setEveningAwakeLights();
 void setPreDawnAwakeLights();
 void setDaytimeLights();
 
-//TODO: Curtain sometimes closes when door opens
-
 // Shortcuts
 bool is(String name) {
     return Device::get("name")->value() > 0;
@@ -80,7 +78,6 @@ void updateLights() {
             setBedtimeLights();
             break;
     }
-    //TODO: Cleaning
 }
 
 void setAllLights(int value) {

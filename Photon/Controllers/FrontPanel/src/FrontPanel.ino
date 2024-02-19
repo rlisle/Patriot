@@ -4,7 +4,6 @@
   Author: Ron Lisle
   Date: 9/16/17
   
-  Converting to Photon 2 - "front_panel2"
   To update Photon:
    1. Edit this code
    2. Update IoT and plugins if needed
@@ -37,23 +36,23 @@
   RST - nc
   3V3 - nc
   Mode - nc
-  Gnd - nc                  - 12v monitor R ladder gnd
+  Gnd - nc              - 12v monitor R ladder gnd
   D11/A0/ADC4           - 12v monitor R ladder
   D12/A1/ADC5
   D13/A2/ADC3/PWM
   D14/A5/ADC0/PWM
-  D19/S4                    - Front Door switch
+  D19/S4                - Front Door switch
   D18/S3
   D17/SCK
-  D15/MOSI/PWM      - Ceiling LEDs
-  D16/MISO/PWM      - Cabinets LEDs
+  D15/MOSI/PWM          - Ceiling LEDs
+  D16/MISO/PWM          - Cabinets LEDs
   D9/RX
   D8/TX
  
   Right Side
-  LI+                            - nc
-  EN                            -  nc
-  VSUB (5v)                 - nc
+  LI+ 
+  EN 
+  VSUB (5v)
   D10
   D7
   D6
@@ -61,21 +60,21 @@
   D4
   D3
   D2
-  D1/A4/ADC1/PWM/Wire SCL - NCD I2C
-  D0/A3/ADC2/Wire SDA           - NCD I2C
+  D1/A4/ADC1/PWM/Wire SCL   - NCD I2C
+  D0/A3/ADC2/Wire SDA       - NCD I2C
  
   SWITCH WIRING
-  Top left:       tape label "Cabinet" -> D3 green -> gold
+  Top left:      tape label "Cabinet" -> D3 green -> gold
   Top right:     no label (right trim) #4 yellow
-  2nd left:       tape label "Sink" #2 white
-  2nd middle: tape label "Ceiling" (kitchen) #1 red
+  2nd left:      tape label "Sink" #2 white
+  2nd middle:    tape label "Ceiling" (kitchen) #1 red
   2nd right:     tape label "Indirect" (left trim) #5 blue
-  gnd              brown?
+  gnd            brown?
 
-  3rd left:        "Ceiling" D2 blue -> silver
-  3rd l-m:        "DS Flood Lights" #0 green
-  3rd r-m:        "ODS Flood Lights" #3 yellow
-  3rd right:      "Porch Lights" #7 red
+  3rd left:      "Ceiling" D2 blue -> silver
+  3rd l-m:       "DS Flood Lights" #0 green
+  3rd r-m:       "ODS Flood Lights" #3 yellow
+  3rd right:     "Porch Lights" #7 red
   bottom:        "Light" (awning) #6 white
 
   TERMINAL STRIPS
@@ -96,36 +95,30 @@
  1. Brown/White     Bedroom Lts.
  2. Orange/White    Puck Lts (Ceiling Power)
  3. Green/White     Storage Lts
- 4. Blue/White         Br Slide out
- 5. Purple/White      Kitchen (Front Panel)
- 6. Pink solid           Furnace
- 7. Yellow/White      Fan
- 8. Pink/White         Fuel Pump
- 9. Blue solid           Water Pump
- 10. Black/White     Monitor Panel
- 11. Green/White     Ent
+ 4. Blue/White      Br Slide out
+ 5. Purple/White    Kitchen (Front Panel)
+ 6. Pink solid      Furnace
+ 7. Yellow/White    Fan
+ 8. Pink/White      Fuel Pump
+ 9. Blue solid      Water Pump
+ 10. Black/White    Monitor Panel
+ 11. Green/White    Ent
  12. n/c
- 13. Red/White         Garage (RearPanel)
- 14. Gray/White        Awning
- 15. New Red           Pepwave
+ 13. Red/White      Garage (RearPanel)
+ 14. Gray/White     Awning
+ 15. New Red        Pepwave
  16. n/c
  17. n/c
  18. n/c
  
   Photon 2 is 0a10aced202194944a0446ac front_panel2
-  RSSI = -63dBm on 9/17/23
+  RSSI = -43dBm on 2/19/24
  
   Original Photon was 430033000f47343339383037 FrontPanel
   RSSI = -66dBm  on 10/1/22
  
- Using SYSTEM_THREAD(ENABLED) is recommended,
- and runs network on separate theread.
- Using SYSTEM_MODE(SEMI_AUTOMATIC) we will
- manually connect, but everything is automatic
- after that. This allows running loop and MQTT
- even if no internet available
-
  History
+ 02/19/24 Upgrade to new architecture
  10/13/23 Upgrade NCD 8x dimmer with 16x board (12-bit)
  
  */
@@ -139,7 +132,7 @@
 
 #define CURVE 2 // 0 = Linear, 1 = exponential, 2 = 50/50
 
-typedef unsigned long msecs;
+//typedef unsigned long msecs;
 
 // Until mystery hangs understood, leave in automatic
 SYSTEM_THREAD(ENABLED);
@@ -151,23 +144,10 @@ SYSTEM_MODE(AUTOMATIC);
 
 int voltage = 0;
 
-// State
-bool ronIsHome = true;
-bool shelleyIsHome = true;
-bool anyoneIsHome = true;
-bool nighttime = true;
-bool sleeping = true;
-bool livingRoomMotion = false;
-bool livingRoomDoorOpen = false;
-
 // Timing
 msecs lastMinute = 0;
-
 bool isTimingLivingRoomMotion;
-msecs msecsLastLivingRoomMotion = 0;
-
-bool isTimingLivingRoomDoor;
-msecs msecsLastLivingRoomDoor = 0;
+bool isTimingFrontDoor;
 
 // Behaviors
 #include "Behaviors.h"
@@ -186,21 +166,31 @@ void loop() {
 }
 
 void setup() {
+//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
 //    WiFi.selectAntenna(ANT_INTERNAL);
 //    WiFi.useDynamicIP();
     
     // This also sets timezone and DST
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
-    // Behaviors
-    Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
-    Device::add(new Device("RonHome", "Status", 'S', handleRonHome));
-    Device::add(new Device("ShelleyHome", "Status", 'S', handleShelleyHome));
-    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
-    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
-
     // Required by NCD8Light
     PCA9685::initialize(PCA9685_ADDRESS);
+
+    // Behaviors
+    Device::setAnyChangedHandler(updateLights);
+
+    Device::add(new Device("AnyoneHome", "Status", 'S'));
+    Device::add(new Device("Bedtime", "Status", 'S'));
+    Device::add(new Device("RonHome", "Status", 'S'));
+    Device::add(new Device("ShelleyHome", "Status", 'S'));
+    Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("Cleaning", "Status", 'S'));
+    Device::add(new Device("Couch", "Status", 'S'));
+    Device::add(new Device("Kitchen", "Status", 'S'));
+    Device::add(new Device("LivingRoomMotion", "Status", 'S'));
+    Device::add(new Device("OfficeMotion", "Status", 'S'));
+    Device::add(new Device("Outside", "Status", 'S'));
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors
     Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen"));    // R
@@ -226,7 +216,7 @@ void setup() {
     
 //    MCP23008::initialize(SWITCH_ADDRESS, SWITCH_IOMAP);
 
-//    Device::add(new NCD8Switch(1, "FrontDoor", "Living Room"));
+//    Device::add(new NCD8Switch(1, "FrontDoor", "Living Room", handleFrontDoor));
 //    Device::add(new NCD8Switch(2, "Input2", "Living Room"));
 //    Device::add(new NCD8Switch(3, "Input3", "Living Room"));
 //    Device::add(new NCD8Switch(4, "Input4", "Living Room"));

@@ -12,17 +12,34 @@ void setEveningAwakeLights();
 void setPreDawnAwakeLights();
 void setDaytimeLights();
 
+//TODO: Move to IoT
+// Shortcuts
+bool is(String name) {
+    return Device::get("name")->value() > 0;
+}
+
+int value(String name) {
+    return Device::get("name")->value();
+}
+
+int set(String name, int value) {
+    return Device::setValue(name,value);
+}
 
 bool isAM() {
     return Time.hour() <= 12;
 }
 
+//TODO: Move to IoT
 // Use sleeping, nighttime, and isAM() to determine PartOfDay
 PartOfDay partOfDay() {
-    if(sleeping) {
+    if(is("sleeping")) {
         return Sleeping;
     }
-    if(nighttime) {
+    if(is("bedtime")) {
+        return Bedtime;
+    }
+    if(is("nighttime")) {
         if(isAM()) {
             return AwakeEarly;
         } else {
@@ -35,7 +52,14 @@ PartOfDay partOfDay() {
     return Afternoon;
 }
 
+// This method defines all the behavior of the system
 void updateLights() {
+    Log.info("FP updateLights");
+    if(is("cleaning")) {
+        Log.info("FP updateLights cleaning");
+        setAllInsideLights(100);
+        return;                     // Assumes daytime, so no need to continue
+    }
     switch(partOfDay()) {
         case Sleeping:
             setSleepingLights();
@@ -54,7 +78,6 @@ void updateLights() {
             setBedtimeLights();
             break;
     }
-    //TODO: Cleaning
 }
 
 void setAllLights(int value) {
@@ -63,81 +86,81 @@ void setAllLights(int value) {
 }
 
 void setAllInsideLights(int value) {
-    Device::setValue("KitchenCeiling", value);
-    Device::setValue("Sink", value);
-    Device::setValue("LeftTrim", value);
-    Device::setValue("RightTrim", value);
-    Device::setValue("Ceiling", value);
-    Device::setValue("Cabinets", value);
+    set("KitchenCeiling", value);
+    set("Sink", value);
+    set("LeftTrim", value);
+    set("RightTrim", value);
+    set("Ceiling", value);
+    set("Cabinets", value);
 }
 
 void setAllOutsideLights(int value) {
-    Device::setValue("DoorSide", value);
-    Device::setValue("OtherSide", value);
-    Device::setValue("FrontAwning", value);
-    Device::setValue("FrontPorch", value);
+    set("DoorSide", value);
+    set("OtherSide", value);
+    set("FrontAwning", value);
+    set("FrontPorch", value);
 }
 
 // void setInsideNightLights() {
 //     // Turn on some lights
 //     setAllOutsideLights(100);
-//     Device::setValue("KitchenCeiling", 0);
-//     Device::setValue("Sink", 33);
-//     Device::setValue("LeftTrim", 100);
-//     Device::setValue("RightTrim", 100);
-//     Device::setValue("Ceiling", 25);
-//     Device::setValue("Cabinets", 25);
+//     set("KitchenCeiling", 0);
+//     set("Sink", 33);
+//     set("LeftTrim", 100);
+//     set("RightTrim", 100);
+//     set("Ceiling", 25);
+//     set("Cabinets", 25);
 // }
 
 // void setInsideDayLights() {
 //     setAllOutsideLights(0);
-//     Device::setValue("KitchenCeiling", 0);
-//     Device::setValue("Sink", 50);
-//     Device::setValue("LeftTrim", 100);
-//     Device::setValue("RightTrim", 100);
-//     Device::setValue("Ceiling", 0);
-//     Device::setValue("Cabinets", 0);
+//     set("KitchenCeiling", 0);
+//     set("Sink", 50);
+//     set("LeftTrim", 100);
+//     set("RightTrim", 100);
+//     set("Ceiling", 0);
+//     set("Cabinets", 0);
 // }
 
 void setSleepingLights() {
     setAllLights(0);
-    if(livingRoomDoorOpen || isTimingLivingRoomDoor) {        
-        Device::setValue("FrontPorch", 100);
-    }
+    // if(is("FrontDoor") || isTimingLivingRoomDoor) {        
+    //     set("FrontPorch", 100);
+    // }
 }
 
 void setEveningAwakeLights() {
     setAllOutsideLights(100);
-    Device::setValue("KitchenCeiling", 50);
-    Device::setValue("Sink", 5);
-    Device::setValue("LeftTrim", 50);
-    Device::setValue("RightTrim", 10);
-    Device::setValue("Ceiling", 80);
-    Device::setValue("Cabinets", 40);
+    set("KitchenCeiling", 50);
+    set("Sink", 5);
+    set("LeftTrim", 50);
+    set("RightTrim", 10);
+    set("Ceiling", 80);
+    set("Cabinets", 40);
 }
 
 void setBedtimeLights() {
     setAllOutsideLights(0);
-    Device::setValue("KitchenCeiling", 0);
-    Device::setValue("Sink", 5);
-    Device::setValue("LeftTrim", 0);
-    Device::setValue("RightTrim", 0);
-    Device::setValue("Ceiling", 0);
-    Device::setValue("Cabinets", 0);
+    set("KitchenCeiling", 0);
+    set("Sink", 5);
+    set("LeftTrim", 0);
+    set("RightTrim", 0);
+    set("Ceiling", 0);
+    set("Cabinets", 0);
 }
 
 void setPreDawnAwakeLights() {
     setAllOutsideLights(0);
     setAllInsideLights(0);
-    Device::setValue("Sink", 5);
+    set("Sink", 5);
 }
 
 void setDaytimeLights() {
     setAllOutsideLights(0);
-    Device::setValue("KitchenCeiling", 0);
-    Device::setValue("Sink", 20);
-    Device::setValue("LeftTrim", 0);
-    Device::setValue("RightTrim", 0);
-    Device::setValue("Ceiling", 0);
-    Device::setValue("Cabinets", 0);
+    set("KitchenCeiling", 0);
+    set("Sink", 20);
+    set("LeftTrim", 0);
+    set("RightTrim", 0);
+    set("Ceiling", 0);
+    set("Cabinets", 0);
 }
