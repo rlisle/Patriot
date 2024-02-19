@@ -38,6 +38,7 @@ int value(String name);
 int set(String name, int value);
 bool isAM();
 PartOfDay partOfDay();
+void setNextMinuteHandler(void (*handler)());
 
 /**
  * Main IoT object.

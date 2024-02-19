@@ -60,7 +60,7 @@ SYSTEM_MODE(AUTOMATIC);
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
 // Timing
-msecs lastMinute = 0;
+//msecs lastMinute = 0;
 bool isTimingLivingRoomMotion;
 
 //bool couchPresenceFiltered = 0;
@@ -77,11 +77,11 @@ bool isTimingLivingRoomMotion;
 void loop() {
     IoT::loop();
 
-    //TODO: move into IoT
-    if(msecs()-60*1000 > lastMinute) {
-        lastMinute = msecs();
-        handleNextMinute();
-    }
+    // //TODO: move into IoT
+    // if(msecs()-60*1000 > lastMinute) {
+    //     lastMinute = msecs();
+    //     handleNextMinute();
+    // }
 
 //    handleCouchPresence();
 }
@@ -94,6 +94,9 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
     // Behaviors
+    setNextMinuteHandler(handleNextMinute);
+
+    
     Device::setAnyChangedHandler(updateLights);
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));

@@ -29,6 +29,9 @@
 Device*      Device::_devices = NULL;
 MQTTManager* IoT::_mqttManager = NULL;
 
+msecs lastMinute = 0;
+void (*nextMinuteHandler)() = NULL;  // Called every minute
+
 int          outOfMemory = -1;
 
 void outOfMemoryHandler(system_event_t event, int param) {
@@ -50,6 +53,10 @@ int set(String name, int value) {
 
 bool isAM() {
     return Time.hour() <= 12;
+}
+
+void setNextMinuteHandler(void (*handler)()) {
+    nextMinuteHandler = handler;
 }
 
 PartOfDay partOfDay() {
@@ -121,6 +128,14 @@ void IoT::loop()
 {
     Device::loopAll();
     _mqttManager->loop();
+
+    if(msecs() - 60*1000 > lastMinute) {
+        lastMinute = msecs();
+        //TODO: prevent overflow
+        if(nextMinuteHandler != NULL) {
+            nextMinuteHandler();
+        }
+    }
 
     //TODO: enable only for Photon 2
     if (outOfMemory >= 0) {
