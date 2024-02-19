@@ -30,13 +30,13 @@ bool isAM() {
 
 // Use sleeping, nighttime, and isAM() to determine PartOfDay
 PartOfDay partOfDay() {
-    if(sleeping) {
+    if(is("sleeping")) {
         return Sleeping;
     }
     if(is("bedtime")) {
         return Bedtime;
     }
-    if(nighttime) {
+    if(is("nighttime")) {
         if(isAM()) {
             return AwakeEarly;
         } else {
@@ -52,7 +52,7 @@ PartOfDay partOfDay() {
 void updateLights() {
     if(is("cleaning")) {
         Log.info("LS updateLights cleaning");
-        setAllInsideLights(100);
+        setAllLights(100);
         return;                     // Assumes daytime, so no need to continue
     }
     switch(partOfDay()) {

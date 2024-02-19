@@ -95,13 +95,13 @@ void setup() {
 
     // Behaviors
     Device::setAnyChangedHandler(updateLights);
-    Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
+    Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
 //    Device::add(new Device("Couch", "Status", 'S'));    // Need another name?
-    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
-    Device::add(new Device("RonHome", "Status", 'S', handleRonHome));
-    Device::add(new Device("ShelleyHome", "Status", 'S', handleShelleyHome));
-    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+    Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("RonHome", "Status", 'S'));
+    Device::add(new Device("ShelleyHome", "Status", 'S'));
+    Device::add(new Device("Sleeping", "Status", 'S'));
 
     // Create Devices
     // Sensors

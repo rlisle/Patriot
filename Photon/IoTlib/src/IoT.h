@@ -283,7 +283,7 @@ private:
     void      notify();
     
 public:
-    PIR(int pinNum, String name, String room, int timeoutSecs, void (*handler)(int,int);
+    PIR(int pinNum, String name, String room, int timeoutSecs, void (*handler)(int,int));
 
     void begin();
     void loop();

@@ -27,7 +27,7 @@ All text above must be included in any redistribution.
  * @parm timeoutSecs #secs to keep on after motion stops (was msecs)
  */
 PIR::PIR(int pinNum, String name, String room, int timeoutSecs, void (*handler)(int,int))
-        : Device(name, room, handler),
+        : Device(name, room, 'M', handler),
         _pin(pinNum),
         _timeoutMSecs(timeoutSecs * 1000)
 {
@@ -101,7 +101,7 @@ int PIR::stateWithDelayedOff()
     
     // Turn off only after delay
     } else {
-        if(_lastMotion + _timeoutMSecs > millis()) {
+        if(_lastMotion + _timeoutMSecs > msecs()) {
             newValue = 100;
         }
     }
