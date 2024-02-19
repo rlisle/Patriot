@@ -11,6 +11,19 @@ void setEveningAwakeLights();
 void setPreDawnAwakeLights();
 void setDaytimeLights();
 
+// Shortcuts
+bool is(String name) {
+    return Device::get("name")->value() > 0;
+}
+
+int value(String name) {
+    return Device::get("name")->value();
+}
+
+int set(String name, int value) {
+    return Device::setValue(name,value);
+}
+
 bool isAM() {
     return Time.hour() <= 12;
 }
@@ -19,6 +32,9 @@ bool isAM() {
 PartOfDay partOfDay() {
     if(sleeping) {
         return Sleeping;
+    }
+    if(is("bedtime")) {
+        return Bedtime;
     }
     if(nighttime) {
         if(isAM()) {
@@ -34,9 +50,13 @@ PartOfDay partOfDay() {
 }
 
 void updateLights() {
+    if(is("cleaning")) {
+        Log.info("LS updateLights cleaning");
+        setAllInsideLights(100);
+        return;                     // Assumes daytime, so no need to continue
+    }
     switch(partOfDay()) {
         case Sleeping:
-            Device::setValue("Curtain", 0);
             setSleepingLights();
             break;
         case AwakeEarly:
@@ -53,7 +73,6 @@ void updateLights() {
             setBedtimeLights();
             break;
     }
-    //TODO: Cleaning
 }
 
 void setAllLights(int value) {

@@ -101,27 +101,6 @@ void setAllOutsideLights(int value) {
     set("FrontPorch", value);
 }
 
-// void setInsideNightLights() {
-//     // Turn on some lights
-//     setAllOutsideLights(100);
-//     set("KitchenCeiling", 0);
-//     set("Sink", 33);
-//     set("LeftTrim", 100);
-//     set("RightTrim", 100);
-//     set("Ceiling", 25);
-//     set("Cabinets", 25);
-// }
-
-// void setInsideDayLights() {
-//     setAllOutsideLights(0);
-//     set("KitchenCeiling", 0);
-//     set("Sink", 50);
-//     set("LeftTrim", 100);
-//     set("RightTrim", 100);
-//     set("Ceiling", 0);
-//     set("Cabinets", 0);
-// }
-
 void setSleepingLights() {
     setAllLights(0);
     // if(is("FrontDoor") || isTimingLivingRoomDoor) {        

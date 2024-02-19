@@ -26,8 +26,8 @@ All text above must be included in any redistribution.
  * @param room String
  * @parm timeoutSecs #secs to keep on after motion stops (was msecs)
  */
-PIR::PIR(int pinNum, String name, String room, int timeoutSecs)
-        : Device(name, room),
+PIR::PIR(int pinNum, String name, String room, int timeoutSecs, void (*handler)(int,int))
+        : Device(name, room, handler),
         _pin(pinNum),
         _timeoutMSecs(timeoutSecs * 1000)
 {

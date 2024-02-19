@@ -49,7 +49,6 @@ Author: Ron Lisle
 #define CONTROLLER_NAME "LeftSlide"
 #define MQTT_BROKER "192.168.0.33"
 #define LIVINGROOM_MOTION_TIMEOUT 3*60
-typedef unsigned long msecs;
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
@@ -60,19 +59,9 @@ SYSTEM_MODE(AUTOMATIC);
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
-// State
-bool ronIsHome = true;
-bool shelleyIsHome = true;
-bool anyoneIsHome = true;
-bool nighttime = true;
-bool sleeping = true;
-bool livingRoomMotion = false;
-
 // Timing
 msecs lastMinute = 0;
-
 bool isTimingLivingRoomMotion;
-msecs msecsLastLivingRoomMotion = 0;
 
 //bool couchPresenceFiltered = 0;
 //long lastCouchPresence = 0;
@@ -88,6 +77,7 @@ msecs msecsLastLivingRoomMotion = 0;
 void loop() {
     IoT::loop();
 
+    //TODO: move into IoT
     if(msecs()-60*1000 > lastMinute) {
         lastMinute = msecs();
         handleNextMinute();
@@ -96,9 +86,6 @@ void loop() {
 //    handleCouchPresence();
 }
 
-//-------------
-// SETUP
-//-------------
 void setup() {
 //    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
 //    WiFi.selectAntenna(ANT_INTERNAL);
@@ -107,20 +94,23 @@ void setup() {
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
     // Behaviors
+    Device::setAnyChangedHandler(updateLights);
     Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
+    Device::add(new Device("Cleaning", "Status", 'S'));
+//    Device::add(new Device("Couch", "Status", 'S'));    // Need another name?
+    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
     Device::add(new Device("RonHome", "Status", 'S', handleRonHome));
     Device::add(new Device("ShelleyHome", "Status", 'S', handleShelleyHome));
-    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
     Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
 
     // Create Devices
     // Sensors
-    Device::add(new PIR(D19, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
+    Device::add(new PIR(D19, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT, handleLivingRoomMotion));
     //Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Lights (default 2s curve 2)
-    Device::add(new Light(A2, "Couch", "Living Room"));
-    Device::add(new Light(A5, "LeftVertical", "Living Room"));   // "
+    Device::add(new Light(A2, "Couch", "Living Room"));         // Handles independenty
+    Device::add(new Light(A5, "LeftVertical", "Living Room"));  // "
 }
 
 //TODO: move to MR24 plugin

@@ -45,36 +45,14 @@
 #define PCA9634_ADDRESS 1       // 1st jumper
 #define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
 
-//TODO: move into IoT
-//typedef unsigned long msecs;
-
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
-
-// State
-//TODO: refactor to Device class. Add Device::
-// bool ronIsHome = true;
-// bool shelleyIsHome = true;
-// bool anyoneIsHome = true;
-// bool nighttime = true;
-// bool sleeping = true;
-// bool officeMotion = false;
-// bool officeDoorOpen = false;
-// bool cleaning = false;
-// bool livingRoomMotion = false;
-// bool outside = false;
-// int couch = false;      // Could be on, off, or partial 1-99
-// int kitchen = false;    // Could be on, off, or partial 1-99
 
 // Timing
 //TODO: move into IoT
 msecs lastMinute = 0;
-
 bool isTimingOfficeMotion;
-//msecs msecsLastOfficeMotion = 0;
-
 bool isTimingOfficeDoor = false;
-//msecs msecsLastDoorEvent = 0;
 
 //msecs msecsLastLivingRoomMotion = 0;
 
