@@ -59,18 +59,17 @@ SYSTEM_MODE(AUTOMATIC);
 #define MQTT_LOGGING true
 //SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
 
+// Timing
+msecs lastMinute = 0;
+bool isTimingLivingRoomMotion;
+
 //bool couchPresenceFiltered = 0;
 //long lastCouchPresence = 0;
-
-bool livingRoomMotion = false;
-long lastLivingRoomMotion = 0;
-
 //int couchPresence = 0;
 
 // Behaviors
-#include "SleepingBehavior.h"
-#include "NighttimeBehavior.h"
-
+#include "Behaviors.h"
+#include "EventHandlers.h"
 
 //-------------
 // LOOP
@@ -78,30 +77,40 @@ long lastLivingRoomMotion = 0;
 void loop() {
     IoT::loop();
 
-    //TODO: move to MR24 plugin
+    //TODO: move into IoT
+    if(msecs()-60*1000 > lastMinute) {
+        lastMinute = msecs();
+        handleNextMinute();
+    }
+
 //    handleCouchPresence();
 }
 
-//-------------
-// SETUP
-//-------------
 void setup() {
+//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
 //    WiFi.selectAntenna(ANT_INTERNAL);
 //    WiFi.useDynamicIP();
+
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
     // Behaviors
-    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
-    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+    Device::setAnyChangedHandler(updateLights);
+    Device::add(new Device("AnyoneHome", "Status", 'S'));
+    Device::add(new Device("Cleaning", "Status", 'S'));
+//    Device::add(new Device("Couch", "Status", 'S'));    // Need another name?
+    Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("RonHome", "Status", 'S'));
+    Device::add(new Device("ShelleyHome", "Status", 'S'));
+    Device::add(new Device("Sleeping", "Status", 'S'));
 
     // Create Devices
     // Sensors
-    Device::add(new PIR(D19, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT));
+    Device::add(new PIR(D19, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT, handleLivingRoomMotion));
     //Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Lights (default 2s curve 2)
-    Device::add(new Light(A2, "Couch", "Living Room"));
-    Device::add(new Light(A5, "LeftVertical", "Living Room"));   // "
+    Device::add(new Light(A2, "Couch", "Living Room"));         // Handles independenty
+    Device::add(new Light(A5, "LeftVertical", "Living Room"));  // "
 }
 
 //TODO: move to MR24 plugin

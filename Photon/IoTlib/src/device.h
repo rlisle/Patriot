@@ -30,6 +30,8 @@ All text above must be included in any redistribution.
 
 #include "Particle.h"
 
+typedef unsigned long msecs;
+
 class Device {
  protected:
     Device*    _next;       // Linked list
@@ -37,6 +39,7 @@ class Device {
     int        _value;      // Current value, typically percent 0-100
     String     _room;       // Room where located
     int        _previous;   // Value before getChanged called
+    msecs      _msecsLastChange; // MSecs since last value change
     char       _type;       // Character designating device type: L, S, etc.
     int        _brightness; // Persisted value to use with next setOn (used by IoT, not device itself)
     void       (*_changeHandler)(int, int);  // Called whenever value changes, passing new and old values
@@ -78,6 +81,8 @@ public:
     // Static Collection Methods (previously in Devices)
     //
     static Device* _devices;
+
+    static void (*_anyChangeHandler)();  // Called whenever value changes, passing new and old values
     
     static void resetAll();
     static void loopAll();
@@ -89,8 +94,13 @@ public:
     static int     getChangedValue(String name);
     static int     count();
     static void    setAllLatLong(float latitude, float longitude);
-    
+
+    static msecs   msecsLastChange(String name);
+
     static void    mqttAll(String topic, String message);
+
+    // Called once whenever ANY device value has changed
+    static void    setAnyChangedHandler(void (*handler)());
 
     /**
      Particle.io variable "States"

@@ -14,6 +14,8 @@ All text above must be included in any redistribution.
 #include "IoT.h"
 #include "constants.h"
 
+void (*Device::_anyChangeHandler)() = NULL;
+
 Device::Device(String name, String room, char type, void (*handler)(int,int))
 : _next(NULL), _name(name), _room(room), _value(0), _previous(0), _type(type), _brightness(100), _changeHandler(handler)
 {
@@ -49,6 +51,10 @@ int  Device::getChangedValue() {
 
 // Static Methods
 
+void Device::setAnyChangedHandler(void (*handler)()) {
+    _anyChangeHandler = handler;
+}
+
 void Device::add(Device *device)
 {
 //    Log.info("addDevice name: "+String(device->name()));
@@ -78,15 +84,21 @@ void Device::resetAll()
 
 void Device::loopAll()
 {
+    bool didAnyChange = false;
     for (Device *ptr = _devices; ptr != NULL; ptr = ptr->_next)
     {
         ptr->loop();
         if(ptr->_value != ptr->_previous) {
+            didAnyChange = true;
+            ptr->_msecsLastChange = millis();
             if(ptr->_changeHandler != NULL) {
                 ptr->_changeHandler(ptr->_value, ptr->_previous);
                 ptr->_previous = ptr->_value;
             }
         }
+    }
+    if(didAnyChange == true && _anyChangeHandler != NULL) {
+        Device::_anyChangeHandler();
     }
 }
 
@@ -125,6 +137,14 @@ int  Device::getChangedValue(String name) {
         return -1;
     }
     return device->getChangedValue();
+}
+
+msecs Device::msecsLastChange(String name) {
+    Device *device = get(name);
+    if( device == NULL ) {
+        return 0;
+    }
+    return device->_msecsLastChange;
 }
 
 void Device::setLatLong(float latitude, float longitude) {

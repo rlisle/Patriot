@@ -1,0 +1,216 @@
+{
+    "bridge": {
+        "name": "Homebridge CC4B",
+        "username": "0E:87:0C:34:43:36",
+        "port": 51656,
+        "pin": "548-95-253",
+        "advertiser": "avahi"
+    },
+    "log": {
+        "method": "file",
+        "path": "/Users/ronlisle/.homebridge/homebridge.log"
+    },
+    "accessories": [
+        {
+            "type": "switch",
+            "name": "Bedroom",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/bedroom/set",
+                "getOn": "patriot/ack/bedroom/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Cleaning",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/cleaning/set",
+                "getOn": "patriot/ack/cleaning/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Couch",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/couch/set",
+                "getOn": "patriot/ack/couch/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Desk",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/desk/set",
+                "getOn": "patriot/ack/desk/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Kitchen",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/kitchen/set",
+                "getOn": "patriot/ack/kitchen/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Living Room",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/livingroom/set",
+                "getOn": "patriot/ack/livingroom/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Office",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/office/set",
+                "getOn": "patriot/ack/office/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Outside",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/outside/set",
+                "getOn": "patriot/ack/outside/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Sink",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/sink/set",
+                "getOn": "patriot/ack/sink/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Workbench",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/workbench/set",
+                "getOn": "patriot/ack/workbench/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Curtain",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/curtain/set",
+                "getOn": "patriot/ack/curtain/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Zoom",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/zoom/set",
+                "getOn": "patriot/ack/zoom/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "AnyoneHome",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/anyonehome/set",
+                "getOn": "patriot/ack/anyonehome/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "RonHome",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/ronhome/set",
+                "getOn": "patriot/ack/ronhome/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "ShelleyHome",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/shelleyhome/set",
+                "getOn": "patriot/ack/shelleyhome/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Nighttime",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/nighttime/set",
+                "getOn": "patriot/ack/nighttime/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Daytime",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/daytime/set",
+                "getOn": "patriot/ack/daytime/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Awake",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/awake/set",
+                "getOn": "patriot/ack/awake/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "type": "switch",
+            "name": "Sleeping",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/sleeping/set",
+                "getOn": "patriot/ack/sleeping/set"
+            },
+            "accessory": "mqttthing"
+        }
+    ],
+    "platforms": [
+        {
+            "name": "Config",
+            "port": 8581,
+            "auth": "form",
+            "theme": "auto",
+            "tempUnits": "f",
+            "lang": "auto",
+            "platform": "config"
+        }
+    ]
+}

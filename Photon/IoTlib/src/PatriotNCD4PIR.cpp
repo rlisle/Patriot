@@ -11,12 +11,12 @@
 
 #define PIR_POLL_INTERVAL_MILLIS 1000
 
-NCD4PIR::NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutSecs) : Device(name, room), _timeoutMSecs(timeoutSecs * 1000) {
+NCD4PIR::NCD4PIR(int8_t gpioIndex, String name, String room, int timeoutMsecs, void (*handler)(int,int)) 
+    : Device(name, room, 'M', handler), _timeoutMSecs(timeoutMsecs) {
     _lastPollTime = 0;
     _lastMotion   = 0;
-    _type         = 'M';    // Motion
     
-    if(gpioIndex > 0 && gpioIndex <= 3) {
+    if(gpioIndex > 0 && gpioIndex <= 4) {
         _gpioBitmap = 0x10 << gpioIndex;
     } else {
         _gpioBitmap = 0x10;   // If 0 or invalid, set to first gpio

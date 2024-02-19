@@ -17,6 +17,14 @@
  * 
  * Compiling: particle compile photon2 --target 5.6.0
  * Flashing: particle flash rear_panel2 --target 5.6.0 or shortcut "frp"
+ * 
+ * 
+ * I2CIO4R4G5LE board connected via I2C
+ *   Relays: 0, 1 Curtain, 2, 3 unused
+ *   GPIO connector: GP4, Gnd, GP5, GP6, Gnd, GP7
+ *   GP4 = Door, GP5 = PIR Power, GP6 = PIR Input, GP7 n/c
+ * 
+ * I2CPWM8W80C  
  */
 
 #include <IoT.h>
@@ -29,32 +37,24 @@
 //TODO: change to const
 #define CONTROLLER_NAME "RearPanel"
 #define MQTT_BROKER "192.168.0.33"
+
+//TODO: move timeouts into IoT
 #define OFFICE_MOTION_TIMEOUT_MSECS 60*1000
 #define OFFICE_DOOR_TIMEOUT_MSECS 7*60*1000
+
 #define PCA9634_ADDRESS 1       // 1st jumper
 #define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
-typedef unsigned long msecs;
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
-// State
-bool ronIsHome = true;
-bool shelleyIsHome = true;
-bool anyoneIsHome = true;
-bool nighttime = true;
-bool sleeping = true;
-bool officeMotion = false;
-bool officeDoorOpen = false;
-
 // Timing
+//TODO: move into IoT
 msecs lastMinute = 0;
-
 bool isTimingOfficeMotion;
-msecs msecsLastOfficeMotion = 0;
-
 bool isTimingOfficeDoor = false;
-msecs msecsLastDoorEvent = 0;
+
+//msecs msecsLastLivingRoomMotion = 0;
 
 // Behaviors
 #include "Behaviors.h"
@@ -66,6 +66,7 @@ msecs msecsLastDoorEvent = 0;
 void loop() {
     IoT::loop();
 
+    //TODO: move to IoT
     if(msecs()-60*1000 > lastMinute) {
         lastMinute = msecs();
         handleNextMinute();
@@ -74,21 +75,32 @@ void loop() {
 
 void setup() {
 //    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
-    WiFi.selectAntenna(ANT_INTERNAL);
-    
-    //WiFi.useDynamicIP();
+//    WiFi.selectAntenna(ANT_INTERNAL);    
+//    WiFi.useDynamicIP();
+
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
     //Consolidate PCA9634 initialization
-    MCP23008::initialize(I2CR4IO4_ADDRESS, 0xf0);   // Address 0x20 (no jumpers), all 4 GPIOs inputs
+    // GPIO4 = Door, GPIO5 = PIR Power, GPIO6 = PIR Input, GPIO7 n/c
+    MCP23008::initialize(I2CR4IO4_ADDRESS, 0xd0);   // Address 0x20 (no jumpers)
     PCA9634::initialize(PCA9634_ADDRESS);
 
+    MCP23008::write(5,true);   // Apply power to PIR. Pin can source 25ma
+
     // Behaviors
-    Device::add(new Device("AnyoneHome", "Status", 'S', handleAnyoneHome));
-    Device::add(new Device("RonHome", "Status", 'S', handleRonHome));
-    Device::add(new Device("ShelleyHome", "Status", 'S', handleShelleyHome));
-    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
-    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+    Device::setAnyChangedHandler(updateLights);
+
+    //TODO: refactor to array of structs/enums
+    Device::add(new Device("AnyoneHome", "Status", 'S'));
+    Device::add(new Device("RonHome", "Status", 'S'));
+    Device::add(new Device("ShelleyHome", "Status", 'S'));
+    Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("Cleaning", "Status", 'S'));
+    Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
+    Device::add(new Device("Kitchen", "Status", 'S'));
+    Device::add(new Device("Couch", "Status", 'S'));
+    Device::add(new Device("Outside", "Status", 'S'));
 
     // I2CIO4R4G5LE board
     // 4 Relays
@@ -97,10 +109,7 @@ void setup() {
     
     // 4 GPIO
     Device::add(new NCD4Switch(1, "OfficeDoor", "Office", handleOfficeDoor));
-//    Device::add(new NCD4PIR(I2CR4IO4_ADDRESS, 1, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
-
-    // (deprecated) Photon I/O
-    //Device::add(new PIR(A5, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT));
+    Device::add(new NCD4PIR(3, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT_MSECS, handleOfficeMotion));
 
     // I2CPWM8W80C board
     // 8 Dimmers

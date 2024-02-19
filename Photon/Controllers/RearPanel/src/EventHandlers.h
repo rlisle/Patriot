@@ -5,68 +5,53 @@
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
     if(isTimingOfficeDoor) {
-        if(msecsLastDoorEvent < msecs() + OFFICE_DOOR_TIMEOUT_MSECS) {
+        if(msecs() > Device::msecsLastChange("OfficeDoor") + OFFICE_DOOR_TIMEOUT_MSECS) {
+            Log.info("RP turning off isTimingOfficeDoor");
             isTimingOfficeDoor = false;
             updateLights();
         }
     }
 
     if(isTimingOfficeMotion) {
-        if(msecsLastOfficeMotion < msecs() + OFFICE_MOTION_TIMEOUT_MSECS) {
+        if(Device::msecsLastChange("OfficeMotion") + OFFICE_MOTION_TIMEOUT_MSECS < msecs()) {
             isTimingOfficeMotion = false;
             updateLights();
         }
     }
 }
 
-void handleNighttime(int value, int oldValue) {
-    Log.info("handleNighttime %d", value);
-    if(value != oldValue) {
-        nighttime = value > 0;
-        updateLights();
-    }
-}
-
-void handleSleeping(int value, int oldValue) {
-    Log.info("handleSleeping %d", value);
-    if(value != oldValue) {
-        sleeping = value > 0;
-        updateLights();
-    }
-}
-
 void handleOfficeDoor(int value, int oldValue) {
-    Log.info("handleOfficeDoor %d", value);
+    Log.info("RP handleOfficeDoor %d", value);
     if(value > 0 && oldValue == 0) {        // Opened
-        officeDoorOpen = true;
-        msecsLastDoorEvent = msecs();
+        Log.info("RP door opened");
+        isTimingOfficeDoor = false;
         updateLights();
     } else if(value == 0 && oldValue > 0) { // Closed
-        officeDoorOpen = false;
-        msecsLastDoorEvent = msecs();
+        Log.info("RP door closed");
+        isTimingOfficeDoor = true;
+        updateLights();
+    }
+    Log.info("RP exit handleOfficeDoor");
+}
+
+void handleOfficeMotion(int value, int oldValue) {
+    Log.info("RP handleOfficeMotion %d", value);
+    if(value > 0 && oldValue == 0) {        // Movement
+        isTimingOfficeMotion = true;
+        updateLights();
+    } else if(value == 0 && oldValue > 0) { // No movement
         updateLights();
     }
 }
 
-void handleRonHome(int value, int oldValue) {
-    Log.info("handleRonHome");
-    if(value != oldValue) {
-        ronIsHome = value > 0;
-        updateLights();
-    }
-}
-
-void handleShelleyHome(int value, int oldValue) {
-    Log.info("handleShelleyHome");
-    if(value != oldValue) {
-        shelleyIsHome = value > 0;
-        updateLights();
-    }
-}
-void handleAnyoneHome(int value, int oldValue) {
-    Log.info("handleAnyoneHome");
-    if(value != oldValue) {
-        anyoneIsHome = value > 0;
-        updateLights();
+void handleLivingRoomMotion(int value, int oldValue) {
+    Log.info("RP handleLivingRoomMotion %d", value);
+    if(value > 0 && oldValue == 0) {        // Movement
+        //livingRoomMotion = true;
+        //msecsLastLivingRoomMotion = msecs();
+        wakeupIfAfter430am();
+    } else if(value == 0 && oldValue > 0) { // No movement
+        //livingRoomMotion = false;
+        // Nothing to do.
     }
 }
