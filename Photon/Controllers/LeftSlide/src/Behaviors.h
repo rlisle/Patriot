@@ -4,98 +4,52 @@
 
 #define LIVINGROOM_MOTION_TIMEOUT_MSECS 15*1000
 
-void setAllLights(int);
-void setBedtimeLights();
-void setSleepingLights();
-void setEveningAwakeLights();
-void setPreDawnAwakeLights();
-void setDaytimeLights();
-
-// // Shortcuts
-// bool is(String name) {
-//     return Device::get("name")->value() > 0;
-// }
-
-// int value(String name) {
-//     return Device::get("name")->value();
-// }
-
-// int set(String name, int value) {
-//     return Device::setValue(name,value);
-// }
-
-// bool isAM() {
-//     return Time.hour() <= 12;
-// }
-
-// // Use sleeping, nighttime, and isAM() to determine PartOfDay
-// PartOfDay partOfDay() {
-//     if(is("sleeping")) {
-//         return Sleeping;
-//     }
-//     if(is("bedtime")) {
-//         return Bedtime;
-//     }
-//     if(is("nighttime")) {
-//         if(isAM()) {
-//             return AwakeEarly;
-//         } else {
-//             return Evening;
-//         }
-//     }
-//     if(isAM()) {
-//         return Morning;
-//     }
-//     return Afternoon;
-// }
+void updateLeftVertical(PartOfDay pod, bool isCleaning);
+void updateCouch(PartOfDay pod, bool isCleaning);
 
 void updateLights() {
-    if(is("cleaning")) {
-        Log.info("LS updateLights cleaning");
-        setAllLights(100);
-        return;                     // Assumes daytime, so no need to continue
+    bool isCleaning = is("cleaning");
+    PartOfDay pod = partOfDay();
+    updateLeftVertical(pod, isCleaning);
+    updateCouch(pod, isCleaning);
+}
+
+void updateLeftVertical(PartOfDay pod, bool isCleaning) {
+    Device *device = Device::get("LeftVertical");
+    if(isCleaning) {
+        device->setValue(100);
     }
-    switch(partOfDay()) {
+    switch(pod) {
+        case Bedtime:
         case Sleeping:
-            setSleepingLights();
+            device->setValue(0);
             break;
         case AwakeEarly:
-            setPreDawnAwakeLights();
-            break;
         case Morning:
         case Afternoon:
-            setDaytimeLights();
             break;
         case Evening:
-            setEveningAwakeLights();
-            break;
-        case Bedtime:
-            setBedtimeLights();
+            device->setValue(20);
             break;
     }
 }
 
-void setAllLights(int value) {
-    Device::setValue("LeftVertical", value);
-    Device::setValue("Couch", value);
-}
-
-void setSleepingLights() {
-    setAllLights(0);
-}
-
-void setEveningAwakeLights() {
-    // Nothing to do
-}
-
-void setBedtimeLights() {
-    setAllLights(0);
-}
-
-void setPreDawnAwakeLights() {
-    // Nothing to do
-}
-
-void setDaytimeLights() {
-    // Nothing to do
+void updateCouch(PartOfDay pod, bool isCleaning) {
+    Device *device = Device::get("Couch");
+    if(isCleaning) {
+        device->setValue(100);
+    }
+    switch(pod) {
+        case Bedtime:
+        case Sleeping:
+            device->setValue(0);
+            break;
+        case AwakeEarly:
+        case Morning:
+        case Afternoon:
+            break;
+        case Evening:
+            device->setValue(10);
+            break;
+    }
 }
