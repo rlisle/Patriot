@@ -35,6 +35,44 @@ void outOfMemoryHandler(system_event_t event, int param) {
     outOfMemory = param;
 }
 
+// Shortcuts
+bool is(String name) {
+    return Device::get("name")->value() > 0;
+}
+
+int value(String name) {
+    return Device::get("name")->value();
+}
+
+int set(String name, int value) {
+    return Device::setValue(name,value);
+}
+
+bool isAM() {
+    return Time.hour() <= 12;
+}
+
+PartOfDay partOfDay() {
+    if(is("sleeping")) {
+        return Sleeping;
+    }
+    if(is("bedtime")) {
+        return Bedtime;
+    }
+    if(is("nighttime")) {
+        if(isAM()) {
+            return AwakeEarly;
+        } else {
+            return Evening;
+        }
+    }
+    if(isAM()) {
+        return Morning;
+    }
+    return Afternoon;
+}
+
+
 /**
  * Begin gets everything going.
  * It must be called exactly once by the sketch

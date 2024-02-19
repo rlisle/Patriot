@@ -32,6 +32,13 @@ enum PartOfDay {
     Sleeping        // After "Goodnight"
 };
 
+// Global shortcut function definitions
+bool is(String name);
+int value(String name);
+int set(String name, int value);
+bool isAM();
+PartOfDay partOfDay();
+
 /**
  * Main IoT object.
  * It provides an API for creating and communicating with all others.

@@ -11,43 +11,43 @@ void setEveningAwakeLights();
 void setPreDawnAwakeLights();
 void setDaytimeLights();
 
-// Shortcuts
-bool is(String name) {
-    return Device::get("name")->value() > 0;
-}
+// // Shortcuts
+// bool is(String name) {
+//     return Device::get("name")->value() > 0;
+// }
 
-int value(String name) {
-    return Device::get("name")->value();
-}
+// int value(String name) {
+//     return Device::get("name")->value();
+// }
 
-int set(String name, int value) {
-    return Device::setValue(name,value);
-}
+// int set(String name, int value) {
+//     return Device::setValue(name,value);
+// }
 
-bool isAM() {
-    return Time.hour() <= 12;
-}
+// bool isAM() {
+//     return Time.hour() <= 12;
+// }
 
-// Use sleeping, nighttime, and isAM() to determine PartOfDay
-PartOfDay partOfDay() {
-    if(is("sleeping")) {
-        return Sleeping;
-    }
-    if(is("bedtime")) {
-        return Bedtime;
-    }
-    if(is("nighttime")) {
-        if(isAM()) {
-            return AwakeEarly;
-        } else {
-            return Evening;
-        }
-    }
-    if(isAM()) {
-        return Morning;
-    }
-    return Afternoon;
-}
+// // Use sleeping, nighttime, and isAM() to determine PartOfDay
+// PartOfDay partOfDay() {
+//     if(is("sleeping")) {
+//         return Sleeping;
+//     }
+//     if(is("bedtime")) {
+//         return Bedtime;
+//     }
+//     if(is("nighttime")) {
+//         if(isAM()) {
+//             return AwakeEarly;
+//         } else {
+//             return Evening;
+//         }
+//     }
+//     if(isAM()) {
+//         return Morning;
+//     }
+//     return Afternoon;
+// }
 
 void updateLights() {
     if(is("cleaning")) {
