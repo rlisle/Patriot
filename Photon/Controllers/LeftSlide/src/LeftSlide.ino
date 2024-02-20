@@ -92,7 +92,7 @@ void setup() {
     Device::setAnyChangedHandler(updateLights);
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
-//    Device::add(new Device("Couch", "Status", 'S'));    // Need another name?
+    Device::add(new Device("Couch", "Status", 'S'));        // Override
     Device::add(new Device("Nighttime", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
@@ -104,8 +104,8 @@ void setup() {
     //Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Lights (default 2s curve 2)
-    Device::add(new Light(A2, "Couch", "Living Room"));         // Handles independenty
-    Device::add(new Light(A5, "LeftVertical", "Living Room"));  // "
+    Device::add(new Light(A2, "CouchCeiling", "Living Room"));
+    Device::add(new Light(A5, "LeftVertical", "Living Room"));
 }
 
 //TODO: move to MR24 plugin

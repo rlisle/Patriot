@@ -1,55 +1,74 @@
 //------------
 // Behaviors
+//
+// Relevant Status
+//   AnyoneHome
+//   Bedtime
+//   Cleaning
+//   LivingRoomMotion
+//   Nighttime
+//   RonHome
+//   ShelleyHome
+//   Sleeping
 //------------
 
 #define LIVINGROOM_MOTION_TIMEOUT_MSECS 15*1000
 
-void updateLeftVertical(PartOfDay pod, bool isCleaning);
-void updateCouch(PartOfDay pod, bool isCleaning);
-
+// Update all devices managed by this Photon2
 void updateLights() {
-    bool isCleaning = is("cleaning");
     PartOfDay pod = partOfDay();
-    updateLeftVertical(pod, isCleaning);
-    updateCouch(pod, isCleaning);
-}
 
-void updateLeftVertical(PartOfDay pod, bool isCleaning) {
-    Device *device = Device::get("LeftVertical");
-    if(isCleaning) {
-        device->setValue(100);
+    // Get pointers to all devices
+    Device *couchCeiling = Device::get("CouchCeiling");
+    Device *leftVertical = Device::get("LeftVertical");
+
+    // When cleaning is set, all inside lights are turned on
+    // Turn on all outside lights also if it is nighttime
+    // Assuming that not bedtime or sleeping when cleaning
+    if(is("Cleaning")) {
+        // Turn off other statuses
+        Device::setValue("Bedtime", 0);
+        Device::setValue("Sleeping", 0);
+
+        // Set lights
+        couchCeiling->setValue(100);
+        leftVertical->setValue(100);
+        return;
     }
+
     switch(pod) {
         case Bedtime:
-        case Sleeping:
-            device->setValue(0);
-            break;
-        case AwakeEarly:
-        case Morning:
-        case Afternoon:
-            break;
-        case Evening:
-            device->setValue(20);
-            break;
-    }
-}
+            // Turn off other statuses
+            Device::setValue("Cleaning", 0);
+            Device::setValue("Sleeping", 0);
 
-void updateCouch(PartOfDay pod, bool isCleaning) {
-    Device *device = Device::get("Couch");
-    if(isCleaning) {
-        device->setValue(100);
-    }
-    switch(pod) {
-        case Bedtime:
-        case Sleeping:
-            device->setValue(0);
+            // Set lights
+            couchCeiling->setValue(0);
+            leftVertical->setValue(0);
             break;
+            
+        case Sleeping:                  // Don't assume bedtime was set
+            // Turn off other statuses
+            Device::setValue("Bedtime", 0);
+            Device::setValue("Cleaning", 0);
+
+            // Set lights
+            couchCeiling->setValue(0);
+            leftVertical->setValue(0);
+            break;
+            
         case AwakeEarly:
+            //TODO: turn on nook lamp
+            break;
+            
         case Morning:
         case Afternoon:
+            couchCeiling->setValue(0);
+            leftVertical->setValue(0);
             break;
         case Evening:
-            device->setValue(10);
+            couchCeiling->setValue(20);
+            leftVertical->setValue(20);
             break;
     }
 }

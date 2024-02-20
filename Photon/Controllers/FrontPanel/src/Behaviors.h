@@ -16,7 +16,6 @@
 //------------
 #define FRONT_DOOR_LIGHT_TIMEOUT 15*1000
 
-// Status are: AnyoneHome
 // Update all devices managed by this Photon2
 void updateLights() {
     PartOfDay pod = partOfDay();
