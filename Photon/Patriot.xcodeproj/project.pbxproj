@@ -188,6 +188,19 @@
 			name = NCD16LightTest;
 			sourceTree = "<group>";
 		};
+		274748892B84F3B2003510AB /* ToDo */ = {
+			isa = PBXGroup;
+			children = (
+				E4849C6F2566AD2A00A39734 /* RonTest */,
+				2733855D25AF256F0032BB1F /* RightSlide */,
+				E410859525688BE000EFBE84 /* NCD8LightTest */,
+				27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */,
+				27D74326276E1B0500280B2C /* RonPIRTest */,
+				2737F7EB28E8981300408830 /* NCD16LightTest */,
+			);
+			name = ToDo;
+			sourceTree = "<group>";
+		};
 		27691AF42A23734D0094689F /* Awning */ = {
 			isa = PBXGroup;
 			children = (
@@ -353,15 +366,10 @@
 		E4849C6E2566AC0F00A39734 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				2737F7EB28E8981300408830 /* NCD16LightTest */,
-				27D74326276E1B0500280B2C /* RonPIRTest */,
-				27AE94DC26F0CBF4004D5CB6 /* KitchenCabinets */,
-				2733855D25AF256F0032BB1F /* RightSlide */,
+				274748892B84F3B2003510AB /* ToDo */,
 				E4E61716257D285400D7AA04 /* LeftSlide */,
-				E410859525688BE000EFBE84 /* NCD8LightTest */,
 				E4849C712566B28800A39734 /* RearPanel */,
 				E4849C702566B27A00A39734 /* FrontPanel */,
-				E4849C6F2566AD2A00A39734 /* RonTest */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";

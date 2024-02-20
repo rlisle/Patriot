@@ -132,9 +132,6 @@
 
 #define CURVE 2 // 0 = Linear, 1 = exponential, 2 = 50/50
 
-//typedef unsigned long msecs;
-
-// Until mystery hangs understood, leave in automatic
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
@@ -145,7 +142,6 @@ SYSTEM_MODE(AUTOMATIC);
 int voltage = 0;
 
 // Timing
-msecs lastMinute = 0;
 bool isTimingLivingRoomMotion;
 bool isTimingFrontDoor;
 
@@ -158,11 +154,6 @@ bool isTimingFrontDoor;
 //------
 void loop() {
     IoT::loop();
-
-    if(msecs()-60*1000 > lastMinute) {
-        lastMinute = msecs();
-        handleNextMinute();
-    }
 }
 
 void setup() {
@@ -177,28 +168,31 @@ void setup() {
     PCA9685::initialize(PCA9685_ADDRESS);
 
     // Behaviors
+    setNextMinuteHandler(handleNextMinute);
+
     Device::setAnyChangedHandler(updateLights);
 
+    // Be careful that names don't collide with Homebridge (commands)
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Bedtime", "Status", 'S'));
-    Device::add(new Device("RonHome", "Status", 'S'));
-    Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Nighttime", "Status", 'S'));
-    Device::add(new Device("Sleeping", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
-    Device::add(new Device("Couch", "Status", 'S'));
-    Device::add(new Device("Kitchen", "Status", 'S'));
-    Device::add(new Device("LivingRoomMotion", "Status", 'S'));
+    Device::add(new Device("Kitchen", "Status", 'S', handleKitchen));
+    Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
+    Device::add(new Device("Nighttime", "Status", 'S'));
     Device::add(new Device("OfficeMotion", "Status", 'S'));
     Device::add(new Device("Outside", "Status", 'S'));
+    Device::add(new Device("RonHome", "Status", 'S'));
+    Device::add(new Device("ShelleyHome", "Status", 'S'));
+    Device::add(new Device("Sink", "Status", 'S'));                 // Override
+    Device::add(new Device("Sleeping", "Status", 'S'));
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors
-    Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen"));    // R
-    Device::add(new NCD16Light(13, "Sink",      "Kitchen"));         // B
-    Device::add(new NCD16Light(12, "LeftTrim",  "Kitchen"));         // G?
-    Device::add(new NCD16Light(16, "RightTrim", "Living Room"));     // Y?
-    Device::add(new NCD16Light(3,  "Ceiling",   "Living Room"));     // W
-    Device::add(new NCD16Light(14, "Cabinets",  "Kitchen"));         // R
+    Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen"));   // R
+    Device::add(new NCD16Light(13, "SinkLamp", "Kitchen"));         // B
+    Device::add(new NCD16Light(12, "LeftTrim", "Kitchen"));         // G?
+    Device::add(new NCD16Light(16, "RightTrim", "Living Room"));    // Y?
+    Device::add(new NCD16Light(3,  "Ceiling", "Living Room"));      // W
+    Device::add(new NCD16Light(14, "Cabinets", "Kitchen"));         // R
 
     // Outside Lights
     Device::add(new NCD16Light(1, "DoorSide", "Outside"));          // B
