@@ -47,7 +47,7 @@ void updateLights() {
             set("LeftVertical", 0);
             break;
             
-        case Sleeping:                  // Don't assume bedtime was set
+        case Asleep:                  // Don't assume bedtime was set
             // Turn off other statuses
             set("Bedtime", 0);
             set("Cleaning", 0);
