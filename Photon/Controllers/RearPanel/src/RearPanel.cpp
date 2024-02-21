@@ -50,7 +50,6 @@ SYSTEM_MODE(AUTOMATIC);
 
 // Timing
 //TODO: move into IoT
-msecs lastMinute = 0;
 bool isTimingOfficeMotion;
 bool isTimingOfficeDoor = false;
 
@@ -65,12 +64,6 @@ bool isTimingOfficeDoor = false;
 //-------------
 void loop() {
     IoT::loop();
-
-    //TODO: move to IoT
-    if(msecs()-60*1000 > lastMinute) {
-        lastMinute = msecs();
-        handleNextMinute();
-    }
 }
 
 void setup() {
@@ -88,6 +81,7 @@ void setup() {
     MCP23008::write(5,true);   // Apply power to PIR. Pin can source 25ma
 
     // Behaviors
+    setNextMinuteHandler(handleNextMinute);
     Device::setAnyChangedHandler(updateLights);
 
     //TODO: refactor to array of structs/enums
