@@ -50,7 +50,6 @@ SYSTEM_MODE(AUTOMATIC);
 
 // Timing
 //TODO: move into IoT
-msecs lastMinute = 0;
 bool isTimingOfficeMotion;
 bool isTimingOfficeDoor = false;
 
@@ -65,12 +64,6 @@ bool isTimingOfficeDoor = false;
 //-------------
 void loop() {
     IoT::loop();
-
-    //TODO: move to IoT
-    if(msecs()-60*1000 > lastMinute) {
-        lastMinute = msecs();
-        handleNextMinute();
-    }
 }
 
 void setup() {
@@ -89,6 +82,7 @@ void setup() {
 
     // Behaviors
     Device::setAnyChangedHandler(updateLights);
+    //TODO: nextminutehandler
 
     //TODO: refactor to array of structs/enums
     Device::add(new Device("AnyoneHome", "Status", 'S'));
