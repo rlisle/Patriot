@@ -19,20 +19,20 @@ void updateLights() {
     PartOfDay pod = partOfDay();
 
     // Get pointers to all devices
-    Device *couchCeiling = Device::get("CouchCeiling");
-    Device *leftVertical = Device::get("LeftVertical");
+//    Device *couchCeiling = Device::get("CouchCeiling");
+//    Device *leftVertical = Device::get("LeftVertical");
 
     // When cleaning is set, all inside lights are turned on
     // Turn on all outside lights also if it is nighttime
     // Assuming that not bedtime or sleeping when cleaning
     if(is("Cleaning")) {
         // Turn off other statuses
-        Device::setValue("Bedtime", 0);
-        Device::setValue("Sleeping", 0);
+        set("Bedtime", 0);
+        set("Sleeping", 0);
 
         // Set lights
-        couchCeiling->setValue(100);
-        leftVertical->setValue(100);
+        set("CouchCeiling",100);
+        set("LeftVertical", 100);
         return;
     }
 

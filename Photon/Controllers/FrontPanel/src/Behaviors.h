@@ -58,7 +58,7 @@ void updateLights() {
     }
 
     switch(pod) {
-        case Bedtime:
+        case Retiring:
             // Turn off other statuses
             Device::setValue("Cleaning", 0);
             Device::setValue("Kitchen", 0);
@@ -78,7 +78,7 @@ void updateLights() {
             frontAwning->setValue(0);
             frontPorch->setValue(0);
             break;
-        case Sleeping:                  // Don't assume bedtime was set
+        case Asleep:                  // Don't assume bedtime was set
             // Turn off other statuses
             Device::setValue("Bedtime", 0);
             Device::setValue("Cleaning", 0);
@@ -99,7 +99,7 @@ void updateLights() {
             frontPorch->setValue(0);
             break;
         case AwakeEarly:
-            sinkLamp->setValue(20);
+            sinkLamp->setValue(40);
             //TODO: turn on desk lamps
             break;
         case Morning:
@@ -130,9 +130,10 @@ void updateLights() {
     }
 }
 
-void setSinkOrOverride(int value) {
+void setSinkOrOverride(int percent) {
     if(is("Sink")) {
         set("SinkLamp", value("Sink"));
+    } else {
+        set("SinkLamp", percent);
     }
-    set("SinkLamp", value);
 }

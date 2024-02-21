@@ -53,7 +53,7 @@ Author: Ron Lisle
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(AUTOMATIC);
 
-#define PIR_POLL_INTERVAL_MILLIS 500
+//#define PIR_POLL_INTERVAL_MILLIS 500
 
 // Generally uncomment only 1 of the following 2 lines
 #define MQTT_LOGGING true
@@ -87,9 +87,8 @@ void setup() {
 
     // Behaviors
     setNextMinuteHandler(handleNextMinute);
-
-
     Device::setAnyChangedHandler(updateLights);
+    
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Couch", "Status", 'S'));        // Override

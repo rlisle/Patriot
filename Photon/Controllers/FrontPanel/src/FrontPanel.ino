@@ -169,7 +169,6 @@ void setup() {
 
     // Behaviors
     setNextMinuteHandler(handleNextMinute);
-
     Device::setAnyChangedHandler(updateLights);
 
     // Be careful that names don't collide with Homebridge (commands)

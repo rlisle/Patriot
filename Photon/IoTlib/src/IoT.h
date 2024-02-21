@@ -28,14 +28,42 @@ enum PartOfDay {
     Morning,        // After sunrise (either awake or asleep)
     Afternoon,      //
     Evening,        // After sunset
-    Bedtime,        // Getting ready for bed (turn of outside lights)
-    Sleeping        // After "Goodnight"
+    Retiring,       // Getting ready for bed (turn of outside lights) was Bedtime
+    Asleep          // After "Goodnight" was Sleeping
 };
+
+enum DeviceName {
+    AnyoneHome,
+    Bedtime,
+    Cabinets,
+    Ceiling,
+    Cleaning,
+    DoorSide,
+    FrontAwning,
+    FrontPorch,
+    Kitchen,
+    KitchenCeiling,
+    LeftTrim,
+    LivingRoomMotion,
+    Nighttime,
+    OfficeMotion,
+    OtherSide,
+    Outside,
+    RightTrim,
+    RonHome,
+    ShelleyHome,
+    Sink,
+    SinkLamp,
+    Sleeping,
+    Workbench
+};
+
+String deviceName(DeviceName name);
 
 // Global shortcut function definitions
 bool is(String name);
 int value(String name);
-int set(String name, int value);
+int set(String name, int percent);
 bool isAM();
 PartOfDay partOfDay();
 void setNextMinuteHandler(void (*handler)());

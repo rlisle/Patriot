@@ -38,6 +38,37 @@ void outOfMemoryHandler(system_event_t event, int param) {
     outOfMemory = param;
 }
 
+//TODO: Move to separate user file
+String deviceName(DeviceName name) {
+    switch (name)
+    {
+        case AnyoneHome: return "AnyoneHome";
+        case Bedtime:    return "Bedtime";
+        case Cabinets:   return "Cabinets";
+        case Ceiling:    return "Ceiling";
+        case Cleaning:   return "Cleaning";
+        case DoorSide:   return "DoorSide";
+        case FrontAwning: return "FrontAwning";
+        case FrontPorch: return "FrontPorch";
+        case Kitchen:    return "Kitchen";
+        case KitchenCeiling: return "KitchenCeiling";
+        case LeftTrim:   return "LeftTrim";
+        case LivingRoomMotion: return "LivingRoomMotion";
+        case Nighttime:  return "Nighttime";
+        case OfficeMotion: return "OfficeMotion";
+        case OtherSide:  return "OtherSide";
+        case Outside:    return "Outside";
+        case RightTrim:  return "RightTrim";
+        case RonHome:    return "RonHome";
+        case ShelleyHome: return "ShelleyHome";
+        case Sink:       return "Sink";
+        case SinkLamp:   return "SinkLamp";
+        case Sleeping:   return "Sleeping";
+        case Workbench:  return "Workbench";
+        default:         return "Unknown";
+    }
+}
+
 // Shortcuts
 bool is(String name) {
     return Device::get("name")->value() > 0;
@@ -47,8 +78,8 @@ int value(String name) {
     return Device::get("name")->value();
 }
 
-int set(String name, int value) {
-    return Device::setValue(name,value);
+int set(String name, int percent) {
+    return Device::setValue(name,percent);
 }
 
 bool isAM() {
@@ -61,10 +92,10 @@ void setNextMinuteHandler(void (*handler)()) {
 
 PartOfDay partOfDay() {
     if(is("sleeping")) {
-        return Sleeping;
+        return Asleep;
     }
     if(is("bedtime")) {
-        return Bedtime;
+        return Retiring;
     }
     if(is("nighttime")) {
         if(isAM()) {
