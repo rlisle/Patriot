@@ -1,144 +1,119 @@
 //------------
-// Door Behaviors
+// Behaviors
+//
+// Relevant Status
+//   AnyoneHome
+//   Bedtime
+//   Cleaning
+//   Desk
+//   LivingRoomMotion
+//   Nighttime
+//   Office
+//   Outside
+//   RonHome
+//   ShelleyHome
+//   Sleeping
 //------------
 #define OFFICE_DOOR_LIGHT_TIMEOUT 15*1000
 
-void setAllLights(int);
-void setAllInsideLights(int);
-void setAllOutsideLights(int);
-void setBedtimeLights();
-void setSleepingLights();
-void setEveningAwakeLights();
-void setPreDawnAwakeLights();
-void setDaytimeLights();
-
-// Shortcuts
-bool is(String name) {
-    return Device::get("name")->value() > 0;
-}
-
-int value(String name) {
-    return Device::get("name")->value();
-}
-
-int set(String name, int value) {
-    return Device::setValue(name,value);
-}
-
-bool isAM() {
-    return Time.hour() <= 12;
-}
-
-// Use sleeping, nighttime, and isAM() to determine PartOfDay
-PartOfDay partOfDay() {
-    if(is("sleeping")) {
-        return Asleep;
-    }
-    if(is("nighttime")) {
-        if(isAM()) {
-            return AwakeEarly;
-        } else {
-            return Evening;
-        }
-    }
-    if(isAM()) {
-        return Morning;
-    }
-    return Afternoon;
-}
-
-// This method defines all the behavior of the system
+// Update all devices managed by this Photon2
 void updateLights() {
     Log.info("RP updateLights");
+
+    // When cleaning is set, all inside lights are turned on
+    // Turn on all outside lights also if it is nighttime
+    // Assuming that not bedtime or sleeping when cleaning
     if(is("cleaning")) {
         Log.info("RP updateLights cleaning");
-        setAllInsideLights(100);
-        return;                     // Assumes daytime, so no need to continue
+        // Turn off other statuses
+        set("Bedtime", 0);
+        set("Sleeping", 0);
+
+        set("Curtain", 100);        // Open curtain
+        set("Loft", 100);
+        set("OfficeCeiling", 100);
+        set("Piano", 100);
+        return;
     }
     switch(partOfDay()) {
         case Asleep:
-            Log.info("RP updateLights Sleeping");
-            setSleepingLights();
+            Log.info("RP updateLights Asleep");
+            set("Curtain", 0);     // Close curtain
+
+            set("OfficeCeiling", 5);
+            set("Loft", 0);
+            set("Piano", 5);
+
+            set("RampPorch", 0);
+            set("RampAwning", 0);
+            set("RearAwning", 0);
+            if(is("officeDoor") || isTimingOfficeDoor) {        
+                set("RearPorch", 100);
+            } else {
+                set("RearPorch", 0);
+            }
             break;
+
         case AwakeEarly:
             Log.info("RP updateLights AwakeEarly");
-            setPreDawnAwakeLights();
+            set("OfficeCeiling", 5);
+            set("Loft", 0);
+            set("Piano", 5);
+
+            set("RampPorch", 0);
+            set("RampAwning", 0);
+            set("RearAwning", 0);
+            if(is("officeDoor") || isTimingOfficeDoor) {        
+                Log.info("RP AwakeEarly door open");
+                set("RearPorch", 100);
+            } else {
+                set("RearPorch", 0);
+            }
             break;
+
         case Morning:
         case Afternoon:
             Log.info("RP updateLights daytime");
-            setDaytimeLights();
+            set("OfficeCeiling", 0);
+            set("Loft", 0);
+            set("Piano", 100);
+
+            set("RampPorch", 0);
+            set("RampAwning", 0);
+            set("RearPorch", 0);
+            set("RearAwning", 0);
             break;
+
         case Evening:
             Log.info("RP updateLights evening");
-            setEveningAwakeLights();
+            set("OfficeCeiling", 5);
+            set("Loft", 0);
+            set("Piano", 100);
+
+            set("RampPorch", 100);
+            set("RampAwning", 100);
+            set("RearPorch", 100);
+            set("RearAwning", 100);
             break;
+
         case Retiring:
-            Log.info("RP updateLights bedtime");
-            setBedtimeLights();
+            Log.info("RP updateLights retiring");
+
+            set("Curtain", 0);     // Close curtain
+            
+            set("OfficeCeiling", 5);
+            set("Loft", 0);
+            set("Piano", 5);
+
+            set("RampPorch", 0);
+            set("RampAwning", 0);
+            set("RearPorch", 0);
+            set("RearAwning", 0);
+            if(is("officeDoor") || isTimingOfficeDoor) {        
+                set("RearPorch", 100);
+            }
             break;
     }
-}
-
-void setAllLights(int value) {
-    setAllInsideLights(value);
-    setAllOutsideLights(value);
-}
-
-void setAllInsideLights(int value) {
-    set("OfficeCeiling", value);
-    set("Loft", value);
-    set("Piano", value);
-}
-
-void setAllOutsideLights(int value) {
-    set("RampPorch", value);
-    set("RampAwning", value);
-    set("RearPorch", value);
-    set("RearAwning", value);
-}
-
-void setSleepingLights() {
-    set("Curtain", 0);     // Close curtain
-    setAllLights(0);
-    if(is("officeDoor") || isTimingOfficeDoor) {        
-        set("RearPorch", 100);
-    }
-}
-
-void setEveningAwakeLights() {
-    setAllOutsideLights(100);
-    set("OfficeCeiling", 5);
-    set("Loft", 0);
-    set("Piano", 100);
-}
-
-void setBedtimeLights() {  // Same as above but turn off outside
-    setAllOutsideLights(0);
-    set("OfficeCeiling", 5);
-    set("Loft", 0);
-    set("Piano", 5);
-    if(is("officeDoor") || isTimingOfficeDoor) {        
-        set("RearPorch", 100);
-    }
-}
-
-void setPreDawnAwakeLights() {
-    setAllOutsideLights(0);
-    set("OfficeCeiling", 5);
-    set("Loft", 0);
-    set("Piano", 5);
-    if(is("officeDoor") || isTimingOfficeDoor) {        
-        Log.info("RP PreDawnAwakeLights door open");
-        set("RearPorch", 100);
-    }
-}
-
-void setDaytimeLights() {
-    setAllOutsideLights(0);
-    set("OfficeCeiling", 0);
-    set("Loft", 0);
-    set("Piano", 100);
 }
 
 // Called by livingRoomMotion

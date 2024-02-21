@@ -37,24 +37,24 @@ void updateLights() {
     }
 
     switch(pod) {
-        case Bedtime:
+        case Retiring:
             // Turn off other statuses
-            Device::setValue("Cleaning", 0);
-            Device::setValue("Sleeping", 0);
+            set("Cleaning", 0);
+            set("Sleeping", 0);
 
             // Set lights
-            couchCeiling->setValue(0);
-            leftVertical->setValue(0);
+            set("CouchCeiling", 0);
+            set("LeftVertical", 0);
             break;
             
-        case Sleeping:                  // Don't assume bedtime was set
+        case Asleep:                  // Don't assume bedtime was set
             // Turn off other statuses
-            Device::setValue("Bedtime", 0);
-            Device::setValue("Cleaning", 0);
+            set("Bedtime", 0);
+            set("Cleaning", 0);
 
             // Set lights
-            couchCeiling->setValue(0);
-            leftVertical->setValue(0);
+            set("CouchCeiling", 0);
+            set("LeftVertical", 0);
             break;
             
         case AwakeEarly:
@@ -63,12 +63,12 @@ void updateLights() {
             
         case Morning:
         case Afternoon:
-            couchCeiling->setValue(0);
-            leftVertical->setValue(0);
+            set("CouchCeiling", 0);
+            set("LeftVertical", 0);
             break;
         case Evening:
-            couchCeiling->setValue(20);
-            leftVertical->setValue(20);
+            set("CouchCeiling", 20);
+            set("LeftVertical", 20);
             break;
     }
 }

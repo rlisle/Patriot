@@ -81,6 +81,7 @@ void setup() {
     MCP23008::write(5,true);   // Apply power to PIR. Pin can source 25ma
 
     // Behaviors
+    setNextMinuteHandler(handleNextMinute);
     Device::setAnyChangedHandler(updateLights);
     //TODO: nextminutehandler
 
