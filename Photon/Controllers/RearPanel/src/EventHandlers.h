@@ -5,7 +5,7 @@
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
     if(isTimingOfficeDoor) {
-        if(msecs() > Device::msecsLastChange("OfficeDoor") + OFFICE_DOOR_TIMEOUT_MSECS) {
+        if(milllis() > Device::msecsLastChange("OfficeDoor") + OFFICE_DOOR_TIMEOUT_MSECS) {
             Log.info("RP turning off isTimingOfficeDoor");
             isTimingOfficeDoor = false;
             updateLights();
@@ -13,7 +13,7 @@ void handleNextMinute() {
     }
 
     if(isTimingOfficeMotion) {
-        if(Device::msecsLastChange("OfficeMotion") + OFFICE_MOTION_TIMEOUT_MSECS < msecs()) {
+        if(Device::msecsLastChange("OfficeMotion") + OFFICE_MOTION_TIMEOUT_MSECS < millis()) {
             isTimingOfficeMotion = false;
             updateLights();
         }

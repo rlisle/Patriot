@@ -63,9 +63,11 @@ void Light::setValue(int value)
         return;
     }
     if(_dimmingMSecs == 0) {
+        Log.info("Light no dimming setValue %d", value);
         _value = value;
         outputPWM((float)_value);
     } else {
+        Log.info("Light start dimming %d", value);        
         startSmoothDimming();
     }
 }
@@ -97,6 +99,7 @@ void Light::loop()
         _currentPercent = (float)_targetPercent;
         return;
     }
+    Log.info("Light value %d != target %d",_value, _targetPercent);
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
@@ -114,6 +117,7 @@ void Light::loop()
         }
     }
     _lastUpdateTime = loopTime;
+    Log.info("Light updating dimming %f",_currentPercent);
     outputPWM(_currentPercent);
 };
 

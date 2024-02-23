@@ -5,14 +5,14 @@
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
     // if(isTimingFrontDoor) {
-    //     if(Device::msecsLastChange("LivingRoomDoor") + FRONT_DOOR_LIGHT_TIMEOUT < msecs()) {
+    //     if(Device::msecsLastChange("LivingRoomDoor") + FRONT_DOOR_LIGHT_TIMEOUT < millis()) {
     //         isTimingLivingRoomDoor = false;
     //         updateLights();
     //     }
     // }
 
     if(isTimingLivingRoomMotion) {
-        if(msecs() > Device::msecsLastChange("LivingRoomMotion") + FRONT_DOOR_LIGHT_TIMEOUT) {
+        if(millis() > Device::msecsLastChange("LivingRoomMotion") + FRONT_DOOR_LIGHT_TIMEOUT) {
             isTimingLivingRoomMotion = false;
             updateLights();
         }

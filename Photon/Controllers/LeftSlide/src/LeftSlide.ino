@@ -109,6 +109,7 @@ void setup() {
 
 //TODO: move to MR24 plugin
 /*void handleCouchPresence() {
+  //DON'T USE getChangedValue anymore - use handler instead
     int couchPresenceChanged = Device::getChangedValue("CouchPresence");
     if( couchPresenceChanged != -1) {
         

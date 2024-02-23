@@ -24,7 +24,6 @@ Device::Device(String name, String room, char type, void (*handler)(int,int))
 
 // Actual device will override this in most cases
 void Device::setValue(int value) {
-//    Log.info("Device " + _name + " setValue " + String(value) + ", was "+String(_value));
     _value = value;
 }
 
@@ -38,16 +37,16 @@ void Device::setBrightness(int value) {
 }
 
 // Check if device has changed and return new value or -1
-int  Device::getChangedValue() {
-    if( _value == _previous ) {
-        //Don't put a log here. This is called almost every loop.
-        return -1;
-    }
-    // Log here is ok because it only occurs when value changes
-    //Log.info("Device "+_name+" getChangedValue() changed");
-    _previous = _value;
-    return _value;
-}
+// int  Device::getChangedValue() {
+//     if( _value == _previous ) {
+//         //Don't put a log here. This is called almost every loop.
+//         return -1;
+//     }
+//     // Log here is ok because it only occurs when value changes
+//     //Log.info("Device "+_name+" getChangedValue() changed");
+//     _previous = _value;
+//     return _value;
+// }
 
 // Static Methods
 
@@ -57,9 +56,9 @@ void Device::setAnyChangedHandler(void (*handler)()) {
 
 void Device::add(Device *device)
 {
-//    Log.info("addDevice name: "+String(device->name()));
+    Log.info("addDevice name: "+String(device->name()));
     if(_devices == NULL) {
-//        Log.info("  first device");
+        Log.info("  first device");
         _devices = device;
     } else {
         Device *ptr = _devices;
@@ -89,18 +88,15 @@ void Device::loopAll()
     {
         ptr->loop();
         if(ptr->_value != ptr->_previous) {
-            Log.info("didAnyChange = true");
             didAnyChange = true;
             ptr->_msecsLastChange = millis();
             if(ptr->_changeHandler != NULL) {
-                Log.info("Calling changeHandler");
                 ptr->_changeHandler(ptr->_value, ptr->_previous);
-                ptr->_previous = ptr->_value;
             }
+            ptr->_previous = ptr->_value;
         }
     }
     if(didAnyChange == true && _anyChangeHandler != NULL) {
-        Log.info("Calling anyChangeHandler");
         Device::_anyChangeHandler();
     }
 }
@@ -115,7 +111,6 @@ Device *Device::get(String name)
         }
         ptr = ptr->_next;
     }
-    //Log.info("Device "+name+" not found, returning NULL");
     return NULL;
 }
 
@@ -133,14 +128,13 @@ int Device::setValue(String name, int value) {
 }
 
 // Check if device has changed and return new value or -1
-int  Device::getChangedValue(String name) {
-    Device *device = get(name);
-    if( device == NULL ) {
-        //Log.info("getChangedValue: " + name + " not found");
-        return -1;
-    }
-    return device->getChangedValue();
-}
+// int  Device::getChangedValue(String name) {
+//     Device *device = get(name);
+//     if( device == NULL ) {
+//         return -1;
+//     }
+//     return device->getChangedValue();
+// }
 
 msecs Device::msecsLastChange(String name) {
     Device *device = get(name);

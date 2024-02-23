@@ -101,7 +101,7 @@ int PIR::stateWithDelayedOff()
     
     // Turn off only after delay
     } else {
-        if(_lastMotion + _timeoutMSecs > msecs()) {
+        if(_lastMotion + _timeoutMSecs > millis()) {
             newValue = 100;
         }
     }

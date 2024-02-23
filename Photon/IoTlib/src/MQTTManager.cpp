@@ -257,7 +257,7 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
                 parseLogLevel(lcMessage);
             }
             
-        // MEMORY/<controller | all>
+        // MEMORY <controller | all>
         } else if(subtopics[0] == "memory") {
             if(lcMessage == _controllerName || lcMessage == "all") {
                 Log.info(_controllerName + ": free memory = %d", System.freeMemory());
@@ -280,13 +280,16 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             
             // <device>/SET
         } else if(numTopics > 1 && subtopics[1] == "set") {             // patriot/<device>/set value
+    Log.info("BB set device");
             Device *device = Device::get(subtopics[0]);
             if( device != NULL) {
                 int value = lcMessage.toInt();  // 0 if not numerical
                 if(lcMessage == "on" || lcMessage == "true") value = device->brightness();
                 else if(lcMessage == "off" || lcMessage == "false") value = 0;
+    Log.info("BB calling setValue %d",value);
                 device->setValue(value);
                 sendAck(subtopics[0], "set", lcMessage);
+    Log.info("BB set device exit");
             }
 
         // TEST/<controller | all>

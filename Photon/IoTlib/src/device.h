@@ -67,7 +67,7 @@ public:
     virtual int brightness() { return _brightness; };
     virtual void setBrightness(int value);
 
-    virtual int  getChangedValue();
+//    virtual int  getChangedValue();
     
     virtual void setLatLong(float latitude, float longitude);
 
@@ -91,7 +91,7 @@ public:
     static Device* get(String name);
     static int     value(String name);
     static int     setValue(String name, int value);
-    static int     getChangedValue(String name);
+//    static int     getChangedValue(String name);
     static int     count();
     static void    setAllLatLong(float latitude, float longitude);
 

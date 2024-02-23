@@ -6,7 +6,7 @@
 void handleNextMinute() {
     //TODO: Generalize this so it can be reused by any device
     if(isTimingLivingRoomMotion) {
-        if(msecs() > Device::msecsLastChange("LivingRoomMotion") + LIVINGROOM_MOTION_TIMEOUT_MSECS) {
+        if(millis() > Device::msecsLastChange("LivingRoomMotion") + LIVINGROOM_MOTION_TIMEOUT_MSECS) {
             isTimingLivingRoomMotion = false;
             updateLights();
         }

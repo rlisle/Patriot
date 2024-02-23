@@ -160,8 +160,9 @@ void IoT::loop()
     Device::loopAll();
     _mqttManager->loop();
 
-    if(msecs() - 60*1000 > lastMinute) {
-        lastMinute = msecs();
+    if(millis() > lastMinute + 60*1000) {
+        Log.info("IoT: next minute");
+        lastMinute = millis();
         //TODO: prevent overflow
         if(nextMinuteHandler != NULL) {
             nextMinuteHandler();
