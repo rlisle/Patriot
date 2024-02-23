@@ -89,15 +89,18 @@ void Device::loopAll()
     {
         ptr->loop();
         if(ptr->_value != ptr->_previous) {
+            Log.info("didAnyChange = true");
             didAnyChange = true;
             ptr->_msecsLastChange = millis();
             if(ptr->_changeHandler != NULL) {
+                Log.info("Calling changeHandler");
                 ptr->_changeHandler(ptr->_value, ptr->_previous);
                 ptr->_previous = ptr->_value;
             }
         }
     }
     if(didAnyChange == true && _anyChangeHandler != NULL) {
+        Log.info("Calling anyChangeHandler");
         Device::_anyChangeHandler();
     }
 }

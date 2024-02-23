@@ -94,11 +94,13 @@ bool NCD4Switch::didSwitchChange()
     bool oldState = (_value != 0);
     
     if(oldState == false && newValue == 100) {
+        Log.info("Switch turned on");
         _value = 100;
         return true;
     }
     
     if(oldState == true && newValue == 0) {
+        Log.info("Switch turned off");
         _value = 0;
         return true;
     }

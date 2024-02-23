@@ -2,10 +2,12 @@
  * Project BedBath
  * Author: Ron Lisle
  * Date: 1/14/24
+ * 
+ * Currently using to debug Patriot with USB
+ * 'particle serial monitor --follow' or shortcut 'debugusb'
+ * 
  */
-//#include "Particle.h"
 #include "IoT.h"
-//#include "secrets.h"
 
 #define CONTROLLER_NAME "BedBath"
 #define MQTT_BROKER "192.168.0.33"
@@ -13,18 +15,10 @@
 SYSTEM_MODE(AUTOMATIC);
 SYSTEM_THREAD(ENABLED);
 
-typedef unsigned long msecs;
-
-// Generally only use 1 or the other
-// Write logs to MQTT if true
-#define MQTT_LOGGING false
-// or show system, cloud connectivity, and application logs over USB
-// View logs with CLI using 'particle serial monitor --follow'
-SerialLogHandler logHandler(LOG_LEVEL_INFO);
-
 // Behaviors
-#include "SleepingBehavior.h"
-
+#include "Settings.h"
+#include "Behaviors.h"
+#include "EventHandlers.h"
 
 void setup() {
 //  WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
@@ -33,9 +27,23 @@ void setup() {
 
   IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
-  Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+  // Behaviors
+  setNextMinuteHandler(handleNextMinute);
+  Device::setAnyChangedHandler(updateLights);
 
-  Device::add(new Light(D7, "Light", "Bathroom", 0));
+  Device::add(new Device("AnyoneHome", "Status", 'S'));
+  Device::add(new Device("RonHome", "Status", 'S'));
+  Device::add(new Device("ShelleyHome", "Status", 'S'));
+  Device::add(new Device("Nighttime", "Status", 'S'));
+  Device::add(new Device("Cleaning", "Status", 'S'));
+  Device::add(new Device("Sleeping", "Status", 'S'));
+
+  // LEDs
+  Device::add(new Light(D7, "BlueLED", "Bathroom", 0));
+  Device::add(new Light(D7, "TestLED1", "Bathroom", 0));
+  Device::add(new Light(D7, "TestLED2", "Bathroom", 0));
+  Device::add(new Light(D7, "TestLED3", "Bathroom", 0));
+  Device::add(new Light(D7, "TestLED4", "Bathroom", 0));
 
 }
 
