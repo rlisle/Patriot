@@ -5,7 +5,7 @@
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
     if(isTimingOfficeDoor) {
-        if(milllis() > Device::msecsLastChange("OfficeDoor") + OFFICE_DOOR_TIMEOUT_MSECS) {
+        if(millis() > Device::msecsLastChange("OfficeDoor") + OFFICE_DOOR_TIMEOUT_MSECS) {
             Log.info("RP turning off isTimingOfficeDoor");
             isTimingOfficeDoor = false;
             updateLights();

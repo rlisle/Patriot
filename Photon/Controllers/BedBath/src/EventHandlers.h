@@ -4,7 +4,6 @@
 
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
-    Log.info("handleNextMinute");
     //TODO: Generalize this so it can be reused by any device
     // if(isTimingLivingRoomMotion) {
     //     if(millis() > Device::msecsLastChange("LivingRoomMotion") + LIVINGROOM_MOTION_TIMEOUT_MSECS) {

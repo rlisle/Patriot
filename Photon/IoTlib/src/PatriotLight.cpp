@@ -63,11 +63,9 @@ void Light::setValue(int value)
         return;
     }
     if(_dimmingMSecs == 0) {
-        Log.info("Light no dimming setValue %d", value);
         _value = value;
         outputPWM((float)_value);
     } else {
-        Log.info("Light start dimming %d", value);        
         startSmoothDimming();
     }
 }
@@ -77,7 +75,6 @@ void Light::setValue(int value)
  * Use floatValue to smoothly transition
  */
 void Light::startSmoothDimming() {
-    Log.info("Light pin %d resolution = %d, max = %d", _pin, _pinResolution, _maxLevel);
     _lastUpdateTime = millis();             // Starting now
     _currentPercent = (float)_value;        // Starting point
     float delta = (float)_targetPercent - _currentPercent;
@@ -99,7 +96,6 @@ void Light::loop()
         _currentPercent = (float)_targetPercent;
         return;
     }
-    Log.info("Light value %d != target %d",_value, _targetPercent);
 
     long loopTime = millis();
     float millisSinceLastUpdate = (loopTime - _lastUpdateTime);
@@ -117,7 +113,6 @@ void Light::loop()
         }
     }
     _lastUpdateTime = loopTime;
-    Log.info("Light updating dimming %f",_currentPercent);
     outputPWM(_currentPercent);
 };
 
@@ -127,7 +122,6 @@ void Light::loop()
 void Light::outputPWM(float percent) {
     if(isPwmSupported(_pin)) {
         int pwm = convertToPinResolution(_currentPercent);
-//        Log.info("Pin #%d = %.1f curve %d PWM %d", _pin, _currentPercent, _curve, pwm);
         analogWrite(_pin, pwm);
     } else {
         bool isOn = percent >= 50.0;
