@@ -71,15 +71,21 @@ String deviceName(DeviceName name) {
 
 // Shortcuts
 bool is(String name) {
-    return Device::get("name")->value() > 0;
+    Device* device = Device::get(name);
+    if(device == NULL) return false;
+    return device->value() > 0;
 }
 
 int value(String name) {
-    return Device::get("name")->value();
+    Device* device = Device::get(name);
+    if(device == NULL) return 0;
+    return device->value();
 }
 
-int set(String name, int percent) {
-    return Device::setValue(name,percent);
+void set(String name, int percent) {
+    Device* device = Device::get(name);
+    if(device == NULL) return;
+    device->setValue(percent);
 }
 
 bool isAM() {

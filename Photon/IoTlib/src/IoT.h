@@ -63,7 +63,7 @@ String deviceName(DeviceName name);
 // Global shortcut function definitions
 bool is(String name);
 int value(String name);
-int set(String name, int percent);
+void set(String name, int percent);
 bool isAM();
 PartOfDay partOfDay();
 void setNextMinuteHandler(void (*handler)());

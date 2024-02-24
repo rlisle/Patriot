@@ -9,11 +9,12 @@
  */
 #include "IoT.h"
 
-#define CONTROLLER_NAME "BedBath"
-#define MQTT_BROKER "192.168.0.33"
-
 SYSTEM_MODE(AUTOMATIC);
 SYSTEM_THREAD(ENABLED);
+
+// State
+int testDoor = -1;
+bool isTimingTestDoor = false;
 
 // Behaviors
 #include "Settings.h"
@@ -37,13 +38,16 @@ void setup() {
   Device::add(new Device("Nighttime", "Status", 'S'));
   Device::add(new Device("Cleaning", "Status", 'S'));
   Device::add(new Device("Sleeping", "Status", 'S'));
+  Device::add(new Device("Bathroom", "Status", 'S'));
 
   // LEDs
-  Device::add(new Light(D7, "BlueLED", "Bathroom", 0));
-  Device::add(new Light(D7, "TestLED1", "Bathroom", 0));
-  Device::add(new Light(D7, "TestLED2", "Bathroom", 0));
-  Device::add(new Light(D7, "TestLED3", "Bathroom", 0));
-  Device::add(new Light(D7, "TestLED4", "Bathroom", 0));
+  Device::add(new Light(D13, "TestLED1", "Bathroom", 2));
+  Device::add(new Light(D14, "TestLED2", "Bathroom", 2));
+  Device::add(new Light(D15, "TestLED3", "Bathroom", 1));
+  Device::add(new Light(D16, "TestLED4", "Bathroom", 1));
+
+  // Inputs
+  Device::add(new Device("TestDoor", "Status", 'S', handleTestDoor));
 
 }
 

@@ -10,6 +10,21 @@
 //   ShelleyHome
 //   Sleeping
 //------------
+
+void setTestLED1(int value) {
+    if(is("TestDoor")) {
+        Log.info("BB TestDoor %d", testDoor);
+        set("TestLED1",100);
+        return;
+    }
+    if(isTimingTestDoor) {
+        Log.info("BB Timing TestDoor");
+        set("TestLED1",99);
+        return;
+    }
+        set("TestLED1",value);
+}
+
 void updateLights() {
     Log.info("BB updateLights");
 
@@ -22,18 +37,18 @@ void updateLights() {
         set("Bedtime", 0);
         set("Sleeping", 0);
 
-        set("BlueLED", 100);
-        set("TestLED1", 100);
+        setTestLED1(100);
         set("TestLED2", 100);
         set("TestLED3", 100);
         set("TestLED4", 100);
         return;
     }
+    Log.info("BB Not cleaning");
+    Log.info("BB partofday %d", partOfDay());
     switch(partOfDay()) {
         case Asleep:
             Log.info("BB updateLights Asleep");
-            set("BlueLED", 0);
-            set("TestLED1", 0);
+            setTestLED1(0);
             set("TestLED2", 0);
             set("TestLED3", 0);
             set("TestLED4", 0);
@@ -41,8 +56,7 @@ void updateLights() {
 
         case AwakeEarly:
             Log.info("BB updateLights AwakeEarly");
-            set("BlueLED", 100);
-            set("TestLED1", 50);
+            setTestLED1(50);
             set("TestLED2", 25);
             set("TestLED3", 33);
             set("TestLED4", 0);
@@ -51,8 +65,7 @@ void updateLights() {
         case Morning:
         case Afternoon:
             Log.info("BB updateLights daytime");
-            set("BlueLED", 0);
-            set("TestLED1", 0);
+            setTestLED1(0);
             set("TestLED2", 0);
             set("TestLED3", 0);
             set("TestLED4", 100);
@@ -60,8 +73,7 @@ void updateLights() {
 
         case Evening:
             Log.info("BB updateLights evening");
-            set("BlueLED", 100);
-            set("TestLED1", 50);
+            setTestLED1(50);
             set("TestLED2", 50);
             set("TestLED3", 33);
             set("TestLED4", 33);
@@ -69,11 +81,12 @@ void updateLights() {
 
         case Retiring:
             Log.info("BB updateLights retiring");
-            set("BlueLED", 100);
-            set("TestLED1", 50);
+            setTestLED1(50);
             set("TestLED2", 0);
             set("TestLED3", 0);
             set("TestLED4", 0);
             break;
     }
+    Log.info("BB updateLights exit");
 }
+

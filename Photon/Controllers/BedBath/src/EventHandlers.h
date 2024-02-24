@@ -4,21 +4,23 @@
 
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
-    //TODO: Generalize this so it can be reused by any device
-    // if(isTimingLivingRoomMotion) {
-    //     if(millis() > Device::msecsLastChange("LivingRoomMotion") + LIVINGROOM_MOTION_TIMEOUT_MSECS) {
-    //         isTimingLivingRoomMotion = false;
-    //         updateLights();
-    //     }
-    // }
+    if(isTimingTestDoor) {
+        if(millis() > Device::msecsLastChange("TestDoor") + TESTDOOR_TIMEOUT_MSECS) {
+            isTimingTestDoor = false;
+            updateLights();
+        }
+    }
 }
 
-// void handleLivingRoomMotion(int value, int oldValue) {
-//     Log.info("LS handleLivingRoomMotion %d", value);
-//     if(value > 0 && oldValue == 0) {        // Opened
-//         isTimingLivingRoomMotion = true;
-//         updateLights();
-//     } else if(value == 0 && oldValue > 0) { // Closed
-//         updateLights();
-//     }
-// }
+void handleTestDoor(int value, int oldValue) {
+    Log.info("BB handleTestDoor %d", value);
+    testDoor = value;
+    if(value > 0 && oldValue == 0) {        // Opened
+        Log.info("BB TestDoor opened %d", testDoor);
+        updateLights();
+    } else if(value == 0 && oldValue > 0) { // Closed
+        isTimingTestDoor = true;
+        Log.info("BB TestDoor closed & timing");
+        updateLights();
+    }
+}
