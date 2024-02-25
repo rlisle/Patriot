@@ -186,18 +186,18 @@ void setup() {
     Device::add(new Device("Sleeping", "Status", 'S'));
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors
-    Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen"));   // R
-    Device::add(new NCD16Light(13, "SinkLamp", "Kitchen"));         // B
-    Device::add(new NCD16Light(12, "LeftTrim", "Kitchen"));         // G?
-    Device::add(new NCD16Light(16, "RightTrim", "Living Room"));    // Y?
-    Device::add(new NCD16Light(3,  "Ceiling", "Living Room"));      // W
-    Device::add(new NCD16Light(14, "Cabinets", "Kitchen"));         // R
+    Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen",0));   // R
+    Device::add(new NCD16Light(13, "SinkLamp", "Kitchen",0));         // B
+    Device::add(new NCD16Light(12, "LeftTrim", "Kitchen",0));         // G?
+    Device::add(new NCD16Light(16, "RightTrim", "Living Room",0));    // Y?
+    Device::add(new NCD16Light(3,  "Ceiling", "Living Room",0));      // W
+    Device::add(new NCD16Light(14, "Cabinets", "Kitchen",0));         // R
 
     // Outside Lights
-    Device::add(new NCD16Light(1, "DoorSide", "Outside"));          // B
-    Device::add(new NCD16Light(5, "OtherSide", "Outside"));         // G
-    Device::add(new NCD16Light(2, "FrontAwning", "Outside"));       // Y
-    Device::add(new NCD16Light(4, "FrontPorch", "Outside"));        // W
+    Device::add(new NCD16Light(1, "DoorSide", "Outside",0));          // B
+    Device::add(new NCD16Light(5, "OtherSide", "Outside",0));         // G
+    Device::add(new NCD16Light(2, "FrontAwning", "Outside",0));       // Y
+    Device::add(new NCD16Light(4, "FrontPorch", "Outside",0));        // W
 
     // 12V Monitor (actually 14.27) with 10:1 R-Ladder
     // Adjust fullScale to reflect actual R-Ladder (36.9)

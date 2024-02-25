@@ -4,6 +4,7 @@
 
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
+    Log.info("FP handleNextMinute");
     // if(isTimingFrontDoor) {
     //     if(Device::msecsLastChange("LivingRoomDoor") + FRONT_DOOR_LIGHT_TIMEOUT < millis()) {
     //         isTimingLivingRoomDoor = false;
@@ -12,7 +13,8 @@ void handleNextMinute() {
     // }
 
     if(isTimingLivingRoomMotion) {
-        if(millis() > Device::msecsLastChange("LivingRoomMotion") + FRONT_DOOR_LIGHT_TIMEOUT) {
+        Log.info("FP isTimingLivingRoomMotion");
+        if(millis() > Device::msecsLastChange("LivingRoomMotion") + FRONT_DOOR_LIGHT_TIMEOUT) {            
             isTimingLivingRoomMotion = false;
             updateLights();
         }
@@ -35,6 +37,7 @@ void wakeupIfAfter430am() {
         && Time.hour() < 10 
         && ((Time.hour() == 4 && Time.minute() >= 30)
         || (Time.hour() > 4))) {
+            Log.info("FP wakeupIfAfter430am");
             // Send sleeping = 0
             set("sleeping", false);     // Is this needed?
             IoT::publishValue("sleeping/set", 0);

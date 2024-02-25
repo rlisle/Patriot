@@ -88,15 +88,18 @@ void Device::loopAll()
     {
         ptr->loop();
         if(ptr->_value != ptr->_previous) {
+            Log.info("Device::loopAll device %s changed %d != %d", ptr->_name, ptr->_value, ptr->_previous);
             didAnyChange = true;
             ptr->_msecsLastChange = millis();
             if(ptr->_changeHandler != NULL) {
                 ptr->_changeHandler(ptr->_value, ptr->_previous);
             }
             ptr->_previous = ptr->_value;
+            Log.info("Device::loopAll device %s changed previous = value %d", ptr->_name, ptr->_previous);
         }
     }
     if(didAnyChange == true && _anyChangeHandler != NULL) {
+        Log.info("Device::loopAll calling anyChangeHandler");
         Device::_anyChangeHandler();
     }
 }

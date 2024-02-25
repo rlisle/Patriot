@@ -16,6 +16,10 @@
  All I2C code is in pca9685 class.
  
  PCA9685 D/A resolution is 12 bits (0-0fff): 4096 steps
+
+ Change log:
+   2/25/24 _value was changing during dimming. This caused problems with changeHandlers.
+           Setting _value immediately now, and using _currentLevel instead for dimming.
  
  http://www.github.com/rlisle/Patriot
 
@@ -41,16 +45,17 @@
  * Constructor
  * @param lightNum is the channel number on the NCD 16 Dimmer board (1 - 16)
  * @param name String name used to address the light.
+ * @param room String room where light is located.
  * @param duration Optional seconds value to transition. 0 = immediate, no transition.
  */
 NCD16Light::NCD16Light(int8_t lightNum, String name, String room, int8_t duration)
                      : Device(name, room)
 {
     _lightNum = constrain(lightNum-1, 0, 15);
-    _dimmingMSecs = duration * 1000; // Convert to msecs
-    _value = 0;             // Base Device class
-    _currentLevel = 0.0;    // These 2 used to perform dimming
-    _targetLevel = 0.0;     // "
+    _dimmingMSecs = duration * 1000;    // Convert to msecs
+    _value = 0;                         // Base Device class
+    _currentLevel = 0.0;                // These 2 used to perform dimming
+    _targetLevel = 0.0;                 // "
     _incrementPerMillisecond = 0.0;
     _lastUpdateTime = 0;
     _type = 'L';
@@ -58,6 +63,7 @@ NCD16Light::NCD16Light(int8_t lightNum, String name, String room, int8_t duratio
 
 void NCD16Light::begin() {
     // Initialization done by PCA9685
+    outputPWM();
 }
 
 void NCD16Light::reset() {
@@ -71,14 +77,14 @@ void NCD16Light::reset() {
  */
 void NCD16Light::setValue(int value) {
     if( value == _value ) {
-        outputPWM();
+//        outputPWM();    // I don't think that this is needed
         return;
     }
     
     _targetLevel = (float)value;        // new value
+    _value = value;
     if(_dimmingMSecs == 0) {
         _currentLevel = _targetLevel;
-        _value = value;
         outputPWM();
     } else {
         startSmoothDimming();
@@ -91,7 +97,7 @@ void NCD16Light::setValue(int value) {
  * An alternative approach would be to calculate # msecs per step
  */
 void NCD16Light::startSmoothDimming() {
-    if(abs(_currentLevel - _targetLevel) > 0.001) { // if !=
+    if(abs(_currentLevel - _targetLevel) > 0.001) {
         _lastUpdateTime = millis();
         float delta = _targetLevel - _currentLevel;
         _incrementPerMillisecond = delta / _dimmingMSecs;
@@ -136,7 +142,7 @@ void NCD16Light::loop()
     
     // Clamp value
     _currentLevel = constrain(_currentLevel, 0.0, 100.0);
-    _value = (int)_currentLevel;
+//    _value = (int)_currentLevel;
     _lastUpdateTime = loopTime;
 
     outputPWM();

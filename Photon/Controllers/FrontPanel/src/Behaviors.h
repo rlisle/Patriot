@@ -16,8 +16,20 @@
 //------------
 #define FRONT_DOOR_LIGHT_TIMEOUT 15*1000
 
+void setSinkOrOverride(int percent) {
+    if(is("Sink")) {
+        Log.info("FP set sinkLamp override: %d", value("Sink"));
+        set("SinkLamp", value("Sink"));
+    } else {
+        Log.info("FP set sinkLamp percent: %d", percent);
+        set("SinkLamp", percent);
+    }
+}
+
 // Update all devices managed by this Photon2
 void updateLights() {
+    Log.info("FP updateLights");
+
     PartOfDay pod = partOfDay();
 
     // When cleaning is set, all inside lights are turned on
@@ -31,7 +43,7 @@ void updateLights() {
         // Set lights
         set("KitchenCeiling", 100);
         set("Cabinets", 100);
-        set("SinkLamp", 100);
+        setSinkOrOverride(100);
         set("LeftTrim", 100);
         set("RightTrim", 100);
         set("Ceiling", 100);
@@ -56,7 +68,7 @@ void updateLights() {
             // Set lights
             set("KitchenCeiling", 0);
             set("Cabinets", 0);
-            set("SinkLamp", 50);
+            setSinkOrOverride(50);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -77,7 +89,7 @@ void updateLights() {
             // Set lights
             set("KitchenCeiling", 0);
             set("Cabinets", 0);
-            set("SinkLamp", 0);
+            setSinkOrOverride(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -87,14 +99,14 @@ void updateLights() {
             set("FrontPorch", 0);
             break;
         case AwakeEarly:
-            set("SinkLamp", 40);
+            setSinkOrOverride(20);
             //TODO: turn on desk lamps
             break;
         case Morning:
         case Afternoon:
             set("KitchenCeiling", 0);
             set("Cabinets", 0);
-            set("SinkLamp", 100);
+            setSinkOrOverride(100);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -107,7 +119,7 @@ void updateLights() {
             set("KitchenCeiling", 20);
             // Don't set cabinets - they reflect off TV
             //set("Cabinets", 0);
-            set("SinkLamp", 50);
+            setSinkOrOverride(40);
             set("LeftTrim", 100);
             set("RightTrim", 100);
             set("Ceiling", 20);
@@ -119,10 +131,3 @@ void updateLights() {
     }
 }
 
-void setSinkOrOverride(int percent) {
-    if(is("Sink")) {
-        set("SinkLamp", value("Sink"));
-    } else {
-        set("SinkLamp", percent);
-    }
-}
