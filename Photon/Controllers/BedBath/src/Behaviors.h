@@ -22,7 +22,7 @@ void setTestLED1(int value) {
         set("TestLED1",99);
         return;
     }
-        set("TestLED1",value);
+    set("TestLED1",value);
 }
 
 void updateLights() {
@@ -43,7 +43,6 @@ void updateLights() {
         set("TestLED4", 100);
         return;
     }
-    Log.info("BB Not cleaning");
     Log.info("BB partofday %d", partOfDay());
     switch(partOfDay()) {
         case Asleep:

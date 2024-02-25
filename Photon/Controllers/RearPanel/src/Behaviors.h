@@ -16,6 +16,64 @@
 //------------
 #define OFFICE_DOOR_LIGHT_TIMEOUT 15*1000
 
+// Inside Overrides
+void setOfficeCeiling(int value) {
+    if(is("Cleaning")) {
+        set("OfficeCeiling", 100);
+    } else {
+        set("OfficeCeiling", value);
+    }
+}
+
+void setLoft(int value) {
+    if(is("Cleaning")) {
+        set("Loft", 100);
+    } else {
+        set("Loft", value);
+    }
+}
+
+void setPiano(int value) {
+    if(is("Cleaning")) {
+        set("Piano", 100);
+    } else {
+        set("Piano", value);
+    }
+}
+
+// Outside Overrides
+void setRearPorch(int value) {
+    if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
+        set("RearPorch", 100);
+    } else {
+        set("RearPorch", value);
+    }
+}
+
+void setRearAwning(int value) {
+    if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
+        set("RearAwning", 100);
+    } else {
+        set("RearAwning", value);
+    }
+}
+
+void setRampPorch(int value) {
+    if(is("Outside")) {
+        set("RampPorch", 100);
+    } else {
+        set("RampPorch", value);
+    }
+}
+
+void setRampAwning(int value) {
+    if(is("Outside")) {
+        set("RampAwning", 100);
+    } else {
+        set("RampAwning", value);
+    }
+}
+
 // Update all devices managed by this Photon2
 void updateLights() {
     Log.info("RP updateLights");
@@ -23,77 +81,77 @@ void updateLights() {
     // When cleaning is set, all inside lights are turned on
     // Turn on all outside lights also if it is nighttime
     // Assuming that not bedtime or sleeping when cleaning
-    if(is("cleaning")) {
-        Log.info("RP updateLights cleaning");
-        // Turn off other statuses
-        set("Bedtime", 0);
-        set("Sleeping", 0);
+    // if(is("cleaning")) {
+    //     Log.info("RP updateLights cleaning");
+    //     // Turn off other statuses
+    //     set("Bedtime", 0);
+    //     set("Sleeping", 0);
 
-        set("Curtain", 100);        // Open curtain
-        set("Loft", 100);
-        set("OfficeCeiling", 100);
-        set("Piano", 100);
-        return;
-    }
+    //     set("Curtain", 100);        // Open curtain
+
+    //     setLoft(100);
+    //     setOfficeCeiling(100);
+    //     setPiano(100);
+    //     return;
+    // }
+
+    // if(is("office")) {
+    //     Log.info("RP updateLights office");
+    //     set("OfficeCeiling", 100);
+    //     set("Piano", 100);
+    //     return;
+    // }
+
     switch(partOfDay()) {
         case Asleep:
             Log.info("RP updateLights Asleep");
             set("Curtain", 0);     // Close curtain
 
-            set("OfficeCeiling", 5);
-            set("Loft", 0);
-            set("Piano", 5);
+            setLoft(0);
+            setOfficeCeiling(0);
+            setPiano(0);
 
-            set("RampPorch", 0);
-            set("RampAwning", 0);
-            set("RearAwning", 0);
-            if(is("officeDoor") || isTimingOfficeDoor) {        
-                set("RearPorch", 100);
-            } else {
-                set("RearPorch", 0);
-            }
+            setRampPorch(0);
+            setRampAwning(0);
+            setRearAwning(0);
+            setRearPorch(0);
             break;
 
         case AwakeEarly:
             Log.info("RP updateLights AwakeEarly");
-            set("OfficeCeiling", 5);
-            set("Loft", 0);
-            set("Piano", 5);
+            setLoft(0);
+            setOfficeCeiling(5);
+            setPiano(5);
 
-            set("RampPorch", 0);
-            set("RampAwning", 0);
-            set("RearAwning", 0);
-            if(is("officeDoor") || isTimingOfficeDoor) {        
-                Log.info("RP AwakeEarly door open");
-                set("RearPorch", 100);
-            } else {
-                set("RearPorch", 0);
-            }
+            setRampPorch(0);
+            setRampAwning(0);
+            setRearAwning(0);
+            setRearPorch(0);
             break;
 
         case Morning:
         case Afternoon:
             Log.info("RP updateLights daytime");
-            set("OfficeCeiling", 0);
-            set("Loft", 0);
-            set("Piano", 100);
+            setLoft(0);
+            setOfficeCeiling(0);
+            setPiano(100);
 
-            set("RampPorch", 0);
-            set("RampAwning", 0);
-            set("RearPorch", 0);
-            set("RearAwning", 0);
+            setRampPorch(0);
+            setRampAwning(0);
+            setRearAwning(0);
+            setRearPorch(0);
             break;
 
         case Evening:
             Log.info("RP updateLights evening");
-            set("OfficeCeiling", 5);
-            set("Loft", 0);
-            set("Piano", 100);
+            setLoft(0);
+            setOfficeCeiling(5);
+            setPiano(50);
 
-            set("RampPorch", 100);
-            set("RampAwning", 100);
-            set("RearPorch", 100);
-            set("RearAwning", 100);
+            setRampPorch(100);
+            setRampAwning(100);
+            setRearAwning(100);
+            setRearPorch(100);
             break;
 
         case Retiring:
@@ -101,30 +159,14 @@ void updateLights() {
 
             set("Curtain", 0);     // Close curtain
             
-            set("OfficeCeiling", 5);
-            set("Loft", 0);
-            set("Piano", 5);
+            setLoft(0);
+            setOfficeCeiling(5);
+            setPiano(5);
 
-            set("RampPorch", 0);
-            set("RampAwning", 0);
-            set("RearPorch", 0);
-            set("RearAwning", 0);
-            if(is("officeDoor") || isTimingOfficeDoor) {        
-                set("RearPorch", 100);
-            }
+            setRampPorch(0);
+            setRampAwning(0);
+            setRearAwning(0);
+            setRearPorch(0);
             break;
     }
-}
-
-// Called by livingRoomMotion
-void wakeupIfAfter430am() {
-    if(is("sleeping") == true 
-        && Time.hour() < 10 
-        && ((Time.hour() == 4 && Time.minute() >= 30)
-        || (Time.hour() > 4))) {
-            // Send sleeping = 0
-            set("sleeping", false);
-            IoT::publishValue("sleeping/set", 0);
-            updateLights();
-        }
 }

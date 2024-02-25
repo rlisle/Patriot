@@ -6,6 +6,7 @@
 void handleNextMinute() {
     if(isTimingTestDoor) {
         if(millis() > Device::msecsLastChange("TestDoor") + TESTDOOR_TIMEOUT_MSECS) {
+            Log.info("BB TestDoor timeout - turning off");
             isTimingTestDoor = false;
             updateLights();
         }
