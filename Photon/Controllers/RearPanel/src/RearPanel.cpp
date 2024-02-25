@@ -28,14 +28,6 @@
  */
 
 #include <IoT.h>
-
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(AUTOMATIC);
-
-// Timing
-bool isTimingOfficeMotion;
-bool isTimingOfficeDoor = false;
-
 #include "Settings.h"
 #include "Behaviors.h"
 #include "EventHandlers.h"

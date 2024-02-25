@@ -15,3 +15,10 @@
 
 #define PCA9634_ADDRESS 1       // 1st jumper
 #define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
+
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(AUTOMATIC);
+
+// Timing
+bool isTimingOfficeMotion;
+bool isTimingOfficeDoor = false;

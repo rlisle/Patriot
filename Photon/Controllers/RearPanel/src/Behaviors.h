@@ -20,6 +20,8 @@
 void setOfficeCeiling(int value) {
     if(is("Cleaning")) {
         set("OfficeCeiling", 100);
+    } else if(is("Office")) {
+        set("OfficeCeiling", value("Office"));
     } else {
         set("OfficeCeiling", value);
     }
@@ -36,6 +38,8 @@ void setLoft(int value) {
 void setPiano(int value) {
     if(is("Cleaning")) {
         set("Piano", 100);
+    } else if(is("Office")) {
+        set("Piano", value("Office"));
     } else {
         set("Piano", value);
     }
@@ -77,30 +81,6 @@ void setRampAwning(int value) {
 // Update all devices managed by this Photon2
 void updateLights() {
     Log.info("RP updateLights");
-
-    // When cleaning is set, all inside lights are turned on
-    // Turn on all outside lights also if it is nighttime
-    // Assuming that not bedtime or sleeping when cleaning
-    // if(is("cleaning")) {
-    //     Log.info("RP updateLights cleaning");
-    //     // Turn off other statuses
-    //     set("Bedtime", 0);
-    //     set("Sleeping", 0);
-
-    //     set("Curtain", 100);        // Open curtain
-
-    //     setLoft(100);
-    //     setOfficeCeiling(100);
-    //     setPiano(100);
-    //     return;
-    // }
-
-    // if(is("office")) {
-    //     Log.info("RP updateLights office");
-    //     set("OfficeCeiling", 100);
-    //     set("Piano", 100);
-    //     return;
-    // }
 
     switch(partOfDay()) {
         case Asleep:
