@@ -26,6 +26,22 @@ void setSinkOrOverride(int percent) {
     }
 }
 
+void setKitchenCeilingOrOverride(int percent) {
+    if(is("Kitchen")) {
+        set("KitchenCeiling", value("Kitchen"));
+    } else {
+        set("KitchenCeiling", percent);
+    }
+}
+
+void setCabinetsOrOverride(int percent) {
+    if(is("Kitchen")) {
+        set("Cabinets", value("Kitchen"));
+    } else {
+        set("Cabinets", percent);
+    }
+}
+
 // Update all devices managed by this Photon2
 void updateLights() {
     Log.info("FP updateLights");
@@ -40,13 +56,15 @@ void updateLights() {
         set("Bedtime", 0);
         set("Sleeping", 0);
 
-        // Set lights
-        set("KitchenCeiling", 100);
-        set("Cabinets", 100);
+        // Set inside lights
+        setKitchenCeilingOrOverride(100);
+        setCabinetsOrOverride(100);
         setSinkOrOverride(100);
         set("LeftTrim", 100);
         set("RightTrim", 100);
         set("Ceiling", 100);
+
+        // Set outside lights TODO: update when door implemented
         if(pod == Evening) {
             set("DoorSide", 100);
             set("OtherSide", 100);
@@ -66,8 +84,8 @@ void updateLights() {
             set("Sleeping", 0);
 
             // Set lights
-            set("KitchenCeiling", 0);
-            set("Cabinets", 0);
+            setKitchenCeilingOrOverride(0);
+            setCabinetsOrOverride(0);
             setSinkOrOverride(50);
             set("LeftTrim", 0);
             set("RightTrim", 0);
@@ -87,8 +105,8 @@ void updateLights() {
             set("Sink", 0);
 
             // Set lights
-            set("KitchenCeiling", 0);
-            set("Cabinets", 0);
+            setKitchenCeilingOrOverride(0);
+            setCabinetsOrOverride(0);
             setSinkOrOverride(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
@@ -104,8 +122,8 @@ void updateLights() {
             break;
         case Morning:
         case Afternoon:
-            set("KitchenCeiling", 0);
-            set("Cabinets", 0);
+            setKitchenCeilingOrOverride(0);
+            setCabinetsOrOverride(0);
             setSinkOrOverride(100);
             set("LeftTrim", 0);
             set("RightTrim", 0);
@@ -116,9 +134,9 @@ void updateLights() {
             set("FrontPorch", 0);
             break;
         case Evening:
-            set("KitchenCeiling", 20);
-            // Don't set cabinets - they reflect off TV
-            //set("Cabinets", 0);
+            setKitchenCeilingOrOverride(20);
+            // Don't set cabinets unless overridden - they reflect off TV
+            setCabinetsOrOverride(0);
             setSinkOrOverride(40);
             set("LeftTrim", 100);
             set("RightTrim", 100);
