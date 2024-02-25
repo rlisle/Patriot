@@ -17,14 +17,14 @@
 #define OFFICE_DOOR_LIGHT_TIMEOUT 15*1000
 
 // Inside Overrides
-void setOfficeCeiling(int value) {
+void setOfficeCeiling(int percent) {
     if(is("Cleaning")) {
         set("OfficeCeiling", 100);
     } else if(is("Office")) {
         set("OfficeCeiling", value("Office"));
     } else {
-        set("OfficeCeiling", value);
-    }
+        set("OfficeCeiling", percent);
+     }
 }
 
 void setLoft(int value) {
@@ -35,13 +35,13 @@ void setLoft(int value) {
     }
 }
 
-void setPiano(int value) {
+void setPiano(int percent) {
     if(is("Cleaning")) {
         set("Piano", 100);
     } else if(is("Office")) {
         set("Piano", value("Office"));
     } else {
-        set("Piano", value);
+        set("Piano", percent);
     }
 }
 
