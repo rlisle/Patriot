@@ -64,6 +64,7 @@ void setup() {
     Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
     Device::add(new Device("Kitchen", "Status", 'S'));
     Device::add(new Device("Couch", "Status", 'S'));
+    Device::add(new Device("Piano", "Status", 'S'));        // PianoSpot override
     Device::add(new Device("Outside", "Status", 'S'));
 
     // I2CIO4R4G5LE board
@@ -83,7 +84,7 @@ void setup() {
     Device::add(new NCD8Light(4, "RampAwning", "Outside"));
     Device::add(new NCD8Light(5, "RearPorch", "Outside"));
     Device::add(new NCD8Light(6, "RearAwning", "Outside"));
-    Device::add(new NCD8Light(7, "Piano", "Office"));
+    Device::add(new NCD8Light(7, "PianoSpot", "Office"));
     //Device::add(new NCD8Light(8, "Unused", "Office"));
 
     // Checklist Items -  - define for every non-automated checklist item

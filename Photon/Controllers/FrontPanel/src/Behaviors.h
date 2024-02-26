@@ -117,7 +117,7 @@ void updateLights() {
             set("FrontPorch", 0);
             break;
         case AwakeEarly:
-            setSinkOrOverride(20);
+            setSinkOrOverride(10);
             //TODO: turn on desk lamps
             break;
         case Morning:

@@ -37,11 +37,13 @@ void setLoft(int value) {
 
 void setPiano(int percent) {
     if(is("Cleaning")) {
-        set("Piano", 100);
+        set("PianoSpot", 100);
+    } else if(is("Piano")) {
+        set("PianoSpot", value("Piano"));
     } else if(is("Office")) {
-        set("Piano", value("Office"));
+        set("PianoSpot", value("Office"));
     } else {
-        set("Piano", percent);
+        set("PianoSpot", percent);
     }
 }
 
@@ -114,7 +116,7 @@ void updateLights() {
             Log.info("RP updateLights daytime");
             setLoft(0);
             setOfficeCeiling(0);
-            setPiano(100);
+            setPiano(0);
 
             setRampPorch(0);
             setRampAwning(0);
