@@ -17,10 +17,6 @@
  
  PCA9685 D/A resolution is 12 bits (0-0fff): 4096 steps
 
- Change log:
-   2/25/24 _value was changing during dimming. This caused problems with changeHandlers.
-           Setting _value immediately now, and using _currentLevel instead for dimming.
- 
  http://www.github.com/rlisle/Patriot
 
  Written by Ron Lisle
@@ -30,6 +26,10 @@
 
  Datasheets:
     * PCA9685: https://media.ncd.io/sites/2/20170721134542/PCA9685.pdf
+
+ Change log:
+   2/25/24 _value was changing during dimming. This caused problems with changeHandlers.
+           Setting _value immediately now, and using _currentLevel instead for dimming.
  */
 
 //TODOs:

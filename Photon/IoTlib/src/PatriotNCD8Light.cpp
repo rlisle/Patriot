@@ -26,6 +26,11 @@
 
  Datasheets:
      PCA9634: https://www.nxp.com/docs/en/data-sheet/PCA9634.pdf
+
+ Change log:
+   2/26/24 _value was changing during dimming. This caused problems with changeHandlers.
+           Setting _value immediately now, and using _currentLevel instead for dimming.
+
  */
 
 #include "IoT.h"
@@ -71,14 +76,14 @@ void NCD8Light::reset() {
 void NCD8Light::setValue(int newValue) {
     int checkedValue = constrain(newValue, 0, 100);
     if( checkedValue == _value ) {
-        outputPWM();
+//        outputPWM();      // I don't think this is needed
         return;
     }
     
     _targetLevel = (float)checkedValue;
+    _value = checkedValue;
     if(_dimmingMSecs == 0) {
         _currentLevel = _targetLevel;
-        _value = checkedValue;
         outputPWM();
     } else {
         startSmoothDimming();
@@ -91,7 +96,7 @@ void NCD8Light::setValue(int newValue) {
  * An alternative approach would be to calculate # msecs per step
  */
 void NCD8Light::startSmoothDimming() {
-    if(abs(_currentLevel - _targetLevel) > 0.001) { // if !=
+    if(abs(_currentLevel - _targetLevel) > 0.001) {
         _lastUpdateTime = millis();
         float delta = _targetLevel - _currentLevel;
         _incrementPerMillisecond = delta / _dimmingMSecs;
@@ -136,7 +141,7 @@ void NCD8Light::loop()
     
     // Clamp value
     _currentLevel = constrain(_currentLevel, 0.0, 100.0);
-    _value = (int)_currentLevel;
+//    _value = (int)_currentLevel;
     _lastUpdateTime = loopTime;
 
     outputPWM();
@@ -148,7 +153,6 @@ void NCD8Light::loop()
  */
 void NCD8Light::outputPWM() {
     int current255 = convertTo255(_currentLevel);
-//    Log.info("NCD8Light #%d = %.1f curve %d PWM %d", _lightNum, _currentLevel, _curve, current255);
     PCA9634::outputPWM(_lightNum, current255);
 }
 
