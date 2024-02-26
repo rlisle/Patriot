@@ -16,7 +16,7 @@
 //------------
 #define FRONT_DOOR_LIGHT_TIMEOUT 15*1000
 
-void setSinkOrOverride(int percent) {
+void setSink(int percent) {
     if(is("Sink")) {
         Log.info("FP set sinkLamp override: %d", value("Sink"));
         set("SinkLamp", value("Sink"));
@@ -26,7 +26,7 @@ void setSinkOrOverride(int percent) {
     }
 }
 
-void setKitchenCeilingOrOverride(int percent) {
+void setKitchenCeiling(int percent) {
     if(is("Kitchen")) {
         set("KitchenCeiling", value("Kitchen"));
     } else {
@@ -34,7 +34,7 @@ void setKitchenCeilingOrOverride(int percent) {
     }
 }
 
-void setCabinetsOrOverride(int percent) {
+void setCabinets(int percent) {
     if(is("Kitchen")) {
         set("Cabinets", value("Kitchen"));
     } else {
@@ -57,9 +57,9 @@ void updateLights() {
         set("Sleeping", 0);
 
         // Set inside lights
-        setKitchenCeilingOrOverride(100);
-        setCabinetsOrOverride(100);
-        setSinkOrOverride(100);
+        setKitchenCeiling(100);
+        setCabinets(100);
+        setSink(100);
         set("LeftTrim", 100);
         set("RightTrim", 100);
         set("Ceiling", 100);
@@ -84,9 +84,9 @@ void updateLights() {
             set("Sleeping", 0);
 
             // Set lights
-            setKitchenCeilingOrOverride(0);
-            setCabinetsOrOverride(0);
-            setSinkOrOverride(50);
+            setKitchenCeiling(0);
+            setCabinets(0);
+            setSink(5);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -105,9 +105,9 @@ void updateLights() {
             set("Sink", 0);
 
             // Set lights
-            setKitchenCeilingOrOverride(0);
-            setCabinetsOrOverride(0);
-            setSinkOrOverride(0);
+            setKitchenCeiling(0);
+            setCabinets(0);
+            setSink(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -117,14 +117,14 @@ void updateLights() {
             set("FrontPorch", 0);
             break;
         case AwakeEarly:
-            setSinkOrOverride(10);
+            setSink(5);
             //TODO: turn on desk lamps
             break;
         case Morning:
         case Afternoon:
-            setKitchenCeilingOrOverride(0);
-            setCabinetsOrOverride(0);
-            setSinkOrOverride(100);
+            setKitchenCeiling(0);
+            setCabinets(0);
+            setSink(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -134,10 +134,10 @@ void updateLights() {
             set("FrontPorch", 0);
             break;
         case Evening:
-            setKitchenCeilingOrOverride(20);
+            setKitchenCeiling(20);
             // Don't set cabinets unless overridden - they reflect off TV
-            setCabinetsOrOverride(0);
-            setSinkOrOverride(40);
+            setCabinets(0);
+            setSink(5);
             set("LeftTrim", 100);
             set("RightTrim", 100);
             set("Ceiling", 20);
