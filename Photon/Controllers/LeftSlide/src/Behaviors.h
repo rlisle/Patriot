@@ -5,6 +5,7 @@
 //   AnyoneHome
 //   Bedtime
 //   Cleaning
+//   Couch (override)
 //   LivingRoomMotion
 //   Nighttime
 //   RonHome
@@ -14,24 +15,31 @@
 
 #define LIVINGROOM_MOTION_TIMEOUT_MSECS 15*1000
 
+// Overrides
+void setCouchCeiling(int percent) {
+    if(is("Cleaning")) {
+        set("CouchCeiling", 100);
+    } else if(is("Couch")) {
+        set("CouchCeiling", value("Couch"));
+    } else {
+        set("CouchCeiling", percent);
+     }
+}
+
 // Update all devices managed by this Photon2
 void updateLights() {
     PartOfDay pod = partOfDay();
 
-    // Get pointers to all devices
-//    Device *couchCeiling = Device::get("CouchCeiling");
-//    Device *leftVertical = Device::get("LeftVertical");
-
     // When cleaning is set, all inside lights are turned on
-    // Turn on all outside lights also if it is nighttime
     // Assuming that not bedtime or sleeping when cleaning
     if(is("Cleaning")) {
         // Turn off other statuses
         set("Bedtime", 0);
         set("Sleeping", 0);
+        set("Couch", 0);
 
         // Set lights
-        set("CouchCeiling",100);
+        setCouchCeiling(100);
         set("LeftVertical", 100);
         return;
     }
@@ -41,9 +49,10 @@ void updateLights() {
             // Turn off other statuses
             set("Cleaning", 0);
             set("Sleeping", 0);
+            set("Couch", 0);
 
             // Set lights
-            set("CouchCeiling", 0);
+            setCouchCeiling(0);
             set("LeftVertical", 0);
             break;
             
@@ -51,9 +60,10 @@ void updateLights() {
             // Turn off other statuses
             set("Bedtime", 0);
             set("Cleaning", 0);
+            set("Couch", 0);
 
             // Set lights
-            set("CouchCeiling", 0);
+            setCouchCeiling(0);
             set("LeftVertical", 0);
             break;
             
@@ -63,11 +73,11 @@ void updateLights() {
             
         case Morning:
         case Afternoon:
-            set("CouchCeiling", 0);
+            setCouchCeiling(0);
             set("LeftVertical", 0);
             break;
         case Evening:
-            set("CouchCeiling", 20);
+            setCouchCeiling(20);
             set("LeftVertical", 20);
             break;
     }
