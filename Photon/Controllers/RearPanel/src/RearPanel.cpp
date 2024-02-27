@@ -55,16 +55,17 @@ void setup() {
 
     //TODO: refactor to array of structs/enums
     Device::add(new Device("AnyoneHome", "Status", 'S'));
+    Device::add(new Device("Couch", "Status", 'L'));
+    Device::add(new Device("Cleaning", "Status", 'S'));
+    Device::add(new Device("Kitchen", "Status", 'L'));
+    Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
+    Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("Office", "Status", 'L'));       // Office override
+    Device::add(new Device("Outside", "Status", 'S'));
+    Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Nighttime", "Status", 'S'));
     Device::add(new Device("Sleeping", "Status", 'S'));
-    Device::add(new Device("Cleaning", "Status", 'S'));
-    Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
-    Device::add(new Device("Kitchen", "Status", 'L'));
-    Device::add(new Device("Couch", "Status", 'L'));
-    Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
-    Device::add(new Device("Outside", "Status", 'S'));
 
     // I2CIO4R4G5LE board
     // 4 Relays
