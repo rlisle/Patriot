@@ -123,43 +123,16 @@
  
  */
 #include <IoT.h>
-
-#define CONTROLLER_NAME "FrontPanel2"
-#define MQTT_BROKER "192.168.0.33"
-#define PCA9685_ADDRESS 0x41       // Lowest jumper set
-//#define SWITCH_ADDRESS 0x20
-//#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
-
-#define CURVE 2 // 0 = Linear, 1 = exponential, 2 = 50/50
-
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(AUTOMATIC);
-
-// Write Log messages to MQTT and/or serial port
-#define MQTT_LOGGING true
-//SerialLogHandler logHandler1(57600, LOG_LEVEL_INFO);
-
-int voltage = 0;
-
-// Timing
-bool isTimingLivingRoomMotion;
-bool isTimingFrontDoor;
-
-// Behaviors
+#include "Settings.h"
 #include "Behaviors.h"
 #include "EventHandlers.h"
 
-//------
-// LOOP
-//------
 void loop() {
     IoT::loop();
 }
 
 void setup() {
-//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
-//    WiFi.selectAntenna(ANT_INTERNAL);
-//    WiFi.useDynamicIP();
+    setupWifi();    // in Settings.h
     
     // This also sets timezone and DST
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
@@ -175,14 +148,14 @@ void setup() {
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Bedtime", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
-    Device::add(new Device("Kitchen", "Status", 'S', handleKitchen));
+    Device::add(new Device("Kitchen", "Status", 'L', handleKitchen));
     Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
     Device::add(new Device("Nighttime", "Status", 'S'));
     Device::add(new Device("OfficeMotion", "Status", 'S'));
     Device::add(new Device("Outside", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Sink", "Status", 'S'));                 // Override
+    Device::add(new Device("Sink", "Status", 'L'));                 // Override
     Device::add(new Device("Sleeping", "Status", 'S'));
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors

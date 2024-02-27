@@ -50,8 +50,10 @@ void setPiano(int percent) {
 // Outside Overrides
 void setRearPorch(int value) {
     if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
+        Log.info("RP setRearPorch 100");
         set("RearPorch", 100);
     } else {
+        Log.info("RP setRearPorch %d", value);
         set("RearPorch", value);
     }
 }

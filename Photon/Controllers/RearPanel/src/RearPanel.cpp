@@ -37,9 +37,8 @@ void loop() {
 }
 
 void setup() {
-//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
-//    WiFi.selectAntenna(ANT_INTERNAL);    
-//    WiFi.useDynamicIP();
+
+    setupWifi();
 
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
     
@@ -62,9 +61,9 @@ void setup() {
     Device::add(new Device("Sleeping", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
-    Device::add(new Device("Kitchen", "Status", 'S'));
-    Device::add(new Device("Couch", "Status", 'S'));
-    Device::add(new Device("Piano", "Status", 'S'));        // PianoSpot override
+    Device::add(new Device("Kitchen", "Status", 'L'));
+    Device::add(new Device("Couch", "Status", 'L'));
+    Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
     Device::add(new Device("Outside", "Status", 'S'));
 
     // I2CIO4R4G5LE board

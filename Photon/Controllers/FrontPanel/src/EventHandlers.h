@@ -4,7 +4,6 @@
 
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
-    Log.info("FP handleNextMinute");
     // if(isTimingFrontDoor) {
     //     if(Device::msecsLastChange("LivingRoomDoor") + FRONT_DOOR_LIGHT_TIMEOUT < millis()) {
     //         isTimingLivingRoomDoor = false;
@@ -13,7 +12,6 @@ void handleNextMinute() {
     // }
 
     if(isTimingLivingRoomMotion) {
-        Log.info("FP isTimingLivingRoomMotion");
         if(millis() > Device::msecsLastChange("LivingRoomMotion") + FRONT_DOOR_LIGHT_TIMEOUT) {            
             isTimingLivingRoomMotion = false;
             updateLights();
@@ -59,7 +57,7 @@ void handleLivingRoomMotion(int value, int oldValue) {
 void handleKitchen(int value, int oldValue) {
     Log.info("FP handleKitchen %d", value);
     if(value > 0 && oldValue == 0) {        // Turned on
-        set("Sink", 0);
+//        set("SinkLamp", 0);
 //        updateLights();     //TODO: unneeded now?
     }
 }

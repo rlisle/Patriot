@@ -91,7 +91,7 @@ void setup() {
     
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
-    Device::add(new Device("Couch", "Status", 'S'));        // Override
+    Device::add(new Device("Couch", "Status", 'L'));        // Override
     Device::add(new Device("Nighttime", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));

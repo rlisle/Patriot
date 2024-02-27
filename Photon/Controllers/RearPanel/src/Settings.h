@@ -22,3 +22,9 @@ SYSTEM_MODE(AUTOMATIC);
 // Timing
 bool isTimingOfficeMotion;
 bool isTimingOfficeDoor = false;
+
+void setupWifi() {
+//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
+//    WiFi.selectAntenna(ANT_INTERNAL);    
+//    WiFi.useDynamicIP();
+}
