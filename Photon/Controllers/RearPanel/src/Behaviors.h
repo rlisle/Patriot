@@ -49,36 +49,52 @@ void setPiano(int percent) {
 
 // Outside Overrides
 void setRearPorch(int value) {
-    if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
-        Log.info("RP setRearPorch 100");
-        set("RearPorch", 100);
+    if(is("Nighttime")) {
+        if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
+            Log.info("RP setRearPorch 100");
+            set("RearPorch", 100);
+        } else {
+            Log.info("RP setRearPorch %d", value);
+            set("RearPorch", value);
+        }
     } else {
-        Log.info("RP setRearPorch %d", value);
-        set("RearPorch", value);
+        set("RearPorch", 0);    // Turn off if daytime
     }
 }
 
 void setRearAwning(int value) {
-    if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
-        set("RearAwning", 100);
+    if(is("Nighttime")) {
+        if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
+            set("RearAwning", 100);
+        } else {
+            set("RearAwning", value);
+        }
     } else {
-        set("RearAwning", value);
+        set("RearAwning", 0);    // Turn off if daytime
     }
 }
 
 void setRampPorch(int value) {
-    if(is("Outside")) {
-        set("RampPorch", 100);
+    if(is("Nighttime")) {
+        if(is("Outside")) {
+            set("RampPorch", 100);
+        } else {
+            set("RampPorch", value);
+        }
     } else {
-        set("RampPorch", value);
+        set("RampPorch", 0);    // Turn off if daytime
     }
 }
 
 void setRampAwning(int value) {
-    if(is("Outside")) {
-        set("RampAwning", 100);
+    if(is("Nighttime")) {
+        if(is("Outside")) {
+            set("RampAwning", 100);
+        } else {
+            set("RampAwning", value);
+        }
     } else {
-        set("RampAwning", value);
+        set("RampAwning", 0);    // Turn off if daytime
     }
 }
 

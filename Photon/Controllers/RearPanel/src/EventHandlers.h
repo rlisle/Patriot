@@ -24,23 +24,18 @@ void handleOfficeDoor(int value, int oldValue) {
     Log.info("RP handleOfficeDoor %d", value);
     if(value > 0 && oldValue == 0) {        // Opened
         Log.info("RP door opened");
-//        isTimingOfficeDoor = false;
-//        updateLights();
     } else if(value == 0 && oldValue > 0) { // Closed
         Log.info("RP door closed, setting isTimingOfficeDoor");
         isTimingOfficeDoor = true;
-//        updateLights();
     }
-//    Log.info("RP handleOfficeDoor exit");
 }
 
 void handleOfficeMotion(int value, int oldValue) {
     Log.info("RP handleOfficeMotion %d", value);
     if(value > 0 && oldValue == 0) {        // Movement
         isTimingOfficeMotion = true;
-//        updateLights();
     } else if(value == 0 && oldValue > 0) { // No movement
-//        updateLights();
+        //nothing to do
     }
 }
 
