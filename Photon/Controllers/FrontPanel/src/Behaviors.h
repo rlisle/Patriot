@@ -17,11 +17,11 @@
 #define FRONT_DOOR_LIGHT_TIMEOUT 15*1000
 
 void setSink(int percent) {
-    if(is("Sink")) {
-        Log.info("FP set sinkLamp override: %d", value("Sink"));
+    if(is("Sink")) {    // Is override value set?
+        Log.info("FP Sink overridden: %d", value("Sink"));
         set("SinkLamp", value("Sink"));
     } else {
-        Log.info("FP set sinkLamp percent: %d", percent);
+        Log.info("FP sinkLamp set to: %d", percent);
         set("SinkLamp", percent);
     }
 }
@@ -35,16 +35,15 @@ void setKitchenCeiling(int percent) {
 }
 
 void setCabinets(int percent) {
-    if(is("Kitchen")) {
-        set("Cabinets", value("Kitchen"));
+    if(is("Cabinets")) {
+        set("CabinetLamps", value("Cabinets"));
     } else {
-        set("Cabinets", percent);
+        set("CabinetLamps", percent);
     }
 }
 
 // Update all devices managed by this Photon2
 void updateLights() {
-    Log.info("FP updateLights");
 
     PartOfDay pod = partOfDay();
 
@@ -52,6 +51,8 @@ void updateLights() {
     // Turn on all outside lights also if it is nighttime
     // Assuming that not bedtime or sleeping when cleaning
     if(is("Cleaning")) {
+        Log.info("FP updateLights cleaning");
+
         // Turn off other statuses
         set("Bedtime", 0);
         set("Sleeping", 0);
@@ -76,6 +77,8 @@ void updateLights() {
 
     switch(pod) {
         case Retiring:
+            Log.info("FP updateLights retiring");
+
             // Turn off other statuses
             set("Cleaning", 0);
             set("Kitchen", 0);
@@ -97,6 +100,8 @@ void updateLights() {
             break;
 
         case Asleep:                  // Don't assume bedtime was set
+            Log.info("FP updateLights asleep");
+
             // Turn off other statuses
             set("Bedtime", 0);
             set("Cleaning", 0);
@@ -116,12 +121,18 @@ void updateLights() {
             set("FrontAwning", 0);
             set("FrontPorch", 0);
             break;
+
         case AwakeEarly:
+            Log.info("FP updateLights awake early");
+
             setSink(5);
             //TODO: turn on desk lamps
             break;
+
         case Morning:
         case Afternoon:
+            Log.info("FP updateLights morning/afternoon");
+
             setKitchenCeiling(0);
             setCabinets(0);
             setSink(0);
@@ -134,6 +145,8 @@ void updateLights() {
             set("FrontPorch", 0);
             break;
         case Evening:
+            Log.info("FP updateLights evening");
+
             setKitchenCeiling(20);
             // Don't set cabinets unless overridden - they reflect off TV
             setCabinets(0);

@@ -43,8 +43,8 @@ void wakeupIfAfter430am() {
 }
 
 void handleLivingRoomMotion(int value, int oldValue) {
-    Log.info("FP handleLivingRoomMotion %d", value);
     if(value > 0 && oldValue == 0) {        // Movement
+        Log.info("FP LivingRoomMotion");
         isTimingLivingRoomMotion = true;
         wakeupIfAfter430am();
 //        updateLights();     //TODO: unneeded now?
@@ -55,7 +55,7 @@ void handleLivingRoomMotion(int value, int oldValue) {
 
 // Kitchen overrides Sink
 void handleKitchen(int value, int oldValue) {
-    Log.info("FP handleKitchen %d", value);
+    Log.info("FP Kitchen %d", value);
     if(value > 0 && oldValue == 0) {        // Turned on
 //        set("SinkLamp", 0);
 //        updateLights();     //TODO: unneeded now?

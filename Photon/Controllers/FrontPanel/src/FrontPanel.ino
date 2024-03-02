@@ -147,6 +147,7 @@ void setup() {
     // Be careful that names don't collide with Homebridge (commands)
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Bedtime", "Status", 'S'));
+    Device::add(new Device("Cabinets", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Kitchen", "Status", 'L', handleKitchen));
     Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
@@ -164,7 +165,7 @@ void setup() {
     Device::add(new NCD16Light(12, "LeftTrim", "Kitchen",0));         // G?
     Device::add(new NCD16Light(16, "RightTrim", "Living Room",0));    // Y?
     Device::add(new NCD16Light(3,  "Ceiling", "Living Room",0));      // W
-    Device::add(new NCD16Light(14, "Cabinets", "Kitchen",0));         // R
+    Device::add(new NCD16Light(14, "CabinetLamps", "Kitchen",0));     // R
 
     // Outside Lights
     Device::add(new NCD16Light(1, "DoorSide", "Outside",0));          // B
