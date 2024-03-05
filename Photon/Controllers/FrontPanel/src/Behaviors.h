@@ -93,6 +93,7 @@ void updateLights() {
             set("Outside", 0);
             set("Sink", 0);
             set("Sleeping", 0);
+            set("Theatre", 0);
 
             // Set lights
             setKitchenCeiling(0);
@@ -116,6 +117,7 @@ void updateLights() {
             set("Kitchen", 0);
             set("Outside", 0);
             set("Sink", 0);
+            set("Theatre", 0);
 
             // Set lights
             setKitchenCeiling(0);
