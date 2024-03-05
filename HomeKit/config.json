@@ -1,288 +1,219 @@
 {
     "bridge": {
         "name": "Homebridge CC4B",
-        "username": "0E:BC:2C:C8:CC:4B",
-        "port": 51678,
-        "pin": "395-68-010",
+        "username": "0E:87:0C:34:43:36",
+        "port": 51656,
+        "pin": "548-95-253",
         "advertiser": "avahi"
+    },
+    "log": {
+        "method": "file",
+        "path": "/Users/ronlisle/.homebridge/homebridge.log"
     },
     "accessories": [
         {
-            "type": "windowCovering",
-            "name": "Curtain",
-            "url": "http://192.168.50.33:1883",
+            "name": "AnyoneHome",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
             "topics": {
-                "setTargetPosition": "patriot/curtain"
-            },
-            "onValue": "100",
-            "offValue": "0",
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "door",
-            "name": "OfficeDoor",
-            "url": "http://192.168.50.33:1883",
-            "accessory": "mqttthing",
-            "topics": {
-                "getCurrentPosition": "patriot/OfficeDoor"
-            }
-        },
-        {
-            "type": "motionSensor",
-            "name": "LivingRoomMotion",
-            "url": "http://192.168.50.33:1883",
-            "accessory": "mqttthing",
-            "topics": {
-                "getMotionDetected": "patriot/LivingRoomMotion"
-            },
-            "onValue": "100",
-            "offValue": "0"
-        },
-        {
-            "type": "motionSensor",
-            "name": "CouchPresence",
-            "url": "http://192.168.50.33:1883",
-            "accessory": "mqttthing",
-            "topics": {
-                "getMotionDetected": "patriot/CouchPresence"
-            },
-            "onValue": "100",
-            "offValue": "0"
-        },
-        {
-            "type": "motionSensor",
-            "name": "OfficeMotion",
-            "url": "http://192.168.50.33:1883",
-            "accessory": "mqttthing",
-            "topics": {
-                "getMotionDetected": "patriot/OfficeMotion"
-            },
-            "onValue": "100",
-            "offValue": "0"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "Sink",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/sink",
-                "getOn": "patriot/ack/set/sink",
-                "setBrightness": "patriot/brightness/sink",
-                "getBrightness": "patriot/ack/brightness/sink"
+                "setOn": "patriot/anyonehome/set",
+                "getOn": "patriot/ack/anyonehome/set"
             },
             "accessory": "mqttthing"
         },
         {
-            "type": "lightbulb-Dimmable",
-            "name": "Kitchen Ceiling",
-            "url": "http://192.168.50.33:1883",
+            "name": "Bedroom",
+            "type": "lightbulb",
+            "url": "http://192.168.0.33:1883",
             "topics": {
-                "setOn": "patriot/set/kitchenceiling",
-                "getOn": "patriot/ack/set/kitchenceiling",
-                "setBrightness": "patriot/brightness/kitchenceiling",
-                "getBrightness": "patriot/ack/brightness/kitchenceiling"
+                "setOn": "patriot/bedroom/set",
+                "getOn": "patriot/ack/bedroom/set",
+                "setBrightness": "patriot/bedroom/brightness",
+                "getBrightness": "patriot/ack/bedroom/brightness"
             },
             "accessory": "mqttthing"
         },
         {
-            "type": "lightbulb-Dimmable",
-            "name": "Cabinets",
-            "url": "http://192.168.50.33:1883",
+            "name": "Cleaning",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
             "topics": {
-                "setOn": "patriot/set/cabinets",
-                "getOn": "patriot/ack/set/cabinets",
-                "setBrightness": "patriot/brightness/cabinets",
-                "getBrightness": "patriot/ack/brightness/cabinets"
+                "setOn": "patriot/cleaning/set",
+                "getOn": "patriot/ack/cleaning/set"
             },
             "accessory": "mqttthing"
         },
         {
-            "type": "lightbulb-Dimmable",
-            "name": "Ceiling",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/ceiling",
-                "getOn": "patriot/ack/set/ceiling",
-                "setBrightness": "patriot/brightness/ceiling",
-                "getBrightness": "patriot/ack/brightness/ceiling"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "RightTrim",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/righttrim",
-                "getOn": "patriot/ack/set/righttrim",
-                "setBrightness": "patriot/brightness/righttrim",
-                "getBrightness": "patriot/ack/brightness/righttrim"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "LeftTrim",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/lefttrim",
-                "getOn": "patriot/ack/set/lefttrim",
-                "setBrightness": "patriot/brightness/lefttrim",
-                "getBrightness": "patriot/ack/brightness/lefttrim"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "DoorSide",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/doorside",
-                "getOn": "patriot/ack/set/doorside",
-                "setBrightness": "patriot/brightness/doorside",
-                "getBrightness": "patriot/ack/brightness/doorside"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "OtherSide",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/otherside",
-                "getOn": "patriot/ack/set/otherside",
-                "setBrightness": "patriot/brightness/otherside",
-                "getBrightness": "patriot/ack/brightness/otherside"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "FrontAwning",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/frontawning",
-                "getOn": "patriot/ack/set/frontawning",
-                "setBrightness": "patriot/brightness/frontawning",
-                "getBrightness": "patriot/ack/brightness/frontawning"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "FrontPorch",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/frontporch",
-                "getOn": "patriot/ack/set/frontporch",
-                "setBrightness": "patriot/brightness/frontporch",
-                "getBrightness": "patriot/ack/brightness/frontporch"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "OfficeRightTrim",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/officerighttrim",
-                "getOn": "patriot/ack/set/officerighttrim"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "OfficeCeiling",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/officeceiling",
-                "getOn": "patriot/ack/set/officeceiling",
-                "setBrightness": "patriot/brightness/officeceiling",
-                "getBrightness": "patriot/ack/brightness/officeceiling"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "Loft",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/loft",
-                "getOn": "patriot/ack/set/loft",
-                "setBrightness": "patriot/brightness/loft",
-                "getBrightness": "patriot/ack/brightness/loft"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "RampPorch",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/rampporch",
-                "getOn": "patriot/ack/set/rampporch",
-                "setBrightness": "patriot/brightness/rampporch",
-                "getBrightness": "patriot/ack/brightness/rampporch"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "RampAwning",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/rampawning",
-                "getOn": "patriot/ack/set/rampawning",
-                "setBrightness": "patriot/brightness/rampawning",
-                "getBrightness": "patriot/ack/brightness/rampawning"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "Piano",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/piano",
-                "getOn": "patriot/ack/set/piano",
-                "setBrightness": "patriot/brightness/piano",
-                "getBrightness": "patriot/ack/brightness/piano"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
-            "name": "OfficeLeftTrim",
-            "url": "http://192.168.50.33:1883",
-            "topics": {
-                "setOn": "patriot/set/officelefttrim",
-                "getOn": "patriot/ack/set/officelefttrim",
-                "setBrightness": "patriot/brightness/officelefttrim",
-                "getBrightness": "patriot/ack/brightness/officelefttrim"
-            },
-            "accessory": "mqttthing"
-        },
-        {
-            "type": "lightbulb-Dimmable",
             "name": "Couch",
-            "url": "http://192.168.50.33:1883",
+            "type": "lightbulb",
+            "url": "http://192.168.0.33:1883",
             "topics": {
-                "setOn": "patriot/set/couch",
-                "getOn": "patriot/ack/set/couch",
-                "setBrightness": "patriot/brightness/couch",
-                "getBrightness": "patriot/ack/brightness/couch"
+                "setOn": "patriot/couch/set",
+                "getOn": "patriot/ack/couch/set",
+                "setBrightness": "patriot/couch/brightness",
+                "getBrightness": "patriot/ack/couch/brightness"
             },
             "accessory": "mqttthing"
         },
         {
-            "type": "lightbulb-Dimmable",
-            "name": "LeftVertical",
-            "url": "http://192.168.50.33:1883",
+            "name": "Curtain",
+            "type": "windowCovering",
+            "url": "http://192.168.0.33:1883",
             "topics": {
-                "setOn": "patriot/set/leftvertical",
-                "getOn": "patriot/ack/set/leftvertical",
-                "setBrightness": "patriot/brightness/leftvertical",
-                "getBrightness": "patriot/ack/brightness/leftvertical"
+                "setTargetPosition": "patriot/curtain/set",
+                "getTargetPosition": "patriot/curtain/get/target",
+                "getCurrentPosition": "patriot/curtain/get/position",
+                "getPositionState": "patriot/curtain/get/state",
+                "setHoldPosition": "patriot/curtain/hold"
+            },
+            "maxPosition": 100,
+            "minPosition": 0,
+            "positionStateValues": [
+                "decreasing",
+                "increasing",
+                "stopped"
+            ],
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Desk",
+            "type": "lightbulb",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/desk/set",
+                "getOn": "patriot/ack/desk/set",
+                "setBrightness": "patriot/desk/brightness",
+                "getBrightness": "patriot/ack/desk/brightness"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Kitchen",
+            "type": "lightbulb",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/kitchen/set",
+                "getOn": "patriot/ack/kitchen/set",
+                "setBrightness": "patriot/kitchen/brightness",
+                "getBrightness": "patriot/ack/kitchen/brightness"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Living Room",
+            "type": "lightbulb",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/livingroom/set",
+                "getOn": "patriot/ack/livingroom/set",
+                "setBrightness": "patriot/livingroom/brightness",
+                "getBrightness": "patriot/ack/livingroom/brightness"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Nighttime",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/nighttime/set",
+                "getOn": "patriot/ack/nighttime/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Office",
+            "type": "lightbulb",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/office/set",
+                "getOn": "patriot/ack/office/set",
+                "setBrightness": "patriot/office/brightness",
+                "getBrightness": "patriot/ack/office/brightness"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Outside",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/outside/set",
+                "getOn": "patriot/ack/outside/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Retiring",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/retiring/set",
+                "getOn": "patriot/ack/retiring/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "RonHome",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/ronhome/set",
+                "getOn": "patriot/ack/ronhome/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "ShelleyHome",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/shelleyhome/set",
+                "getOn": "patriot/ack/shelleyhome/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Sink",
+            "type": "lightbulb",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/sink/set",
+                "getOn": "patriot/ack/sink/set",
+                "setBrightness": "patriot/sink/brightness",
+                "getBrightness": "patriot/ack/sink/brightness"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Sleeping",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/sleeping/set",
+                "getOn": "patriot/ack/sleeping/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Theatre",
+            "type": "switch",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/theatre/set",
+                "getOn": "patriot/ack/theatre/set"
+            },
+            "accessory": "mqttthing"
+        },
+        {
+            "name": "Workbench",
+            "type": "lightbulb",
+            "url": "http://192.168.0.33:1883",
+            "topics": {
+                "setOn": "patriot/workbench/set",
+                "getOn": "patriot/ack/workbench/set",
+                "setBrightness": "patriot/workbench/brightness",
+                "getBrightness": "patriot/ack/workbench/brightness"
             },
             "accessory": "mqttthing"
         }
@@ -291,6 +222,10 @@
         {
             "name": "Config",
             "port": 8581,
+            "auth": "form",
+            "theme": "auto",
+            "tempUnits": "f",
+            "lang": "auto",
             "platform": "config"
         }
     ]
