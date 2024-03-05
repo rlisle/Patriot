@@ -52,12 +52,3 @@ void handleLivingRoomMotion(int value, int oldValue) {
 //        updateLights();     //TODO: unneeded now/
     }
 }
-
-// Kitchen overrides Sink
-void handleKitchen(int value, int oldValue) {
-    Log.info("FP Kitchen %d", value);
-    if(value > 0 && oldValue == 0) {        // Turned on
-//        set("SinkLamp", 0);
-//        updateLights();     //TODO: unneeded now?
-    }
-}

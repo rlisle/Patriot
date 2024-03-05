@@ -42,6 +42,14 @@ void setCabinets(int percent) {
     }
 }
 
+void setRightTrim(int percent) {
+    if(is("Theatre")) {
+        set("RightTrim", 0);
+    } else {
+        set("RightTrim", percent);
+    }
+}
+
 // Update all devices managed by this Photon2
 void updateLights() {
 
@@ -152,7 +160,7 @@ void updateLights() {
             setCabinets(0);
             setSink(5);
             set("LeftTrim", 100);
-            set("RightTrim", 100);
+            setRightTrim(100);
             set("Ceiling", 20);
             set("DoorSide", 0);
             set("OtherSide", 0);

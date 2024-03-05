@@ -146,18 +146,19 @@ void setup() {
 
     // Be careful that names don't collide with Homebridge (commands)
     Device::add(new Device("AnyoneHome", "Status", 'S'));
-    Device::add(new Device("Bedtime", "Status", 'S'));
     Device::add(new Device("Cabinets", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
-    Device::add(new Device("Kitchen", "Status", 'L', handleKitchen));
+    Device::add(new Device("Kitchen", "Status", 'L'));
     Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
     Device::add(new Device("Nighttime", "Status", 'S'));
     Device::add(new Device("OfficeMotion", "Status", 'S'));
     Device::add(new Device("Outside", "Status", 'S'));
+    Device::add(new Device("Retiring", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
     Device::add(new Device("Sink", "Status", 'L'));                 // Override
     Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("Theatre", "Status", 'S'));
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors
     Device::add(new NCD16Light(15, "KitchenCeiling", "Kitchen",0));   // R
