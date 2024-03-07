@@ -396,3 +396,14 @@ class NCD4PIR : public Device {
     // Override to prevent MQTT from setting _percent.
     void setValue(int percent) { return; };
 };
+class ZigbeeLight : public Device {
+ private:
+    int       _dimmingSecs;
+
+ public:
+    ZigbeeLight(String name, String room, int durationSecs = 2);
+    void      begin();
+    void      setValue(int value);
+    void      loop();
+};
+
