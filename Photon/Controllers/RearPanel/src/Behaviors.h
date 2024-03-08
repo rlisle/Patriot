@@ -35,6 +35,16 @@ void setLoft(int value) {
     }
 }
 
+void setDesk(int value) {
+    if(is("Cleaning")) {
+        set("LeftDeskLamp", 100);
+        set("RightDeskLamp", 100);
+    } else {
+        set("LeftDeskLamp", 0);
+        set("RightDeskLamp", 0);
+    }
+}
+
 void setPiano(int percent) {
     if(is("Cleaning")) {
         set("PianoSpot", 100);
@@ -107,6 +117,7 @@ void updateLights() {
             Log.info("RP updateLights Asleep");
             set("Curtain", 0);     // Close curtain
 
+            setDesk(0);
             setLoft(0);
             setOfficeCeiling(0);
             setPiano(0);
@@ -122,6 +133,7 @@ void updateLights() {
             setLoft(0);
             setOfficeCeiling(5);
             setPiano(5);
+            setDesk(100);
 
             setRampPorch(0);
             setRampAwning(0);
@@ -135,6 +147,7 @@ void updateLights() {
             setLoft(0);
             setOfficeCeiling(0);
             setPiano(0);
+            setDesk(100);
 
             setRampPorch(0);
             setRampAwning(0);
@@ -147,6 +160,7 @@ void updateLights() {
             setLoft(0);
             setOfficeCeiling(5);
             setPiano(50);
+            setDesk(100);
 
             setRampPorch(100);
             setRampAwning(100);
@@ -162,6 +176,7 @@ void updateLights() {
             setLoft(0);
             setOfficeCeiling(5);
             setPiano(5);
+            setDesk(33);
 
             setRampPorch(0);
             setRampAwning(0);
