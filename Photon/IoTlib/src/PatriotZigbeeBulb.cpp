@@ -45,10 +45,13 @@ void ZigbeeLight::setValue(int value)
     float tempfValue = (float)value;
     float outputfValue = tempfValue * 2.54 / 100.0;
     String outputValue = String((int)outputfValue);
-    String transition = String(_durationSecs);
+    String duration = String(_dimmingSecs);
     //TODO: output MQTT - IoT::publishMQTT(subtopic, message, retain=false)
-    // patriot/zigbee/<name>/set -m '{"brightness":128, “transition”:<_dimmingSecs>}’
-    IoT::publishMQTT("zigbee/" + _name + "/set", '{"brightness":' + outputValue + ', "transition":' + transition + '}');
+    // patriot/zigbee/<name>/set -m {"brightness":128, “transition”:<_dimmingSecs>}
+    String topic = "zigbee/" + _name + "/set";
+    String brightness = "{\"brightness\":" + outputValue + ", ";
+    String transition = "{\"transition\": " + duration + "}";
+    IoT::publishMQTT(topic, brightness + transition);
 }
 
 /**
