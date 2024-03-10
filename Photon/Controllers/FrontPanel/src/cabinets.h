@@ -25,7 +25,6 @@ void setCabinets() {
 
     } else if(is("Theatre")) {
         percent = 0;
-    }
 
     } else switch(partOfDay()) {
         case Evening:
