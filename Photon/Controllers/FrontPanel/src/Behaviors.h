@@ -16,15 +16,17 @@
 //------------
 #define FRONT_DOOR_LIGHT_TIMEOUT 15*1000
 
-void setBedroom(int percent) {
-    if(is("Bedroom")) {    // Is override value set?
-        Log.info("FP Bedroom overridden: %d", value("Bedroom"));
-        set("BedroomLamp", value("Bedroom"));
-    } else {
-        Log.info("FP BedroomLamp set to: %d", percent);
-        set("BedroomLamp", percent);
-    }
-}
+#include "bedroom.h"
+
+// void setBedroom(int percent) {
+//     if(is("Bedroom")) {    // Is override value set?
+//         Log.info("FP Bedroom overridden: %d", value("Bedroom"));
+//         set("BedroomLamp", value("Bedroom"));
+//     } else {
+//         Log.info("FP BedroomLamp set to: %d", percent);
+//         set("BedroomLamp", percent);
+//     }
+// }
 
 void setSink(int percent) {
     if(is("Sink")) {    // Is override value set?
@@ -73,6 +75,8 @@ void setNook(int percent) {
 // Update all devices managed by this Photon2
 void updateLights() {
 
+    setBedroom();
+
     PartOfDay pod = partOfDay();
 
     // When cleaning is set, all inside lights are turned on
@@ -86,7 +90,7 @@ void updateLights() {
         set("Sleeping", 0);
 
         // Set inside lights
-        setBedroom(100);
+//        setBedroom(100);
         setKitchenCeiling(100);
         setCabinets(100);
         setSink(100);
@@ -118,7 +122,7 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            setBedroom(100);
+//            setBedroom(100);
             setKitchenCeiling(0);
             setCabinets(0);
             setNook(33);
@@ -145,7 +149,7 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            setBedroom(0);
+//            setBedroom(0);
             setKitchenCeiling(0);
             setCabinets(0);
             setNook(0);
@@ -170,7 +174,7 @@ void updateLights() {
         case Afternoon:
             Log.info("FP updateLights morning/afternoon");
 
-            setBedroom(0);
+//            setBedroom(0);
             setKitchenCeiling(0);
             setCabinets(0);
             setSink(0);
@@ -187,7 +191,7 @@ void updateLights() {
         case Evening:
             Log.info("FP updateLights evening");
 
-            setBedroom(100);
+//            setBedroom(100);
             setKitchenCeiling(20);
             // Don't set cabinets unless overridden - they reflect off TV
             setCabinets(0);
