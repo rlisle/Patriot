@@ -17,6 +17,7 @@
 #define FRONT_DOOR_LIGHT_TIMEOUT 15*1000
 
 #include "bedroom.h"
+#include "cabinets.h"
 
 // void setBedroom(int percent) {
 //     if(is("Bedroom")) {    // Is override value set?
@@ -46,13 +47,13 @@ void setKitchenCeiling(int percent) {
     }
 }
 
-void setCabinets(int percent) {
-    if(is("Cabinets")) {
-        set("CabinetLamps", value("Cabinets"));
-    } else {
-        set("CabinetLamps", percent);
-    }
-}
+// void setCabinets(int percent) {
+//     if(is("Cabinets")) {
+//         set("CabinetLamps", value("Cabinets"));
+//     } else {
+//         set("CabinetLamps", percent);
+//     }
+// }
 
 void setRightTrim(int percent) {
     if(is("Theatre")) {
@@ -92,7 +93,7 @@ void updateLights() {
         // Set inside lights
 //        setBedroom(100);
         setKitchenCeiling(100);
-        setCabinets(100);
+//        setCabinets(100);
         setSink(100);
         set("LeftTrim", 100);
         set("RightTrim", 100);
@@ -124,7 +125,7 @@ void updateLights() {
             // Set lights
 //            setBedroom(100);
             setKitchenCeiling(0);
-            setCabinets(0);
+//            setCabinets(0);
             setNook(33);
             setSink(5);
             set("LeftTrim", 0);
@@ -151,7 +152,7 @@ void updateLights() {
             // Set lights
 //            setBedroom(0);
             setKitchenCeiling(0);
-            setCabinets(0);
+//            setCabinets(0);
             setNook(0);
             setSink(0);
             set("LeftTrim", 0);
@@ -176,7 +177,7 @@ void updateLights() {
 
 //            setBedroom(0);
             setKitchenCeiling(0);
-            setCabinets(0);
+//            setCabinets(0);
             setSink(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
@@ -194,7 +195,7 @@ void updateLights() {
 //            setBedroom(100);
             setKitchenCeiling(20);
             // Don't set cabinets unless overridden - they reflect off TV
-            setCabinets(0);
+//            setCabinets(0);
             setSink(5);
             set("LeftTrim", 100);
             setRightTrim(100);
