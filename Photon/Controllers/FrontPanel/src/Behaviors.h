@@ -19,6 +19,7 @@
 #include "bedroomLamp.h"
 #include "cabinetLamps.h"
 #include "kitchenCeilingLamps.h"
+#include "leftTrimLights.h"
 #include "nookLamp.h"
 #include "rightTrimLights.h"
 #include "sinkLamp.h"
@@ -29,6 +30,7 @@ void updateLights() {
     setBedroomLamp();
     setCabinetLamps();
     setKitchenCeilingLamps();
+    setLeftTrimLights();
     setNookLamp();
     setRightTrimLights();
     setSinkLamp();
@@ -46,7 +48,6 @@ void updateLights() {
         set("Sleeping", 0);
 
         // Set inside lights
-        set("LeftTrim", 100);
         set("Ceiling", 100);
 
         // Set outside lights TODO: update when door implemented
@@ -72,7 +73,6 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            set("LeftTrim", 0);
             set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
@@ -93,7 +93,6 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            set("LeftTrim", 0);
             set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
@@ -110,7 +109,6 @@ void updateLights() {
         case Afternoon:
             Log.info("FP updateLights morning/afternoon");
 
-            set("LeftTrim", 0);
             set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
@@ -121,7 +119,6 @@ void updateLights() {
         case Evening:
             Log.info("FP updateLights evening");
 
-            set("LeftTrim", 100);
             set("Ceiling", 20);
             set("DoorSide", 0);
             set("OtherSide", 0);
