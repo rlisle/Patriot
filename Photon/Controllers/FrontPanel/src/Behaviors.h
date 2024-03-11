@@ -18,43 +18,8 @@
 
 #include "bedroomLamp.h"
 #include "cabinetLamps.h"
+#include "kitchenCeilingLamps.h"
 #include "sinkLamp.h"
-
-// void setBedroom(int percent) {
-//     if(is("Bedroom")) {    // Is override value set?
-//         Log.info("FP Bedroom overridden: %d", value("Bedroom"));
-//         set("BedroomLamp", value("Bedroom"));
-//     } else {
-//         Log.info("FP BedroomLamp set to: %d", percent);
-//         set("BedroomLamp", percent);
-//     }
-// }
-
-// void setSink(int percent) {
-//     if(is("Sink")) {    // Is override value set?
-//         Log.info("FP Sink overridden: %d", value("Sink"));
-//         set("SinkLamp", value("Sink"));
-//     } else {
-//         Log.info("FP sinkLamp set to: %d", percent);
-//         set("SinkLamp", percent);
-//     }
-// }
-
-void setKitchenCeiling(int percent) {
-    if(is("Kitchen")) {
-        set("KitchenCeiling", value("Kitchen"));
-    } else {
-        set("KitchenCeiling", percent);
-    }
-}
-
-// void setCabinets(int percent) {
-//     if(is("Cabinets")) {
-//         set("CabinetLamps", value("Cabinets"));
-//     } else {
-//         set("CabinetLamps", percent);
-//     }
-// }
 
 void setRightTrim(int percent) {
     if(is("Theatre")) {
@@ -79,6 +44,7 @@ void updateLights() {
 
     setBedroomLamp();
     setCabinetLamps();
+    setKitchenCeilingLamps();
     setSinkLamp();
 
     PartOfDay pod = partOfDay();
@@ -94,10 +60,6 @@ void updateLights() {
         set("Sleeping", 0);
 
         // Set inside lights
-//        setBedroom(100);
-        setKitchenCeiling(100);
-//        setCabinets(100);
-//        setSink(100);
         set("LeftTrim", 100);
         set("RightTrim", 100);
         set("Ceiling", 100);
@@ -126,11 +88,7 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-//            setBedroom(100);
-            setKitchenCeiling(0);
-//            setCabinets(0);
             setNook(33);
-//            setSink(5);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -153,11 +111,7 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-//            setBedroom(0);
-            setKitchenCeiling(0);
-//            setCabinets(0);
             setNook(0);
-//            setSink(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -170,7 +124,6 @@ void updateLights() {
         case AwakeEarly:
             Log.info("FP updateLights awake early");
 
-//            setSink(5);
             setNook(30);
             break;
 
@@ -178,10 +131,6 @@ void updateLights() {
         case Afternoon:
             Log.info("FP updateLights morning/afternoon");
 
-//            setBedroom(0);
-            setKitchenCeiling(0);
-//            setCabinets(0);
-//            setSink(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -195,11 +144,6 @@ void updateLights() {
         case Evening:
             Log.info("FP updateLights evening");
 
-//            setBedroom(100);
-            setKitchenCeiling(20);
-            // Don't set cabinets unless overridden - they reflect off TV
-//            setCabinets(0);
-//            setSink(5);
             set("LeftTrim", 100);
             setRightTrim(100);
             set("Ceiling", 20);
