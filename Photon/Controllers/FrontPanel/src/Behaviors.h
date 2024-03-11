@@ -19,18 +19,9 @@
 #include "bedroomLamp.h"
 #include "cabinetLamps.h"
 #include "kitchenCeilingLamps.h"
+#include "nookLamp.h"
 #include "rightTrimLights.h"
 #include "sinkLamp.h"
-
-void setNook(int percent) {
-    if(is("Nook")) {
-        Log.info("FP Nook overridden: %d", value("Nook"));
-        set("NookLamp", value("Nook"));
-    } else {
-        Log.info("FP NookLamp set to: %d", percent);
-        set("NookLamp", percent);
-    }
-}
 
 // Update all devices managed by this Photon2
 void updateLights() {
@@ -38,6 +29,7 @@ void updateLights() {
     setBedroomLamp();
     setCabinetLamps();
     setKitchenCeilingLamps();
+    setNookLamp();
     setRightTrimLights();
     setSinkLamp();
 
@@ -56,7 +48,6 @@ void updateLights() {
         // Set inside lights
         set("LeftTrim", 100);
         set("Ceiling", 100);
-        set("NookLamp", 100);
 
         // Set outside lights TODO: update when door implemented
         if(pod == Evening) {
@@ -81,7 +72,6 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            setNook(33);
             set("LeftTrim", 0);
             set("Ceiling", 0);
             set("DoorSide", 0);
@@ -103,7 +93,6 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            setNook(0);
             set("LeftTrim", 0);
             set("Ceiling", 0);
             set("DoorSide", 0);
@@ -115,7 +104,6 @@ void updateLights() {
         case AwakeEarly:
             Log.info("FP updateLights awake early");
 
-            setNook(30);
             break;
 
         case Morning:
@@ -128,7 +116,6 @@ void updateLights() {
             set("OtherSide", 0);
             set("FrontAwning", 0);
             set("FrontPorch", 0);
-            setNook(0);
             break;
 
         case Evening:
@@ -140,7 +127,6 @@ void updateLights() {
             set("OtherSide", 0);
             set("FrontAwning", 0);
             set("FrontPorch", 100);
-            setNook(100);
             break;
     }
 }
