@@ -1,9 +1,9 @@
 //------------
-// CabinetLamps
+// RightTrimLights
 //------------
-void setCabinetLamps() {
+void setRightTrimLights() {
     int percent = 0;
-    int current = value("CabinetLamps");
+    int current = value("RightTrimLights");
 
     if(is("Cleaning")) {
         percent = 100;
@@ -26,6 +26,6 @@ void setCabinetLamps() {
             percent = 0;
     }
     if(percent != current) {
-        set("CabinetLamps", percent);
+        set("RightTrimLights", percent);
     }
 }

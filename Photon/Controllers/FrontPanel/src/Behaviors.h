@@ -19,15 +19,8 @@
 #include "bedroomLamp.h"
 #include "cabinetLamps.h"
 #include "kitchenCeilingLamps.h"
+#include "rightTrimLights.h"
 #include "sinkLamp.h"
-
-void setRightTrim(int percent) {
-    if(is("Theatre")) {
-        set("RightTrim", 0);
-    } else {
-        set("RightTrim", percent);
-    }
-}
 
 void setNook(int percent) {
     if(is("Nook")) {
@@ -45,6 +38,7 @@ void updateLights() {
     setBedroomLamp();
     setCabinetLamps();
     setKitchenCeilingLamps();
+    setRightTrimLights();
     setSinkLamp();
 
     PartOfDay pod = partOfDay();
@@ -61,7 +55,6 @@ void updateLights() {
 
         // Set inside lights
         set("LeftTrim", 100);
-        set("RightTrim", 100);
         set("Ceiling", 100);
         set("NookLamp", 100);
 
@@ -90,7 +83,6 @@ void updateLights() {
             // Set lights
             setNook(33);
             set("LeftTrim", 0);
-            set("RightTrim", 0);
             set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
@@ -113,7 +105,6 @@ void updateLights() {
             // Set lights
             setNook(0);
             set("LeftTrim", 0);
-            set("RightTrim", 0);
             set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
@@ -132,7 +123,6 @@ void updateLights() {
             Log.info("FP updateLights morning/afternoon");
 
             set("LeftTrim", 0);
-            set("RightTrim", 0);
             set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
@@ -145,7 +135,6 @@ void updateLights() {
             Log.info("FP updateLights evening");
 
             set("LeftTrim", 100);
-            setRightTrim(100);
             set("Ceiling", 20);
             set("DoorSide", 0);
             set("OtherSide", 0);
