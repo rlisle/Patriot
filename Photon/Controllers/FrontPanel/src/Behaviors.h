@@ -16,8 +16,9 @@
 //------------
 #define FRONT_DOOR_LIGHT_TIMEOUT 15*1000
 
-#include "bedroom.h"
-#include "cabinets.h"
+#include "bedroomLamp.h"
+#include "cabinetLamps.h"
+#include "sinkLamp.h"
 
 // void setBedroom(int percent) {
 //     if(is("Bedroom")) {    // Is override value set?
@@ -29,15 +30,15 @@
 //     }
 // }
 
-void setSink(int percent) {
-    if(is("Sink")) {    // Is override value set?
-        Log.info("FP Sink overridden: %d", value("Sink"));
-        set("SinkLamp", value("Sink"));
-    } else {
-        Log.info("FP sinkLamp set to: %d", percent);
-        set("SinkLamp", percent);
-    }
-}
+// void setSink(int percent) {
+//     if(is("Sink")) {    // Is override value set?
+//         Log.info("FP Sink overridden: %d", value("Sink"));
+//         set("SinkLamp", value("Sink"));
+//     } else {
+//         Log.info("FP sinkLamp set to: %d", percent);
+//         set("SinkLamp", percent);
+//     }
+// }
 
 void setKitchenCeiling(int percent) {
     if(is("Kitchen")) {
@@ -76,7 +77,9 @@ void setNook(int percent) {
 // Update all devices managed by this Photon2
 void updateLights() {
 
-    setBedroom();
+    setBedroomLamp();
+    setCabinetLamps();
+    setSinkLamp();
 
     PartOfDay pod = partOfDay();
 
@@ -94,7 +97,7 @@ void updateLights() {
 //        setBedroom(100);
         setKitchenCeiling(100);
 //        setCabinets(100);
-        setSink(100);
+//        setSink(100);
         set("LeftTrim", 100);
         set("RightTrim", 100);
         set("Ceiling", 100);
@@ -127,7 +130,7 @@ void updateLights() {
             setKitchenCeiling(0);
 //            setCabinets(0);
             setNook(33);
-            setSink(5);
+//            setSink(5);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -154,7 +157,7 @@ void updateLights() {
             setKitchenCeiling(0);
 //            setCabinets(0);
             setNook(0);
-            setSink(0);
+//            setSink(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -167,7 +170,7 @@ void updateLights() {
         case AwakeEarly:
             Log.info("FP updateLights awake early");
 
-            setSink(5);
+//            setSink(5);
             setNook(30);
             break;
 
@@ -178,7 +181,7 @@ void updateLights() {
 //            setBedroom(0);
             setKitchenCeiling(0);
 //            setCabinets(0);
-            setSink(0);
+//            setSink(0);
             set("LeftTrim", 0);
             set("RightTrim", 0);
             set("Ceiling", 0);
@@ -196,7 +199,7 @@ void updateLights() {
             setKitchenCeiling(20);
             // Don't set cabinets unless overridden - they reflect off TV
 //            setCabinets(0);
-            setSink(5);
+//            setSink(5);
             set("LeftTrim", 100);
             setRightTrim(100);
             set("Ceiling", 20);
