@@ -18,18 +18,11 @@
 //------------
 #define OFFICE_DOOR_LIGHT_TIMEOUT 15*1000
 
+#include "leftDeskLamp.h"
 #include "loftLights.h"
 #include "officeCeilingLights.h"
-
-void setDesk(int value) {
-    if(is("Cleaning")) {
-        set("LeftDeskLamp", 100);
-        set("RightDeskLamp", 100);
-    } else {
-        set("LeftDeskLamp", 0);
-        set("RightDeskLamp", 0);
-    }
-}
+#include "pianoLight.h"
+#include "rightDeskLamp.h"
 
 void setPiano(int percent) {
     if(is("Cleaning")) {
@@ -97,16 +90,16 @@ void setRampAwning(int value) {
 // Update all devices managed by this Photon2
 void updateLights() {
 
+    setLeftDeskLamp();
     setLoftLights();
     setOfficeCeilingLights();
+    setPianoLight();
+    setRightDeskLamp();
 
     switch(partOfDay()) {
         case Asleep:
             Log.info("RP updateLights Asleep");
             set("Curtain", 0);     // Close curtain
-
-            setDesk(0);
-            setPiano(0);
 
             setRampPorch(0);
             setRampAwning(0);
@@ -116,9 +109,6 @@ void updateLights() {
 
         case AwakeEarly:
             Log.info("RP updateLights AwakeEarly");
-            setPiano(5);
-            setDesk(100);
-
             setRampPorch(0);
             setRampAwning(0);
             setRearAwning(0);
@@ -128,9 +118,6 @@ void updateLights() {
         case Morning:
         case Afternoon:
             Log.info("RP updateLights daytime");
-            setPiano(0);
-            setDesk(100);
-
             setRampPorch(0);
             setRampAwning(0);
             setRearAwning(0);
@@ -139,9 +126,6 @@ void updateLights() {
 
         case Evening:
             Log.info("RP updateLights evening");
-            setPiano(50);
-            setDesk(100);
-
             setRampPorch(100);
             setRampAwning(100);
             setRearAwning(100);
@@ -153,9 +137,6 @@ void updateLights() {
 
             set("Curtain", 0);     // Close curtain
             
-            setPiano(5);
-            setDesk(33);
-
             setRampPorch(0);
             setRampAwning(0);
             setRearAwning(0);
