@@ -22,34 +22,10 @@
 #include "loftLights.h"
 #include "officeCeilingLights.h"
 #include "pianoLight.h"
+#include "rearPorchLight.h"
 #include "rightDeskLamp.h"
 
-void setPiano(int percent) {
-    if(is("Cleaning")) {
-        set("PianoSpot", 100);
-    } else if(is("Piano")) {
-        set("PianoSpot", value("Piano"));
-    } else if(is("Office")) {
-        set("PianoSpot", value("Office"));
-    } else {
-        set("PianoSpot", percent);
-    }
-}
-
 // Outside Overrides
-void setRearPorch(int value) {
-    if(is("Nighttime")) {
-        if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
-            Log.info("RP setRearPorch 100");
-            set("RearPorch", 100);
-        } else {
-            Log.info("RP setRearPorch %d", value);
-            set("RearPorch", value);
-        }
-    } else {
-        set("RearPorch", 0);    // Turn off if daytime
-    }
-}
 
 void setRearAwning(int value) {
     if(is("Nighttime")) {
@@ -94,6 +70,7 @@ void updateLights() {
     setLoftLights();
     setOfficeCeilingLights();
     setPianoLight();
+    setRearPorchLight();
     setRightDeskLamp();
 
     switch(partOfDay()) {
@@ -104,7 +81,6 @@ void updateLights() {
             setRampPorch(0);
             setRampAwning(0);
             setRearAwning(0);
-            setRearPorch(0);
             break;
 
         case AwakeEarly:
@@ -112,7 +88,6 @@ void updateLights() {
             setRampPorch(0);
             setRampAwning(0);
             setRearAwning(0);
-            setRearPorch(0);
             break;
 
         case Morning:
@@ -121,7 +96,6 @@ void updateLights() {
             setRampPorch(0);
             setRampAwning(0);
             setRearAwning(0);
-            setRearPorch(0);
             break;
 
         case Evening:
@@ -129,7 +103,6 @@ void updateLights() {
             setRampPorch(100);
             setRampAwning(100);
             setRearAwning(100);
-            setRearPorch(100);
             break;
 
         case Retiring:
@@ -140,7 +113,6 @@ void updateLights() {
             setRampPorch(0);
             setRampAwning(0);
             setRearAwning(0);
-            setRearPorch(0);
             break;
     }
 }
