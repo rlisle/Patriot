@@ -3,30 +3,24 @@
 //
 // Relevant Status
 //   AnyoneHome
-//   Bedtime
 //   Cleaning
 //   Desk
-//   LivingRoomMotion
+//   Loft
 //   Nighttime
 //   Office
+//   OfficeMotion
 //   Outside
+//   Piano
+//   Retiring (bedtime)
 //   RonHome
 //   ShelleyHome
 //   Sleeping
 //------------
 #define OFFICE_DOOR_LIGHT_TIMEOUT 15*1000
 
-// Inside Overrides
-void setOfficeCeiling(int percent) {
-    if(is("Cleaning")) {
-        set("OfficeCeiling", 100);
-    } else if(is("Office")) {
-        set("OfficeCeiling", value("Office"));
-    } else {
-        set("OfficeCeiling", percent);
-     }
-}
+#include "officeCeilingLights.h"
 
+// Inside Overrides
 void setLoft(int value) {
     if(is("Cleaning")) {
         set("Loft", 100);
@@ -110,7 +104,8 @@ void setRampAwning(int value) {
 
 // Update all devices managed by this Photon2
 void updateLights() {
-    Log.info("RP updateLights");
+
+    setOfficeCeilingLights();
 
     switch(partOfDay()) {
         case Asleep:
@@ -119,7 +114,6 @@ void updateLights() {
 
             setDesk(0);
             setLoft(0);
-            setOfficeCeiling(0);
             setPiano(0);
 
             setRampPorch(0);
@@ -131,7 +125,6 @@ void updateLights() {
         case AwakeEarly:
             Log.info("RP updateLights AwakeEarly");
             setLoft(0);
-            setOfficeCeiling(5);
             setPiano(5);
             setDesk(100);
 
@@ -145,7 +138,6 @@ void updateLights() {
         case Afternoon:
             Log.info("RP updateLights daytime");
             setLoft(0);
-            setOfficeCeiling(0);
             setPiano(0);
             setDesk(100);
 
@@ -158,7 +150,6 @@ void updateLights() {
         case Evening:
             Log.info("RP updateLights evening");
             setLoft(0);
-            setOfficeCeiling(5);
             setPiano(50);
             setDesk(100);
 
@@ -174,7 +165,6 @@ void updateLights() {
             set("Curtain", 0);     // Close curtain
             
             setLoft(0);
-            setOfficeCeiling(5);
             setPiano(5);
             setDesk(33);
 

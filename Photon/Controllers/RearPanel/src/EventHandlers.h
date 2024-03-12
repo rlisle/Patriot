@@ -38,12 +38,3 @@ void handleOfficeMotion(int value, int oldValue) {
         //nothing to do
     }
 }
-
-void handleLivingRoomMotion(int value, int oldValue) {
-    Log.info("RP handleLivingRoomMotion %d", value);
-    if(value > 0 && oldValue == 0) {        // Movement
-        // Nothing to do. May want to track motion from office to LR and vs. a vs.
-    } else if(value == 0 && oldValue > 0) { // No movement
-        // Nothing to do.
-    }
-}
