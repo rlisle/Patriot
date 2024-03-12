@@ -18,7 +18,7 @@ void setCeilingLights() {
 
     } else switch(partOfDay()) {
         case Evening:
-            percent = 100;
+            percent = 33;
             break;
         case Retiring:
         case Asleep:

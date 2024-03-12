@@ -18,6 +18,7 @@
 
 #include "bedroomLamp.h"
 #include "cabinetLamps.h"
+#include "ceilingLights.h"
 #include "kitchenCeilingLamps.h"
 #include "leftTrimLights.h"
 #include "nookLamp.h"
@@ -29,6 +30,7 @@ void updateLights() {
 
     setBedroomLamp();
     setCabinetLamps();
+    setCeilingLights();
     setKitchenCeilingLamps();
     setLeftTrimLights();
     setNookLamp();
@@ -46,9 +48,6 @@ void updateLights() {
         // Turn off other statuses
         set("Bedtime", 0);
         set("Sleeping", 0);
-
-        // Set inside lights
-        set("Ceiling", 100);
 
         // Set outside lights TODO: update when door implemented
         if(pod == Evening) {
@@ -73,7 +72,6 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
             set("FrontAwning", 0);
@@ -93,7 +91,6 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
             set("FrontAwning", 0);
@@ -101,15 +98,10 @@ void updateLights() {
             break;
 
         case AwakeEarly:
-            Log.info("FP updateLights awake early");
-
             break;
 
         case Morning:
         case Afternoon:
-            Log.info("FP updateLights morning/afternoon");
-
-            set("Ceiling", 0);
             set("DoorSide", 0);
             set("OtherSide", 0);
             set("FrontAwning", 0);
@@ -117,9 +109,6 @@ void updateLights() {
             break;
 
         case Evening:
-            Log.info("FP updateLights evening");
-
-            set("Ceiling", 20);
             set("DoorSide", 0);
             set("OtherSide", 0);
             set("FrontAwning", 0);
