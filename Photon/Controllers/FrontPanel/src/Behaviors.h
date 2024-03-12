@@ -20,6 +20,8 @@
 #include "cabinetLamps.h"
 #include "ceilingLights.h"
 #include "doorSideLights.h"
+#include "frontAwningLight.h"
+#include "frontPorchLight.h"
 #include "kitchenCeilingLamps.h"
 #include "leftTrimLights.h"
 #include "nookLamp.h"
@@ -34,6 +36,8 @@ void updateLights() {
     setCabinetLamps();
     setCeilingLights();
     setDoorSideLights();
+    setFrontAwningLight();
+    setFrontPorchLight();
     setKitchenCeilingLamps();
     setLeftTrimLights();
     setNookLamp();
@@ -52,61 +56,28 @@ void updateLights() {
         // Turn off other statuses
         set("Bedtime", 0);
         set("Sleeping", 0);
-
-        // Set outside lights TODO: update when door implemented
-        if(pod == Evening) {
-            set("FrontAwning", 100);
-            set("FrontPorch", 100);
-        }
         return;
     }
 
     switch(pod) {
         case Retiring:
-            Log.info("FP updateLights retiring");
-
-            // Turn off other statuses
-            set("Cleaning", 0);
-            set("Kitchen", 0);
-            set("Outside", 0);
-            set("Sink", 0);
-            set("Sleeping", 0);
-            set("Theatre", 0);
-
-            // Set lights
-            set("FrontAwning", 0);
-            set("FrontPorch", 0);
-            break;
-
         case Asleep:                  // Don't assume bedtime was set
-            Log.info("FP updateLights asleep");
+            Log.info("FP updateLights retiring or asleep");
 
             // Turn off other statuses
             set("Bedroom", 0);
-            set("Bedtime", 0);
+            set("Retiring", 0);
             set("Cleaning", 0);
             set("Kitchen", 0);
             set("Outside", 0);
             set("Sink", 0);
             set("Theatre", 0);
-
-            // Set lights
-            set("FrontAwning", 0);
-            set("FrontPorch", 0);
             break;
 
         case AwakeEarly:
-            break;
-
         case Morning:
         case Afternoon:
-            set("FrontAwning", 0);
-            set("FrontPorch", 0);
-            break;
-
         case Evening:
-            set("FrontAwning", 0);
-            set("FrontPorch", 100);
             break;
     }
 }
