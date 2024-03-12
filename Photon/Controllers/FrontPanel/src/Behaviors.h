@@ -23,6 +23,7 @@
 #include "kitchenCeilingLamps.h"
 #include "leftTrimLights.h"
 #include "nookLamp.h"
+#include "otherSideLights.h"
 #include "rightTrimLights.h"
 #include "sinkLamp.h"
 
@@ -36,6 +37,7 @@ void updateLights() {
     setKitchenCeilingLamps();
     setLeftTrimLights();
     setNookLamp();
+    setOtherSideLights();
     setRightTrimLights();
     setSinkLamp();
 
@@ -53,7 +55,6 @@ void updateLights() {
 
         // Set outside lights TODO: update when door implemented
         if(pod == Evening) {
-            set("OtherSide", 100);
             set("FrontAwning", 100);
             set("FrontPorch", 100);
         }
@@ -73,7 +74,6 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            set("OtherSide", 0);
             set("FrontAwning", 0);
             set("FrontPorch", 0);
             break;
@@ -91,7 +91,6 @@ void updateLights() {
             set("Theatre", 0);
 
             // Set lights
-            set("OtherSide", 0);
             set("FrontAwning", 0);
             set("FrontPorch", 0);
             break;
@@ -101,13 +100,11 @@ void updateLights() {
 
         case Morning:
         case Afternoon:
-            set("OtherSide", 0);
             set("FrontAwning", 0);
             set("FrontPorch", 0);
             break;
 
         case Evening:
-            set("OtherSide", 0);
             set("FrontAwning", 0);
             set("FrontPorch", 100);
             break;
