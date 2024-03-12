@@ -1,9 +1,9 @@
 //------------
-// RearPorchLight
+// RampAwningLight
 //------------
-void setRearPorchLight() {
+void setRampAwningLight() {
     int percent = 0;
-    int current = value("RearPorch");
+    int current = value("RampAwning");
 
     if(is("Nighttime")) {
         if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
@@ -21,6 +21,6 @@ void setRearPorchLight() {
         }
     }
     if(percent != current) {
-        set("RearPorch", percent);
+        set("RampAwning", percent);
     }
 }
