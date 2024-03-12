@@ -45,8 +45,6 @@ void updateLights() {
     setRightTrimLights();
     setSinkLamp();
 
-    PartOfDay pod = partOfDay();
-
     // When cleaning is set, all inside lights are turned on
     // Turn on all outside lights also if it is nighttime
     // Assuming that not bedtime or sleeping when cleaning
@@ -59,12 +57,21 @@ void updateLights() {
         return;
     }
 
-    switch(pod) {
+    switch(partOfDay()) {
         case Retiring:
-        case Asleep:                  // Don't assume bedtime was set
-            Log.info("FP updateLights retiring or asleep");
+            Log.info("FP updateLights retiring");
 
             // Turn off other statuses
+            set("Bedroom", 0);
+            set("Cleaning", 0);
+            set("Kitchen", 0);
+            set("Outside", 0);
+            set("Sink", 0);
+            set("Theatre", 0);
+            break;
+
+        case Asleep:                  // Don't assume bedtime was set
+            Log.info("FP updateLights asleep");
             set("Bedroom", 0);
             set("Retiring", 0);
             set("Cleaning", 0);
