@@ -17,8 +17,8 @@ SYSTEM_MODE(AUTOMATIC);
 
 // Global Variables
 int voltage = 0;
-bool isTimingLivingRoomMotion;
-bool isTimingFrontDoor;
+bool isTimingLivingRoomMotion = false;
+bool isTimingFrontDoor = false;
 
 
 void setupWifi() {
