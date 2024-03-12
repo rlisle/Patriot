@@ -57,6 +57,7 @@ void setup() {
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Desk", "Status", 'L'));
+    Device::add(new Device("Loft", "Status", 'S'));         // Loft override
     Device::add(new Device("Nighttime", "Status", 'S'));
     Device::add(new Device("Office", "Status", 'L'));       // Office override
     Device::add(new Device("Outside", "Status", 'S'));
@@ -77,7 +78,7 @@ void setup() {
     // I2CPWM8W80C board
     // 8 Dimmers
     Device::add(new NCD8Light(1, "OfficeCeiling", "Office"));
-    Device::add(new NCD8Light(2, "Loft", "Office"));
+    Device::add(new NCD8Light(2, "LoftLights", "Office"));
     Device::add(new NCD8Light(3, "RampPorch", "Outside"));
     Device::add(new NCD8Light(4, "RampAwning", "Outside"));
     Device::add(new NCD8Light(5, "RearPorch", "Outside"));

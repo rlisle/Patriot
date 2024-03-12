@@ -18,16 +18,8 @@
 //------------
 #define OFFICE_DOOR_LIGHT_TIMEOUT 15*1000
 
+#include "loftLights.h"
 #include "officeCeilingLights.h"
-
-// Inside Overrides
-void setLoft(int value) {
-    if(is("Cleaning")) {
-        set("Loft", 100);
-    } else {
-        set("Loft", value);
-    }
-}
 
 void setDesk(int value) {
     if(is("Cleaning")) {
@@ -105,6 +97,7 @@ void setRampAwning(int value) {
 // Update all devices managed by this Photon2
 void updateLights() {
 
+    setLoftLights();
     setOfficeCeilingLights();
 
     switch(partOfDay()) {
@@ -113,7 +106,6 @@ void updateLights() {
             set("Curtain", 0);     // Close curtain
 
             setDesk(0);
-            setLoft(0);
             setPiano(0);
 
             setRampPorch(0);
@@ -124,7 +116,6 @@ void updateLights() {
 
         case AwakeEarly:
             Log.info("RP updateLights AwakeEarly");
-            setLoft(0);
             setPiano(5);
             setDesk(100);
 
@@ -137,7 +128,6 @@ void updateLights() {
         case Morning:
         case Afternoon:
             Log.info("RP updateLights daytime");
-            setLoft(0);
             setPiano(0);
             setDesk(100);
 
@@ -149,7 +139,6 @@ void updateLights() {
 
         case Evening:
             Log.info("RP updateLights evening");
-            setLoft(0);
             setPiano(50);
             setDesk(100);
 
@@ -164,7 +153,6 @@ void updateLights() {
 
             set("Curtain", 0);     // Close curtain
             
-            setLoft(0);
             setPiano(5);
             setDesk(33);
 
