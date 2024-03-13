@@ -146,20 +146,20 @@ void setup() {
 
     // Be careful that names don't collide with Homebridge (commands)
     Device::add(new Device("AnyoneHome", "Status", 'S'));
-    Device::add(new Device("Bedroom", "Status", 'S'));  //TODO: switch to L to allow dimming
+    Device::add(new Device("Bedroom", "Status", 'L'));
     Device::add(new Device("Cabinets", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Kitchen", "Status", 'L'));
     Device::add(new Device("LivingRoomMotion", "Status", 'S', handleLivingRoomMotion));
     Device::add(new Device("Nighttime", "Status", 'S'));
-    Device::add(new Device("Nook", "Status", 'S'));     //TODO: switch to L to allow dimming
+    Device::add(new Device("Nook", "Status", 'L'));
     Device::add(new Device("OfficeMotion", "Status", 'S'));
     Device::add(new Device("Outside", "Status", 'S'));
-    Device::add(new Device("Retiring", "Status", 'S'));
+    Device::add(new Device("Retiring", "Status", 'S', handleRetiring));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Sink", "Status", 'L'));                 // Override
-    Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("Sink", "Status", 'L'));
+    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
     Device::add(new Device("Theatre", "Status", 'S'));
 
     // Inside Lights    TODO: set actual light #s     TODO: set wire colors
@@ -171,7 +171,6 @@ void setup() {
     Device::add(new NCD16Light(14, "CabinetLamps", "Kitchen",0));     // R
 
     Device::add(new ZigbeeLight("NookLamp", "Living Room"));
-
     Device::add(new ZigbeeLight("BedroomLamp", "Bedroom"));
 
     // Outside Lights
