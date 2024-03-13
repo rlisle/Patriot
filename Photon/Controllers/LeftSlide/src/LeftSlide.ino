@@ -45,57 +45,34 @@ Author: Ron Lisle
 #include <IoT.h>
 //#include "math.h"
 //#include <PatriotMR24.h>
-
-#define CONTROLLER_NAME "LeftSlide"
-#define MQTT_BROKER "192.168.0.33"
-#define LIVINGROOM_MOTION_TIMEOUT 3*60
-
-SYSTEM_THREAD(ENABLED);
-SYSTEM_MODE(AUTOMATIC);
-
-//#define PIR_POLL_INTERVAL_MILLIS 500
-
-// Generally uncomment only 1 of the following 2 lines
-#define MQTT_LOGGING true
-//SerialLogHandler logHandler1(57600, LOG_LEVEL_ALL);
-
-// Timing
-bool isTimingLivingRoomMotion;
-
-//bool couchPresenceFiltered = 0;
-//long lastCouchPresence = 0;
-//int couchPresence = 0;
-
-// Behaviors
+#include "Settings.h"
 #include "Behaviors.h"
 #include "EventHandlers.h"
 
-//-------------
-// LOOP
-//-------------
 void loop() {
     IoT::loop();
 //    handleCouchPresence();
 }
 
 void setup() {
-//    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);
-//    WiFi.selectAntenna(ANT_INTERNAL);
-//    WiFi.useDynamicIP();
+    setupWifi();
 
     IoT::begin(MQTT_BROKER, CONTROLLER_NAME, MQTT_LOGGING);
 
     // Behaviors
     setNextMinuteHandler(handleNextMinute);
     Device::setAnyChangedHandler(updateLights);
-    
+
+    // Status devices - be careful that they don't conflict with homebridge (commands)    
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Couch", "Status", 'L'));        // Override
     Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("Retiring", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
     Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("Theatre", "Status", 'S'));
 
     // Create Devices
     // Sensors

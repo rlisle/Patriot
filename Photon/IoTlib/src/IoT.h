@@ -132,6 +132,7 @@ public:
     static int read();
     static int write(int ioNum, bool value);
 };
+
 class PCA9634 {
 public:
     static int8_t address;  //TODO: Add support for multiple boards
@@ -140,6 +141,7 @@ public:
     static void reset();
     static void outputPWM(int lightNum, int level); // level 0-255
 };
+
 class PCA9685 {
 public:
     static int8_t address;  //TODO: Add support for multiple boards
@@ -175,6 +177,7 @@ class Curtain : public Device {
     void    setHold(bool holding);
     void    loop();
 };
+
 class Light : public Device {
  private:
     int       _pin;
@@ -199,6 +202,7 @@ class Light : public Device {
     void      setValue(int value);
     void      loop();
 };
+
 class NCD4Relay : public Device {
  private:
     int8_t        _relayNum;
@@ -218,6 +222,7 @@ class NCD4Relay : public Device {
 
     void    loop();
 };
+
 class NCD4Switch : public Device {
  private:
     long    _lastPollTime;
@@ -234,6 +239,7 @@ class NCD4Switch : public Device {
     NCD4Switch(int8_t switchIndex, String name, String room, void (*handler)(int,int));
     void    loop();
 };
+
 class NCD8Light : public Device {
  private:
     int      _lightNum;                // Up to 8 lights supported
@@ -257,6 +263,7 @@ class NCD8Light : public Device {
     void    setValue(int percent);
     void    loop();
 };
+
 class NCD8Switch : public Device {
 private:
     long    _lastPollTime;
@@ -276,6 +283,7 @@ public:
     // Our own generated MQTT message will reset _percent back to 0.
     void setPercent(int percent) { return; };
 };
+
 class NCD16Light : public Device {
  private:
     int8_t  _lightNum;                 // Up to 16 lights supported, 0 based
@@ -306,6 +314,7 @@ class NCD16Light : public Device {
     void    setValue(int percent);  // 0-100
     void    loop();
 };
+
 class PIR : public Device {
 private:
     int        _pin;
@@ -327,6 +336,7 @@ public:
     // Override to prevent MQTT from setting _percent.
     void setValue(int percent) { return; };
 };
+
 class Power : public Device {
  private:
     float   _powerUsage[2];
@@ -339,6 +349,7 @@ class Power : public Device {
     void    loop();
     void    mqtt(String topic, String message);
 };
+
 class Switch : public Device {
 private:
     int        _pin;
@@ -375,6 +386,7 @@ class Voltage : public Device {
     void    begin();
     void    loop();
 };
+
 class NCD4PIR : public Device {
  private:
     long    _lastPollTime;
@@ -396,6 +408,7 @@ class NCD4PIR : public Device {
     // Override to prevent MQTT from setting _percent.
     void setValue(int percent) { return; };
 };
+
 class ZigbeeLight : public Device {
  private:
     int       _dimmingSecs;
@@ -406,4 +419,32 @@ class ZigbeeLight : public Device {
     void      setValue(int value);
     void      loop();
 };
+
+class ZigbeeContact : public Device {
+ private:
+
+ public:
+    ZigbeeContact(String name, String room);
+    void      begin();
+    void      loop();
+    // Assumes the MQTT uses the same 'name'
+    void      mqtt(String topic, String message);   // Sent by Zigbee2MQTT
+
+    // Override to prevent MQTT from setting _percent.
+    void setValue(int percent) { return; };
+
+};
+
+class ZigbeeOutlet : public Device {
+ private:
+
+ public:
+    ZigbeeOutlet(String name, String room);
+    void      begin();
+    void      loop();
+    void      setValue(int value);
+    // Assumes the MQTT uses the same 'name'
+    void      mqtt(String topic, String message);   // Sent by Zigbee2MQTT
+};
+
 
