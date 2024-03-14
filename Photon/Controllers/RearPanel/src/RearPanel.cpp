@@ -62,6 +62,7 @@ void setup() {
     Device::add(new Device("Office", "Status", 'L'));       // Office override
     Device::add(new Device("Outside", "Status", 'S'));
     Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
+    Device::add(new Device("Retiring", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
     Device::add(new Device("Sleeping", "Status", 'S'));
@@ -90,4 +91,9 @@ void setup() {
     Device::add(new ZigbeeLight("LeftDeskLamp", "Office"));
     Device::add(new ZigbeeLight("RightDeskLamp", "Office"));
 
+    // Zigbee Contact Switches
+    Device::add(new ZigbeeContact("RampDoor", "Office"));
+
+    // Zigbee Outlets
+    Device::add(new ZigbeeOutlet("OfficeOverheadLights", "Office"));
 }

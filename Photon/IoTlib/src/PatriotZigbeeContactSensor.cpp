@@ -34,24 +34,27 @@ void ZigbeeContact::begin() {
     // Nothing to do
 }
 
-/**
- * Set value
- * @param value Int 0 to 100
- */
-// void ZigbeeContact::setValue(int value) 
-// {
-//     //Convert percent to 0-254
-//     float tempfValue = (float)value;
-//     float outputfValue = tempfValue * 2.54;
-//     String outputValue = String((int)outputfValue);
-//     String duration = String(_dimmingSecs);
-//     //TODO: output MQTT - IoT::publishMQTT(subtopic, message, retain=false)
-//     // patriot/zigbee/<name>/set -m {"brightness":128, “transition”:<_dimmingSecs>}
-//     String topic = "zigbee/" + _name + "/set";
-//     String brightness = "{\"brightness\":" + outputValue + ", ";
-//     String transition = "\"transition\": " + duration + "}";
-//     IoT::publishMQTT(topic, brightness + transition);
-// }
+void ZigbeeContact::mqtt(String topic, String message) {
+    // Parse patriot/zigbee/<device> 
+    // {"battery":100,"battery_low":false,"contact":true/false,"linkquality":156,"tamper":false,"voltage":3200}
+    String subtopics[5];
+    int start = 0;
+    int end = topic.indexOf('/');
+    int numTopics = 0;
+    if(end > 0) { // Might be -1 if only 1 subtopic
+        do {
+            start = end+1;
+            end = topic.indexOf('/', start);
+            numTopics++;
+        } while(numTopics < 4 && end > 0);
+    }
+    subtopics[numTopics++] = topic.substring(start);  // Last one
+    
+    if(numTopics == 2 && subtopics[0] == "zigbee" && subtopics[1] == name) {  
+        Log.info("DEBUG: zigbee contact sensor message received");
+        //TODO:
+    }  
+}
 
 /**
  * loop()

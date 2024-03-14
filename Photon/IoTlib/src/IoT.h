@@ -427,6 +427,7 @@ class ZigbeeContact : public Device {
     ZigbeeContact(String name, String room);
     void      begin();
     void      loop();
+    
     // Assumes the MQTT uses the same 'name'
     void      mqtt(String topic, String message);   // Sent by Zigbee2MQTT
 
@@ -443,8 +444,6 @@ class ZigbeeOutlet : public Device {
     void      begin();
     void      loop();
     void      setValue(int value);
-    // Assumes the MQTT uses the same 'name'
-    void      mqtt(String topic, String message);   // Sent by Zigbee2MQTT
 };
 
 

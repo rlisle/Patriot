@@ -100,7 +100,7 @@ PartOfDay partOfDay() {
     if(is("sleeping")) {
         return Asleep;
     }
-    if(is("bedtime")) {
+    if(is("Retiring")) {
         return Retiring;
     }
     if(is("nighttime")) {

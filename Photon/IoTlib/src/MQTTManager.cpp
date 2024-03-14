@@ -317,6 +317,10 @@ void MQTTManager::parsePatriotMessage(String lcTopic, String lcMessage)
             } else {
                 Log.error("Invalid timezone");
             }
+
+        // ZIGBEE
+        } else if(subtopics[0] == "zigbee") {
+            //Ignore. MQTT is handled by the zigbee device
         }
     }
 }
