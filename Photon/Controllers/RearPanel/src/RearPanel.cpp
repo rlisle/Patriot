@@ -56,12 +56,13 @@ void setup() {
     //TODO: refactor to array of structs/enums
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
-    Device::add(new Device("Desk", "Status", 'L'));
+    Device::add(new Device("Desk", "Status", 'L'));         // Desk override
     Device::add(new Device("Loft", "Status", 'S'));         // Loft override
     Device::add(new Device("Nighttime", "Status", 'S'));
     Device::add(new Device("Office", "Status", 'L'));       // Office override
     Device::add(new Device("Outside", "Status", 'S'));
     Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
+    Device::add(new Device("Retiring", "Status", 'S'));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
     Device::add(new Device("Sleeping", "Status", 'S'));
@@ -89,5 +90,8 @@ void setup() {
     // Zigbee Lamps
     Device::add(new ZigbeeLight("LeftDeskLamp", "Office"));
     Device::add(new ZigbeeLight("RightDeskLamp", "Office"));
+
+    // Zigbee Door
+    Device::add(new ZigbeeContact("RampDoor", "Office"));
 
 }

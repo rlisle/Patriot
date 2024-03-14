@@ -13,12 +13,20 @@ void setOfficeCeilingLights() {
 
     } else switch(partOfDay()) {
         case Evening:
-            percent = 100;
+            if(is("RonHome")) {
+                percent = 100;
+            } else {
+                Log.info("Not turning on OfficeCeiling because Ron isn't home");
+            }
             break;
             
         case Retiring:
         case AwakeEarly:
-            percent = 50;
+            if(is("RonHome")) {
+                percent = 50;
+            } else {
+                Log.info("Not turning on OfficeCeiling because Ron isn't home");
+            }
             break;
 
         case Asleep:

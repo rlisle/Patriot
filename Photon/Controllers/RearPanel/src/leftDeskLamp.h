@@ -17,14 +17,18 @@ void setLeftDeskLamp() {
     } else switch(partOfDay()) {
         case AwakeEarly:
         case Evening:
-            percent = 100;
+        case Morning:
+        case Afternoon:
+            if(is("RonHome")) {
+                percent = 100;
+            } else {
+                Log.info("Not turning on LeftDeskLamp because Ron isn't home");
+            }
             break;
         case Retiring:
             percent = 33;
             break;
         case Asleep:
-        case Morning:
-        case Afternoon:
             percent = 0;
     }
     if(percent != current) {
