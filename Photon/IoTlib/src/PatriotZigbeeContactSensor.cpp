@@ -50,9 +50,12 @@ void ZigbeeContact::mqtt(String topic, String message) {
     }
     subtopics[numTopics++] = topic.substring(start);  // Last one
     
-    if(numTopics == 2 && subtopics[0] == "zigbee" && subtopics[1] == name) {  
-        Log.info("DEBUG: zigbee contact sensor message received");
-        //TODO:
+    if(numTopics == 2 && subtopics[0] == "zigbee") {
+        Log.info("DEBUG: zigbee message received");
+        if(subtopics[1] == name()) {  
+            Log.info("Zigbee message to us");
+            //TODO:
+        }
     }  
 }
 
