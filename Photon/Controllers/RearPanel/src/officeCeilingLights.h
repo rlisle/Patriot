@@ -13,7 +13,7 @@ void setOfficeCeilingLights() {
 
     } else switch(partOfDay()) {
         case Evening:
-            percent = 100;
+            percent = 50;
             break;
             
         case Retiring:

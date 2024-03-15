@@ -58,14 +58,14 @@ void setup() {
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Desk", "Status", 'L'));
     Device::add(new Device("Loft", "Status", 'S'));         // Loft override
-    Device::add(new Device("Nighttime", "Status", 'S'));
+    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime);
     Device::add(new Device("Office", "Status", 'L'));       // Office override
     Device::add(new Device("Outside", "Status", 'S'));
     Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
-    Device::add(new Device("Retiring", "Status", 'S'));
+    Device::add(new Device("Retiring", "Status", 'S', handleRetiring));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
 
     // I2CIO4R4G5LE board
     // 4 Relays

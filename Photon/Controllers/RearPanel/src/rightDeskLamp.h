@@ -17,10 +17,11 @@ void setRightDeskLamp() {
     } else switch(partOfDay()) {
         case AwakeEarly:
         case Evening:
+            //TODO: factor in RonHome
             percent = 100;
             break;
         case Retiring:
-            percent = 33;
+            percent = 10;
             break;
         case Asleep:
         case Morning:

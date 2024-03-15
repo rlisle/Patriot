@@ -38,3 +38,37 @@ void handleOfficeMotion(int value, int oldValue) {
         //nothing to do
     }
 }
+
+// MODES
+// Setting some modes causes other modes to be cleared
+// eg. Sleeping turns off Retiring
+void handleNighttime(int value, int oldValue) {
+    Log.info("handleNighttime %d", value);
+    if(value > 0 && oldValue == 0) {
+        //TODO:
+    }
+}
+void handleRetiring(int value, int oldValue) {
+    Log.info("handleRetiring %d", value);
+    if(value > 0 && oldValue == 0) {
+        set("Cleaning", 0);
+        set("Desk", 0);
+        set("Loft", 0);
+        set("Office", 0);
+        set("Outside", 0);
+        set("Piano", 0);
+        set("Sleeping", 0);
+    }
+}
+void handleSleeping(int value, int oldValue) {
+    Log.info("handleSleeping %d", value);
+    if(value > 0 && oldValue == 0) {
+        set("Cleaning", 0);
+        set("Desk", 0);
+        set("Loft", 0);
+        set("Office", 0);
+        set("Outside", 0);
+        set("Piano", 0);
+        set("Retiring", 0);
+    }
+}
