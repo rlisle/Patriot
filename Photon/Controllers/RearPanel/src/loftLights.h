@@ -9,7 +9,7 @@ void setLoftLights() {
         percent = 100;
 
     } else if(is("Loft")) {
-        percent = value("Loft");
+        percent = 100;
 
     } else switch(partOfDay()) {
         case Evening:

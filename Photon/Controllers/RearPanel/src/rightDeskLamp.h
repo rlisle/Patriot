@@ -17,8 +17,11 @@ void setRightDeskLamp() {
     } else switch(partOfDay()) {
         case AwakeEarly:
         case Evening:
-            //TODO: factor in RonHome
-            percent = 100;
+            if(is("RonHome")) {
+                percent = 100;
+            } else {
+                Log.info("Not turning on RightDeskLamp because Ron isn't home");
+            }
             break;
         case Retiring:
             percent = 10;
@@ -26,7 +29,7 @@ void setRightDeskLamp() {
         case Asleep:
         case Morning:
         case Afternoon:
-            percent = 0;
+            break;
     }
     if(percent != current) {
         set("RightDeskLamp", percent);
