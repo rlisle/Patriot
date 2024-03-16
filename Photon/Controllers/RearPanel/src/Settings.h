@@ -10,8 +10,9 @@
 #define MQTT_BROKER "192.168.0.33"
 
 //TODO: move timeouts into IoT
-#define OFFICE_MOTION_TIMEOUT_MSECS 60*1000
-#define OFFICE_DOOR_TIMEOUT_MSECS 7*60*1000
+int const officeMotionTimeoutMsecs = 60*1000;
+int const officeDoorTimeoutMsecs = 7*60*1000;
+int const rampDoorTimeoutMsecs = 7*60*1000;
 
 #define PCA9634_ADDRESS 1       // 1st jumper
 #define I2CR4IO4_ADDRESS 0x20  // 4xRelay+4GPIO address (0x20 = no jumpers)
@@ -22,6 +23,7 @@ SYSTEM_MODE(AUTOMATIC);
 // Timing
 bool isTimingOfficeMotion;
 bool isTimingOfficeDoor = false;
+bool isTimingRampDoor = false;
 
 void setupWifi() {
 //    WiFi.setCredentials(WIFI_SSID, WIFI_PASSWORD);

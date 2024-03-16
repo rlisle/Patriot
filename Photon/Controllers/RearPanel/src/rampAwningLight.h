@@ -6,7 +6,7 @@ void setRampAwningLight() {
     int current = value("RampAwning");
 
     if(is("Nighttime")) {
-        if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
+        if(is("Outside") || is("RampDoor") || isTimingRampDoor) {
             percent = 100;
         } else switch(partOfDay()) {
             case Evening:

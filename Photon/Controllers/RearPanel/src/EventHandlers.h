@@ -5,7 +5,7 @@
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
     if(isTimingOfficeDoor) {
-        if(millis() > Device::msecsLastChange("OfficeDoor") + OFFICE_DOOR_TIMEOUT_MSECS) {
+        if(millis() > Device::msecsLastChange("OfficeDoor") + officeDoorTimeoutMsecs) {
             Log.info("RP turning off isTimingOfficeDoor");
             isTimingOfficeDoor = false;
             updateLights();
@@ -13,11 +13,20 @@ void handleNextMinute() {
     }
 
     if(isTimingOfficeMotion) {
-        if(Device::msecsLastChange("OfficeMotion") + OFFICE_MOTION_TIMEOUT_MSECS < millis()) {
+        if(Device::msecsLastChange("OfficeMotion") + officeMotionTimeoutMsecs < millis()) {
             isTimingOfficeMotion = false;
             updateLights();
         }
     }
+
+    if(isTimingRampDoor) {
+        if(millis() > Device::msecsLastChange("RampDoor") + rampDoorTimeoutMsecs) {
+            Log.info("RP turning off isTimingOfficeDoor");
+            isTimingRampDoor = false;
+            updateLights();
+        }
+    }
+
 }
 
 void handleOfficeDoor(int value, int oldValue) {
@@ -36,6 +45,16 @@ void handleOfficeMotion(int value, int oldValue) {
         isTimingOfficeMotion = true;
     } else if(value == 0 && oldValue > 0) { // No movement
         //nothing to do
+    }
+}
+
+void handleRampDoor(int value, int oldValue) {
+    Log.info("RP handleRampDoor %d", value);
+    if(value > 0 && oldValue == 0) {        // Opened
+        Log.info("RP ramp door opened");
+    } else if(value == 0 && oldValue > 0) { // Closed
+        Log.info("RP ramp door closed, setting isTimingRampDoor");
+        isTimingRampDoor = true;
     }
 }
 

@@ -58,7 +58,7 @@ void setup() {
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Desk", "Status", 'L'));
     Device::add(new Device("Loft", "Status", 'S'));         // Loft override
-    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime);
+    Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
     Device::add(new Device("Office", "Status", 'L'));       // Office override
     Device::add(new Device("Outside", "Status", 'S'));
     Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
@@ -74,7 +74,7 @@ void setup() {
     
     // 4 GPIO
     Device::add(new NCD4Switch(1, "OfficeDoor", "Office", handleOfficeDoor));
-    Device::add(new NCD4PIR(3, "OfficeMotion", "Office", OFFICE_MOTION_TIMEOUT_MSECS, handleOfficeMotion));
+    Device::add(new NCD4PIR(3, "OfficeMotion", "Office", officeMotionTimeoutMsecs, handleOfficeMotion));
 
     // I2CPWM8W80C board
     // 8 Dimmers
@@ -92,7 +92,7 @@ void setup() {
     Device::add(new ZigbeeLight("RightDeskLamp", "Office"));
 
     // Zigbee Contact Switches
-    Device::add(new ZigbeeContact("RampDoor", "Office"));
+    Device::add(new ZigbeeContact("RampDoor", "Office", handleRampDoor));
 
     // Zigbee Outlets
     Device::add(new ZigbeeOutlet("OfficeOverheadLights", "Office"));

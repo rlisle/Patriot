@@ -24,10 +24,10 @@
  * Constructor
  * @param name String name used to address the light.
  */
-ZigbeeContact::ZigbeeContact(String name, String room)
-        : Device(name, room)
+ZigbeeContact::ZigbeeContact(String name, String room, void (*handler)(int,int))
+        : Device(name, room, 'D', handler)
 {
-    _type               = 'D';  // door switch
+    // Nothing to do
 }
 
 void ZigbeeContact::begin() {

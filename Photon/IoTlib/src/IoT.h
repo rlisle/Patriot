@@ -424,7 +424,7 @@ class ZigbeeContact : public Device {
  private:
 
  public:
-    ZigbeeContact(String name, String room);
+    ZigbeeContact(String name, String room, void (*handler)(int,int) = NULL);
     void      begin();
     void      loop();
     
