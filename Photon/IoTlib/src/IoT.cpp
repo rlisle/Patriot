@@ -270,7 +270,7 @@ void IoT::handleDaylightSavings() {
     int8_t timezone;
     EEPROM.get(TIMEZONE_ADDR, timezone);    // Photon2 uses a file on the Flash file system
     if(timezone == 0xff) {      // 0xff means never written
-        timezone = -6;          // Default to CST
+        timezone = -5;          // Default to CDT (UDT-5)
     }
     Log.trace("Setting timezone to "+String(timezone));
     Time.zone(float(timezone));
