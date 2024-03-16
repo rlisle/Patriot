@@ -25,3 +25,5 @@ static const String kChecklistVariableName     = "Checklist";
 static const String kStatusVariableName        = "Status";
 static const String kPublishName               = "patriot";
 static const String kSSIDFunctionName          = "setSSID";
+static const String kTimeZoneFunctionName      = "setTimezone";
+

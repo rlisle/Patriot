@@ -124,8 +124,11 @@ PartOfDay partOfDay() {
  */
 void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
 {
+    // Start MQTT first to allow MQTT logging
+    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
+
     System.on(out_of_memory, outOfMemoryHandler);
-//    Time.zone(-6);              // CT
+//    Time.zone(-5);              // CT
     handleDaylightSavings();    // Set isDST appropriately
     
     // Expose particle.io variables
@@ -135,7 +138,7 @@ void IoT::begin(String brokerIP, String controllerName, bool mqttLogging)
     startWatchdog();
     
     // Start MQTT
-    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
+//    _mqttManager = new MQTTManager(brokerIP, controllerName, mqttLogging);
 }
 
 /**
@@ -256,7 +259,7 @@ void IoT::setLatLong(float latitude, float longitude) {
 // TIMEZONE
 //
 void IoT::setTimezone(int timezone) {
-    Log.trace("setTimezone: "+String(timezone));
+    Log.info("setTimezone: "+String(timezone));
     int8_t tz = timezone;
     Time.zone(float(timezone));
     // Persist this value across reboots
@@ -272,11 +275,12 @@ void IoT::handleDaylightSavings() {
     if(timezone == 0xff) {      // 0xff means never written
         timezone = -5;          // Default to CDT (UDT-5)
     }
-    Log.trace("Setting timezone to "+String(timezone));
+    Log.info("Setting timezone to "+String(timezone));
     Time.zone(float(timezone));
     
     int month = Time.month();
     if(month > 3 && month < 11) {
+        Log.info("Setting beginDST");
         Time.beginDST();
     } else if(month == 3) {
         handleDSTMarch();
@@ -315,7 +319,7 @@ void IoT::handleDSTMarch() {
         default:
             if(day < 14) return;
     }
-    Log.trace("Begin DST");
+    Log.info("Begin DST in March");
     Time.beginDST();
 }
 
@@ -349,7 +353,7 @@ void IoT::handleDSTNovember() {
         default:
             if(day > 7) return;
     }
-    Log.trace("Begin DST");
+    Log.info("Begin DST");
     Time.beginDST();
 }
 

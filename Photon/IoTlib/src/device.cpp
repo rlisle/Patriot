@@ -223,6 +223,10 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kSSIDFunctionName + " function");
     }
+    if(!Particle.function(kTimeZoneFunctionName, IoT::setTimezone))
+    {
+        Log.error("Error: Unable to expose " + kTimeZoneFunctionName + " function");
+    }
 }
 
 // Set SSID & Password info using CSL
@@ -237,6 +241,14 @@ int Device::setSSID(String info) {
     String password = info.substring(comma+1);
     Log.info("Setting SSID/password: " + ssid + ", " + password);
     return WiFi.setCredentials(ssid, password);
+}
+
+// Set Timezone
+int Device::setTimeZone(String info) {
+    int tz = Int(info);
+    Log.info("Setting timezone: %d",tz);
+    IoT.setTimezone(tz);
+    IoT.handleDaylightSavings();
 }
 
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
