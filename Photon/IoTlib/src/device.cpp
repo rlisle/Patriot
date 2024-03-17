@@ -247,8 +247,8 @@ int Device::setSSID(String info) {
 int Device::setTimeZone(String info) {
     int tz = info.toInt();
     Log.info("Setting timezone: %d",tz);
-    IoT.setTimezone(tz);
-    IoT.handleDaylightSavings();
+    IoT::setTimezone(tz);
+    IoT::handleDaylightSavings();
 }
 
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.
