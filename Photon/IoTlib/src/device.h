@@ -108,6 +108,7 @@ public:
     static void publishStates();
     static void expose();
     static int setSSID(String info);
+    static int setTimeZone(String info);
 
     static String calculateChecklist();
     static String calculateStatus();

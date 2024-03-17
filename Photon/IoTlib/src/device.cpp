@@ -223,7 +223,7 @@ void Device::expose()
     {
         Log.error("Error: Unable to expose " + kSSIDFunctionName + " function");
     }
-    if(!Particle.function(kTimeZoneFunctionName, IoT::setTimezone))
+    if(!Particle.function(kTimeZoneFunctionName, Device::setTimeZone))
     {
         Log.error("Error: Unable to expose " + kTimeZoneFunctionName + " function");
     }
@@ -245,7 +245,7 @@ int Device::setSSID(String info) {
 
 // Set Timezone
 int Device::setTimeZone(String info) {
-    int tz = Int(info);
+    int tz = info.toInt();
     Log.info("Setting timezone: %d",tz);
     IoT.setTimezone(tz);
     IoT.handleDaylightSavings();
