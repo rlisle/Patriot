@@ -36,8 +36,8 @@ class Device {
  protected:
     Device*    _next;       // Linked list
     String     _name;       // Public name (used by Alexa)
-    int        _value;      // Current value, typically percent 0-100
     String     _room;       // Room where located
+    int        _value;      // Current value, typically percent 0-100
     int        _previous;   // Value before getChanged called
     msecs      _msecsLastChange; // MSecs since last value change
     char       _type;       // Character designating device type: L, S, etc.

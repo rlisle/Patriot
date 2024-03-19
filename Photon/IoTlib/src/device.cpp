@@ -249,6 +249,7 @@ int Device::setTimeZone(String info) {
     Log.info("Setting timezone: %d",tz);
     IoT::setTimezone(tz);
     IoT::handleDaylightSavings();
+    return 0;
 }
 
 // The Devices variable is used by Alexa discovery and ReportState and iOS app.

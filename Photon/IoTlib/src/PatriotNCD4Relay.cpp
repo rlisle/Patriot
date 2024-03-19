@@ -142,7 +142,7 @@ void NCD4Relay::setOff() {
         Wire.beginTransmission(_address);
         Wire.write(REGISTER_ADDRESS);
         Wire.write(NCD4Relay::_currentState);
-        byte status = Wire.endTransmission();
+        status = Wire.endTransmission();
     } while(status != 0 && retries++ < 3);
 
     if(status != 0) {

@@ -28,11 +28,11 @@
  * @param forceDigital True if output On/Off only (even if pin supports PWM)
  */
 Light::Light(int pinNum, String name, String room, int durationMSecs, int curve)
-        : Device(name, room),
-          _pin(pinNum),
-          _dimmingMSecs(durationMSecs),
-          _curve(curve)
+        : Device(name, room)
 {
+    _pin                = pinNum;
+    _dimmingMSecs       = durationMSecs;
+    _curve              = curve;
     _targetPercent      = 0.0;
     _currentPercent     = 0.0;
     _incrementPerMSec   = 0.0;
