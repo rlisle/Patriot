@@ -96,4 +96,6 @@ void setup() {
 
     // Zigbee Outlets
     Device::add(new ZigbeeOutlet("OfficeOverheadLights", "Office"));
+
+    setInitialState();
 }

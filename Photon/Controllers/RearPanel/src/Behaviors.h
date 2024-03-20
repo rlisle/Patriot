@@ -42,3 +42,14 @@ void updateLights() {
     setRearPorchLight();
     setRightDeskLamp();
 }
+
+void setInitialState() {
+    //TODO: move these to IoT?
+    set("RonHome", 100);
+    set("ShelleyHome", 100);
+    set("AnyoneHome", 100);
+    //TODO: rough estimate if Nighttime
+    if(Time.hour() < 6 || Time.hour() > 6) {
+        set("Nighttime", 100);
+    }
+}
