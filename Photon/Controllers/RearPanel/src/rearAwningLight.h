@@ -6,7 +6,9 @@ void setRearAwningLight() {
     int current = value("RearAwning");
 
     if(is("Nighttime")) {
-        if(is("Outside") || is("OfficeDoor") || isTimingOfficeDoor) {
+        if(is("Outside")) {
+            percent = valuem1("Outside");
+        } else if(is("OfficeDoor") || isTimingOfficeDoor) {
             percent = 100;
         } else switch(partOfDay()) {
             case Evening:

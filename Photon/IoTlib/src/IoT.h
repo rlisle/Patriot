@@ -61,8 +61,9 @@ enum DeviceName {
 String deviceName(DeviceName name);
 
 // Global shortcut function definitions
-bool is(String name);
+bool is(String name);           // Used for overrides (eg. Sink, Kitchen)
 int value(String name);
+int valuem1(String name);       // Used for overrides: 0=disabled, 1-101 = 0-100 percent
 void set(String name, int percent);
 bool isAM();
 PartOfDay partOfDay();

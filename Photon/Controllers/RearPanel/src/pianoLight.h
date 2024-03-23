@@ -9,10 +9,10 @@ void setPianoLight() {
         percent = 100;
 
     } else if(is("Piano")) {
-        percent = value("Piano");
+        percent = valuem1("Piano");
 
     } else if(is("Office")) {
-        percent = value("Office");
+        percent = valuem1("Office");
 
     } else switch(partOfDay()) {
         case Evening:

@@ -82,6 +82,16 @@ int value(String name) {
     return device->value();
 }
 
+int valuem1(String name) {
+    int value = 0;
+    Device* device = Device::get(name);
+    if(device != NULL) {
+        value = device->value();
+        if(value > 0) value -= 1;
+    }
+    return value;
+}
+
 void set(String name, int percent) {
     Device* device = Device::get(name);
     if(device == NULL) return;

@@ -9,24 +9,24 @@ void setOfficeCeilingLights() {
         percent = 100;
 
     } else if(is("Office")) {
-        percent = value("Office");
+        percent = valuem1("Office");
 
     } else switch(partOfDay()) {
         case Evening:
-            if(is("RonHome")) {
+            // if(is("RonHome")) {
                 percent = 100;
-            } else {
-                Log.info("Not turning on OfficeCeiling because Ron isn't home");
-            }
+            // } else {
+            //    Log.info("Not turning on OfficeCeiling because Ron isn't home");
+            // }
             break;
             
         case Retiring:
         case AwakeEarly:
-            if(is("RonHome")) {
+            // if(is("RonHome")) {
                 percent = 50;
-            } else {
-                Log.info("Not turning on OfficeCeiling because Ron isn't home");
-            }
+            // } else {
+            //     Log.info("Not turning on OfficeCeiling because Ron isn't home");
+            // }
             break;
 
         case Asleep:

@@ -57,10 +57,10 @@ void setup() {
     Device::add(new Device("AnyoneHome", "Status", 'S'));
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Desk", "Status", 'L'));         // Desk override
-    Device::add(new Device("Loft", "Status", 'S'));         // Loft override
+    Device::add(new Device("Loft", "Status", 'L'));         // Loft override
     Device::add(new Device("Nighttime", "Status", 'S', handleNighttime));
     Device::add(new Device("Office", "Status", 'L'));       // Office override
-    Device::add(new Device("Outside", "Status", 'S'));
+    Device::add(new Device("Outside", "Status", 'L'));      // Outside override
     Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
     Device::add(new Device("Retiring", "Status", 'S', handleRetiring));
     Device::add(new Device("RonHome", "Status", 'S'));
