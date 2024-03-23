@@ -20,9 +20,9 @@ void setRightDeskLamp() {
         case AwakeEarly:
         case Evening:
             // if(is("RonHome")) {
-            //     percent = 100;
+                 percent = 100;
             // } else {
-                Log.info("Not turning on RightDeskLamp because Ron isn't home");
+            //   Log.info("Not turning on RightDeskLamp because Ron isn't home");
             // }
             break;
         case Retiring:
