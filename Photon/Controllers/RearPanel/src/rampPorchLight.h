@@ -6,7 +6,9 @@ void setRampPorchLight() {
     int current = value("RampPorch");
 
     if(is("Nighttime")) {
-        if(is("Outside")) {
+        if(is("Ramp")) {
+            percent = valuem1("Ramp");
+        } else if(is("Outside")) {
             percent = valuem1("Outside");
         } else if(is("RampDoor") || isTimingRampDoor) {
             percent = 100;

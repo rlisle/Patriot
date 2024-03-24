@@ -62,6 +62,7 @@ void setup() {
     Device::add(new Device("Office", "Status", 'L'));       // Office override
     Device::add(new Device("Outside", "Status", 'L'));      // Outside override
     Device::add(new Device("Piano", "Status", 'L'));        // PianoSpot override
+    Device::add(new Device("Ramp", "Status", 'L'));         // Ramp override
     Device::add(new Device("Retiring", "Status", 'S', handleRetiring));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
