@@ -9,7 +9,7 @@ void setCouchCeilingLights() {
         percent = 100;
 
     } else if(is("Couch")) {
-        percent = value("Couch");
+        percent = valuem1("Couch");
 
     } else if(is("Theatre")) {
         percent = 33;

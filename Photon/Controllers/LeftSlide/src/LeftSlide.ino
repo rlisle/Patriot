@@ -76,7 +76,7 @@ void setup() {
 
     // Create Devices
     // Sensors
-    Device::add(new PIR(D19, "LivingRoomMotion", "Living Room", LIVINGROOM_MOTION_TIMEOUT, handleLivingRoomMotion));
+    Device::add(new PIR(D19, "LivingRoomMotion", "Living Room", livingRoomMotionTimeoutSecs, handleLivingRoomMotion));
     //Device::add(new MR24(0, 0, "CouchPresence", "Living Room"));    // Was D3, D4
 
     // Lights (default 2s curve 2)

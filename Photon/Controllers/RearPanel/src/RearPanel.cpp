@@ -67,6 +67,7 @@ void setup() {
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
     Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
+    Device::add(new Device("Theatre", "Status", 'S'));
 
     // I2CIO4R4G5LE board
     // 4 Relays

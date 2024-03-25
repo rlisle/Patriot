@@ -8,6 +8,7 @@
 //   Couch (override)
 //   LivingRoomMotion
 //   Nighttime
+//   Retiring (bedtime)
 //   RonHome
 //   ShelleyHome
 //   Sleeping
