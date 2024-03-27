@@ -25,6 +25,7 @@ void setNookLamp() {
         case AwakeEarly:
         case Morning:
         case Afternoon:
+            Log.info("Nook setting off");
             percent = 0;
     }
     if(percent != current) {

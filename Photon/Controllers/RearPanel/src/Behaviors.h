@@ -31,6 +31,7 @@
 
 // Update all devices managed by this Photon2
 void updateLights() {
+    Log.info("RP anyChangeHandler");
     setCurtain();
     setLeftDeskLamp();
     setLoftLights();

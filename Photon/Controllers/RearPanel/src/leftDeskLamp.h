@@ -34,8 +34,8 @@ void setLeftDeskLamp() {
             percent = 0;
     }
     //TODO: is this needed?
-    if(percent != current) {
+//    if(percent != current) {
         Log.info("Setting LeftDeskLamp %d",percent);
         set("LeftDeskLamp", percent);
-    }
+//    }
 }

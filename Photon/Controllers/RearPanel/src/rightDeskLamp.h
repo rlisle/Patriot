@@ -33,8 +33,8 @@ void setRightDeskLamp() {
         case Afternoon:
             break;
     }
-    if(percent != current) {
+//    if(percent != current) {
         Log.info("Setting RightDeskLamp %d",percent);
         set("RightDeskLamp", percent);
-    }
+//    }
 }
