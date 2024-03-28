@@ -35,3 +35,25 @@ void handleLivingRoomMotion(int value, int oldValue) {
         updateLights();
     }
 }
+
+void handleRetiring(int value, int oldValue) {
+    if(value > 0 && oldValue == 0) {        // Bedtime
+        Log.info("LS handleRetiring");
+        // Turn off other statuses
+        set("Couch", 0);
+        set("Cleaning", 0);
+        set("Sleeping", 0);
+        set("Theatre", 0);
+    }
+}
+
+void handleSleeping(int value, int oldValue) {
+    if(value > 0 && oldValue == 0) {        // Sleeping
+        Log.info("LS handleSleeping");
+        // Turn off other statuses
+        set("Couch", 0);
+        set("Cleaning", 0);
+        set("Retiring", 0);
+        set("Theatre", 0);
+    }
+}

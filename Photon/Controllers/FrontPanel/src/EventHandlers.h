@@ -2,9 +2,6 @@
 // Event Handlers
 //----------------
 
-int const frontDoorLightTimeout = 15*1000;
-int const livingRoomMotionTimeout = 3*1000;
-
 // Called every minute to allow delayed turn-offs, etc.
 void handleNextMinute() {
     if(isTimingFrontDoor) {

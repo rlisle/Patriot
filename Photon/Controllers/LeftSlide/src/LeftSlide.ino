@@ -68,10 +68,10 @@ void setup() {
     Device::add(new Device("Cleaning", "Status", 'S'));
     Device::add(new Device("Couch", "Status", 'L'));        // Override
     Device::add(new Device("Nighttime", "Status", 'S'));
-    Device::add(new Device("Retiring", "Status", 'S'));
+    Device::add(new Device("Retiring", "Status", 'S', handleRetiring));
     Device::add(new Device("RonHome", "Status", 'S'));
     Device::add(new Device("ShelleyHome", "Status", 'S'));
-    Device::add(new Device("Sleeping", "Status", 'S'));
+    Device::add(new Device("Sleeping", "Status", 'S', handleSleeping));
     Device::add(new Device("Theatre", "Status", 'S'));
 
     // Create Devices

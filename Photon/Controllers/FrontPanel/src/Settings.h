@@ -6,6 +6,9 @@
 //#define SWITCH_ADDRESS 0x20
 //#define SWITCH_IOMAP 0xFF       // All 8 GPIOs are inputs
 
+int const frontDoorLightTimeout = 15*1000;
+int const livingRoomMotionTimeout = 3*1000;
+
 #define CURVE 2 // 0 = Linear, 1 = exponential, 2 = 50/50
 
 SYSTEM_THREAD(ENABLED);

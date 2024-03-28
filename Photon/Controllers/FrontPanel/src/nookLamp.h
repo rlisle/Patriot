@@ -22,9 +22,13 @@ void setNookLamp() {
         case Evening:
             percent = 100;
             break;
-        case Retiring:
-        case Asleep:
+
         case AwakeEarly:
+        case Retiring:
+            percent = 25;
+            break;
+
+        case Asleep:
         case Morning:
         case Afternoon:
             Log.info("Nook POD setting off");
