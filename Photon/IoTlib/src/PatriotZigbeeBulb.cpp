@@ -52,6 +52,7 @@ void ZigbeeLight::setValue(int value)
     String brightness = "{\"brightness\":" + outputValue + ", ";
     String transition = "\"transition\": " + duration + "}";
     IoT::publishMQTT(topic, brightness + transition);
+    _value = value;
 }
 
 /**
